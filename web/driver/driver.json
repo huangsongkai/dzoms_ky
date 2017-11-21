@@ -1,0 +1,19 @@
+{
+"driver.applyMatter":["驾驶员","新包车","转租"],
+"driver.attribute":["主驾","副驾","三驾","临驾"],
+"driver.sex":{"true":"男","false":"女"},
+"driver.maritalStatus" :{"true":"已婚","false":"未婚"},
+"driver.restTime":["白班","夜班","替班","大班"],
+"driver.taxiExperience":{"true":"是","false":"否"},
+"driver.politicalStatus":["党员","党员/复员军人","复员军人","群众","团员","无党派人士"],
+"driver.scar":{"true":"有","false":"无"},
+"driver.star":{"1":"★","2":"★★","3":"★★★","4":"★★★★","5":"★★★★★"},
+"driver.educationDegree":["小学","初中","高中","大专","大学"],
+"driver.languageAbility":["一般","良好"],
+"driver.health":["一般","良好"],
+"driver.cityFamiliarty":["熟悉","了解","知道","不熟悉"],
+"driver.badRecord":{"true":"有","false":"无"},
+"driver.violationRecord":{"true":"有","false":"无"},
+"driver.accidentRecord":{"true":"有","false":"无"},
+"driver.drivingLicenseType":["C1","A","A2","A1A2","A1A2D","A1A2E","A1A2EN","A1A2N","A2D","A2E","A3","AD","AE","AN","B","B1","B1B2","B1D","B1E","B2","B2D","B2E","BC","BD","BE","C","C1D","C1E","CD","D","E"]
+}

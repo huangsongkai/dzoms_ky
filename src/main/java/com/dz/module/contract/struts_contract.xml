@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <package name="contract" extends="default-package" namespace="/">
+        <action name="contractToNew" class="objectAccess" method="select">
+            <param name="url">/contract/contract_new.jsp</param>
+            <param name="className">com.dz.module.contract.Contract</param>
+            <result name="selectToUrl">${url}</result>
+        </action>
+
+        <action name="contractToExcel" class="contractAction" method="contractToExcel">
+            <param name="templatePath">/contract/contract.xls</param>
+            <param name="outputName">contract</param>
+            <result name="success" type="chain">
+                <param name="actionName">outputExcel</param>
+                <param name="namespace">/common</param>
+            </result>
+        </action>
+
+        <action name="contractSearch" class="contractAction" method="contractSearch">
+            <result name="success">/contract/search_result.jsp</result>
+        </action>
+
+        <action name="contractPreAdd" class="contractAction" method="contractPreAdd">
+            <result name="success">${url}</result>
+        </action>
+
+        <action name="contractPre*" class="contractAction" method="contractSelectById">
+            <result name="success">/contract/contract{1}.jsp</result>
+        </action>
+
+        <action name="contractUpdate*" class="contractAction" method="contractUpdate{1}">
+            <result name="success">/contract/contractShow.jsp</result>
+        </action>
+
+        <action name="contract*" class="contractAction" method="contract{1}">
+            <result name="success">/contract/contract_search.jsp</result>
+            <result name="abandon">/contract/contract_abandon.jsp</result>
+            <result name="revised">/contract/contract_search_avilable.jsp</result>
+            <result name="abandoned">/contract/contract_search_abandoned.jsp</result>
+            <result name="error">/error.jsp</result>
+            <result name="jsonObject" type="jsonresult"/>
+        </action>
+        <action name="selectContractByCarId" class="contractAction" method="selectByCarId">
+
+        </action>
+
+        <action name="bankCard*" class="bankCardAction" method="bankCard{1}">
+            <result name="add_success">/finance/bank_card/search_vehicle_about_bankcard.jsp?no</result>
+            <result name="show_success">/finance/bank_card/card_update.jsp</result>
+            <result name="update_success">/common/success_and_close.html</result>
+            <result name="error">/error.jsp</result>
+        </action>
+
+        <action name="BankCardAddSelect" class="driverAction" method="selectByVehicle">
+            <result name="success">/finance/bank_card/card_add.jsp</result>
+        </action>
+        <action name="BankCardAddSelect2" class="driverAction" method="selectByName">
+            <result name="success">/finance/bank_card/card_add.jsp</result>
+        </action>
+
+        <action name="BankCardSearch" class="bankCardAction" method="searchCard">
+            <result>/finance/bank_card/search_result.jsp</result>
+        </action>
+    </package>
+
+    <package name="contract2" extends="default-package" namespace="/contract">
+        <action name="contractToNew" class="objectAccess" method="select">
+            <param name="url">/contract/contract_new.jsp</param>
+            <param name="className">com.dz.module.contract.Contract</param>
+            <result name="selectToUrl">${url}</result>
+        </action>
+
+        <action name="contractToExcel" class="contractAction" method="contractToExcel">
+            <param name="templatePath">/contract/contract.xls</param>
+            <param name="outputName">contract</param>
+            <result name="success" type="chain">
+                <param name="actionName">outputExcel</param>
+                <param name="namespace">/common</param>
+            </result>
+        </action>
+
+        <action name="contractSearch" class="contractAction" method="contractSearch">
+            <result name="success">/contract/search_result.jsp</result>
+        </action>
+
+        <action name="contractPreAdd" class="contractAction" method="contractPreAdd">
+            <result name="success">${url}</result>
+        </action>
+
+        <action name="contractPre*" class="contractAction" method="contractSelectById">
+            <result name="success">/contract/contract{1}.jsp</result>
+        </action>
+
+        <action name="contractUpdate*" class="contractAction" method="contractUpdate{1}">
+            <result name="success">/contract/contractShow.jsp</result>
+        </action>
+
+        <action name="contract*" class="contractAction" method="contract{1}">
+            <result name="success">/contract/contract_search.jsp</result>
+            <result name="abandon">/contract/contract_abandon.jsp</result>
+            <result name="revised">/contract/contract_search_avilable.jsp</result>
+            <result name="abandoned">/contract/contract_search_abandoned.jsp</result>
+            <result name="error">/error.jsp</result>
+            <result name="jsonObject" type="jsonresult"/>
+        </action>
+        <action name="selectContractByCarId" class="contractAction" method="selectByCarId">
+
+        </action>
+    </package>
+
+    <package name="bank_card" extends="default-package" namespace="/contract/bank_card">
+        <action name="bankCard*" class="bankCardAction" method="bankCard{1}">
+            <result name="add_success">/contract/bank_card/search_vehicle_about_bankcard.jsp?no</result>
+            <result name="show_success">/contract/bank_card/card_update.jsp</result>
+            <result name="update_success">/common/success_and_close.html</result>
+            <result name="error">/error.jsp</result>
+        </action>
+        <action name="searchCard" class="bankCardAction" method="searchCard">
+            <result>/contract/bank_card/search_result.jsp</result>
+        </action>
+        <action name="bindVehicle" class="bankCardAction" method="bindVehicle"></action>
+        <action name="unbindVehicle" class="bankCardAction" method="unbindVehicle"></action>
+        <action name="selectByCardNumber" class="bankCardAction" method="selectByCardNumber">
+            <result>${url}</result>
+        </action>
+
+    </package>
+
+</struts>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <workbook>
+        <worksheet idx="0">
+			<section startRow="0" endRow="1">  
+				
+			</section>  
+            <loop startRow="2" endRow="2" items="serviceData" var="serviceDatum" varType="com.dz.module.vehicle.service.ServiceImport">
+                <section startRow="2" endRow="2">
+					<mapping row="2" col="0">serviceDatum.licenseNum</mapping>
+                    <mapping row="2" col="1">serviceDatum.serviceTimeSpace</mapping>
+					<mapping row="2" col="2">serviceDatum.money</mapping>
+					<mapping row="2" col="3">serviceDatum.allDistance</mapping>
+					<mapping row="2" col="4">serviceDatum.times</mapping>
+					<mapping row="2" col="5">serviceDatum.uselessDistance</mapping>
+					<mapping row="2" col="6">serviceDatum.effectiveDistance</mapping>
+                </section>
+                <loopbreakcondition>
+                    <rowcheck offset="0">
+                        <cellcheck offset="0"></cellcheck>
+                    </rowcheck>
+                </loopbreakcondition>
+            </loop>
+        </worksheet>
+    </workbook>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>新中新二代证阅读器控件测试程序JavaScript</title>
+		
+		<script type="text/javascript" src="../res/js/jquery.js" ></script>
+		<script type="text/javascript" src="../res/device/MyIDCard.js" ></script>
+		<script>
+		var MyIDCardReader;
+		
+		var lastIdNumber;
+		$(document).ready(function(){
+			MyIDCardReader = new IDCardReader("#SynCardOcx1",function(){
+				if(MyIDCardReader.status){
+					$("#nums").append(""+MyIDCardReader.idNumber).append('<br/>');
+					if(lastIdNumber==MyIDCardReader.idNumber) return;
+					
+					lastIdNumber=MyIDCardReader.idNumber;
+					$("[name='S1']").text($("[name='S1']").text()+"读卡成功\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"姓名:"+MyIDCardReader.name +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"性别:"+MyIDCardReader.sex +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"民族:"+MyIDCardReader.nation +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"出生日期:"+MyIDCardReader.born +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"地址:"+MyIDCardReader.address +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"身份证号:"+MyIDCardReader.idNumber +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"有效期开始:"+MyIDCardReader.validityBegin +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"有效期结束:"+MyIDCardReader.validityEnd +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"发证机关:"+MyIDCardReader.police +"\r\n");
+					$("[name='S1']").text($("[name='S1']").text()+"照片文件名:"+MyIDCardReader.photoName +"\r\n");
+				}
+			});
+			
+			setInterval("reads()",1000);
+			//reads();
+		});
+		
+		function reads(){
+			MyIDCardReader.connect();
+			
+			if(MyIDCardReader.status){
+				$("#state").text("连接"+(MyIDCardReader.status?"成功":"失败")+"  "+MyIDCardReader.msg+"\r\n");
+				//$("[name='S1']").text("连接"+(MyIDCardReader.status?"成功":"失败")+"  "+MyIDCardReader.msg+"\r\n");
+				MyIDCardReader.read();
+			}
+		}
+		</script>
+	
+<script>	
+  
+</script>
+	</head>
+	<body>
+		<p>
+<object classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039" id="SynCardOcx1" codeBase="/DZOMS/res/device/SynCardOcx.CAB#version=1,0,0,1" width="102" height="126" >
+</object>
+</p>
+<div id="state"></div>
+<textarea name="S1" style="width:100%;height:300px" ></textarea>
+<div id="nums"></div>
+
+	</body>
+</html>

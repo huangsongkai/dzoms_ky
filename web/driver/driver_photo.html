@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>人员档案</title>
+		
+		<script>
+		    function getRequest() {
+		        var url = location.search; //获取url中"?"符后的字串
+		        var theRequest = {};
+		        if (url.indexOf("?") != -1) {
+		            var str = url.substr(1);
+		            var strs = str.split("&");
+		            for(var i = 0; i < strs.length; i ++) {
+		                theRequest[strs[i].split("=")[0]]=decodeURI(strs[i].split("=")[1]);
+		            }
+		        }
+		        return theRequest;
+		    }
+		</script>
+		<script type="text/javascript" src="/DZOMS/res/js/vue.js" ></script>
+		<link rel="stylesheet" href="/DZOMS/res/css/pintuer.css">
+		<script src="/DZOMS/res/js/jquery.js"></script>
+		<script type="text/javascript" src="/DZOMS/res/js/jquery.json.js" ></script>
+		<script src="/DZOMS/res/js/pintuer.js"></script>
+		<script src="/DZOMS/res/js/fileUpload.js"></script>
+		<script type="text/javascript" src="/DZOMS/res/js/itemtool.js" ></script>
+		
+		<link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
+		<script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
+		
+		<script type="text/javascript" src="/DZOMS/res/layer-v3.0.3/layer/layer.js" ></script>
+	</head>
+	<body>
+	<div class="line" id="main_div">
+		<div class="panel margin-small" >
+          	<div class="panel-head">
+          	    <div class="line">
+          	        <div class="xm2"><span>{{photos.title}}</span>人员档案</div>
+          	        <div class="xm5 xm5-move">
+          	        	<div class="button-toolbar">
+	                        <div class="button-group">
+	                            <button type="button" class="button icon-search text-blue addbtn1" style="line-height: 6px;">
+	                               		新增</button>
+	                            <input id="photoSeq" class="dz-file" name="photo" data-target=".addbtn1" sessuss-function="_add();">
+	                            <button onclick="_photoAll()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
+	                               		查看全部</button>
+                            </div>
+          	        	</div>
+          	        </div>
+          	    </div>
+            </div>
+        	<div class="panel-body">
+                <table class="table table-striped table-bordered table-hover">
+                	<thead><tr>
+                        <th class="name selected_able">名称</th>
+                        <th class="yulan selected_able">查看</th>
+                        <th class="delete selected_able">删除</th> 
+                    </tr></thead>
+                    <tbody v-for="(finfo, index) in photos.data"><tr>
+                    	<td class="name selected_able">{{finfo.alt}}</td>
+                        <td class="yulan selected_able"><a v-on:click="showPic(finfo.src)">查看</a></td>
+                        <td class="delete selected_able"><a v-on:click="delPic(finfo.alt)">删除</a></td> 
+                    </tr></tbody>
+				</table>
+        	</div>
+        	<div class="panel-foot border-red-light bg-red-light">
+            	合计：<span>{{photos.data.length}}</span>条记录。
+        	</div>
+    	</div>
+	</div>
+	<button id="add_photo_name" class="dialogs" data-toggle="click" style="display: none;" data-target="#mydialog" data-mask="1" data-width="50%"></button>
+	<div id="mydialog"> 
+   		<div class="dialog"> 
+   			<div class="dialog-head"> 
+   				<span class="close rotate-hover"></span>
+   				<strong>图片名称</strong> 
+   			</div>
+   			<div class="dialog-body">
+      			<div>
+         			<strong>名称</strong>
+         			<nobr>
+          			<input class="input photoName"/>
+          			<a class="icon icon-wrench" href="javascript:openItem('driver_photoName','照片名称')"></a>
+         			</nobr>
+      			</div>
+   			</div>
+   			<div class="dialog-foot"> 
+   				 <button class="button dialog-close"> 取消</button> 
+   				 <button class="button bg-green dialog-close" onclick="addPhoto()">添加</button> 
+   			</div> 
+  		</div> 
+   </div>
+	<script>
+	var info = new Vue({
+		el:"#main_div",
+        data:{
+        	photos:{
+        		title:"",
+        		data:[]
+        	}
+        },
+        methods:{
+            showPic:function (src) {
+//              var ImgObj = new Image(); //判断图片是否存在  
+//				ImgObj.src = src;
+// 				window.open(src,"图片预览",'width='+(ImgObj.width+10)+',height='+(ImgObj.height+10)+',resizable=no,scrollbars=no');
+   				
+   				layer.open({
+				  type: 2,
+				  title: false,
+				  area: ['360px', '630px'],
+				  shade: 0.8,
+				  closeBtn: 0,
+				  shadeClose: true,
+				  content: src
+				});
+            },
+            delPic:function (alt) {
+                var requestMap = getRequest();
+    			var id = requestMap["id"];
+                $.getJSON('/DZOMS/driver/driverDeletePhoto?driver.idNum='+id+'&photo_name='+encodeURI(alt),function(json){
+					if(json.status){
+						alert('删除成功！');
+						refreshPhotos();
+					}else{
+						alert('删除失败！');
+					}
+					
+				});
+            }
+        }
+	});
+	</script>
+	<script>
+	function refreshPhotos(){
+		var requestMap = getRequest();
+    	var id = requestMap["id"];
+		$.getJSON('/DZOMS/driver/driverPhotos?driver.idNum='+id,function(json){
+			info.photos = json;
+		});
+	}
+	
+	$(document).ready(function(){
+		refreshPhotos();
+	});
+	
+	function _add(){
+		$("#add_photo_name").click();
+	}
+	
+	function addPhoto(){
+		var requestMap = getRequest();
+    	var id = requestMap["id"];
+		var photoName = $(".dialog-win .photoName").val();
+		if (photoName.length>0) {
+			$.getJSON('/DZOMS/driver/driverUploadPhoto?driver.idNum='+id+'&photo_name='+encodeURI(photoName)+'&photo='+$('#photoSeq').val(),function(json){
+				if(json.status){
+					alert('上传成功！');
+					refreshPhotos();
+				}else{
+					alert('上传失败！');
+				}
+			});
+		}
+	}
+	
+	function _photoAll(){
+		layer.photos({
+		    photos: info.photos
+		});
+	}
+	</script>
+	
+	<script>
+$(function(){
+	$showdialogs=function(e){
+		var trigger=e.attr("data-toggle");
+		var getid=e.attr("data-target");
+		var data=e.attr("data-url");
+		var mask=e.attr("data-mask");
+		var width=e.attr("data-width");
+		var detail="";
+		var masklayout=$('<div class="dialog-mask"></div>');
+		if(width==null){width="80%";}
+		
+		if (mask=="1"){
+			$("body").append(masklayout);
+		}
+		detail='<div class="dialog-win" style="position:fixed;width:'+width+';z-index:11;">';
+		if(getid!=null){detail=detail+$(getid).html();}
+		if(data!=null){detail=detail+$.ajax({url:data,async:false}).responseText;}
+		detail=detail+'</div>';
+		
+		var win=$(detail);
+		win.find(".dialog").addClass("open");
+		$("body").append(win);
+		var x=parseInt($(window).width()-win.outerWidth())/2;
+		var y=e.offset().top - win.outerHeight()/2;
+		
+		if (y<=10){y="10"}
+		win.css({"left":x,"top":y});
+		win.find(".dialog-close,.close").each(function(){
+			$(this).click(function(){
+				win.remove();
+				$('.dialog-mask').remove();
+//				$("#mydialog").html(dialogHTML);
+			});
+		});
+		masklayout.click(function(){
+			win.remove();
+			$(this).remove();
+		});
+		
+		win.find(".photoName").bigAutocomplete({
+			url:"/DZOMS/select/itemsOfdriver_photoName",
+				doubleClick:true,
+				doubleClickDefault:''
+		});
+	};
+});
+	</script>
+	</body>
+</html>

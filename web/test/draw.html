@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="/DZOMS/res/css/pintuer.css" />
+		<script type="text/javascript" src="/DZOMS/res/js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="/DZOMS/res/jquery-ui/jquery-ui.js" ></script>
+		<link rel="stylesheet" href="/DZOMS/res/jquery-ui/jquery-ui.css" />
+		<script>
+		function mouseCoords(ev){
+			if(ev.pageX || ev.pageY){
+				return {x:ev.pageX, y:ev.pageY};
+			}
+			return {
+				x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+				y:ev.clientY + document.body.scrollTop - document.body.clientTop
+			};
+		}
+		
+		var state=0;
+
+			var $newItem;
+			var beginPos;
+			function beginDraw(e){
+				if(state==0){
+					Ev= e || window.event; 
+					beginPos = mouseCoords(e); 
+					$newItem = $('<div class="border-red bg-red"></div>')
+									.css("position","absolute")
+									.css("top",beginPos.y)
+									.css("left",beginPos.x);
+					$("#draw").append($newItem);
+					state=1;
+				}else{
+					$newItem.click(function(event){
+						
+						selectDiv(this);
+						event.stopPropagation();
+					});
+					$newItem.draggable({
+						containment:'#draw'
+					});
+					$newItem.resizable({ 
+						cancel: 'span',
+						containment: '#draw',
+						handles: 'all',
+						autoHide: true 
+					});
+					state=0;
+				}		
+			}
+			
+			function continueDraw(e){
+				if(state==1){
+					Ev= e || window.event; 
+					var newPos = mouseCoords(e); 
+					$newItem.css("width",newPos.x-beginPos.x).css("height",newPos.y-beginPos.y);
+				}
+			}
+			
+			
+			$(document).ready(function(){
+				$("#draw").click(function(e){
+					beginDraw(e);
+				});
+				$("#draw").mousemove(function(e){
+					continueDraw(e);
+				});
+			});
+			
+			function selectDiv(div){
+				$('.my-selected').removeClass('my-selected');
+				$(div).addClass('my-selected');
+			}
+			
+			function setContext(){
+				var context = $("#context").val();
+				$span = $('<span disabled="disabled"></span>').text(context);
+				$innerTable=$('<table><tr><td></td></tr></table>')
+								.css('width','100%')
+								.css('height','100%');
+				$innerTable.find('td').append($span);
+				$('.my-selected').html("");
+				$('.my-selected').append($innerTable);
+				setFontSize();
+				setFont();
+				$(':radio:checked').click();
+				$('.my-selected').resizable("destroy").resizable({ 
+					containment: '#draw',
+					handles: 'all',
+					autoHide: true 
+				});
+				
+			}
+			
+			function setFontSize(){
+				var fontSize = $("#fontSize").val();
+				$('.my-selected span').css("font-size",fontSize+"em");
+				//$('.my-selected').resizable();
+			}
+			
+			function setFont(){
+				var font = $("#font option:selected").text();
+				$('.my-selected span').css("font-family",font);
+				//$('.my-selected').resizable();
+			}
+			
+			$(document).ready(function(){
+				$(':radio').click(function(){
+					//$(':radio').removeAttr('checked');
+					//$(this).attr('checked','checked');
+					
+					var name = $(this).attr('name');
+					
+					if(name=="horozontal"){
+						$('.my-selected td').attr('align',$(this).val());
+					}else{
+						$('.my-selected td').attr('valign',$(this).val());
+					}
+				});
+			});
+			
+			var generalId=0;
+			function toTemplate(){
+				generalId=0;
+				var $th=$('<tr></tr>')
+						.append($('<th>ID</th>'))
+						.append($('<th>top</th>'))
+						.append($('<th>left</th>'))
+						.append($('<th>width</th>'))
+						.append($('<th>height</th>'))
+						.append($('<th>context</th>'))
+						.append($('<th>fontSize</th>'))
+						.append($('<th>fontFamily</th>'))
+						.append($('<th>horozontal</th>'))
+						.append($('<th>vertical</th>'));
+				$("#result").html("");
+				$("#result").append($th);
+				
+				$("#draw>div").each(function(){
+					var $this = $(this);
+					
+					var id=generalId++;
+					var top = $this.css('top');
+					var left = $this.css('left');
+					var width = $this.css('width');
+					var height = $this.css('height');
+					
+					var context = $this.find('span').text();
+					var fontSize = $this.find('span').css("font-size");
+					var fontFamily = $this.find('span').css("font-family")
+					
+					var horozontal = $this.find('td').attr('align');
+					var vertical = $this.find('td').attr('valign');
+					
+
+						
+					var $tr=$('<tr></tr>')
+							.append($('<td></td>').text(id))
+							.append($('<td></td>').text(top))
+							.append($('<td></td>').text(left))
+							.append($('<td></td>').text(width))
+							.append($('<td></td>').text(height))
+							.append($('<td></td>').text(context))
+							.append($('<td></td>').text(fontSize))
+							.append($('<td></td>').text(fontFamily))
+							.append($('<td></td>').text(horozontal))
+							.append($('<td></td>').text(vertical));
+							
+					$("#result").append($tr);
+				});
+			}
+		</script>
+		<style>
+			.my-selected{
+				background-color: yellow;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="draw" class="border-blue bg-blue" style="width: 1000px;height: 800px;float: left;">
+			
+		</div>
+		<div id="out" class="border-blue bg-gray" style="float: right;width: 340px;height: 800px;">
+			<div>
+				<input type="button" value="删除" onclick="$('.my-selected').remove()"/>
+			</div>
+			<div>
+			位置:<br />
+				<input type="button" value="↑" onclick="$('.my-selected').css('top',parseInt($('.my-selected').css('top'))-10)"/>
+				<input type="button" value="↓" onclick="$('.my-selected').css('top',parseInt($('.my-selected').css('top'))+10)"/>
+				<input type="button" value="←" onclick="$('.my-selected').css('left',parseInt($('.my-selected').css('left'))-10)"/>
+				<input type="button" value="→" onclick="$('.my-selected').css('left',parseInt($('.my-selected').css('left'))+10)"/>
+			</div>
+			<div>
+			大小:<br />
+				宽度<input type="button" value="+" onclick="$('.my-selected').css('width',parseInt($('.my-selected').css('width'))+10)"/>
+				<input type="button" value="-" onclick="$('.my-selected').css('width',parseInt($('.my-selected').css('width'))-10)"/>
+				高度<input type="button" value="+" onclick="$('.my-selected').css('height',parseInt($('.my-selected').css('height'))+10)"/>
+				<input type="button" value="-" onclick="$('.my-selected').css('height',parseInt($('.my-selected').css('height'))-10)"/>
+			</div>
+			<div>
+				<input id="context" /><input type="button" value="设置值" onclick="setContext()" />
+			</div>
+			<div>
+				<input id="fontSize" value="2" /><input type="button" value="设置字体大小" onclick="setFontSize()" />
+			</div>
+			<div>
+				字体:<select id="font" value="设置字体" onchange="setFont()" >
+					<option selected="selected">serif</option>
+					<option>sans-serif</option>
+					<option>cursive</option>
+					<option>fantasy</option>
+					<option>monospace</option>
+					<option>times</option>
+					<option>courier</option>
+					<option>arial</option>
+				</select>
+			</div>
+			<div>
+				对齐方式:<br />
+				<div>
+					水平: <input type="radio" name="horozontal" value="left" checked="checked"/>左对齐
+					<input type="radio" name="horozontal" value="center" />居中对齐
+					<input type="radio" name="horozontal" value="right"/>右对齐
+				</div>
+				<div>
+					垂直: <input type="radio" name="vertical" value="top" checked="checked"/>上对齐
+					<input type="radio" name="vertical" value="middle" />居中对齐
+					<input type="radio" name="vertical" value="bottom"/>下对齐
+				</div>
+			</div>
+			<div>
+				<input type="button" value="生成模版" onclick="toTemplate()" />
+			</div>
+			<div>
+				<table id="result"></table>
+			</div>
+		</div>
+	</body>
+</html>

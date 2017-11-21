@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+                        "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+ <tlib-version>1.0</tlib-version>
+ <jsp-version>1.2</jsp-version>
+ <short-name>m</short-name>
+ <uri>http://www.hit.edu.cn/permission</uri>
+ <tag>
+  <name>permission</name>
+  <tag-class>com.dz.common.test.PermissionTag</tag-class>
+  <body-content>JSP</body-content>
+  <attribute>
+   <name>role</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+   <type>java.lang.String</type>
+   <description>The User Roles</description>
+  </attribute>
+  <attribute>
+   <name>any</name>
+   <rtexprvalue>true</rtexprvalue>
+   <type>java.lang.Boolean</type>
+   <description>Check user has any one of roles</description>
+  </attribute>
+ </tag>
+</taglib>

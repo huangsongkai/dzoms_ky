@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>高拍仪测试</title>
+		<script type="text/javascript" src="/DZOMS/res/js/jquery.js" ></script>
+		<script>
+			var dev1;
+			var dev2;
+			var video;
+
+			function plugin() {
+				return document.getElementById('view1');
+			}
+
+			function view() {
+				return document.getElementById('view1');
+			}
+
+			function thumb1() {
+				return document.getElementById('thumb1');
+			}
+
+			function addEvent(obj, name, func) {
+				if (obj.attachEvent) {
+					obj.attachEvent("on" + name, func);
+				} else {
+					obj.addEventListener(name, func, false);
+				}
+			}
+
+			function OpenVideo() {
+				CloseVideo();
+				var select = document.getElementById('device');
+				var devIdx = select.selectedIndex;
+				if (devIdx == 0) {
+					video = plugin().Device_CreateVideo(dev1, 0, 0);
+					if (video) {
+						view().View_SelectVideo(video);
+						view().View_SetText("打开视频中，请等待...", 0);
+					}
+				} else if (devIdx == 1) {
+					video = plugin().Device_CreateVideo(dev2, 0, 0);
+					if (video) {
+						view().View_SelectVideo(video);
+						view().View_SetText("打开视频中，请等待...", 0);
+					}
+				}
+			}
+
+			function CloseVideo() {
+				if (video) {
+					view().View_SetText("", 0);
+					plugin().Video_Release(video);
+					video = null;
+				}
+			}
+
+			function Load() {
+				//设备接入和丢失
+				//type设备类型， 1 表示视频设备， 2 表示音频设备
+				//idx设备索引
+				//dbt 1 表示设备到达， 2 表示设备丢失		
+				addEvent(plugin(), 'DevChange', function(type, idx, dbt) {
+					if (1 == type) {
+						if (0 == idx) {
+							if (1 == dbt) {
+								dev1 = plugin().Global_CreateDevice(1, 0);
+								if (dev1) {
+									var select = document.getElementById('device');
+									var name = plugin().Global_GetFriendlyName(1, 0);
+									select.add(new Option(name));
+									var select = document.getElementById('device');
+									select.selectedIndex = 0;
+									OpenVideo();
+								}
+							} else if (2 == dbt) {
+								if (dev1) {
+									if (plugin().Device_GetIndex(dev1) == idx) {
+										if (video) {
+											view().View_SetText("", 0);
+											plugin().Video_Release(video);
+											video = null;
+										}
+										plugin().Device_Release(dev1);
+										dev1 = null;
+										document.getElementById('device').options[0] = null;
+									}
+								}
+								if (dev2) {
+									if (plugin().Device_GetIndex(dev2) == idx) {
+										if (video) {
+											view().View_SetText("", 0);
+											plugin().Video_Release(video);
+											video = null;
+										}
+										plugin().Device_Release(dev2);
+										dev2 = null;
+										document.getElementById('device').options[1] = null;
+									}
+								}
+							}
+						} else if (1 == idx) {
+							if (1 == dbt) {
+								dev2 = plugin().Global_CreateDevice(1, 1);
+								if (dev2) {
+									var select = document.getElementById('device');
+									var name = plugin().Global_GetFriendlyName(1, 1);
+									select.add(new Option(name));
+								}
+							} else if (2 == dbt) {
+								if (dev1) {
+									if (plugin().Device_GetIndex(dev1) == idx) {
+										if (video1) {
+											view1().View_SetText("", 0);
+											plugin().Video_Release(video1);
+											video1 = null;
+										}
+										plugin().Device_Release(dev1);
+										dev1 = null;
+										document.getElementById('device').options[0] = null;
+									}
+								}
+								if (dev2) {
+									if (plugin().Device_GetIndex(dev2) == idx) {
+										if (video2) {
+											view2().View_SetText("", 0);
+											plugin().Video_Release(video2);
+											video2 = null;
+										}
+										plugin().Device_Release(dev2);
+										dev2 = null;
+										document.getElementById('device').options[1] = null;
+									}
+								}
+							}
+						}
+					}
+				});
+				view().Global_SetWindowName("view");
+				thumb1().Global_SetWindowName("thumb");
+				plugin().Global_InitDevs();
+			}
+
+			function Unload() {
+				if (video) {
+					view().View_SetText("", 0);
+					plugin().Video_Release(video);
+					video = null;
+				}
+				if (dev1) {
+					plugin().Device_Release(dev1);
+					dev1 = null;
+				}
+				if (dev2) {
+					plugin().Device_Release(dev2);
+					dev2 = null;
+				}
+				plugin().Global_DeinitDevs();
+			}
+
+			function Scan() {
+				var date = new Date();
+				var yy = date.getFullYear().toString();
+				var mm = (date.getMonth() + 1).toString();
+				var dd = date.getDate().toString();
+				var hh = date.getHours().toString();
+				var nn = date.getMinutes().toString();
+				var ss = date.getSeconds().toString();
+				var mi = date.getMilliseconds().toString();
+				var Name = "D:\\" + yy + mm + dd + hh + nn + ss + mi + ".jpg";
+				var img = plugin().Video_CreateImage(video, 0, view().View_GetObject());
+				var bSave = plugin().Image_Save(img, Name, 0);
+				if (bSave) {
+					view().View_PlayCaptureEffect();
+					thumb1().Thumbnail_Add(Name);
+					$("#inputFile").attr("value",Name);
+				}
+				plugin().Image_Release(img);
+			}
+		</script>
+	</head>
+
+	<body onload="Load()">
+		<object id="view1" type="application/x-eloamplugin" width="600" height="400" name="view">
+		</object>
+		<br />
+		<object id="thumb1" type="application/x-eloamplugin" width="1208" height="150" name="thumb">
+		</object>
+		<br />
+		<input type="file"  id="inputFile"/>
+		<br /> 设备列表：
+		<select id="device" style="width: 90px"></select>
+		<input class="submit_01" type="button" value="打开视频" onclick="OpenVideo()" />
+		<input class="submit_01" type="button" value="关闭视频" onclick="CloseVideo()" />
+		<input class="submit_01" type="button" value="拍照" onclick="Scan()" />
+	</body>
+	</body>
+
+</html>

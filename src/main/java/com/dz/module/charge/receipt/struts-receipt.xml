@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+        <package name="receipt" namespace="/charge/receipt" extends="struts-default">
+                <result-types>
+                        <result-type name="string_result" class="com.dz.common.result.StringResult"></result-type>
+                        <result-type name="json_result" class="com.dz.common.result.JSONResult"></result-type>
+                </result-types>
+                <action name="*" class="receiptaction" method="{1}">
+                        <result name="success">/charge/receipt/${jspPage}</result>
+                        <result name="string_result" type="string_result"/>
+                        <result name="json_result" type="json_result"/>
+                        <result name="stream" type="stream">
+                                <param name="contentType">text/plain</param>
+                                <param name="contentDisposition">attachment;fileName="${fileName}"</param>
+                                <param name="inputName">txtFile</param>
+                                <param name="bufferSize">1024</param>
+                        </result>
+                </action>
+        </package>
+</struts>

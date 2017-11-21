@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+    <package name="driver-base" extends="struts-default">
+        <result-types>
+            <result-type name="stringresult" class="com.dz.common.result.StringResult"></result-type>
+            <result-type name="jsonresult" class="com.dz.common.result.JSONResult"></result-type>
+        </result-types>
+    </package>
+
+	<include file="com/dz/module/driver/struts-driver-base.xml"></include>
+    <include file="com/dz/module/driver/complain/struts-complain.xml"></include>
+    <include file="com/dz/module/driver/praise/struts-praise.xml"></include>
+    <include file="com/dz/module/driver/meeting/struts-meeting.xml"></include>
+
+    <package name="activity" namespace="/driver/activity" extends="struts-default">
+            <global-results>
+            	<result name="error">/error.jsp</result>
+            	<result name="input">/error.jsp</result>
+            </global-results>
+                <action name="addActivity" class="activityAction" method="addActivity">
+                        <result name="success">/driver/activity/search.jsp</result>
+                </action>
+                
+                <action name="pre*Activity" class="activityAction" method="selectActivityById">
+                        <result name="success">/driver/activity/activity_{1}.jsp</result>
+                </action>
+                 <action name="*Activity" class="activityAction" method="{1}Activity">
+                        <result name="success">/driver/activity/search.jsp</result>
+                </action>
+                <action name="searchActivity" class="activityAction" method="searchActivity">
+                        <result name="success">/driver/activity/search_result.jsp</result>
+                </action>
+        </package>
+    <package name="homevisit" namespace="/driver/homevisit" extends="struts-default">
+        	<action name="*" class="homeVisitAction" method="{1}">
+        		<result name="success">${url}</result>
+        	</action>
+        </package>
+</struts>

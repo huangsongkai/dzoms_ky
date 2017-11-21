@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>指纹机测试</title>
+<script type="text/javascript" src="/DZOMS/res/js/jquery.js" ></script>
+<script>
+function readLog(){
+	
+}
+
+function connect(){
+	var ip = $("#ip").val();
+	var port = $("#port").val();
+	port = parseInt(port);
+	
+	if (csharpActiveX.setFunction(window,"OnCard")) {
+		var connected = csharpActiveX.connect(ip,port);
+		if(connected){
+			$("#state").val("已连接");
+		}else{
+			$("#state").val("未连接");
+		}
+	}
+}
+
+function OnCard(){
+	var $tr = $('<tr></tr>');
+	$('<td></td>').text(csharpActiveX.getEnrollNumber()).appendTo($tr);
+	$('<td></td>').text(csharpActiveX.getInOutMode()).appendTo($tr);
+	$('<td></td>').text(csharpActiveX.getVerifyMethod()).appendTo($tr);
+	$('<td></td>').text(csharpActiveX.getCheckTime()).appendTo($tr);
+	$("#result").append($tr);
+}
+</script>
+	</head>
+	<body>
+<object id="csharpActiveX" classid ="clsid:0894F9E9-7F89-4209-AC3A-6A77C7248307" ></object> 
+<input id="ip" value="192.168.1.201"/>
+<input id="port" value="4370"/>
+<input type="button" value="连接" onclick="connect()"/>
+<table id="result">
+<tr><th>用户编号</th><th>考勤状态</th><th>比对方式</th><th>签到时间</th></tr>
+</table>
+<div id="state"></div>
+	</body>
+</html>

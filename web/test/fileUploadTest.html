@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>临时文件上传测试</title>
+		
+		<link rel="stylesheet" href="/DZOMS/res/css/pintuer.css" />
+		<link rel="stylesheet" href="/DZOMS/res/layer-v2.1/layer/skin/layer.css" />
+		<script type="text/javascript" src="/DZOMS/res/js/jquery.js" ></script>
+		<script type="text/javascript" src="/DZOMS/res/js/fileUpload.js" ></script>
+		<script type="text/javascript" src="/DZOMS/res/js/pintuer.js" ></script>
+		<script type="text/javascript" src="/DZOMS/res/layer-v2.1/layer/layer.js" ></script>
+		<script type="text/javascript" src="/DZOMS/res/js/window.js" ></script>
+		<script>
+function deleheadimg(){
+    $("#headimg").attr("src","/DZOMS/res/image/driverhead.png");
+    $("[name='myfile']").val("");
+}
+
+function loadThePicture(){
+	loadTempPicture($('[name="myfile"]'),$('#headimg'));
+}
+		</script>
+	</head>
+	<body>
+		<div class="xm2">
+        	<img src="/DZOMS/res/image/driverhead.png" class="radius img-responsive" style="width: 150px;height: 150px;" id="headimg">
+        	<br/>
+        	<div class="container">
+            	<a class="button input-file bg-green addbtn1">装入</a>
+            	<a class="button input-file" href="javascript:deleheadimg()">清空</a>
+        	</div>
+    	</div>
+		<input class="dz-file" name="myfile" data-toggle="click" data-target=".addbtn1" sessuss-function="loadThePicture();"/>
+	</body>
+</html>

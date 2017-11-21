@@ -1,0 +1,5 @@
+{
+"complain.complainClass":["投诉","违反营运规定"],
+"complain.complainType":["企业","行业","行业处罚","行业通报","媒体曝光"],
+"complain.complainPersonSex":{"true":"男","false":"女"}
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+    <package name="meeting" namespace="/driver/meeting" extends="struts-default">
+        <global-results>
+            <result name="error">/error.jsp</result>
+            <result name="input">/error.jsp</result>
+        </global-results>
+        <action name="addMeeting" class="meetingAction" method="addMeeting">
+            <result name="success">/driver/meeting/search.jsp</result>
+        </action>
+
+        <action name="pre*Meeting" class="meetingAction" method="selectMeetingById">
+            <result>/driver/meeting/meeting_{1}.jsp</result>
+        </action>
+        <action name="*Meeting" class="meetingAction" method="{1}Meeting">
+            <result name="success">/driver/meeting/search.jsp</result>
+        </action>
+        <action name="searchMeeting" class="meetingAction" method="searchMeeting">
+            <result name="success">/driver/meeting/search_result.jsp</result>
+        </action>
+
+        <action name="manmalCheck" class="meetingAction" method="manmalCheck">
+            <result type="redirectAction">
+                precheckMeeting?meeting.id=${meeting.id}
+            </result>
+        </action>
+        <action name="manmalCheck2" class="meetingAction" method="manmalCheck2"></action>
+
+        <action name="checkByNet" class="meetingAction" method="checkByNet"></action>
+
+        <action name="checkByFile" class="meetingAction" method="checkByFile">
+            <result name="success" type="chain">
+                precheckMeeting
+            </result>
+        </action>
+
+        <action name="checkByFile2" class="meetingAction" method="checkByFile2">
+            <result name="success">/driver/meeting/checkErrorMap.jsp</result>
+        </action>
+
+        <action name="clearCheck" class="meetingAction" method="clearCheck"></action>
+
+        <action name="meetingToExcel" class="meetingAction" method="meetingToExcel">
+            <param name="templatePath">/driver/meeting/meeting.xls</param>
+            <param name="outputName">例会计划表</param>
+            <result name="success" type="chain">
+                <param name="actionName">outputExcel</param>
+                <param name="namespace">/common</param>
+            </result>
+        </action>
+    </package>
+
+</struts>
