@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+        <package name="common" namespace="/common" extends="struts-default">
+                <result-types>
+                        <result-type name="stringresult" class="com.dz.common.result.StringResult"/>
+                        <result-type name="jsonresult" class="com.dz.common.result.JSONResult"/>
+                </result-types>
+                <action name="getIndex" class="seqaction" method="get">
+                        <result name="stringresult" type="stringresult"/>
+                </action>
+                <action name="incIndex" class="seqaction" method="increment">
+                        <result name="success">/charge/receipt/in.jsp</result>
+                </action>
+                <action name="getList" class="tableListAction" method="getList">
+                </action>
+                <action name="getSubList" class="tableListAction" method="getSubList">
+                </action>
+                <action name="addSubItem" class="tableListAction" method="addSubItem">
+                </action>
+                <action name="deleteItem" class="tableListAction" method="deleteItem">
+                </action>
+                <action name="getRootId" class="tableListAction" method="getRootId">
+                </action>
+                <action name="getFathersValue" class="tableListAction" method="getFathersValue">
+                </action>
+                <action name="getObject" class="objectAccess" method="get"></action>
+       			<action name="getWaitDeal" class="waitDealController" method="getWaitDeal"></action>
+       			<action name="getWaitDealCount" class="waitDealController" method="getWaitDealCount"></action>
+       			
+       			<action name="selectToList" class="objectAccess" method="select">
+            		<result name="selectToUrl">${url}</result>
+       			</action>
+       			<action name="selectToList2" class="objectAccess" method="selectJoin">
+            		<result name="selectToUrl">${url}</result>
+       			</action>
+       			
+       			<action name="doit" class="objectAccess" method="doit">
+       			</action>
+       			
+       			<action name="doitToUrl" class="objectAccess" method="doitToUrl">
+       				<result name="selectToUrl">${url}</result>
+       			</action>
+       			
+       			
+       			<action name="getObj" class="objectAccess" method="getObj">
+       				<result>${url}</result>
+       			</action>
+       			
+       			<action name="jsonTest" class="jsonTest">
+       				<result name="success" >/test/anaylse_result.jsp</result>
+       			</action>
+       			
+       			<action name="electricConfig" class="electricTest" method="getCityConfigure">
+       			</action>
+       			
+       			<action name="electricTimesLeave" class="electricTest" method="getTimeLeave">
+       			</action>
+       			
+       			<action name="electricInfo" class="electricTest" method="getInfo">
+       			</action>
+       			
+       			<action name="outputExcel" class="excelOutputUtil" method="export">
+       				<result name="success" type="stream">
+						<param name="contentType">application/-excel</param>
+						<param name="inputName">excelStream</param>
+						<param name="contentDisposition">filename="${outputName}.xls"</param>
+						<param name="bufferSize">2048</param>
+					</result>
+					<result name="error">
+						/common/success_and_close.html
+					</result>
+       			</action>
+        </package>
+        
+       <!--  <package name="fileAdapt" namespace="/fileAdapt" extends="struts-default">
+        	<action name="upload" class="fileUploadUtil" method="upload">
+
+            </action>
+        </package> -->
+</struts>

@@ -13,21 +13,33 @@ public class KyAccident implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id" ) //主键
+    @Column(name = "id") //主键
     private Integer id;
-    @Column(name = "sgclbm" )
+
+    @Column(name = "sgclbm")
     private String sgclbm; //事故处理部门
 
-    @Column(name = "basj" )
+    @Column(name = "barq")
+    private String barq; //报案日期 ====
+
+    public String getBarq() {
+        return barq;
+    }
+
+    public void setBarq(String barq) {
+        this.barq = barq;
+    }
+
+    @Column(name = "basj")
     private String basj; //报案时间
 
-    @Column(name = "jasj" ) //结案时间
+    @Column(name = "jasj") //结案时间
     private String jasj;
 
-    @Column(name = "tpbz" )//通赔标志
+    @Column(name = "tpbz")//通赔标志
     private String tpbz;
 
-    @Column(name = "ywly" ) //业务来源
+    @Column(name = "ywly") //业务来源
     private String ywly;
 
     @Column(name = "bdh")//保单号
@@ -42,61 +54,226 @@ public class KyAccident implements java.io.Serializable {
     @Column(name = "zbrq")//终保日期
     private String zbrq;
 
-    @Column(name = "cdrq" ) //初登日期
+    @Column(name = "cdrq") //初登日期
     private String cdrq;
 
-    @Column(name = "lah" ) //立案号
+    public String getSgclbm() {
+        return sgclbm;
+    }
+
+    public void setSgclbm(String sgclbm) {
+        this.sgclbm = sgclbm;
+    }
+
+    public String getTpbz() {
+        return tpbz;
+    }
+
+    public void setTpbz(String tpbz) {
+        this.tpbz = tpbz;
+    }
+
+    public String getYwly() {
+        return ywly;
+    }
+
+    public void setYwly(String ywly) {
+        this.ywly = ywly;
+    }
+
+    public String getBdgsjg() {
+        return bdgsjg;
+    }
+
+    public void setBdgsjg(String bdgsjg) {
+        this.bdgsjg = bdgsjg;
+    }
+
+    public String getQbrq() {
+        return qbrq;
+    }
+
+    public void setQbrq(String qbrq) {
+        this.qbrq = qbrq;
+    }
+
+    public String getZbrq() {
+        return zbrq;
+    }
+
+    public void setZbrq(String zbrq) {
+        this.zbrq = zbrq;
+    }
+
+    public String getTk() {
+        return tk;
+    }
+
+    public void setTk(String tk) {
+        this.tk = tk;
+    }
+
+    public String getBf() {
+        return bf;
+    }
+
+    public void setBf(String bf) {
+        this.bf = bf;
+    }
+
+    public String getBah() {
+        return bah;
+    }
+
+    public void setBah(String bah) {
+        this.bah = bah;
+    }
+
+    public String getLarq() {
+        return larq;
+    }
+
+    public void setLarq(String larq) {
+        this.larq = larq;
+    }
+
+    public String getJarq() {
+        return jarq;
+    }
+
+    public void setJarq(String jarq) {
+        this.jarq = jarq;
+    }
+
+    public String getCky2() {
+        return cky2;
+    }
+
+    public void setCky2(String cky2) {
+        this.cky2 = cky2;
+    }
+
+    public String getClrdm() {
+        return clrdm;
+    }
+
+    public void setClrdm(String clrdm) {
+        this.clrdm = clrdm;
+    }
+
+    public String getBdjbr() {
+        return bdjbr;
+    }
+
+    public void setBdjbr(String bdjbr) {
+        this.bdjbr = bdjbr;
+    }
+
+    public String getBdgsr() {
+        return bdgsr;
+    }
+
+    public void setBdgsr(String bdgsr) {
+        this.bdgsr = bdgsr;
+    }
+
+    public String getBbxr() {
+        return bbxr;
+    }
+
+    public void setBbxr(String bbxr) {
+        this.bbxr = bbxr;
+    }
+
+    /**
+     * 张言琦添加
+     */
+    @Column(name = "tk") //条款==
+    private String tk;
+
+    @Column(name = "bf") //保费==
+    private String bf;
+
+    @Column(name = "bah")//报案号==
+    private String bah;
+
+
+    @Column(name = "lah") //立案号
     private String lah;
 
-    @Column(name = "ajxz" ) //案件性质
+    @Column(name = "ajxz") //案件性质
     private String ajxz;
 
-    @Column(name = "cxrq" ) //出险日期
+    @Column(name = "cxrq") //出险日期
     private String cxrq;
 
-    @Column(name = "sgclfs" ) //事故处理方式
+    @Column(name = "sgclfs") //事故处理方式
     private String sgclfs;
 
-    @Column(name = "gsje" ) //估损金额
+
+    @Column(name = "larq") //立案日期==
+    private String larq;
+
+
+    @Column(name = "jarq") //结案日期==
+    private String jarq;
+
+    @Column(name = "gsje") //估损金额
     private String gsje;
 
-    @Column(name = "gjpk" ) //估计赔偿
+    @Column(name = "gjpk") //估计赔偿
     private String gjpk;
 
-    @Column(name = "pfje" ) //赔付金额
+    @Column(name = "pfje") //赔付金额
     private String pfje;
 
-    @Column(name = "bar" ) //报案人
+    @Column(name = "bar") //报案人
     private String bar;
 
-    @Column(name = "bardh" ) //报案人电话
+    @Column(name = "bardh") //报案人电话
     private String bardh;
 
-    @Column(name = "cky" ) //查勘员
+    @Column(name = "cky") //查勘员1
     private String cky;
 
-    @Column(name = "cxdz" ) //出险地址
+    @Column(name = "cky2")//勘察员2==
+    private String cky2;
+
+    @Column(name = "clrdm")
+    private String clrdm;   //处理人代码==
+
+    @Column(name = "bdjbr") //保单经办人==
+    private String bdjbr;
+
+    @Column(name = "bdgsr") //保单归属人==
+    private String bdgsr;
+
+
+    @Column(name = "cxdz") //出险地址
     private String cxdz;
 
-    @Column(name = "cxyy" ) //出险原因
+    @Column(name = "cxyy") //出险原因
     private String cxyy;
 
-    @Column(name = "jsr" ) //驾驶人
+    @Column(name = "jsr") //驾驶人
     private String jsr;
 
-    @Column(name = "jsz" ) //驾驶证
+    @Column(name = "jsz") //驾驶证
     private String jsz;
 
-    @Column(name = "cpxh" ) //厂牌型号
+    @Column(name = "cpxh") //厂牌型号
     private String cpxh;
 
-    @Column(name = "cph" ) //车牌号
+    @Column(name = "cph") //车牌号
     private String cph;
 
-    @Column(name = "cxjg" ) //出险经过
+    @Column(name = "bbxr") //被保险人==
+    private String bbxr;
+
+    @Column(name = "cxjg") //出险经过
     private String cxjg;
 
-    @Column(name = "create_date" ) //创建时间
+    @Column(name = "create_date") //创建时间
     private Date createDate;
 
 

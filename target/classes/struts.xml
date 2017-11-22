@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+        <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+        <constant name="struts.ui.theme" value="simple" />
+        <constant name="struts.ui.templateDir" value="template"></constant>
+        <constant name="struts.action.excludePattern" value="/tmp/.*,/fileAdapt/.*"></constant>
+
+
+        <package name="default-package" extends="struts-default">
+                <result-types>
+                        <result-type name="stringresult" class="com.dz.common.result.StringResult"/>
+                        <result-type name="jsonresult" class="com.dz.common.result.JSONResult"/>
+                </result-types>
+
+                <global-results>
+                        <result name="input">/error.jsp</result>
+                </global-results>
+                <!-- 司机的事故部分 -->
+                <action name="accident_*" class="accidentAction" method="accident{1}">
+                        <result name="success" type="stringresult"/>
+                        <result name="showCheckRecord" type="jsonresult"/>
+                        <result name="selectAccidentsResult" >/driver/accident/select_accidents_result.jsp</result>
+                        <result name="loss_page">/driver/accident/lose_add.jsp</result>
+                        <result name="selectById" type="jsonresult"/>
+                </action>
+                <!-- 车辆损失与人员损失部分-->
+                <action name="acl_*" class="ACLAction" method="{1}">
+                        <result name="json_message" type="stringresult"/>
+                        <result name="jsonObject" type="jsonresult"/>
+                </action>
+                <action name="apl_*" class="APLAction" method="{1}">
+                        <result name="json_message" type="stringresult"/>
+                        <result name="jsonObject" type="jsonresult"/>
+                </action>
+                <!-- ItemTool部分 -->
+                <action name="item_*" class="itemToolAction" method="{1}Item">
+                        <result name="adc_result" type="stringresult" />
+                        <result name="select_result" type="jsonresult" />
+                </action>
+
+                <action name="finance" class="chargeAction" method="mainCharge">
+                    <result>/charge/${jspPage}</result>
+                </action>
+                
+                <action name="uploadFileTo" class="fileTcpUpload" method="uploadFileTo"></action>
+                
+                <action name="isExist" class="fileTcpUpload" method="isExist"></action>
+                
+                <action name="download" class="fileTcpUpload" method="download"></action>
+				
+				<action name="adjust*" class="adjustAction" method="adjust{1}">
+            		<result>${url}</result>
+        		</action>
+        </package>
+        
+        <!--<package name="financeMenu" extends="struts-default">-->
+        	<!--<action name="*" class="chargeAction" method="mainCharge">-->
+                    <!--<result>/charge/${jspPage}</result>-->
+                <!--</action>-->
+        <!--</package> -->
+        <include file="com/dz/module/contract/struts_contract.xml"></include>
+        <include file="com/dz/module/driver/struts-driver.xml"/>
+        <include file="com/dz/module/vehicle/struts-vehicle.xml"/>
+        <include file="com/dz/common/struts-common.xml"/>
+        <include file="com/dz/module/charge/struts-charge.xml"/>
+        <include file="com/dz/module/vehicle/newcheck/struts-check.xml"/>
+        <include file="com/dz/module/charge/receipt/struts-receipt.xml"/>
+        <include file="com/dz/module/struts-select.xml" />
+        <include file="com/dz/module/user/struts_manage.xml" />
+        <include file="com/dz/common/download/down-load.xml" />
+        
+        <include file="com/dz/kaiying/struts-kaiying.xml" />
+</struts>    

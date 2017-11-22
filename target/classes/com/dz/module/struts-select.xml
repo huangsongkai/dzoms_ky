@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+       
+        <package name="select" namespace="/select" extends="struts-default">
+            <action name="contract*" class="contractAction" method="contractOption{1}"></action>
+            <!-- <action name="driver*" class="driverAction" method="driverOption{1}"></action> -->
+           <!--  <action name="vehicle*" class="vehicleAction" method="vehicleOption{1}"></action> -->
+            <action name="*By*" class="objectAccess" method="option">
+            	<param name="className">{1}</param>
+            	<param name="column">{2}</param>
+            </action>
+            
+            <action name="itemsOf*" class="objectAccess" method="optionByitems">
+            	<param name="key">{1}</param>
+            </action>
+            <action name="itemsDefaultOf*" class="objectAccess" method="itemsDefault">
+            	<param name="key">{1}</param>
+            </action>
+            
+            <action name="vehicleById" class="objectAccess" method="option">
+            	<param name="className">Vehicle</param>
+            	<param name="column">carframeNum</param>
+            </action>
+            <action name="vehicleByLicenseNum" class="objectAccess" method="option">
+            	<param name="className">Vehicle</param>
+            	<param name="column">licenseNum</param>
+            </action>
+            <action name="vehicleByEngineNum" class="objectAccess" method="option">
+            	<param name="className">Vehicle</param>
+            	<param name="column">engineNum</param>
+            </action>
+        
+        	 <action name="driverById" class="objectAccess" method="option">
+            	<param name="className">Driver</param>
+            	<param name="column">idNum</param>
+            </action>
+            <action name="driverByName" class="objectAccess" method="option">
+            	<param name="className">Driver</param>
+            	<param name="column">name</param>
+            </action>
+        	
+        </package>
+
+</struts>    
