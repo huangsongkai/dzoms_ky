@@ -88,7 +88,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         						<td>车架号</td>
         						<td><input type="text" id="carframe_num" name="insurance.carframeNum" class="input" /></td>
         						<td>车牌号</td>
-        						<td><input type="text" name="vehicle.licenseNum" class="input"  /></td>
+        						<td><input type="text" name="vehicle.licenseNum" class="input"  value="黑A" /></td>
         						<td>保单号</td>
         						<td><input type="text" name="insurance.insuranceNum" class="input"  /></td>
         						<td>保险类别</td>
