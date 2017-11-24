@@ -7,7 +7,6 @@
 
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.2, user-scalable=no" />
@@ -140,7 +139,6 @@ function refreshAll(){
 							
 </style>
 </head>
-
 <body>
 	<form method="post" action="manmalCheck" name="manmalCheck" style="width: 100%;">
 		<s:hidden name="meeting.id"></s:hidden>
@@ -157,6 +155,7 @@ function refreshAll(){
 		<s:hidden name="meetingId" value="%{meeting.id}"></s:hidden>
 		<s:hidden name="idNum"></s:hidden>
 	</form>
+
 	<iframe name="hid1" style="display:none" onload="refreshAll()" ></iframe>
 	
 	<form  style="width: 100%;" method="post" action="checkByFile" name="checkByFile" class="form-inline form-tips" enctype="multipart/form-data">
@@ -209,10 +208,10 @@ function refreshAll(){
 <td><s:property value="%{#v.isBuhui()?'补会':'例会'}"/></td>
 <td><s:property value="%{#v.isChecked?'是':'否'}"/></td>
 <td><s:property value="%{#v.checkMethod}"/></td>
-<td><s:date name="%{#v.checkTime}" format="yyyy/MM/dd hh:mm:ss"/></td>
+<td><s:date name="%{#v.checkTime}" format="yyyy/MM/dd HH:mm:ss"/></td>
 <td><s:property value="%{#t_meeting.grade}"/></td>
 <td><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',#v.manmalCheckPerson).uname}"/></td>
-<td><s:date name="%{#v.manmalCheckTime}" format="yyyy/MM/dd hh:mm:ss"/></td></tr>
+<td><s:date name="%{#v.manmalCheckTime}" format="yyyy/MM/dd HH:mm:ss"/></td></tr>
 
                     </s:iterator>
                     </s:if>

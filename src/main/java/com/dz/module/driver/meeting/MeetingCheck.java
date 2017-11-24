@@ -19,7 +19,7 @@ public class MeetingCheck implements java.io.Serializable {
 	// Fields
 
 	/**
-	 *
+	 * 
 	 */
 	private static final long serialVersionUID = 8894239234645262691L;
 	private Integer id;
@@ -41,8 +41,8 @@ public class MeetingCheck implements java.io.Serializable {
 
 	/** full constructor */
 	public MeetingCheck(Integer meetingId, String idNum,
-						Date needCheckTime, Boolean isChecked, Date checkTime,
-						String checkMethod) {
+			Date needCheckTime, Boolean isChecked, Date checkTime,
+			String checkMethod) {
 		this.meetingId = meetingId;
 		this.idNum = idNum;
 		this.needCheckTime = needCheckTime;
@@ -136,53 +136,52 @@ public class MeetingCheck implements java.io.Serializable {
 	public void setManmalCheckPerson(Integer manmalCheckPerson) {
 		this.manmalCheckPerson = manmalCheckPerson;
 	}
-
+	
 	@SuppressWarnings("deprecation")
-	@Transient
+	@Transient 
 	public boolean isBuhui(){
 		Date today = new Date();
 		Date nct = new Date(needCheckTime.getTime());
 		nct.setHours(17);
 		nct.setMinutes(30);
-
+		
 		if(BooleanUtils.isNotTrue(isChecked)){
 			if(today.before(nct))
 				return false;
 		}else{
 			try{
-				Driver d = (Driver) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.Driver",idNum);
-				Meeting m = (Meeting) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.meeting.Meeting",meetingId);
-				String dept = d.getDept();
-				Date buhuiDate = null;
-				switch(dept){
-					case "一部":
-						buhuiDate = m.getMeetingTimeB1();
-						break;
-					case "二部":
-						buhuiDate = m.getMeetingTimeB2();
-						break;
-					case "三部":
-						buhuiDate = m.getMeetingTimeB3();
-						break;
-				}
+			Driver d = (Driver) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.Driver",idNum);
+			Meeting m = (Meeting) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.meeting.Meeting",meetingId);
+			String dept = d.getDept();
+			Date buhuiDate = null;
+			switch(dept){
+			case "一部":
+				buhuiDate = m.getMeetingTimeB1();
+				break;
+			case "二部":
+				buhuiDate = m.getMeetingTimeB2();
+				break;
+			case "三部":
+				buhuiDate = m.getMeetingTimeB3();
+				break;
+			}
 //			buhuiDate.setHours(17);
 //			buhuiDate.setMinutes(30);
-
-				if(checkTime.after(buhuiDate)){
-					return true;
-				}
+			
+			if(checkTime.after(buhuiDate)){
+				return true;
+			}
 			}catch(Exception e){
 				//e.printStackTrace();
 				return false;
 			}
 		}
-
+		
 		return false;
 	}
 
 	@SuppressWarnings("deprecation")
-	@Transient
-	public boolean isChidao(){
+	public static boolean isChidao(Date checkTime){
 		Date time_span = new Date(checkTime.getTime());
 		time_span.setHours(13);
 		time_span.setMinutes(5);
@@ -216,6 +215,11 @@ public class MeetingCheck implements java.io.Serializable {
 		return false;
 	}
 
+	@Transient 
+	public boolean isChidao(){
+		return isChidao(checkTime);
+	}
+	
 	@Column(name = "check_class", length = 30)
 	public String getCheckClass() {
 		return checkClass;
