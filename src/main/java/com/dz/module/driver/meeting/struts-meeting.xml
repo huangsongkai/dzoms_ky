@@ -41,6 +41,7 @@
         </action>
 
         <action name="clearCheck" class="meetingAction" method="clearCheck"></action>
+        <action name="deleteMeeting" class="meetingAction" method="deleteMeeting"></action>
 
         <action name="meetingToExcel" class="meetingAction" method="meetingToExcel">
             <param name="templatePath">/driver/meeting/meeting.xls</param>

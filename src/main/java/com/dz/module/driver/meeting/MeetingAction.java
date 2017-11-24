@@ -1,16 +1,29 @@
 package com.dz.module.driver.meeting;
 
-import com.dz.common.global.BaseAction;
-import com.dz.common.global.Page;
-import com.dz.common.other.FileAccessUtil;
-import com.dz.common.other.ObjectAccess;
-import com.dz.common.other.PageUtil;
-import com.dz.common.other.TimeComm;
-import com.dz.module.driver.Driver;
-import com.dz.module.user.User;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.dz.common.factory.HibernateSessionFactory;
 import net.sf.json.JSONObject;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.javatuples.Triplet;
 import org.jxls.reader.ReaderBuilder;
 import org.jxls.reader.XLSReadStatus;
@@ -20,11 +33,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.xml.sax.SAXException;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.dz.common.global.BaseAction;
+import com.dz.common.global.Page;
+import com.dz.common.other.FileAccessUtil;
+import com.dz.common.other.ObjectAccess;
+import com.dz.common.other.PageUtil;
+import com.dz.common.other.TimeComm;
+import com.dz.module.contract.Contract;
+import com.dz.module.driver.Driver;
+import com.dz.module.user.User;
 
 @Controller
 @Scope("prototype")
@@ -140,7 +157,8 @@ public class MeetingAction extends BaseAction {
 
 			meetingService.addMeeting(meeting);
 
-			for(String idNum:driverlist){
+			Set<String> drivers = new HashSet<>(driverlist);
+			for(String idNum:drivers){
 				String m_dept = ((Driver)ObjectAccess.getObject("com.dz.module.driver.Driver", idNum)).getDept();
 				int index = dept.indexOf(m_dept);
 				if(index>=0){
@@ -157,6 +175,39 @@ public class MeetingAction extends BaseAction {
 			return ERROR;
 		}
 		return SUCCESS;
+	}
+
+	public void deleteMeeting() throws IOException {
+		JSONObject jsonObject = new JSONObject();
+		Session s = null;
+		Transaction tx = null;
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			Meeting m = (Meeting) s.get(Meeting.class,meeting.getId());
+			Query query = s.createQuery("delete from MeetingCheck where meetingId=:id");
+			query.setInteger("id",m.getId());
+			query.executeUpdate();
+			s.delete(m);
+
+			tx.commit();
+			jsonObject.put("msg","操作成功！");
+		}catch (Exception ex){
+			if(tx!=null){
+				tx.rollback();
+			}
+			jsonObject.put("msg","操作失败！原因描述为："+ex.getMessage());
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+		out.print(jsonObject.toString());
+		out.flush();
+		out.close();
 	}
 
 	public String searchMeeting(){
@@ -301,7 +352,6 @@ public class MeetingAction extends BaseAction {
 		meetingCheck.setCheckMethod(method);
 		meetingCheck.setCheckClass(checkClass);
 
-
 		Date checkBegin = TimeComm.convertDate(meetingCheck.getNeedCheckTime()),checkEndDate = TimeComm.convertDate(meetingCheck.getNeedCheckTime());
 		checkBegin.setHours(12);
 		checkBegin.setMinutes(0);
@@ -309,8 +359,8 @@ public class MeetingAction extends BaseAction {
 		checkEndDate.setMinutes(30);
 
 
-		Driver d = (Driver) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.Driver",idNum);
-		Meeting m = (Meeting) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.meeting.Meeting",meetingId);
+		Driver d = (Driver) ObjectAccess.getObject("com.dz.module.driver.Driver",idNum);
+		Meeting m = (Meeting) ObjectAccess.getObject("com.dz.module.driver.meeting.Meeting",meetingId);
 
 		Date checkMostBegin;
 		long mostBegin=Long.MAX_VALUE;
@@ -398,37 +448,10 @@ public class MeetingAction extends BaseAction {
 					checkClass="未按规定日期参加例会";
 
 				}else if(checkClass.equals("正常")){
-					Date time_span = new Date(checkTime.getTime());
-					time_span.setHours(13);
-					time_span.setMinutes(5);
-
-					Date time_span_end = new Date(checkTime.getTime());
-					time_span_end.setHours(14);
-					time_span_end.setMinutes(0);
-
-					if(checkTime.after(time_span) && time_span.before(time_span_end)){
-						checkClass="迟到";
-					}
-
-					time_span.setHours(14);
-					time_span.setMinutes(35);
-					time_span_end.setHours(15);
-					time_span_end.setMinutes(30);
-
-					if(checkTime.after(time_span) && time_span.before(time_span_end)){
-						checkClass="迟到";
-					}
-
-					time_span.setHours(16);
-					time_span.setMinutes(5);
-					time_span_end.setHours(17);
-					time_span_end.setMinutes(30);
-
-					if(checkTime.after(time_span) && time_span.before(time_span_end)){
+					if(MeetingCheck.isChidao(checkTime)){
 						checkClass="迟到";
 					}
 				}
-
 			}
 		}else{
 			buhuiDate.setHours(23);
@@ -451,36 +474,6 @@ public class MeetingAction extends BaseAction {
 		User user = (User) session.getAttribute("user");
 
 		meetingCheck.setManmalCheckPerson(user.getUid());
-
-		/*Date time_span = new Date(checkTime.getTime());
-		time_span.setHours(13);
-		time_span.setMinutes(5);
-
-		Date time_span_end = new Date(checkTime.getTime());
-		time_span_end.setHours(14);
-		time_span_end.setMinutes(0);
-
-		if(checkTime.after(time_span) && time_span.before(time_span_end)){
-			meetingCheck.setNeedCheckTime(new Timestamp(time_span.getTime()));
-		}
-
-		time_span.setHours(14);
-		time_span.setMinutes(35);
-		time_span_end.setHours(15);
-		time_span_end.setMinutes(30);
-
-		if(checkTime.after(time_span) && time_span.before(time_span_end)){
-			meetingCheck.setNeedCheckTime(new Timestamp(time_span.getTime()));
-		}
-
-		time_span.setHours(16);
-		time_span.setMinutes(5);
-		time_span_end.setHours(17);
-		time_span_end.setMinutes(30);
-
-		if(checkTime.after(time_span) && time_span.before(time_span_end)){
-			meetingCheck.setNeedCheckTime(new Timestamp(time_span.getTime()));
-		}*/
 
 		meetingService.updateMeetingCheck(meetingCheck);
 		return SUCCESS;
@@ -544,8 +537,8 @@ public class MeetingAction extends BaseAction {
 		meetingId = meeting.getId();
 		method = "指纹机";
 		checkClass = "正常";
-
-
+		
+		
 		/*Date checkTime;String idNum;*/
 		errorMap = new TreeMap<String,String>();
 		for(MeetingCheckTemp mct:importedList){
