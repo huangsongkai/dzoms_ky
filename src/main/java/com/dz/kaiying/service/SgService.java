@@ -267,7 +267,7 @@ public class SgService {
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
             bxDao.save(accident);
-            System.out.println("打印信息--> ");
+            System.out.println("打印信息1--> ");
         }
 
         for (int i = 0; i < yijue.size(); i++) {
@@ -320,7 +320,7 @@ public class SgService {
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
             yj.setCkydm1(String.valueOf(lo.get(45)));//查勘员代码
             yjDao.save(yj);
-            System.out.println("打印信息--> ");
+            System.out.println("打印信息2--> ");
         }
         result.setSuccess("导出成功", null);
         return "sg/accident_list";
