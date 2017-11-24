@@ -29,6 +29,7 @@
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="renderer" content="webkit">
 <title>添加银行卡记录</title>
+	<base href="<%=basePath%>contract/bank_card/">
 <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css">
 <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
 <script src="/DZOMS/res/js/jquery.js"></script>

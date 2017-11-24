@@ -94,9 +94,9 @@ $(document).ready(function(){
 		<ul class="bread text-main" style="font-size: larger;">
 			<li>财务管理</li>
 			<li>查询</li>
-			<li>查询驾驶员--车辆</li>
+			<li>查询银行卡--驾驶员</li>
         </ul>
-        </div>
+	</div>
 </div>
 <div class="line">
 	 <div class="panel  margin-small" >

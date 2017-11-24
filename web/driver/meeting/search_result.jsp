@@ -55,6 +55,18 @@ Page pg = (Page)request.getAttribute("page");
 		var url = "/DZOMS/driver/meeting/preshowMeeting?meeting.id="+selected_val;
 		window.open(url,"例会明细",'width=1000,height=600,resizable=yes,scrollbars=yes');
 	}
+
+	function _delete() {
+        var selected_val = $("input[name='cbx']:checked").val();
+        if(selected_val==undefined){
+            alert('您没有选择任何一条数据');
+            return;
+        }
+        $.get('/DZOMS/driver/meeting/deleteMeeting?meeting.id='+selected_val,function (data) {
+            alert(data.msg);
+            window.location.reload();
+        });
+    }
 	
 	function _check(){
 		var selected_val = $("input[name='cbx']:checked").val();
@@ -134,9 +146,11 @@ Page pg = (Page)request.getAttribute("page");
 	                                     	<button onclick="_detail()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
 	                               		签到</button>
 	                                    	<button onclick="_anaylse()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
-			                                                             查看</button>
-			                                                             <button onclick="_export()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
-			                                                             导出</button>
+                                                查看</button>
+                                           <button onclick="_export()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
+                                               导出</button>
+                                           <button onclick="_delete()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
+                                               导出</button>
                                      </div>
                                 </div>
           	        	</div>

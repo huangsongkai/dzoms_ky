@@ -74,9 +74,9 @@
             }
             var url = "/DZOMS/bankCardDelete?bankCard.id=" + selected_val;
             if(confirm('删除该银行卡，请确认'))
-                $.get(url, {}, function () {
-                    document.vehicleSele.submit();
-                });
+            $.get(url, {}, function () {
+                document.vehicleSele.submit();
+            });
         }
 
         function _toExcel() {
@@ -97,16 +97,16 @@
 
         function unbindCard(cardId,carNo) {
             if(confirm('确认要解除绑定？'))
-                $.post('/DZOMS/contract/bank_card/unbindVehicle',{
-                    'bankCard.id':cardId,
-                    'bankCard.carNum':carNo
-                },function (data) {
-                    if(!data.status){
-                        alert(data.msg);
-                    }else {
-                        document.vehicleSele.submit();
-                    }
-                });
+            $.post('/DZOMS/contract/bank_card/unbindVehicle',{
+                'bankCard.id':cardId,
+                'bankCard.carNum':carNo
+            },function (data) {
+                if(!data.status){
+                    alert(data.msg);
+                }else {
+                    document.vehicleSele.submit();
+                }
+            });
         }
 
         function toBeforePage() {
@@ -156,7 +156,7 @@
                 alert('您没有选择任何一条数据');
                 return;
             }
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2ffinance%2fbank_card%2fcard_show.jsp";
+            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
             window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
@@ -165,7 +165,7 @@
             var driverId = $("input[name='cbx']:checked").attr("driverId");
             if (selected_val == undefined)
                 alert('您没有选择任何一条数据');
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2ffinance%2fbank_card%2fcard_update.jsp";
+            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp";
             window.open(url, "银行卡信息修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
     </script>
@@ -320,7 +320,7 @@
                                     <label class="button active"><input type="checkbox" name="sbx" value="cardNumber"
                                                                         checked="checked"><span
                                             class="icon icon-check text-green"></span>银行卡号</label>
-                                    <label class="button active"><input type="checkbox" name="sbx" value="operator"
+                                   <label class="button active"><input type="checkbox" name="sbx" value="operator"
                                                                         checked="checked"><span
                                             class="icon icon-check text-green"></span>登记人</label>
                                     <label class="button active"><input type="checkbox" name="sbx" value="opeTime"

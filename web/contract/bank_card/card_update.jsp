@@ -22,6 +22,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="renderer" content="webkit">
+	<base href="<%=basePath%>contract/bank_card/">
 <title>银行卡记录</title>
 <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css">
 <link rel="stylesheet" href="/DZOMS/res/css/admin.css">

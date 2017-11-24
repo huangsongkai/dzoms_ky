@@ -62,7 +62,7 @@
                 return;
             }
 
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2ffinance%2fbank_card%2fcard_update.jsp&ids[2].className=com.dz.module.vehicle.Vehicle&ids[2].id=" + selected_val + "&ids[2].isString=true";
+            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp&ids[2].className=com.dz.module.vehicle.Vehicle&ids[2].id=" + selected_val + "&ids[2].isString=true";
             window.open(url, "银行卡修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
@@ -81,7 +81,7 @@
                 return;
             }
 
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2ffinance%2fbank_card%2fcard_show.jsp";
+            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
             window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
@@ -94,7 +94,7 @@
 
             var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.vehicle.Vehicle&ids[0].id=" + selected_val + "&ids[0].isString=true&url=%2fcontract%2fbank_card%2fcard_bind.jsp";
             window.open(url,'绑定银行卡到车辆',
-                    'height=500, width=300, top=100, left=100, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
+                'height=500, width=300, top=100, left=100, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
 //            window.parent.location = url;
         }
 
@@ -115,16 +115,16 @@
 
         function unbindCard(cardId,carNo) {
             if(confirm('确认要解除绑定？'))
-                $.post('/DZOMS/contract/bank_card/unbindVehicle',{
-                    'bankCard.id':cardId,
-                    'bankCard.carNum':carNo
-                },function (data) {
-                    if(!data.status){
-                        alert(data.msg);
-                    }else {
-                        document.vehicleSele.submit();
-                    }
-                });
+            $.post('/DZOMS/contract/bank_card/unbindVehicle',{
+                'bankCard.id':cardId,
+                'bankCard.carNum':carNo
+            },function (data) {
+                if(!data.status){
+                    alert(data.msg);
+                }else {
+                    document.vehicleSele.submit();
+                }
+            });
         }
 
         function toBeforePage() {
@@ -181,21 +181,21 @@
                     <div class="button-toolbar">
                         <div class="button-group">
                             <%--<button onclick="_detail()" type="button" class="button icon-search text-blue"--%>
-                            <%--style="line-height: 6px;">--%>
-                            <%--查看--%>
+                                    <%--style="line-height: 6px;">--%>
+                                <%--查看--%>
                             <%--</button>--%>
                             <%--<button onclick="_update()" type="button" class="button icon-pencil text-green"--%>
-                            <%--style="line-height: 6px;">--%>
-                            <%--修改--%>
+                                    <%--style="line-height: 6px;">--%>
+                                <%--修改--%>
                             <%--</button>--%>
                             <button onclick="_add()" type="button" class="button icon-pencil text-green"
                                     style="line-height: 6px;">
                                 添加银行卡绑定
                             </button>
-                            <button onclick="_addAndBind()" type="button" class="button icon-pencil text-green"
-                                    style="line-height: 6px;">
-                                新增银行卡并绑定
-                            </button>
+                                <button onclick="_addAndBind()" type="button" class="button icon-pencil text-green"
+                                        style="line-height: 6px;">
+                                    新增银行卡并绑定
+                                </button>
                             <!--<button onclick="_delete()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
                                      删除                     </button>-->
                         </div>

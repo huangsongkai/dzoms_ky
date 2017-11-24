@@ -1143,37 +1143,37 @@
             arr = $("#enddate").val().split("/");
             endDate = new Date(arr[0],arr[1]-1,arr[2]);
 
-            $(".datepick2").datepicker("option","minDate",startDate);
-            $(".datepick2").datepicker("option","maxDate",endDate);
-            $('.datepick2').datepicker('option', 'changeYear', true);
-            $('.datepick2').datepicker('option', 'changeMonth', true);
+//            $(".datepick2").datepicker("option","minDate",startDate);
+//            $(".datepick2").datepicker("option","maxDate",endDate);
+//            $('.datepick2').datepicker('option', 'changeYear', true);
+//            $('.datepick2').datepicker('option', 'changeMonth', true);
         };
     });
 </script>
 <script src="/DZOMS/res/js/jquery.datetimepicker.js"></script>
-<script>
-    $(".datepick2.beginTime").datepicker({
-        showMonthAfterYear: true,
-        onSelect : function(dateText, inst){
-            $(".datepick2.endTime").datepicker("option","minDate",dateText);
-        }
-    });
-    $(".datepick2.endTime").datepicker({
-        showMonthAfterYear: true,
-        onSelect : function(dateText, inst){
-            $(".datepick2.beginTime").datepicker("option","maxDate",dateText);
-        }
-    });
+<%--<script>--%>
+    <%--$(".datepick2.beginTime").datepicker({--%>
+        <%--showMonthAfterYear: true,--%>
+        <%--onSelect : function(dateText, inst){--%>
+            <%--$(".datepick2.endTime").datepicker("option","minDate",dateText);--%>
+        <%--}--%>
+    <%--});--%>
+    <%--$(".datepick2.endTime").datepicker({--%>
+        <%--showMonthAfterYear: true,--%>
+        <%--onSelect : function(dateText, inst){--%>
+            <%--$(".datepick2.beginTime").datepicker("option","maxDate",dateText);--%>
+        <%--}--%>
+    <%--});--%>
 
-    var startDate,endDate;
-    var arr = $("#startdate").val().split("/");
-    startDate = new Date(arr[0],arr[1]-1,arr[2]);
-    arr = $("#enddate").val().split("/");
-    endDate = new Date(arr[0],arr[1]-1,arr[2]);
+    <%--var startDate,endDate;--%>
+    <%--var arr = $("#startdate").val().split("/");--%>
+    <%--startDate = new Date(arr[0],arr[1]-1,arr[2]);--%>
+    <%--arr = $("#enddate").val().split("/");--%>
+    <%--endDate = new Date(arr[0],arr[1]-1,arr[2]);--%>
 
-    $(".datepick2.endTime").datepicker("option","minDate",startDate);
-    $(".datepick2.beginTime").datepicker("option","maxDate",endDate);
-    $('.datepick2').datepicker('option', 'changeYear', true);
-    $('.datepick2').datepicker('option', 'changeMonth', true);
-</script>
+    <%--$(".datepick2.endTime").datepicker("option","minDate",startDate);--%>
+    <%--$(".datepick2.beginTime").datepicker("option","maxDate",endDate);--%>
+    <%--$('.datepick2').datepicker('option', 'changeYear', true);--%>
+    <%--$('.datepick2').datepicker('option', 'changeMonth', true);--%>
+<%--</script>--%>
 </html>
