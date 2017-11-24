@@ -261,7 +261,7 @@ public class SgService {
             accident.setClrdm(String.valueOf(lo.get(26)));//处理人代码
             accident.setBdjbr(String.valueOf(lo.get(27)));//保单经办人代码
             accident.setBdgsr(String.valueOf(lo.get(28)));//保单归属人代码
-            accident.setCxdz(String.valueOf(lo.get(39)));//出险地址
+            accident.setCxdz(String.valueOf(lo.get(29)));//出险地址
             accident.setCxyy(String.valueOf(lo.get(30)));//出险原因
             accident.setJsr(String.valueOf(lo.get(31))); //驾驶人
             accident.setJsz(String.valueOf(lo.get(32)));//驾驶证
