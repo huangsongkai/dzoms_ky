@@ -23,7 +23,15 @@ public class HistoryDetailDTO implements java.io.Serializable {
 	private Integer bumen;
 	private Integer kpgroup;
 	private String evaluateName;
+	private String remark;
 
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
