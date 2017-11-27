@@ -76,6 +76,7 @@ public class HibernateDaoImpl<T, PK extends Serializable>  implements HibernateD
     @Override
     public void update(T entity) {
         hibernateTemplate.update(entity);
+        this.flush();
     }
 
     // 更新实体并加锁
