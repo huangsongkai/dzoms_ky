@@ -373,17 +373,17 @@ public class JobDutiesService extends BaseService{
         managerEvaluate.setTotal(saveManagerEvaluateDTO.getTotal());//总分
         Integer id = managerEvaluateDao.save(managerEvaluate);
         if (saveManagerEvaluateDTO != null){
-            for (Map.Entry<Integer, String> entry : saveManagerEvaluateDTO.getManagerEvaluate().entrySet()) {
+            for (Map.Entry<Integer, SaveManagerEvaluateDetailDTO> entry : saveManagerEvaluateDTO.getManagerEvaluate().entrySet()) {
                 Integer key = entry.getKey();
-                String value = entry.getValue();
-                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveManagerEvaluateDTO.getEvaluateName()+"' and personId ="+personId ); //
-                for (EvaluateDetail evaluateDetail: evaluateDetailList) {
+                SaveManagerEvaluateDetailDTO value = entry.getValue();
+                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveManagerEvaluateDTO.getEvaluateName()+"' and personId ="+personId+" and jobDutyId ="+key);
+                // List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveManagerEvaluateDTO.getEvaluateName()+"' and personId ="+personId ); //
+                    EvaluateDetail evaluateDetail = evaluateDetailList.get(0);
                     evaluateDetail.setGroupTotal(Double.parseDouble(saveManagerEvaluateDTO.getTotal()+""));
-                    evaluateDetail.setGroupScore(key);
-                    evaluateDetail.setRemark(value);
+                    evaluateDetail.setGroupScore(value.getScore());
+                    evaluateDetail.setGroupDate(new Date());    
+                    evaluateDetail.setRemark(value.getRemark());
                     evaluateDetailDao.update(evaluateDetail);
-                }
-
                // EvaluateDetail evaluateDetail = evaluateDetailList.get(0);
 
 

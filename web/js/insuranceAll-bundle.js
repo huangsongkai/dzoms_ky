@@ -571,6 +571,30 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
           return record.cxrq.indexOf(value) === 0;
         }
       }, {
+        title: '条款',
+        dataIndex: 'tk',
+        key: 'tk',
+        width: 85,
+        filters: filterData.tk,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.tk, b.tk);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.tk.indexOf(value) === 0;
+        }
+      }, {
+        title: '保费',
+        dataIndex: 'bf',
+        key: 'bf',
+        width: 85,
+        filters: filterData.bf,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.bf, b.bf);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.bf.indexOf(value) === 0;
+        }
+      }, {
         title: '事故处理方式',
         dataIndex: 'sgclfs',
         key: 'sgclfs',
@@ -581,6 +605,78 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
         },
         onFilter: function onFilter(value, record) {
           return record.sgclfs.indexOf(value) === 0;
+        }
+      }, {
+        title: '事故处理部门',
+        dataIndex: 'sgclbm',
+        key: 'sgclbm',
+        width: 105,
+        filters: filterData.sgclbm,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.sgclbm, b.sgclbm);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.sgclbm.indexOf(value) === 0;
+        }
+      }, {
+        title: '通赔标志',
+        dataIndex: 'tpbz',
+        key: 'tpbz',
+        width: 105,
+        filters: filterData.tpbz,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.tpbz, b.tpbz);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.tpbz.indexOf(value) === 0;
+        }
+      }, {
+        title: '业务来源',
+        dataIndex: 'ywly',
+        key: 'ywly',
+        width: 105,
+        filters: filterData.ywly,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.ywly, b.ywly);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.ywly.indexOf(value) === 0;
+        }
+      }, {
+        title: '保单归属机构',
+        dataIndex: 'bdgsjg',
+        key: 'bdgsjg',
+        width: 105,
+        filters: filterData.bdgsjg,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.bdgsjg, b.bdgsjg);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.bdgsjg.indexOf(value) === 0;
+        }
+      }, {
+        title: '启保日期',
+        dataIndex: 'qbrq',
+        key: 'qbrq',
+        width: 105,
+        filters: filterData.qbrq,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.qbrq, b.qbrq);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.qbrq.indexOf(value) === 0;
+        }
+      }, {
+        title: '终保日期',
+        dataIndex: 'zbrq',
+        key: 'zbrq',
+        width: 105,
+        filters: filterData.zbrq,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.zbrq, b.zbrq);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.zbrq.indexOf(value) === 0;
         }
       }, {
         title: '估损金额',
@@ -643,6 +739,30 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
           return record.bardh.indexOf(value) === 0;
         }
       }, {
+        title: '立案日期',
+        dataIndex: 'larq',
+        key: 'larq',
+        width: 73,
+        filters: filterData.larq,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.larq, b.larq);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.larq.indexOf(value) === 0;
+        }
+      }, {
+        title: '结案日期',
+        dataIndex: 'jarq',
+        key: 'jarq',
+        width: 73,
+        filters: filterData.jarq,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.jarq, b.jarq);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.jarq.indexOf(value) === 0;
+        }
+      }, {
         title: '查勘员',
         dataIndex: 'cky',
         key: 'cky',
@@ -653,6 +773,66 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
         },
         onFilter: function onFilter(value, record) {
           return record.cky.indexOf(value) === 0;
+        }
+      }, {
+        title: '查勘员2',
+        dataIndex: 'cky2',
+        key: 'cky2',
+        width: 73,
+        filters: filterData.cky2,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.cky2, b.cky2);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.cky2.indexOf(value) === 0;
+        }
+      }, {
+        title: '处理人代码',
+        dataIndex: 'clrdm',
+        key: 'clrdm',
+        width: 73,
+        filters: filterData.clrdm,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.clrdm, b.clrdm);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.clrdm.indexOf(value) === 0;
+        }
+      }, {
+        title: '保单经办人',
+        dataIndex: 'bdjbr',
+        key: 'bdjbr',
+        width: 73,
+        filters: filterData.bdjbr,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.bdjbr, b.bdjbr);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.bdjbr.indexOf(value) === 0;
+        }
+      }, {
+        title: '保单归属人',
+        dataIndex: 'bdgsr',
+        key: 'bdgsr',
+        width: 73,
+        filters: filterData.bdgsr,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.bdgsr, b.bdgsr);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.bdgsr.indexOf(value) === 0;
+        }
+      }, {
+        title: '被保险人',
+        dataIndex: 'bbxr',
+        key: 'bbxr',
+        width: 73,
+        filters: filterData.bbxr,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.bbxr, b.bbxr);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.bbxr.indexOf(value) === 0;
         }
       }, {
         title: '出险地址',
@@ -701,6 +881,18 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
         },
         onFilter: function onFilter(value, record) {
           return record.cxjg.indexOf(value) === 0;
+        }
+      }, {
+        title: '创建时间',
+        dataIndex: 'create_date',
+        key: 'create_date',
+        width: 90,
+        filters: filterData.create_date,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.create_date, b.create_date);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.create_date.indexOf(value) === 0;
         }
       }];
 

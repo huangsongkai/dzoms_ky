@@ -11,7 +11,7 @@ public class SaveManagerEvaluateDTO implements java.io.Serializable {
 	/**
 	 *工作自评DTO
 	 */
-	private Map<Integer, String> managerEvaluate;
+	private Map<Integer, SaveManagerEvaluateDetailDTO> managerEvaluate;
 	private Integer total;
 	private String evaluateName;
 
@@ -28,11 +28,11 @@ public class SaveManagerEvaluateDTO implements java.io.Serializable {
 		return total;
 	}
 
-	public Map<Integer, String> getManagerEvaluate() {
+	public Map<Integer, SaveManagerEvaluateDetailDTO> getManagerEvaluate() {
 		return managerEvaluate;
 	}
 
-	public void setManagerEvaluate(Map<Integer, String> managerEvaluate) {
+	public void setManagerEvaluate(Map<Integer, SaveManagerEvaluateDetailDTO> managerEvaluate) {
 		this.managerEvaluate = managerEvaluate;
 	}
 
