@@ -106,15 +106,35 @@ public class ImportExcelUtil {
 
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_STRING:
-                value = cell.getRichStringCellValue().getString();
+                String string = cell.getRichStringCellValue().getString();
+                if (string != null) {
+                    value = string.trim();
+                } else {
+                    value = "";
+                }
                 break;
             case Cell.CELL_TYPE_NUMERIC:
                 if ("General".equals(cell.getCellStyle().getDataFormatString())) {
-                    value = df.format(cell.getNumericCellValue());
+                    String s = df.format(cell.getNumericCellValue());
+                    if (s != null) {
+                        value = s.trim();
+                    } else {
+                        value = "";
+                    }
                 } else if ("m/d/yy".equals(cell.getCellStyle().getDataFormatString())) {
-                    value = sdf.format(cell.getDateCellValue());
+                    String s2 = sdf.format(cell.getDateCellValue());
+                    if (s2 != null) {
+                        value = s2.trim();
+                    } else {
+                        value = "";
+                    }
                 } else {
-                    value = df2.format(cell.getNumericCellValue());
+                    String s3 = df2.format(cell.getNumericCellValue());
+                    if (s3 != null) {
+                        value = s3.trim();
+                    } else {
+                        value = "";
+                    }
                 }
                 break;
             case Cell.CELL_TYPE_BOOLEAN:

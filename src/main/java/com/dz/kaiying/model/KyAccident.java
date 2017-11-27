@@ -142,7 +142,11 @@ public class KyAccident implements java.io.Serializable {
     }
 
     public void setJarq(String jarq) {
-        this.jarq = jarq;
+        if (jarq.equals("null")) {
+            this.jarq = "";
+        } else {
+            this.jarq = jarq;
+        }
     }
 
     public String getCky2() {
@@ -298,7 +302,11 @@ public class KyAccident implements java.io.Serializable {
     }
 
     public void setJasj(String jasj) {
-        this.jasj = jasj;
+        if (jasj.equals("null")) {
+            this.jasj = "";
+        } else {
+            this.jasj = jasj;
+        }
     }
 
     public String getBdh() {
