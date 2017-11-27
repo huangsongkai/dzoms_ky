@@ -318,7 +318,6 @@ public class SgService {
             yj.setCx(String.valueOf(lo.get(42)));
             yj.setYwly(String.valueOf(lo.get(43)));
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
-            yj.setCkydm1(String.valueOf(lo.get(45)));//查勘员代码
             yjDao.save(yj);
             System.out.println("打印信息2--> ");
         }
@@ -326,9 +325,10 @@ public class SgService {
         return "sg/accident_list";
     }
 
+    //测试...........................................................................................................
     public static void main(String[] args) throws Exception {
 
-        File file = new File("/Users/zhangyanqi/Desktop/xin.xls");
+        File file = new File("/Users/zhangyanqi/Desktop/事故.xls");
         FileInputStream in = new FileInputStream(file);
         List<List<Object>>[] sheets = new ImportExcelUtil().getBankListByExcelDivideBySheet(in, "xin.xls");
         in.close();
@@ -426,7 +426,6 @@ public class SgService {
             yj.setCx(String.valueOf(lo.get(42)));
             yj.setYwly(String.valueOf(lo.get(43)));
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
-            yj.setCkydm1(String.valueOf(lo.get(45)));//查勘员代码
             System.out.println("打印信息2--> ");
         }
     }

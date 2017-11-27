@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class BxService {
 
     public Result querybx() {
         List insurance = bxDao.find("from KyInsurance");
-        result.setSuccess("查询成功",insurance);
+        result.setSuccess("查询成功", insurance);
         return result;
     }
 
@@ -45,45 +46,44 @@ public class BxService {
             List<KyInsurance> insurance = bxDao.find("from KyInsurance");
             //导出Excel文件数据
             ExportExcelUtil util = new ExportExcelUtil();
-            File file =util.getExcelDemoFile("classes/ExcelDemo/保险模板.xlsx");
-            String sheetName="sheet1";
+            File file = util.getExcelDemoFile("classes/ExcelDemo/保险模板.xlsx");
+            String sheetName = "sheet1";
             wb = writeNewExcel(file, sheetName, insurance);
-            String fileName="保险信息.xlsx";
+            String fileName = "保险信息.xlsx";
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode(fileName, "utf-8"));
+            response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
             os = response.getOutputStream();
             wb.write(os);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally{
+        } finally {
             os.flush();
             os.close();
             wb.close();
         }
-        result.setSuccess("导出成功",null);
+        result.setSuccess("导出成功", null);
         return result;
     }
 
 
-    public  Workbook writeNewExcel(File file,String sheetName,List<KyInsurance> lis) throws Exception{
+    public Workbook writeNewExcel(File file, String sheetName, List<KyInsurance> lis) throws Exception {
         Workbook wb = null;
         Row row = null;
         Cell cell = null;
 
         FileInputStream fis = new FileInputStream(file);
-        wb = new ImportExcelUtil().getWorkbook(fis, file.getName());	//获取工作薄
+        wb = new ImportExcelUtil().getWorkbook(fis, file.getName());    //获取工作薄
         Sheet sheet = wb.getSheet(sheetName);
 
         //循环插入数据
-        int lastRow = sheet.getLastRowNum()-2;    //插入数据的数据ROW
+        int lastRow = sheet.getLastRowNum() - 2;    //插入数据的数据ROW
         CellStyle cs = setSimpleCellStyle(wb);    //Excel单元格样式
         for (int i = 0; i < lis.size(); i++) {
-            row = sheet.createRow(lastRow+i); //创建新的ROW，用于数据插入
+            row = sheet.createRow(lastRow + i); //创建新的ROW，用于数据插入
 
             //按项目实际需求，在该处将对象数据插入到Excel中
-            KyInsurance vo  = lis.get(i);
-            if(null==vo){
+            KyInsurance vo = lis.get(i);
+            if (null == vo) {
                 break;
             }
             //Cell赋值开始
@@ -127,9 +127,10 @@ public class BxService {
 
     /**
      * 描述：设置简单的Cell样式
+     *
      * @return
      */
-    public  CellStyle setSimpleCellStyle(Workbook wb){
+    public CellStyle setSimpleCellStyle(Workbook wb) {
         CellStyle cs = wb.createCellStyle();
 
         cs.setBorderBottom(CellStyle.BORDER_THIN); //下边框
@@ -162,18 +163,24 @@ public class BxService {
             List<Object> lo = listob.get(i);
             KyInsurance insurance = new KyInsurance();
             KyAccident.class.getFields();//
+            insurance.setTbdh(String.valueOf(lo.get(0)));
             insurance.setBdh(String.valueOf(lo.get(1)));
-            insurance.setCph(String.valueOf(lo.get(2)));
-            insurance.setBbxr(String.valueOf(lo.get(3)));
-            insurance.setBxqq(String.valueOf(lo.get(4)));
-            insurance.setBxzq(String.valueOf(lo.get(5)));
-            insurance.setZbe(String.valueOf(lo.get(6)));
-            insurance.setZbf(String.valueOf(lo.get(7)));
-            insurance.setLrsj(String.valueOf(lo.get(8)));
+            insurance.setTdh(String.valueOf(lo.get(2)));
+            insurance.setCph(String.valueOf(lo.get(3)));
+            insurance.setBbxr(String.valueOf(lo.get(4)));
+            insurance.setBxqq(String.valueOf(lo.get(5)));
+            insurance.setBxzq(String.valueOf(lo.get(6)));
+            insurance.setCzr(String.valueOf(lo.get(7)));
+            insurance.setZbe(String.valueOf(lo.get(8)));
+            insurance.setZbf(String.valueOf(lo.get(9)));
+            insurance.setLrsj(String.valueOf(lo.get(10)));
+            insurance.setCreateDate(new Date(System.currentTimeMillis()));
             bxDao.save(insurance);
             System.out.println("打印信息--> ");
         }
         result.setSuccess("导出成功", null);
         return "bx/insurance_list";
     }
+
+
 }

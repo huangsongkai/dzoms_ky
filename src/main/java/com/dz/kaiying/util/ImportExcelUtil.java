@@ -165,10 +165,9 @@ public class ImportExcelUtil {
             for (int j = sheet.getFirstRowNum(); j < sheet.getLastRowNum(); j++) {
                 String name = sheet.getSheetName();
                 row = sheet.getRow(j);
-                if (row == null || row.getFirstCellNum() == j) {
+                if (row == null || row.getFirstCellNum() == j) {//不读取第一行
                     continue;
                 }
-
                 //遍历所有的列
                 List<Object> li = new ArrayList<Object>();
                 for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
