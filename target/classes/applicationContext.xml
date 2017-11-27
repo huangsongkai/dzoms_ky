@@ -18,7 +18,7 @@
 	<!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
 	<context:annotation-config />
 	<!--,com.dz.kaiying.controller.activiti,com.dz.kaiying.taskListener-->
-	<context:component-scan base-package="com.dz.common,com.dz.module,com.dz.kaiying" >
+	<context:component-scan base-package="com.dz.common,com.dz.module,com.dz.kaiying,com.dz.kaiying.repository.hiber" >
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
 	</context:component-scan>
 	<!--<task:annotation-driven/>-->

@@ -27,6 +27,7 @@ import java.util.*;
  * Created by song.
  */
 @Service
+@Transactional
 public class JobDutiesService extends BaseService{
     @Resource
     HibernateDao<JobDuty, Integer> jobDutyDao;
@@ -93,7 +94,6 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("保存成功",jobDuties);
         return result;
     }
-    @Transactional
     public Result delete(int[] ids) {
         for (int id : ids) {
             jobDutyDao.deleteByKey(JobDuty.class, id);
@@ -102,7 +102,6 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("删除成功",null);
         return result;
     }
-    @Transactional
     public Result upadte(JobDuty jobDuties) {
         jobDutyDao.update(jobDuties);
         result.setSuccess("保存成功",jobDuties);
