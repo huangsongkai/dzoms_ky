@@ -57,6 +57,99 @@ public class KyAccident implements java.io.Serializable {
     @Column(name = "cdrq") //初登日期
     private String cdrq;
 
+
+
+    /**
+     * 张言琦添加
+     */
+    @Column(name = "tk") //条款==
+    private String tk;
+
+    @Column(name = "bf") //保费==
+    private String bf;
+
+    @Column(name = "bah")//报案号==
+    private String bah;
+
+
+    @Column(name = "lah") //立案号
+    private String lah;
+
+    @Column(name = "ajxz") //案件性质
+    private String ajxz;
+
+    @Column(name = "cxrq") //出险日期
+    private String cxrq;
+
+    @Column(name = "sgclfs") //事故处理方式
+    private String sgclfs;
+
+
+    @Column(name = "larq") //立案日期==
+    private String larq;
+
+
+    @Column(name = "jarq") //结案日期==
+    private String jarq;
+
+    @Column(name = "gsje") //估损金额
+    private String gsje;
+
+    @Column(name = "gjpk") //估计赔偿
+    private String gjpk;
+
+    @Column(name = "pfje") //赔付金额
+    private String pfje;
+
+    @Column(name = "bar") //报案人
+    private String bar;
+
+    @Column(name = "bardh") //报案人电话
+    private String bardh;
+
+    @Column(name = "cky") //查勘员1
+    private String cky;
+
+    @Column(name = "cky2")//勘察员2==
+    private String cky2;
+
+    @Column(name = "clrdm")
+    private String clrdm;   //处理人代码==
+
+    @Column(name = "bdjbr") //保单经办人==
+    private String bdjbr;
+
+    @Column(name = "bdgsr") //保单归属人==
+    private String bdgsr;
+
+
+    @Column(name = "cxdz") //出险地址
+    private String cxdz;
+
+    @Column(name = "cxyy") //出险原因
+    private String cxyy;
+
+    @Column(name = "jsr") //驾驶人
+    private String jsr;
+
+    @Column(name = "jsz") //驾驶证
+    private String jsz;
+
+    @Column(name = "cpxh") //厂牌型号
+    private String cpxh;
+
+    @Column(name = "cph") //车牌号
+    private String cph;
+
+    @Column(name = "bbxr") //被保险人==
+    private String bbxr;
+
+    @Column(name = "cxjg") //出险经过
+    private String cxjg;
+
+    @Column(name = "create_date") //创建时间
+    private Date createDate;
+
     public String getSgclbm() {
         return sgclbm;
     }
@@ -188,97 +281,6 @@ public class KyAccident implements java.io.Serializable {
     public void setBbxr(String bbxr) {
         this.bbxr = bbxr;
     }
-
-    /**
-     * 张言琦添加
-     */
-    @Column(name = "tk") //条款==
-    private String tk;
-
-    @Column(name = "bf") //保费==
-    private String bf;
-
-    @Column(name = "bah")//报案号==
-    private String bah;
-
-
-    @Column(name = "lah") //立案号
-    private String lah;
-
-    @Column(name = "ajxz") //案件性质
-    private String ajxz;
-
-    @Column(name = "cxrq") //出险日期
-    private String cxrq;
-
-    @Column(name = "sgclfs") //事故处理方式
-    private String sgclfs;
-
-
-    @Column(name = "larq") //立案日期==
-    private String larq;
-
-
-    @Column(name = "jarq") //结案日期==
-    private String jarq;
-
-    @Column(name = "gsje") //估损金额
-    private String gsje;
-
-    @Column(name = "gjpk") //估计赔偿
-    private String gjpk;
-
-    @Column(name = "pfje") //赔付金额
-    private String pfje;
-
-    @Column(name = "bar") //报案人
-    private String bar;
-
-    @Column(name = "bardh") //报案人电话
-    private String bardh;
-
-    @Column(name = "cky") //查勘员1
-    private String cky;
-
-    @Column(name = "cky2")//勘察员2==
-    private String cky2;
-
-    @Column(name = "clrdm")
-    private String clrdm;   //处理人代码==
-
-    @Column(name = "bdjbr") //保单经办人==
-    private String bdjbr;
-
-    @Column(name = "bdgsr") //保单归属人==
-    private String bdgsr;
-
-
-    @Column(name = "cxdz") //出险地址
-    private String cxdz;
-
-    @Column(name = "cxyy") //出险原因
-    private String cxyy;
-
-    @Column(name = "jsr") //驾驶人
-    private String jsr;
-
-    @Column(name = "jsz") //驾驶证
-    private String jsz;
-
-    @Column(name = "cpxh") //厂牌型号
-    private String cpxh;
-
-    @Column(name = "cph") //车牌号
-    private String cph;
-
-    @Column(name = "bbxr") //被保险人==
-    private String bbxr;
-
-    @Column(name = "cxjg") //出险经过
-    private String cxjg;
-
-    @Column(name = "create_date") //创建时间
-    private Date createDate;
 
 
     public Integer getId() {

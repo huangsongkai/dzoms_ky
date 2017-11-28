@@ -27,6 +27,7 @@ import java.util.*;
  * Created by song.
  */
 @Service
+@Transactional
 public class JobDutiesService extends BaseService{
     @Resource
     HibernateDao<JobDuty, Integer> jobDutyDao;
@@ -93,7 +94,6 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("保存成功",jobDuties);
         return result;
     }
-    @Transactional
     public Result delete(int[] ids) {
         for (int id : ids) {
             jobDutyDao.deleteByKey(JobDuty.class, id);
@@ -102,7 +102,6 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("删除成功",null);
         return result;
     }
-    @Transactional
     public Result upadte(JobDuty jobDuties) {
         jobDutyDao.update(jobDuties);
         result.setSuccess("保存成功",jobDuties);
@@ -374,17 +373,17 @@ public class JobDutiesService extends BaseService{
         managerEvaluate.setTotal(saveManagerEvaluateDTO.getTotal());//总分
         Integer id = managerEvaluateDao.save(managerEvaluate);
         if (saveManagerEvaluateDTO != null){
-            for (Map.Entry<Integer, String> entry : saveManagerEvaluateDTO.getManagerEvaluate().entrySet()) {
+            for (Map.Entry<Integer, SaveManagerEvaluateDetailDTO> entry : saveManagerEvaluateDTO.getManagerEvaluate().entrySet()) {
                 Integer key = entry.getKey();
-                String value = entry.getValue();
-                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveManagerEvaluateDTO.getEvaluateName()+"' and personId ="+personId ); //
-                for (EvaluateDetail evaluateDetail: evaluateDetailList) {
+                SaveManagerEvaluateDetailDTO value = entry.getValue();
+                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveManagerEvaluateDTO.getEvaluateName()+"' and personId ="+personId+" and jobDutyId ="+key);
+                // List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveManagerEvaluateDTO.getEvaluateName()+"' and personId ="+personId ); //
+                    EvaluateDetail evaluateDetail = evaluateDetailList.get(0);
                     evaluateDetail.setGroupTotal(Double.parseDouble(saveManagerEvaluateDTO.getTotal()+""));
-                    evaluateDetail.setGroupScore(key);
-                    evaluateDetail.setRemark(value);
+                    evaluateDetail.setGroupScore(value.getScore());
+                    evaluateDetail.setGroupDate(new Date());
+                    evaluateDetail.setRemark(value.getRemark());
                     evaluateDetailDao.update(evaluateDetail);
-                }
-
                // EvaluateDetail evaluateDetail = evaluateDetailList.get(0);
 
 
@@ -411,18 +410,19 @@ public class JobDutiesService extends BaseService{
         String sql ="";
         if("admin".equals(userName)){
 
-            sql="select distinct(evaluateName),e from EvaluateDetail e where groupScore is not null";
+            sql="select distinct(evaluateName) from EvaluateDetail  where groupScore is not null";
         }else{
-            sql="select distinct(evaluateName),e from EvaluateDetail e where groupScore is not null and personId ="+personId;
+            sql="select distinct(evaluateName) from EvaluateDetail  where groupScore is not null and personId ="+personId;
         }
 
-        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
-        for ( EvaluateDetail evaluateDetail: evaluateDetailList) {
-            ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
-            listHistory1DTO.setName(evaluateDetail.getEvaluateName());
-            listHistory1DTO.setId(evaluateDetail.getId());
-            listHistory1DTOList.add(listHistory1DTO);
-        }
+        List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+        Iterator itr = result1.iterator();
+        String name= (String) result1.get(0);
+        ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
+        listHistory1DTO.setName(name);
+        List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
+        listHistory1DTO.setId(evaluateDetail.get(0).getId());
+        listHistory1DTOList.add(listHistory1DTO);
         listHistoryDTO.setDetail(listHistory1DTOList);
         listHistoryDTO.setPersonId(personId);
         User user = userDao1.getUserByUid(personId);
@@ -440,7 +440,7 @@ public class JobDutiesService extends BaseService{
         List<EvaluateDetail> evaluateDetailList0 = evaluateDetailDao.find("from EvaluateDetail where id ="+id);
         EvaluateDetail evaluateDetail0 = evaluateDetailList0.get(0);
         String evaluateName = evaluateDetail0.getEvaluateName();
-        List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where evaluateName = "+evaluateName );
+        List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" );
 
         List<HistoryDetailDTO> historyDetailDTOList = new ArrayList<HistoryDetailDTO>();
         for ( EvaluateDetail evaluateDetail : evaluateDetailList1 ) {
@@ -467,6 +467,7 @@ public class JobDutiesService extends BaseService{
             historyDetailDTO.setBumen(evaluateDetail.getManagerScore());
             historyDetailDTO.setKpgroup(evaluateDetail.getGroupScore());
             historyDetailDTO.setEvaluateName(evaluateDetail.getEvaluateName());
+            historyDetailDTO.setRemark(evaluateDetail.getRemark());
             historyDetailDTOList.add(historyDetailDTO);
         }
         result.setSuccess("查询成功",historyDetailDTOList);
