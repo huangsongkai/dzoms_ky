@@ -9,7 +9,7 @@ import java.util.List;
 public interface ActivityDao {
 
 	public abstract List<Activity> selectAllActivity(Page page, Date beginDate,
-													 Date endDate) throws HibernateException;
+                                                     Date endDate) throws HibernateException;
 
 	public abstract int selectAllActivityCount(Date beginDate, Date endDate)
 			throws HibernateException;

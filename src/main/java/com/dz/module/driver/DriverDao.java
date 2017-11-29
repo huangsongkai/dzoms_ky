@@ -19,17 +19,17 @@ public interface DriverDao {
 	public List<Driver> driverSearch(Page page) throws HibernateException;
 	@Deprecated
 	public int driverSearchConditionTotal(String idNum, Date beginDate,
-										  Date endDate, Boolean isInCar, Triplet<String, String, Object>... conditions) throws HibernateException;
+                                          Date endDate, Boolean isInCar, Triplet<String, String, Object>... conditions) throws HibernateException;
 	@Deprecated
 	public List<Driver> driverSearchCondition(Page page, String idNum,
-											  Date beginDate, Date endDate, Boolean isInCar, Triplet<String, String, Object>... conditions)
+                                              Date beginDate, Date endDate, Boolean isInCar, Triplet<String, String, Object>... conditions)
 			throws HibernateException;
 	@Deprecated
 	public int driverSearchConditionTotal(Date beginDate,
-										  Date endDate, Driver driver) throws HibernateException;
+                                          Date endDate, Driver driver) throws HibernateException;
 	@Deprecated
 	public List<Driver> driverSearchCondition(Page page,
-											  Date beginDate, Date endDate, Driver driver)
+                                              Date beginDate, Date endDate, Driver driver)
 			throws HibernateException;
 
 	public boolean addBadRecord(Driver driver, String reason);
@@ -47,10 +47,10 @@ public interface DriverDao {
 	boolean updateStar(Driver driver);
 	@Deprecated
 	public List<Vehicle> driverCarSearch(Page page, String idName,
-										 String idNum, String linence_num);
+                                         String idNum, String linence_num);
 	@Deprecated
 	public int driverCarSearchTotal(String idName, String idNum,
-									String linence_num);
+                                    String linence_num);
 	
 	public Driver selectByName(String name);
 	
@@ -65,10 +65,10 @@ public interface DriverDao {
 	void addLeaveRecord(Driverleave record);
 
 	int selectDriverLeaveByConditionCount(Date beginDate, Date endDate,
-										  Vehicle vehicle, Driver driver, Boolean finished, String operation);
+                                          Vehicle vehicle, Driver driver, Boolean finished, String operation);
 
 	List<Driverleave> selectDriverLeaveByCondition(Page page, Date beginDate,
-												   Date endDate, Vehicle vehicle, Driver driver, Boolean finished, String operation);
+                                                   Date endDate, Vehicle vehicle, Driver driver, Boolean finished, String operation);
 
 	Driver selectById(String idNum) throws HibernateException;
 

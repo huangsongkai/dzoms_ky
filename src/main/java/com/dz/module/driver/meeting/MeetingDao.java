@@ -11,7 +11,7 @@ import java.util.List;
 public interface MeetingDao {
 
 	public abstract List<Meeting> selectAllMeeting(Page page, Date beginDate,
-												   Date endDate) throws HibernateException;
+                                                   Date endDate) throws HibernateException;
 
 	public abstract int selectAllMeetingCount(Date beginDate, Date endDate)
 			throws HibernateException;
@@ -29,7 +29,7 @@ public interface MeetingDao {
 	public abstract void updateMeetingCheck(MeetingCheck meetingCheck);
 
 	public abstract MeetingCheck selectMeetingCheck(Integer meetingId,
-													String idNum);
+                                                    String idNum);
 
 	public abstract List<MeetingCheck> selectMeetingCheck(Integer meetingId, Triplet<String, String, Object>... conditions);
 
@@ -38,5 +38,5 @@ public interface MeetingDao {
 	int selectLeaveNumber(Integer meetingId, String dept);
 
 	int selectMeetingCheckCount(Integer meetingId,
-								Triplet<String, String, Object>... conditions);
+                                Triplet<String, String, Object>... conditions);
 }

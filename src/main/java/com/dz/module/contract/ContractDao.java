@@ -34,11 +34,11 @@ public interface ContractDao {
 public Contract selectByCarId(String carframeNum, Date d);
 	//	List<String> selectDriverByCar(Vehicle vehicle);
 	int contractSearchConditionTotal(Integer contractid, String contractor,
-									 Long rent, Boolean isabandoned, String sort, String desc)
+                                     Long rent, Boolean isabandoned, String sort, String desc)
 			throws HibernateException;
 	List<Contract> contractSearchCondition(Page page, Integer contractid,
-										   String contractor, Long rent, Boolean isabandoned, String sort,
-										   String desc) throws HibernateException;
+                                           String contractor, Long rent, Boolean isabandoned, String sort,
+                                           String desc) throws HibernateException;
 	Contract selectById(int id);
 	BigDecimal getAccount(int contractId);
 	boolean updateAccount(int contractId, BigDecimal account);
@@ -49,5 +49,5 @@ public Contract selectByCarId(String carframeNum, Date d);
 	public List<Contract> selectAllByStates(Page page, Contract contract, Vehicle vehicle, Driver driver, Date beginDate, Date endDate, Short[] states);
 	boolean addRentFirstDivide(RentFirstDivide rentFirstDivide);
 	public int contractSearchAllAvaliableCount(Date time, String department,
-											   String licenseNum);
+                                               String licenseNum);
 }
