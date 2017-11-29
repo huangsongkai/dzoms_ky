@@ -10,7 +10,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * Meeting entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "meeting", catalog = "dzomsdb")
+@Table(name = "meeting", catalog = "ky_dzomsdb")
 public class Meeting implements java.io.Serializable {
 
 	// Fields
