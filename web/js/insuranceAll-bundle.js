@@ -371,6 +371,14 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
             for (var i = 0; i < data.data.length; i++) {
               data.data[i]["key"] = data.data[i].id;
             }
+            console.log(data.data);
+            data.data.map(function (row) {
+              for (var col in row) {
+                if (row[col] == null) {
+                  row[col] = '';
+                }
+              }
+            });
             self.setState({
               recData: data.data
             });

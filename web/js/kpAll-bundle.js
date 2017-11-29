@@ -371,7 +371,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
           title: "自评",
           dataIndex: "score",
           render: function render(text, record, index) {
-            return _react3.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: maxValue[index], onChange: _this3.onScoreChange.bind(_this3, index), value: maxValue[index] });
+            return _react3.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
