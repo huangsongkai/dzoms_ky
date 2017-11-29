@@ -13,7 +13,7 @@ public class ElectricHistoryStatisticsService extends StatisticsService{
     @Autowired
     HibernateDao<ElectricHistory, Integer> accidentStatisticsDao;
     public MonthsCountDto getStatusDistribution() {
-        MonthsCountDto monthsCountDto = new StatisticsService.MonthsCountDto();
+        MonthsCountDto monthsCountDto = new MonthsCountDto();
         String[] sqls = {
                 "select 1 from ElectricHistory as e,Vehicle as v where e.licenseNum = v.licenseNum and date >= $firstDay and date<$lastDay and v.dept='一部'",
                 "select 1 from ElectricHistory as e,Vehicle as v where e.licenseNum = v.licenseNum and date >= $firstDay and date<$lastDay and v.dept='二部'",

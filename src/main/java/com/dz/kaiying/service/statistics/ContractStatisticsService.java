@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class ContractStatisticsService extends StatisticsService {
     @Autowired
     HibernateDao<Contract, Integer> contractStatisticsDao;
-    public StatisticsService.MonthsCountDto getStatusDistribution() {
+    public MonthsCountDto getStatusDistribution() {
         MonthsCountDto monthsCountDto = new MonthsCountDto();
         String[] sqls = {"from Contract where state = 0 and contract_begin_date< $lastDay",
                 "from Contract where contract_begin_date >= $firstDay and contract_begin_date<$lastDay and state=0",
@@ -23,7 +23,7 @@ public class ContractStatisticsService extends StatisticsService {
         return wholeYearBar(sqls, contractStatisticsDao);
     }
 
-    public StatisticsService.MonthsCountDto getStatusDistributionByBranch() {
+    public MonthsCountDto getStatusDistributionByBranch() {
         MonthsCountDto monthsCountDto = new MonthsCountDto();
         String[] sqls = {"from Contract where contract_begin_date >= $firstDay and contract_begin_date<$lastDay and branch_firm='一部'",
                 "from Contract where contract_begin_date >= $firstDay and contract_begin_date<$lastDay and branch_firm='二部'",
