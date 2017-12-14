@@ -22,7 +22,7 @@ public class AccidentController {
     ZuoTaoService zuoTaoService;
 
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public Result listZT(){
        return zuoTaoService.listZT();
     }

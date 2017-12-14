@@ -24,7 +24,7 @@
 %>
 <script type="text/javascript">
     var pageUrls ={
-        taskListUrl:"/DZOMS/ky/runtime/tasks?assignee=<%=userName%>",   //get?assignee=
+        taskListUrl:"/DZOMS/ky/activity/task/getTask?assignee=<%=userName%>",   //get?assignee=
         executeUrl:"/DZOMS/ky/activity/task/execute/" //执行跳转时的url
     }
 </script>

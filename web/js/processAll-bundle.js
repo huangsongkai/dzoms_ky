@@ -1819,6 +1819,13 @@ var TaskList = _wrapComponent('TaskList')(function (_React$Component) {
         dataType: 'json',
         contentType: 'application/json',
         success: function success(result) {
+          result.data.map(function (row) {
+            for (var i in row) {
+              if (row[i] == null) {
+                row[i] = '';
+              }
+            }
+          });
           self.setState({
             recResult: result.data
           });
@@ -1831,7 +1838,6 @@ var TaskList = _wrapComponent('TaskList')(function (_React$Component) {
   }, {
     key: 'execute',
     value: function execute(index) {
-      //window.open("/activity/task/execute/"+this.state.recResult[index].id);   
       window.location.href = this.props.executeUrl + this.state.recResult[index].id;
     }
   }, {
@@ -1839,7 +1845,6 @@ var TaskList = _wrapComponent('TaskList')(function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      console.log(this.state.recResult);
       var columns = [{
         title: '序号',
         render: function render(text, record, index) {
@@ -1862,6 +1867,9 @@ var TaskList = _wrapComponent('TaskList')(function (_React$Component) {
         title: '创建时间',
         dataIndex: 'createTime'
       }, {
+        title: '发起人',
+        dataIndex: 'starter'
+      }, {
         title: '操作人',
         dataIndex: 'assignee'
       }, {
@@ -1878,7 +1886,7 @@ var TaskList = _wrapComponent('TaskList')(function (_React$Component) {
       return _react3.default.createElement(
         'div',
         null,
-        _react3.default.createElement(_table2.default, { key: this.key++, pagination: false, columns: columns, dataSource: this.state.recResult })
+        _react3.default.createElement(_table2.default, { pagination: false, columns: columns, dataSource: this.state.recResult })
       );
     }
   }]);

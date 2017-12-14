@@ -22,7 +22,9 @@
 <script type="text/javascript">
     var pageUrls ={
         departmentEvaluate : "/DZOMS/ky/duty/departmentEvaluate/"+"${taskId}" , //get 个人绩效请求数据
-        jumpUrl:"/DZOMS/ky/activity/task/list"
+        jumpUrl:"/DZOMS/ky/activity/task/list",
+        regectUrl:"/DZOMS/ky/duty/groupRegect",
+
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>

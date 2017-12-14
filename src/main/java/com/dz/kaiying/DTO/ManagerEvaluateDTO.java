@@ -22,6 +22,15 @@ public class ManagerEvaluateDTO implements java.io.Serializable {
 	private Integer ziping;
 	private Integer bumen;
 	private String evaluateName;
+	private String taskId;
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;

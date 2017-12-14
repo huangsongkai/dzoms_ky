@@ -13,11 +13,9 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.common.api.DataResponse;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -74,7 +72,7 @@ public class TaskController {
     @ResponseBody
     public Result taskComplete(@PathVariable String id, HttpServletRequest request) {
         Map<String, String> valsMap = RequestHelper.retrieveJsonFromRequest(request);
-        activitiService.complete(id, valsMap);
+        activitiService.complete(id, valsMap, " ");
         result.setSuccess("","");
         return result;
     }
@@ -173,7 +171,11 @@ public class TaskController {
         result.setSuccess("保存成功",taskList);
         return result;
     }
-
+    @RequestMapping(value = "/getTask", method = RequestMethod.GET)
+    @ResponseBody
+    public DataResponse getTask(@RequestParam Map<String, String> requestParam, HttpServletRequest httpRequest){
+        return activitiService.getTasks(requestParam, httpRequest);
+    }
 
 
 

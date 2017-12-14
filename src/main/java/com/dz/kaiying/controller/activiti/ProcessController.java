@@ -57,14 +57,15 @@ public class ProcessController {
     @RequestMapping(value="/startForm/{processKey}", method= RequestMethod.POST)
     @ResponseBody
     public Result startForm(@PathVariable String processKey, HttpServletRequest request) {
-        String userId = "Huang";
+        String userId = (String) request.getSession().getAttribute("userId");
         request.getSession().getAttribute("userId");
         String processInstanceId = activitiService.startForm(userId, processKey, request.getParameterMap(), request);
         return resultWrapper.success("activity/task_list");
     }
     @RequestMapping(value="/startForm/{processKey}", method= RequestMethod.GET)
     public String startForm1(@PathVariable String processKey, HttpServletRequest request) {
-        String userId = "Huang";//        request.getSession().getAttribute("userId");
+
+        String userId = (String) request.getSession().getAttribute("userId");
         String processInstanceId = activitiService.startForm(userId, processKey, request.getParameterMap(), request);
         return "activity/task_list";
     }

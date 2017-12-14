@@ -86,7 +86,17 @@ public class EvaluateDetail implements java.io.Serializable {
     @Column(name = "group_remark")
     private String remark;
 
+    @Column(name = "regect")
+    private String regect;
 
+
+    public String getRegect() {
+        return regect;
+    }
+
+    public void setRegect(String regect) {
+        this.regect = regect;
+    }
 
     public Integer getId() {
         return id;

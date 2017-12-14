@@ -10,26 +10,26 @@
 <head>
     <meta charset="utf-8">
     <title>统计</title>
-    <link href="/DZOMS/ky/css/bootstrap.css" rel="stylesheet" />
-    <link href="/DZOMS/ky/css/tjStyle.css" rel="stylesheet" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/tjStyle.css" rel="stylesheet" />
     <style type="text/css">
 
     </style>
     <!-- 引入 echarts.js -->
-    <script src="/DZOMS/ky/js/jquery-2.2.1.min.js"></script>
-    <script src="/DZOMS/ky/js/echarts-all.js"></script>
-    <script src="/DZOMS/ky/js/dark.js"></script>
+    <script src="/js/jquery-2.2.1.min.js"></script>
+    <script src="/js/echarts-all.js"></script>
+    <script src="/js/dark.js"></script>
 </head>
+<body>
 <body>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 <div id="tjContainer">
-    <div id="header" class="header">
-        <h1>分析统计图
-            <small>大众信息化管理平台</small></h1>
-    </div>
+    <!-- <div id="header" class="header">
+       <h1>数据分析统计图</h1>
+    </div> -->
     <div id="container">
         <!-- 侧边栏 -->
-        <aside id="aside" class="lf">
+        <aside id="aside">
             <ul>
                 <li class="tab">
                     <a href="#line2">财务统计</a>
@@ -48,88 +48,106 @@
         </aside>
         <div id="con_rt" class="con_chart lf">
             <!-- 各项收支 -->
-            <div id="line1" class="row">
-                <div class="col-md-4">
-                    <div class="img1 lf">
-                        <p class="zhibiao">本月收入<span>1111</span>元</p>
+            <!-- <div id="line1" class="row">
+              <div class="col-md-4">
+                    <div class="flip_wrap">
+                        <div class="flip">
+                           <div class="side front">
+                              <div class="img1 lf">
+                                <p class="zhibiao">本月电子违章<span>1111</span>起</p>
+                              </div>
+                           </div>
+                           <div class="side back">
+                             <div class="img2 lf">
+                                <p class="zhibiao">本月电子违章<span>1111</span>起</p>
+                              </div>
+                           </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
+              </div>
+              <div class="col-md-4">
                     <div class="img2 mleft5 lf">
                         <p class="zhibiao">本月电子违章<span>1111</span>起</p>
                     </div>
-                </div>
-                <div class="col-md-4">
+              </div>
+              <div class="col-md-4">
                     <div class="img3 mleft10 lf">
                         <p class="zhibiao">在职司机总人数<span>1111</span></p>
                     </div>
-                </div>
-            </div>
+              </div>
+            </div> -->
             <!-- 财务统计 -->
-            <h3 id="line2">财务统计</h3>
-            <div  class="row">
-                <div class="col-md-6">
-                    <div id="main6-1" class="statistics2" ></div>
-                </div>
-                <div class="col-md-6">
-                    <div id="main6-2" class="statistics2 mleft10" ></div>
+            <div class="row_con">
+                <h3 id="line2">财务统计</h3>
+                <div  class="row">
+                    <div class="col-md-6">
+                        <div id="main6-1" class="statistics2" ></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="main6-2" class="statistics2 mleft10" ></div>
+                    </div>
                 </div>
             </div>
             <!-- 驾驶员指标统计 -->
-            <h3 id="line3">驾驶员指标统计</h3>
-            <div  class="row">
-                <div class="col-md-12">
-                    <div id="main1-1"></div>
+            <div class="row_con">
+                <h3 id="line3">驾驶员指标统计</h3>
+                <div  class="row">
+                    <div class="col-md-12">
+                        <div id="main1-1"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <div id="main1-2" class="statistics3-2" ></div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div id="main1-2" class="statistics3-2" ></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="main1-3" class="statistics3-1" ></div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <div id="main1-3" class="statistics3-1" ></div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div id="main1-5" class="statistics3-1" ></div>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="main1-4" class="statistics3-2  mleft" ></div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div id="main1-5" class="statistics3-1" ></div>
-                </div>
-                <div class="col-md-8">
-                    <div id="main1-4" class="statistics3-2  mleft" ></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="main4-1" class="statistics1-1" ></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="main4-1" class="statistics1-1" ></div>
+                    </div>
                 </div>
             </div>
             <!-- 车辆管理 -->
-            <h3 id="line4">车辆管理</h3>
-            <div  class="row">
-                <div class="col-md-4">
-                    <div id="main3-1" class="statistics3-1" ></div>
+            <div class="row_con">
+                <h3 id="line4">车辆管理</h3>
+                <div  class="row">
+                    <div class="col-md-4">
+                        <div id="main3-1" class="statistics3-1" ></div>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="main5-1" class="statistics3-2 mleft" ></div>
+                    </div>
                 </div>
-                <div class="col-md-8">
-                    <div id="main5-1" class="statistics3-2 mleft" ></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="main3-2" class="statistics1-1" ></div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="main3-2" class="statistics1-1" ></div>
-                </div>
-            </div>
-            <!-- 合同发包统计 -->
-            <h3 id="line5">合同发包统计</h3>
-            <div  class="row">
-                <div class="col-md-6">
-                    <div id="main2-1" class="statistics2" ></div>
-                </div>
-                <div class="col-md-6">
-                    <div id="main2-2" class="statistics2 mleft10" ></div>
+            <div class="row_con">
+                <!-- 合同发包统计 -->
+                <h3 id="line5">合同发包统计</h3>
+                <div  class="row">
+                    <div class="col-md-6">
+                        <div id="main2-1" class="statistics2" ></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="main2-2" class="statistics2 mleft10" ></div>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="clear"></div>
     </div>
 </div>
@@ -152,18 +170,13 @@
     </div>
 </div> -->
 <script type="text/javascript">
-    var clientHeight = document.documentElement.clientHeight;
-    var aside=document.getElementById('aside')
-    aside.style.height=clientHeight+"px";
     $(function() {
         $(window).scroll(function() {
             var scrollHeight = $(document).scrollTop();
             if (scrollHeight>10){
                 $('#aside').addClass('fixed');
-                $('#con_rt').addClass('marleft');
             }else{
                 $('#aside').removeClass('fixed');
-                $('#con_rt').removeClass('marleft');
             }
         });
     })

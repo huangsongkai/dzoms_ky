@@ -1,9 +1,6 @@
 package com.dz.kaiying.controller;
 
-import com.dz.kaiying.DTO.SaveDepartmentEvaluateDTO;
-import com.dz.kaiying.DTO.SaveManagerEvaluateDTO;
-import com.dz.kaiying.DTO.SaveSelfEvaluateDTO;
-import com.dz.kaiying.DTO.SaveUserJobDutyDTO;
+import com.dz.kaiying.DTO.*;
 import com.dz.kaiying.model.JobDuty;
 import com.dz.kaiying.service.ActivitiUtilService;
 import com.dz.kaiying.service.JobDutiesService;
@@ -166,6 +163,26 @@ public class JobDutyController {
     @ResponseBody
     public Result historyDetail(@PathVariable Integer id, HttpServletRequest request ){
         return jobDutiesService.listHistoryDetail(id);
+    }
+
+    /**
+     * 部门考评 驳回
+     * @return
+     */
+    @RequestMapping(value = "/managerRegect", method = RequestMethod.POST)
+    @ResponseBody
+    public Result managerEvaluateRegect(@RequestBody RegectDTO regectDTO, HttpServletRequest request){
+        return jobDutiesService.managerEvaluateRegect(regectDTO,"manager");
+    }
+
+    /**
+     * 考核组考评 驳回
+     * @return
+     */
+    @RequestMapping(value = "/groupRegect", method = RequestMethod.POST)
+    @ResponseBody
+    public Result groupEvaluateRegect(@RequestBody RegectDTO regectDTO,  HttpServletRequest request){
+        return jobDutiesService.managerEvaluateRegect(regectDTO,"group");
     }
 
 

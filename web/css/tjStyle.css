@@ -2,6 +2,7 @@ body{
 	background-color: #2A2735;
 	font-family: "Microsoft YaHei";
 }
+body,div{margin:0;padding:0;}
 .lf{
 	float: left;
 }
@@ -15,20 +16,32 @@ h1{
 	margin-left: 24px;
 }
 #con_rt h3{
-	margin-left: 34px;
+/*	padding: 15px;
+    margin-left: 34px;
+    background-color: #3C394B;
+    border-radius: 5px;*/
+    background-color:#3C394B;
+    padding: 10px;
+    margin: 0 0 15px 0;
+}
+.row_con{
+	border: 5px solid #3C394B;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 a:hover{
 	text-decoration: none;
 }
 #tjContainer{
-	width: 1200px;
+	width: 1400px;
 	margin:0 auto;
 }
 #container{
 	position: relative;
 }
 .header{
-	width:1200px;
+	text-align: center;
+	width:1400px;
 	height: 100px;
 	padding-top:10px;
 	background-color: #3C394B;
@@ -44,20 +57,23 @@ a:hover{
 	margin-left: 5;
 }
 aside{
-	position: relative;
+	/*position: relative;*/
 	z-index: 9;
-	width: 150px;
 	background-color: #3C394B;
-	box-shadow: 7px 0px 5px #09090C;
+	/*box-shadow: 7px 0px 5px #09090C;*/
 }
 .con_chart{
 	padding: 10px 10px;
-	width: 1050px;
-	background-color: #2A2735;
+	width: 1400px;
+	/*background-color: #2A2735;*/
 	color: #fff;
 }
-.row{
-	margin:20px;
+.row_con .row{
+	border-bottom: 5px solid #3C394B;
+	margin:15px 10px;
+}
+.row_con .row:last-child{
+	border: 0;
 }
 #main1-3,#main1-5,#main1-2,#main1-4{
 	margin-right: 14px;
@@ -75,7 +91,7 @@ aside{
 	margin-right: 0px;
 	background:url(../images/purple.png);
 }
-.line1{
+#line1{
 	margin-bottom: 20px;
 }
 .line3{
@@ -116,11 +132,9 @@ aside{
 	padding-bottom: 35px;
 }
 .fixed{
-	position:fixed;
-	width:150px;
-	background-color: #3C394B;
-	padding-top: 20px;
-	margin:-120px 0px 0px 0px;
+    position:fixed;
+    width:1400px;
+    background-color:rgba(60,57,75,0.8);
 }
 .marleft{
 	margin-left: 150px;
@@ -130,13 +144,15 @@ ul{
 	margin-left: -40px;
 	list-style:none;
 }
-ul li{
-	padding: 30px 35px;
+#aside ul{
+	height: 50px;
 }
-/*ul li:hover{
-	margin-left: 10px;
-}*/
+.tab{
+	float: left;
+}
 #aside ul li a{
+	display: inline-block;
+	padding: 19px 35px;
 	font-size:16px;
 	color:#fff;
 }
@@ -156,47 +172,102 @@ ul li{
 	font-size: 28px;
 }
 
+
 .container,#main{
-	width: 100%;
-	margin: 0 auto;
+    width: 100%;
+    margin: 0 auto;
 }
 #main{
-	min-height: 500px;
-	overflow: hidden;
+    min-height: 500px;
+    overflow: hidden;
 }
 #main1-1{
-	width: 950px;
-	height:500px;
-	margin-left: -80px;
+    width: 1250px;
+    height:500px;
+    margin-left: -80px;
 }
 #main1-1>div{
-	position: relative;
-	top:10px;
-	left:9%;
+   position: relative;
+   top:10px;
+   left:9%;
 }
 .statistics{
-	width:320px;
-	height:320px;
+    width:320px;
+    height:320px;
 }
 .statistics2{
-	width:485px;
-	height:380px;
+    width:630px;
+    height:380px;
+    /*border-right: 5px solid #3C394B;*/
 }
 .statistics3-1{
-	width:330px;
-	height:380px;
+    width:430px;
+    height:380px;
 }
 .statistics3-2{
-	width:640px;
-	height:380px;
+    width:870px;
+    height:380px;
 }
 .statistics1-1{
-	width:990px;
-	height:400px;
+    width:1300px;
+    height:400px;
 }
 .statistics>div{
-	/*background-color: #3C394B;*/
-	border:1px solid #3C394B;
-	border-radius: 5px;
-	box-shadow: #09090C 0px 0px 10px;
+    /*background-color: #3C394B;*/
+    border:1px solid #3C394B;
+    border-radius: 5px; 
+    box-shadow: #09090C 0px 0px 10px;  
 }
+textarea{
+	color:#000;
+}
+/*翻牌效果 */
+   .flip_wrap{
+     width:316px;
+     height:175px;
+     margin:0 auto;
+     perspective:800px;/*perspective属性定义3D元素距视图的距离,以像素计。该属性允许您改变 3D 元素查看 3D 元素的视图。*/
+     -webkit-perspective:800px;
+     -moz-perspective:800px;
+     -ms-perspective:800px;
+     -o-perspective:800px;
+   }
+   .flip{
+     width:316px;
+     height:175px;
+     backface-visibility:hidden;/*背对屏幕时隐藏*/
+     -webkit-backface-visibility:hidden;
+     -moz-backface-visibility:hidden;
+     -ms-backface-visibility:hidden;
+     -o-backface-visibility:hidden;
+     transition: all 1s ease; /*为翻牌添加过渡效果*/
+     -webkit-transition: all 1s ease;
+     -moz-transition: all 1s ease;
+     -ms-transition: all 1s ease;
+     -o-transition: all 1s ease;
+     transform-style: preserve-3d; /*子元素将保留其 3D 位置。*/
+   }
+   .side{
+     width:100%;
+     height:100%;
+     position: absolute;/*让背面和正面重叠*/
+     left:50%;
+     margin-left:-158px;
+   }
+   .front{
+     z-index:2;/*让正面朝上*/
+   }
+   .back{
+     transform:rotateY(180deg);
+     -webkit-transform:rotateY(180deg);
+     -moz-transform:rotateY(180deg);
+     -ms-transform:rotateY(180deg);
+     -o-transform:rotateY(180deg);
+   }
+   .flip_wrap:hover .flip{
+     transform:rotateY(180deg);(180);
+     -webkit-transform:rotateY(180deg);
+     -moz-transform:rotateY(180deg);
+     -ms-transform:rotateY(180deg);
+     -o-transform:rotateY(180deg);
+   }

@@ -142,7 +142,7 @@ public class ActivitiUtilService {
 
     public Result taskComplete(@PathVariable String id, HttpServletRequest request) {
         Map<String, String> valsMap = RequestHelper.retrieveJsonFromRequest(request);
-        activitiService.complete(id, valsMap);
+        activitiService.complete(id, valsMap, "");
         result.setSuccess("","");
         return result;
     }

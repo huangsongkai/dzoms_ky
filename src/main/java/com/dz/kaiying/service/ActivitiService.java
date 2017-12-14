@@ -14,6 +14,9 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.rest.common.api.DataResponse;
+import org.activiti.rest.service.api.runtime.task.TaskBaseResource;
+import org.activiti.rest.service.api.runtime.task.TaskQueryRequest;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,24 +28,26 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class ActivitiService {
+public class ActivitiService  extends TaskBaseResource{
     @Resource
     IdentityService identityService;
 
     @Resource
     RuntimeService runtimeService;
 
-    @Resource
-    TaskService taskService;
+//    @Resource
+//    TaskService taskService;
 
     @Resource
     RepositoryService repositoryService;
 
-    @Resource
-    HistoryService historyService;
+//    @Resource
+//    HistoryService historyService;
 
     @Resource
     FormService formService;
@@ -123,10 +128,11 @@ public class ActivitiService {
         }
     }
 
-    public void complete(String id, Map parameterMap) {
+    public void complete(String id, Map parameterMap, String name) {
         try {
             if (parameterMap.size() != 0){
                 taskService.setVariables(id, parameterMap);
+                taskService.setVariablesLocal(id, parameterMap);
             }
             taskService.complete(id);
         }catch(ActivitiObjectNotFoundException exception){
@@ -280,9 +286,91 @@ public class ActivitiService {
                 pvmTransitionList.add(pvmTransition);
             }
 
-            //成功
         } catch (Exception e) {
-            //失败
+
         }
     }
+    @Transactional
+    public DataResponse getTasks( Map<String, String> requestParams, HttpServletRequest httpRequest) {
+        DateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分");
+        TaskQueryRequest request = new TaskQueryRequest();
+        if (requestParams.containsKey("assignee")) {
+            request.setAssignee(requestParams.get("assignee"));
+        }
+        DataResponse biba = getTasksFromQueryRequest(request, requestParams);
+        biba.getData();
+        System.out.println(biba.getData());
+        List<Task> taskList = taskService.createTaskQuery().taskCandidateOrAssigned(requestParams.get("assignee")).list();
+        System.out.println(taskList.size());
+        List<TaskDto> taskDtoList = new ArrayList<TaskDto>();
+        for(Task task : taskList){
+            TaskDto taskDto = new TaskDto();
+            taskDto.setName(task.getName());
+            taskDto.setStarter(historyService.createHistoricProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId());
+            taskDto.setAssignee(task.getAssignee());
+            taskDto.setCreateTime(format.format(task.getCreateTime()));
+            taskDto.setProcessDefinitionId(task.getProcessDefinitionId());
+            taskDto.setId(task.getId());
+            taskDtoList.add(taskDto);
+        }
+        biba.setData(taskDtoList);
+        return biba;
+    }
+    public class TaskDto{
+        String name;
+        String starter;
+        String assignee;
+        String createTime;
+        String id;
+        String processDefinitionId;
+
+        public String getAssignee() {
+            return assignee;
+        }
+
+        public void setAssignee(String assignee) {
+            this.assignee = assignee;
+        }
+
+        public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getProcessDefinitionId() {
+            return processDefinitionId;
+        }
+
+        public void setProcessDefinitionId(String processDefinitionId) {
+            this.processDefinitionId = processDefinitionId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getStarter() {
+            return starter;
+        }
+
+        public void setStarter(String starter) {
+            this.starter = starter;
+        }
+    }
+
 }

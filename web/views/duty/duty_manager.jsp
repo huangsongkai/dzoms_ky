@@ -23,6 +23,7 @@
     var pageUrls ={
         url : "/DZOMS/ky/duty",  //增删改
         userUrl : "/DZOMS/ky/duty/user",  //get请求职员信息表
+        regectUrl:"/DZOMS/ky/duty/managerRegect",
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>

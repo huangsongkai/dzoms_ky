@@ -229,7 +229,7 @@ public class JobDutiesService extends BaseService{
         String department = user.getDepartment();
         if ("汤伟丽".equals(userName) || "孙大勇".equals(userName) || "刘波".equals(userName)) {
             valsMap.put("userName","王星");//动态办理人
-            activitiService.complete(taskId+"", valsMap);
+            activitiService.complete(taskId+"", valsMap, selfEvaluateDTO.getEvaluateName());
             result.setSuccess("保存成功",null);
             return result;
         }else if("计财部".equals(department)){
@@ -242,7 +242,7 @@ public class JobDutiesService extends BaseService{
             valsMap.put("userName","夏滨");//动态办理人
         }
         //userName
-        activitiService.complete(taskId+"", valsMap);
+        activitiService.complete(taskId+"", valsMap, selfEvaluateDTO.getEvaluateName());
         result.setSuccess("保存成功",null);
         return result;
     }
@@ -275,6 +275,7 @@ public class JobDutiesService extends BaseService{
             departmentEvaluateDTO.setProName(evaluateDetail.getProName());
             departmentEvaluateDTO.setZiping( evaluateDetail.getSelfScore());
             departmentEvaluateDTO.setEvaluateName(evaluateDetail.getEvaluateName());
+            departmentEvaluateDTO.setTaskId(taskId+"");
             DepartmentEvaluateDTOList.add(departmentEvaluateDTO);
         }
         result.setSuccess("查询成功",DepartmentEvaluateDTOList);
@@ -285,6 +286,7 @@ public class JobDutiesService extends BaseService{
 
     public Result savedepartmentEvaluate(SaveDepartmentEvaluateDTO saveDepartmentEvaluateDTO, Integer taskId) {
         String personId = (String) taskService.getVariable(taskId + "", "人员ID");
+        String evaluateName = (String) taskService.getVariable(taskId + "", "考核名称");
 
 
         DepartmentEvaluate deparmentEvaluate = new DepartmentEvaluate();
@@ -317,12 +319,13 @@ public class JobDutiesService extends BaseService{
         String department = user.getDepartment();
         valsMap.put("userName","考核组");//动态办理人
 
-        activitiService.complete(taskId+"", valsMap);
+        activitiService.complete(taskId+"", valsMap, evaluateName );
         result.setSuccess("保存成功",null);
         return result;
     }
 
-    public Result managerEvaluate(HttpServletRequest request, Integer taskId) {
+
+        public Result managerEvaluate(HttpServletRequest request, Integer taskId) {
         String personId = (String) taskService.getVariable(taskId + "", "人员ID");
         String evaluateName = (String) taskService.getVariable(taskId + "", "考核名称");
 
@@ -351,6 +354,7 @@ public class JobDutiesService extends BaseService{
             managerEvaluateDTO.setZiping(evaluateDetail.getSelfScore());
             managerEvaluateDTO.setBumen(evaluateDetail.getManagerScore());
             managerEvaluateDTO.setEvaluateName(evaluateDetail.getEvaluateName());
+            managerEvaluateDTO.setTaskId(taskId+"");
             managerEvaluateDTOList.add(managerEvaluateDTO);
         }
         result.setSuccess("查询成功",managerEvaluateDTOList);
@@ -396,7 +400,7 @@ public class JobDutiesService extends BaseService{
         }
         Map<String, String> valsMap = new HashMap<>();
         valsMap.put("考核小组打分",saveManagerEvaluateDTO.getTotal()+"");
-        activitiService.complete(taskId+"", valsMap);
+        activitiService.complete(taskId+"", valsMap, evaluateName);
         result.setSuccess("保存成功",null);
         return result;
     }
@@ -408,11 +412,11 @@ public class JobDutiesService extends BaseService{
         User user1 = (User) session.getAttribute("user");
         String userName = user1.getUname();
         String sql ="";
-        if("admin".equals(userName)){
+        if("admin".equals(userName) || "考核组".equals(userName)){
 
-            sql="select distinct(evaluateName) from EvaluateDetail  where groupScore is not null";
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null";
         }else{
-            sql="select distinct(evaluateName) from EvaluateDetail  where groupScore is not null and personId ="+personId;
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId ="+personId;
         }
 
         List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
@@ -474,4 +478,32 @@ public class JobDutiesService extends BaseService{
         return result;
     }
 
+
+    public Result managerEvaluateRegect(RegectDTO regectDTO, String remark) {
+        String evaluateName = (String) taskService.getVariable(regectDTO.getTaskId() + "", "考核名称");
+        List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" );
+        if(remark.equals("manager")){
+            for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
+                evaluateDetail.setManagerDate(null);
+                evaluateDetail.setManagerInputs("");
+                evaluateDetail.setManagerScore(0);
+                evaluateDetail.setManagerTotal(0.0);
+                evaluateDetail.setRegect(regectDTO.getReason());
+                evaluateDetailDao.update(evaluateDetail);
+            }
+        }else{
+            for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
+                evaluateDetail.setGroupDate(null);
+                evaluateDetail.setGroupInputs("");
+                evaluateDetail.setGroupScore(0);
+                evaluateDetail.setGroupTotal(0.0);
+                evaluateDetail.setRegect(regectDTO.getReason());
+                evaluateDetailDao.update(evaluateDetail);
+            }
+
+        }
+        activitiService.processReject(regectDTO.getTaskId()+"");
+        result.setSuccess("驳回成功",null);
+        return result;
+    }
 }

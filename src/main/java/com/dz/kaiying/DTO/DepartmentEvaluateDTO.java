@@ -21,6 +21,15 @@ public class DepartmentEvaluateDTO implements java.io.Serializable {
 	private String[] inputs;
 	private Integer ziping;
 	private String evaluateName;
+	private String taskId;
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
 
 	public String getEvaluateName() {
 		return evaluateName;
