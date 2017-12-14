@@ -3,6 +3,7 @@ package com.dz.kaiying.controller.activiti;
 
 import com.dz.kaiying.service.ActivitiService;
 import com.dz.kaiying.util.Result;
+import com.dz.module.user.User;
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.form.StartFormData;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by song on 2017/1/7.
@@ -57,16 +59,19 @@ public class ProcessController {
     @RequestMapping(value="/startForm/{processKey}", method= RequestMethod.POST)
     @ResponseBody
     public Result startForm(@PathVariable String processKey, HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute("userId");
-        request.getSession().getAttribute("userId");
-        String processInstanceId = activitiService.startForm(userId, processKey, request.getParameterMap(), request);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String userName = user.getUname();
+        String processInstanceId = activitiService.startForm(userName, processKey, request.getParameterMap(), request);
         return resultWrapper.success("activity/task_list");
     }
     @RequestMapping(value="/startForm/{processKey}", method= RequestMethod.GET)
     public String startForm1(@PathVariable String processKey, HttpServletRequest request) {
 
-        String userId = (String) request.getSession().getAttribute("userId");
-        String processInstanceId = activitiService.startForm(userId, processKey, request.getParameterMap(), request);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String userName = user.getUname();
+        String processInstanceId = activitiService.startForm(userName, processKey, request.getParameterMap(), request);
         return "activity/task_list";
     }
 

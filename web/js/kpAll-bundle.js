@@ -134,50 +134,57 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       recData: [], //从后台接收到的数据
       newKey: 1,
       evaluateName: "",
-      message: ""
+      message: "",
+      totalZiping: "",
+      regectReason: ""
     };
     _this.keyPairs = {};
     _this.key = 0;
+    _this.totalZiping = 0;
     return _this;
   }
 
   _createClass(Performance, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      //console.log(this.props.selfEvaluateUrl);
       $.ajax({
         url: this.props.selfEvaluateUrl,
-        //url:"/tables",
         type: "get",
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
           var data = data.data;
-          //console.log(data);
           var evaluateName = "";
           if (data) {
             for (var i = 0; i < data.length; i++) {
               data[i]["key"] = data[i].id;
               evaluateName = data[0].evaluateName;
             }
+            var regectReason = "";
             for (var i in data) {
               if (!this.keyPairs[data[i].id]) {
                 this.keyPairs[data[i].id] = { inputs: [], score: "" };
                 this.keyPairs[data[i].id].score = data[i].childProValue;
               }
+              if (data[i].reason) {
+                regectReason = " * 退回理由：" + data[i].reason;
+              }
+            }
+            var sum = 0;
+            for (var i in this.keyPairs) {
+              sum += parseInt(this.keyPairs[i].score);
             }
             this.setState({
               recData: data,
-              evaluateName: evaluateName
+              evaluateName: evaluateName,
+              totalZiping: sum,
+              regectReason: regectReason
             });
           } else {
             recData: [];
           }
         }.bind(this),
         error: function error() {
-          // this.setState({
-          //     message:data.message
-          // }); 
           alert("请求失败");
         }
       });
@@ -198,9 +205,25 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
   }, {
     key: 'onSelectChange',
     value: function onSelectChange(selectedRowKeys) {
-      //console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.setState({ selectedRowKeys: selectedRowKeys });
       return selectedRowKeys;
+    }
+  }, {
+    key: 'onScoreChange',
+    value: function onScoreChange(index, value) {
+      if (!value) {
+        value = 0;
+      }
+      index = this.state.recData[index].id;
+      if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: [], score: "" };
+      this.keyPairs[index].score = value;
+      var sum = 0;
+      for (var i in this.keyPairs) {
+        sum += parseInt(this.keyPairs[i].score);
+      }
+      this.setState({
+        totalZiping: sum
+      });
     }
   }, {
     key: 'onChange',
@@ -210,16 +233,6 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         this.keyPairs[index] = { inputs: [], score: "" };
       }
       if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs[seq] = value;else this.keyPairs[index].inputs[seq] = value.target.value;
-      //console.log(this.keyPairs);
-    }
-  }, {
-    key: 'onScoreChange',
-    value: function onScoreChange(index, value) {
-      //console.log(index,value)
-      index = this.state.recData[index].id;
-      if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: [], score: "" };
-      this.keyPairs[index].score = value;
-      //console.log(this.keyPairs);
     }
   }, {
     key: 'ondateChange',
@@ -323,8 +336,6 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       for (var i in recData) {
         maxValue.push(recData[i].childProValue);
       }
-      console.log(this.keyPairs);
-      //console.log(maxValue);
       var columns = [{
         title: '项目',
         dataIndex: 'proName'
@@ -371,7 +382,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
           title: "自评",
           dataIndex: "score",
           render: function render(text, record, index) {
-            return _react3.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react3.default.createElement(_inputNumber2.default, { min: 1, defaultValue: maxValue[index], onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
@@ -379,10 +390,8 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         }, {
           title: "考评组",
           dataIndex: "pfgroup"
-
         }]
       }];
-      // (key)=>this.spToInput.bind(this,key)
       var _state = this.state,
           loading = _state.loading,
           selectedRowKeys = _state.selectedRowKeys;
@@ -395,7 +404,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       var i = 0;
       return _react3.default.createElement(
         'div',
-        null,
+        { style: { marginBottom: 100 } },
         _react3.default.createElement(
           'div',
           { id: 'header' },
@@ -411,14 +420,34 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
           _react3.default.createElement(
             'span',
             { style: { marginLeft: 8 } },
-            hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
+            hasSelected ? '\u5DF2\u9009\u62E9 ' + selectedRowKeys.length + ' \u6761' : ''
           )
         ),
-        _react3.default.createElement(_table2.default, { key: this.key++, bordered: true, rowSelection: rowSelection, pagination: false, columns: columns, dataSource: this.state.recData }),
+        _react3.default.createElement(_table2.default, { bordered: true, rowSelection: rowSelection, pagination: false, columns: columns, dataSource: this.state.recData }),
         _react3.default.createElement(
-          _button2.default,
-          { type: 'primary', style: { margin: 20, float: 'right' }, onClick: this.submit.bind(this) },
-          '\u63D0\u4EA4'
+          'div',
+          { style: { margin: '10px 0' } },
+          _react3.default.createElement(
+            'span',
+            { style: { float: 'right' } },
+            '\u81EA\u8BC4\u603B\u5206\uFF1A',
+            this.state.totalZiping ? this.state.totalZiping : 0
+          )
+        ),
+        _react3.default.createElement('div', { style: { clear: 'both' } }),
+        _react3.default.createElement(
+          'div',
+          { style: { margin: '10px 0' } },
+          _react3.default.createElement(
+            _button2.default,
+            { type: 'primary', style: { margin: '0 0 0 15px', float: 'right', padding: '6px 30px' }, onClick: this.submit.bind(this) },
+            '\u63D0\u4EA4'
+          ),
+          _react3.default.createElement(
+            'p',
+            { style: { float: 'right', padding: '5px', color: 'red' } },
+            this.state.regectReason ? this.state.regectReason : ''
+          )
         )
       );
     }
@@ -1263,7 +1292,11 @@ var Bumenkp = function (_Performance) {
       newKey: 1,
       recScorezp: [],
       recInputs: [],
-      evaluateName: ""
+      evaluateName: "",
+      totalZiping: "",
+      totalBumen: "",
+      visible: false,
+      regectReason: ""
     };
     _this.keyPairs = {};
     _this.key = 0;
@@ -1273,16 +1306,13 @@ var Bumenkp = function (_Performance) {
   _createClass(Bumenkp, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      //console.log(this.props.departmentEvaluate);
       $.ajax({
         url: this.props.departmentEvaluate,
-        //url:"/bumenkaoPing",
         type: "get",
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
           var data = data.data;
-          //console.log(data); 
           var evaluateName = "";
           if (data) {
             for (var i = 0; i < data.length; i++) {
@@ -1292,10 +1322,18 @@ var Bumenkp = function (_Performance) {
             var ziping = [];
             var inputs = [];
             var bumen = [];
+            var zipingSum = 0;
+            var bumenSum = 0;
+            var regectReason = "";
             for (var i in data) {
               bumen.push(data[i].bumen);
               ziping.push(data[i].ziping);
               inputs.push(data[i].inputs);
+              zipingSum += parseInt(data[i].ziping);
+              bumenSum += parseInt(data[i].childProValue);
+              if (data[i].reason) {
+                regectReason = " * 退回理由：" + data[i].reason;
+              }
             }
             for (var i in data) {
               if (!this.keyPairs[data[i].id]) {
@@ -1308,7 +1346,10 @@ var Bumenkp = function (_Performance) {
               recScorezp: ziping,
               recInputs: inputs,
               recScorebm: bumen,
-              evaluateName: evaluateName
+              evaluateName: evaluateName,
+              totalZiping: zipingSum,
+              totalBumen: bumenSum,
+              regectReason: regectReason
             });
           } else {
             recData: "";
@@ -1322,11 +1363,22 @@ var Bumenkp = function (_Performance) {
   }, {
     key: 'onScoreChange',
     value: function onScoreChange(index, value) {
+      if (!value) {
+        value = 0;
+      }
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
         this.keyPairs[index] = "";
       }
       this.keyPairs[index] = value;
+      // console.log(this.keyPairs)
+      var sum = 0;
+      for (var i in this.keyPairs) {
+        sum += this.keyPairs[i];
+      }
+      this.setState({
+        totalBumen: sum
+      });
     }
   }, {
     key: 'spToInput',
@@ -1368,6 +1420,63 @@ var Bumenkp = function (_Performance) {
       ));
       return jsxs;
     }
+    //部门退回 start
+
+  }, {
+    key: 'returned',
+    value: function returned() {
+      this.setState({
+        visible: true
+      });
+    }
+  }, {
+    key: 'handleOk',
+    value: function handleOk(e) {
+      var _this2 = this;
+
+      this.props.form.validateFields(function (err, values) {
+        values["taskId"] = _this2.props.departmentEvaluate.substring(_this2.props.departmentEvaluate.lastIndexOf('/') + 1, _this2.props.departmentEvaluate.length);
+        if (!err) {
+          var self = _this2;
+          $.ajax({
+            type: "post",
+            url: self.props.regectUrl,
+            data: JSON.stringify(values),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function success(data) {
+              self.setState({
+                visible: false
+              });
+              if (data.status > 0) {
+                _modal2.default.success({
+                  title: '提示信息',
+                  content: '回退成功！'
+                });
+                window.location.href = self.props.jumpUrl;
+              } else {
+                _modal2.default.error({
+                  title: '提示信息',
+                  content: '回退失败！'
+                });
+              }
+            },
+            error: function error(data) {
+              alert("失败");
+            }
+          });
+        }
+      });
+    }
+  }, {
+    key: 'handleCancel',
+    value: function handleCancel(e) {
+      this.setState({
+        visible: false
+      });
+    }
+    //部门退回 end
+
   }, {
     key: 'submit',
     value: function submit() {
@@ -1380,7 +1489,7 @@ var Bumenkp = function (_Performance) {
         total += result.departmentEvaluate[i];
       }
       result["total"] = total;
-      console.log(result); //数据格式还不对
+      console.log(result);
       //发给后台的数据
       var self = this;
       $.ajax({
@@ -1408,8 +1517,12 @@ var Bumenkp = function (_Performance) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
+      var formItemLayout = {
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 }
+      };
       var recScorezp = this.state.recScorezp;
       var recData = this.state.recData;
       var maxValue = [];
@@ -1423,37 +1536,37 @@ var Bumenkp = function (_Performance) {
         title: '子项目',
         dataIndex: 'childProName',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '分数',
         dataIndex: 'childProValue',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '完成情况',
         dataIndex: 'complete',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '评分',
@@ -1462,13 +1575,13 @@ var Bumenkp = function (_Performance) {
           title: "自评",
           dataIndex: "ziping",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorezp[index], disabled: !(_this2.props.department == "ziping"), onChange: _this2.onScoreChange.bind(_this2, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: recScorezp[index], disabled: !(_this3.props.department == "ziping"), onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: maxValue[index], disabled: !(_this2.props.department == "bumen"), onChange: _this2.onScoreChange.bind(_this2, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: maxValue[index], disabled: !(_this3.props.department == "bumen"), onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "考评组",
@@ -1486,9 +1599,11 @@ var Bumenkp = function (_Performance) {
         onChange: this.onSelectChange.bind(this)
       };
       var hasSelected = selectedRowKeys.length > 0;
+      var getFieldDecorator = this.props.form.getFieldDecorator;
+
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { marginBottom: 100 } },
         _react2.default.createElement(
           'div',
           { id: 'header' },
@@ -1509,9 +1624,61 @@ var Bumenkp = function (_Performance) {
         ),
         _react2.default.createElement(_table2.default, { bordered: true, key: this.key, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
         _react2.default.createElement(
-          _button2.default,
-          { type: 'primary', style: { margin: 20, float: 'right' }, onClick: this.submit.bind(this) },
-          '\u63D0\u4EA4'
+          'div',
+          { style: { margin: '10px 0' } },
+          _react2.default.createElement(
+            'span',
+            { style: { float: 'right' } },
+            '\u90E8\u95E8\u603B\u5206\uFF1A',
+            this.state.totalBumen ? this.state.totalBumen : 0
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: { float: 'right' } },
+            '\u81EA\u8BC4\u603B\u5206\uFF1A',
+            this.state.totalZiping ? this.state.totalZiping : 0,
+            ' \xA0\xA0'
+          )
+        ),
+        _react2.default.createElement('div', { style: { clear: 'both' } }),
+        _react2.default.createElement(
+          'div',
+          { style: { margin: '10px 0' } },
+          _react2.default.createElement(
+            _button2.default,
+            { type: 'primary', style: { float: 'right', padding: '6px 30px' }, onClick: this.submit.bind(this) },
+            '\u63D0\u4EA4'
+          ),
+          _react2.default.createElement(
+            _button2.default,
+            { type: 'danger', style: { margin: '0 15px', float: 'right', padding: '6px 30px' }, onClick: this.returned.bind(this) },
+            '\u9000\u56DE'
+          ),
+          _react2.default.createElement(
+            'p',
+            { style: { float: 'right', padding: '5px', color: 'red' } },
+            this.state.regectReason ? this.state.regectReason : ''
+          )
+        ),
+        _react2.default.createElement(
+          _modal2.default,
+          {
+            title: '\u9000\u56DE',
+            style: { display: 'block' },
+            visible: this.state.visible,
+            onOk: this.handleOk.bind(this),
+            onCancel: this.handleCancel.bind(this)
+          },
+          _react2.default.createElement(
+            FormItem,
+            _extends({
+              label: '\u9000\u56DE\u7406\u7531',
+              style: { 'width': '100%' }
+            }, formItemLayout),
+            getFieldDecorator('reason', {
+              rules: [{ required: true, message: '该字段不能为空!' }]
+            })(_react2.default.createElement(TextArea, { style: { 'width': '100%' } }))
+          )
         )
       );
     }
@@ -1520,7 +1687,8 @@ var Bumenkp = function (_Performance) {
   return Bumenkp;
 }(_personalPerformance2.default);
 
-if (document.getElementById("bumenkaoPing")) _reactDom2.default.render(_react2.default.createElement(Bumenkp, _extends({}, pageUrls, { department: 'bumen' })), document.getElementById("bumenkaoPing"));
+var WrappedBumenkp = _form2.default.create()(Bumenkp);
+if (document.getElementById("bumenkaoPing")) _reactDom2.default.render(_react2.default.createElement(WrappedBumenkp, _extends({}, pageUrls, { department: 'bumen' })), document.getElementById("bumenkaoPing"));
 exports.default = Bumenkp;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
@@ -1903,7 +2071,11 @@ var Managementkp = function (_Performance) {
       recScorebm: [],
       recInputs: [],
       recKpGroup: [],
-      evaluateName: ""
+      evaluateName: "",
+      totalZiping: "",
+      totalBumen: "",
+      totalkpgroup: "",
+      visible: false
     };
     _this.keyPairs = {};
     _this.key = 0;
@@ -1916,7 +2088,6 @@ var Managementkp = function (_Performance) {
     value: async function componentDidMount() {
       var self = this;
       self.urlDate = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
-      //console.log(self.urlDate);
       $.ajax({
         //url:"/bumenkaoPing",
         url: self.props.managerEvaluate,
@@ -1932,16 +2103,21 @@ var Managementkp = function (_Performance) {
                 data[i]["key"] = data[i].id;
                 evaluateName = data[0].evaluateName;
               }
-              //console.log(data);
               var ziping = [];
               var inputs = [];
               var bumen = [];
+              var zipingSum = 0;
+              var bumenSum = 0;
+              var kpgroupSum = 0;
               var recKpGroup = [];
               for (var i in data) {
                 bumen.push(data[i].bumen);
                 ziping.push(data[i].ziping);
                 inputs.push(data[i].inputs);
                 recKpGroup.push(data[i].kpgroup);
+                zipingSum += parseInt(data[i].ziping);
+                bumenSum += parseInt(data[i].bumen);
+                kpgroupSum += parseInt(data[i].childProValue);
               }
               for (var i in data) {
                 if (!this.keyPairs[data[i].id]) {
@@ -1955,7 +2131,10 @@ var Managementkp = function (_Performance) {
                 recInputs: inputs,
                 recScorebm: bumen,
                 recKpGroup: recKpGroup,
-                evaluateName: evaluateName
+                evaluateName: evaluateName,
+                totalZiping: zipingSum,
+                totalBumen: bumenSum,
+                totalkpgroup: kpgroupSum
               });
             } else {
               recData: "";
@@ -1972,12 +2151,21 @@ var Managementkp = function (_Performance) {
   }, {
     key: 'onScoreChange',
     value: function onScoreChange(index, value) {
-      //提交的数据是数组形式    
+      if (!value) {
+        value = 0;
+      }
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
         this.keyPairs[index] = { "score": "", "remark": "" };
       }
       this.keyPairs[index].score = value;
+      var sum = 0;
+      for (var i in this.keyPairs) {
+        sum += parseInt(this.keyPairs[i].score);
+      }
+      this.setState({
+        totalkpgroup: sum
+      });
     }
   }, {
     key: 'onNoteChange',
@@ -2004,13 +2192,11 @@ var Managementkp = function (_Performance) {
         str = matched[0];
         sp = matched[1];
         lastStrLoc = matched.index + str.length;
-        //console.log(str.substring(0, str.indexOf(sp)));
         jsxs.push(_react2.default.createElement(
           'span',
           null,
           str.substring(0, str.indexOf(sp))
         ));
-        //console.log(sp);
         switch (sp) {
           case "##":
           case "#number#":
@@ -2030,10 +2216,67 @@ var Managementkp = function (_Performance) {
       ));
       return jsxs;
     }
+    //退回处理 start
+
+  }, {
+    key: 'returned',
+    value: function returned() {
+      this.setState({
+        visible: true
+      });
+    }
+  }, {
+    key: 'handleOk',
+    value: function handleOk(e) {
+      var _this2 = this;
+
+      this.props.form.validateFields(function (err, values) {
+        values["taskId"] = _this2.props.managerEvaluate.substring(_this2.props.managerEvaluate.lastIndexOf('/') + 1, _this2.props.managerEvaluate.length);
+        if (!err) {
+          var self = _this2;
+          $.ajax({
+            type: "post",
+            url: self.props.regectUrl,
+            data: JSON.stringify(values),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function success(data) {
+              self.setState({
+                visible: false
+              });
+              if (data.status > 0) {
+                _modal2.default.success({
+                  title: '提示信息',
+                  content: '回退成功！'
+                });
+                window.location.href = self.props.jumpUrl;
+              } else {
+                _modal2.default.error({
+                  title: '提示信息',
+                  content: '回退失败！'
+                });
+              }
+            },
+            error: function error(data) {
+              alert("失败");
+            }
+          });
+        }
+      });
+    }
+  }, {
+    key: 'handleCancel',
+    value: function handleCancel(e) {
+      this.setState({
+        visible: false
+      });
+    }
+    //退回处理 end
+    //正常提交
+
   }, {
     key: 'submit',
     value: function submit() {
-      console.log(this.props.jumpUrl);
       var result = {};
       result["managerEvaluate"] = this.keyPairs;
       result["evaluateName"] = this.state.evaluateName;
@@ -2042,13 +2285,11 @@ var Managementkp = function (_Performance) {
         total += result.managerEvaluate[i].score;
       }
       result["total"] = total;
-      console.log(result); //数据格式还不对
       //发给后台的数据
       var self = this;
       $.ajax({
         type: "post",
         url: self.props.managerEvaluate,
-        //url:"/test",
         data: JSON.stringify(result),
         dataType: 'json',
         contentType: 'application/json',
@@ -2070,8 +2311,12 @@ var Managementkp = function (_Performance) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
+      var formItemLayout = {
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 }
+      };
       var recScorezp = this.state.recScorezp;
       var recScorebm = this.state.recScorebm;
       var recData = this.state.recData;
@@ -2087,37 +2332,37 @@ var Managementkp = function (_Performance) {
         title: '子项目',
         dataIndex: 'childProName',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '分数',
         dataIndex: 'childProValue',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '完成情况',
         dataIndex: 'complete',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
         render: function render(text, record, index) {
-          return _this2.spToInput(text, index);
+          return _this3.spToInput(text, index);
         }
       }, {
         title: '评分',
@@ -2126,26 +2371,26 @@ var Managementkp = function (_Performance) {
           title: "自评",
           dataIndex: "ziping",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorezp[index], disabled: !(_this2.props.department == "ziping"), onChange: _this2.onScoreChange.bind(_this2, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorezp[index], disabled: !(_this3.props.department == "ziping"), onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorebm[index], disabled: !(_this2.props.department == "bumen"), onChange: _this2.onScoreChange.bind(_this2, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorebm[index], disabled: !(_this3.props.department == "bumen"), onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this2.props.department == "historykp" ? recKpGroup[index] : maxValue[index], disabled: _this2.props.department == "historykp" ? true : false, onChange: _this2.onScoreChange.bind(_this2, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? recKpGroup[index] : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }]
       }, {
         title: '备注',
         dataIndex: 'remark',
         render: function render(text, record, index) {
-          return _react2.default.createElement(TextArea, { autosize: { minRows: 1 }, style: { width: 100 }, onChange: _this2.onNoteChange.bind(_this2, index) });
+          return _react2.default.createElement(TextArea, { autosize: { minRows: 1 }, style: { width: 100 }, onChange: _this3.onNoteChange.bind(_this3, index) });
         }
       }];
       // (key)=>this.spToInput.bind(this,key)
@@ -2158,10 +2403,11 @@ var Managementkp = function (_Performance) {
         onChange: this.onSelectChange.bind(this)
       };
       var hasSelected = selectedRowKeys.length > 0;
-      var i = 0;
+      var getFieldDecorator = this.props.form.getFieldDecorator;
+
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { marginBottom: 100 } },
         _react2.default.createElement(
           'div',
           { id: 'header' },
@@ -2180,11 +2426,65 @@ var Managementkp = function (_Performance) {
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react2.default.createElement(_table2.default, { key: this.key++, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
+        _react2.default.createElement(_table2.default, { bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
         _react2.default.createElement(
-          _button2.default,
-          { type: 'primary', style: { margin: 20, float: 'right' }, disabled: this.props.department == "historykp" ? true : false, onClick: this.submit.bind(this) },
-          '\u63D0\u4EA4'
+          'div',
+          { style: { margin: '10px 0' } },
+          _react2.default.createElement(
+            'span',
+            { style: { float: 'right' } },
+            '\u8003\u8BC4\u7EC4\u603B\u5206\uFF1A',
+            this.state.totalkpgroup ? this.state.totalkpgroup : 0
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: { float: 'right' } },
+            '\u90E8\u95E8\u603B\u5206\uFF1A',
+            this.state.totalBumen ? this.state.totalBumen : 0,
+            ' \xA0\xA0'
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: { float: 'right' } },
+            '\u81EA\u8BC4\u603B\u5206\uFF1A',
+            this.state.totalZiping ? this.state.totalZiping : 0,
+            ' \xA0\xA0'
+          )
+        ),
+        _react2.default.createElement('div', { style: { clear: 'both' } }),
+        _react2.default.createElement(
+          'div',
+          { style: { margin: '10px 0' } },
+          _react2.default.createElement(
+            _button2.default,
+            { type: 'primary', style: { float: 'right', padding: '6px 30px' }, disabled: this.props.department == "historykp" ? true : false, onClick: this.submit.bind(this) },
+            '\u63D0\u4EA4'
+          ),
+          _react2.default.createElement(
+            _button2.default,
+            { type: 'danger', style: { margin: '0 15px', float: 'right', padding: '6px 30px' }, disabled: this.props.department == "historykp" ? true : false, onClick: this.returned.bind(this) },
+            '\u9000\u56DE'
+          )
+        ),
+        _react2.default.createElement(
+          _modal2.default,
+          {
+            title: '\u9000\u56DE',
+            style: { display: 'block' },
+            visible: this.state.visible,
+            onOk: this.handleOk.bind(this),
+            onCancel: this.handleCancel.bind(this)
+          },
+          _react2.default.createElement(
+            FormItem,
+            _extends({
+              label: '\u9000\u56DE\u7406\u7531',
+              style: { 'width': '100%' }
+            }, formItemLayout),
+            getFieldDecorator('reason', {
+              rules: [{ required: true, message: '该字段不能为空!' }]
+            })(_react2.default.createElement(TextArea, { style: { 'width': '100%' } }))
+          )
         )
       );
     }
@@ -2193,11 +2493,12 @@ var Managementkp = function (_Performance) {
   return Managementkp;
 }(_personalPerformance2.default);
 
+var WrappedManagementkp = _form2.default.create()(Managementkp);
 if (document.getElementById("historykp")) {
-  _reactDom2.default.render(_react2.default.createElement(Managementkp, _extends({}, pageUrls, { department: 'historykp' })), document.getElementById("historykp"));
+  _reactDom2.default.render(_react2.default.createElement(WrappedManagementkp, _extends({}, pageUrls, { department: 'historykp' })), document.getElementById("historykp"));
 }
 if (document.getElementById("managementkp")) {
-  _reactDom2.default.render(_react2.default.createElement(Managementkp, _extends({}, pageUrls, { department: 'management' })), document.getElementById("managementkp"));
+  _reactDom2.default.render(_react2.default.createElement(WrappedManagementkp, _extends({}, pageUrls, { department: 'management' })), document.getElementById("managementkp"));
 }
 exports.default = Managementkp;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
@@ -2358,7 +2659,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
   _createClass(AppModal, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      //console.log(this.props.userUrl)
       var self = this;
       $.ajax({
         url: self.props.userUrl,
@@ -2366,13 +2666,11 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-          //console.log(data);
           if (data) {
             data.map(function (i) {
               self.departments.push(i.department);
             });
             self.departments = Array.from(new Set(self.departments));
-            //console.log(self.departments);
           }
         }.bind(this),
         error: function error() {
@@ -2381,8 +2679,28 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
       });
     }
   }, {
+    key: 'getCookie',
+    value: function getCookie(name) {
+      var arr,
+          reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+      if (arr = document.cookie.match(reg)) return unescape(arr[2]);else return null;
+    }
+  }, {
     key: 'showAddModal',
     value: function showAddModal() {
+      this.props.form.resetFields();
+      var proName = this.getCookie("proName");
+      var department = this.getCookie("department");
+      var recData = this.props.recData;
+      this.props.form.setFields({
+        proName: {
+          value: proName
+        },
+        department: {
+          value: department
+        }
+      });
+      // console.log(value)
       this.setState({
         visible: true,
         type: "post"
@@ -2393,7 +2711,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
   }, {
     key: 'showUpdateModal',
     value: function showUpdateModal(type, id) {
-      console.log(type, id);
       var recData = this.props.recData;
       if (id.length > 1) {
         _modal2.default.error({
@@ -2410,8 +2727,10 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
       }
       for (var i in recData) {
         if (id[0] == recData[i].id) {
-          console.log(i);
           var updateData = this.props.form.setFields({
+            department: {
+              value: recData[i].department
+            },
             id: {
               value: recData[i].id
             },
@@ -2515,9 +2834,11 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
           _this2.setState({ loading: false, visible: false });
           _this2.tableData = values;
           tableData = _this2.tableData;
-          //测试添加
+          //测试添加start
           // recData.splice(0,0,tableData); //添到数组最前面的位置
           // this.props.transferMsg(recData);   
+          // this.props.form.resetFields();    
+          //测试添加end
         } else {
           _this2.setState({
             loading: false,
@@ -2534,7 +2855,8 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         tableData["id"] = id[i];
       }
       console.log(tableData);
-
+      document.cookie = "department" + "=" + tableData.department;
+      document.cookie = "proName" + "=" + tableData.proName;
       //后台处理  
       $.ajax({
         type: type,
@@ -2611,8 +2933,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      //console.log(this.state.newKey)
-      //console.log(this.props.url);
       var key = this.state.newKey;
       var formItemLayout = {
         labelCol: { span: 24 },
@@ -2642,6 +2962,7 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         _react3.default.createElement(
           _modal2.default,
           {
+            maskClosable: false,
             visible: this.state.visible,
             width: '1200',
             onCancel: this.handleCancel.bind(this),
@@ -2661,6 +2982,7 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
             _react3.default.createElement(
               FormItem,
               {
+
                 label: '\u90E8\u95E8',
                 style: { width: '100%', marginRight: 5 }
               },
@@ -2822,7 +3144,6 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
       // this.setState({selectedRowKeys});
       // console.log(selectedRowKeys);
       this.setState({ selectedRowKeys: selectedRowKeys });
-      console.log(selectedRowKeys);
       return selectedRowKeys;
     }
   }, {
@@ -2844,18 +3165,15 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
       var lastStrLoc;
       var jsxs = [];
       var i = 0;
-      //console.log(subject)
       while (matched = regex.exec(subject)) {
         str = matched[0];
         sp = matched[1];
         lastStrLoc = matched.index + str.length;
-        //console.log(str.substring(0, str.indexOf(sp)));
         jsxs.push(_react3.default.createElement(
           'span',
           null,
           str.substring(0, str.indexOf(sp))
         ));
-        //console.log(sp);
         switch (sp) {
           case "##":
             jsxs.push(_react3.default.createElement(TextArea, { autosize: { minRows: 1 }, defaultValue: "", onChange: this.onChange.bind(this, index, i) }));

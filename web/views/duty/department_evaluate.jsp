@@ -23,7 +23,8 @@
     var pageUrls ={
         departmentEvaluate : "/DZOMS/ky/duty/departmentEvaluate/"+"${taskId}" , //get 个人绩效请求数据
         jumpUrl:"/DZOMS/ky/activity/task/list",
-        regectUrl:"/DZOMS/ky/duty/groupRegect",
+        regectUrl:"/DZOMS/ky/duty/managerRegect",
+
 
     }
 </script>
