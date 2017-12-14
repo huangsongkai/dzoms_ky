@@ -80,7 +80,7 @@ public class HibernateSessionFactory {
      *  return session factory
      *
      */
-    public static org.hibernate.SessionFactory getSessionFactory() {
+    public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 

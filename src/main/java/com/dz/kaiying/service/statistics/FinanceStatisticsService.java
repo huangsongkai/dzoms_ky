@@ -15,8 +15,8 @@ import java.util.List;
 public class FinanceStatisticsService extends StatisticsService{
     @Autowired
     HibernateDao<CheckChargeTable, Integer> financeStatisticsDao;
-    public StatisticsService.MonthsCountDto getStatusDistribution() {
-        StatisticsService.MonthsCountDto monthsCountDto = new StatisticsService.MonthsCountDto();
+    public MonthsCountDto getStatusDistribution() {
+        MonthsCountDto monthsCountDto = new MonthsCountDto();
         String[] sqls = {
                 "select sum(planAll) from CheckChargeTable where time >= $firstDay and time<=$lastDay",
                 "select sum(thisMonthTotalOwe) from CheckChargeTable where time >= $firstDay and time<=$lastDay",
@@ -28,7 +28,7 @@ public class FinanceStatisticsService extends StatisticsService{
 
         return monthsCountDto;
     }
-    public StatisticsService.MonthsCountDto getChargeMoney() {
+    public MonthsCountDto getChargeMoney() {
         MonthsCountDto monthsCountDto = new MonthsCountDto();
         String[] sqls = {"select sum(total) from CheckChargeTable where dept='一部' and time >= $firstDay and time<$lastDay",
                 "select sum(total) from CheckChargeTable where dept='二部' and time >= $firstDay and time<$lastDay ",

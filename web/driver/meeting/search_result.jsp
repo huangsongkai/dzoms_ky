@@ -150,7 +150,7 @@ Page pg = (Page)request.getAttribute("page");
                                            <button onclick="_export()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
                                                导出</button>
                                            <button onclick="_delete()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
-                                               导出</button>
+                                               删除</button>
                                      </div>
                                 </div>
           	        	</div>

@@ -62,16 +62,16 @@ public interface ComplainDao{
 			throws HibernateException;
 
 	List<Complain> selectAllByState(Page page, Date beginDate, Date endDate,
-									int state) throws HibernateException;
+                                    int state) throws HibernateException;
 
 	List<Complain> selectAllWaitForConfirm(Page page, Date beginDate,
-										   Date endDate) throws HibernateException;
+                                           Date endDate) throws HibernateException;
 
 	int selectAllWaitForConfirmCount(Date beginDate, Date endDate)
 			throws HibernateException;
 
 	List<Complain> selectAllWaitForHandled(Page page, Date beginDate,
-										   Date endDate) throws HibernateException;
+                                           Date endDate) throws HibernateException;
 
 	int selectAllWaitForHandledCount(Date beginDate, Date endDate)
 			throws HibernateException;
@@ -83,9 +83,9 @@ public interface ComplainDao{
 			throws HibernateException;
 
 	public abstract int selectAllByStatesCount(Complain complain, Date beginDate, Date endDate,
-											   String dept, Short[] states);
+                                               String dept, Short[] states);
 
 	public abstract List<Complain> selectAllByStates(Complain complain, Page page,
-													 Date beginDate, Date endDate, String dept, Short[] states, String order);
+                                                     Date beginDate, Date endDate, String dept, Short[] states, String order);
 
 }

@@ -672,7 +672,7 @@ public class VehicleApprovalService {
 		if(vehicleApproval.getCheckType()==0){
 			if(state==6)//综合办公室审批
 			{
-				vehicleApproval.setApprovalOfficeDate(new java.util.Date());
+				vehicleApproval.setApprovalOfficeDate(new Date());
 				vehicleApproval.setState(8);
 				vehicleApproval.setOfficeName(uName);
 				vehicleApproval.setOfficeRemark(_vehicleApproval.getOfficeRemark());
@@ -737,7 +737,7 @@ public class VehicleApprovalService {
 			}
 			else if(state==3)//计财部审批
 			{
-				vehicleApproval.setApprovalFinanceDate(new java.util.Date());
+				vehicleApproval.setApprovalFinanceDate(new Date());
 				vehicleApproval.setState(4);
 				vehicleApproval.setFinanceName(uName);
 				vehicleApproval.setFinanceRemark(_vehicleApproval.getFinanceRemark());
@@ -755,7 +755,7 @@ public class VehicleApprovalService {
 					}
 				}
 
-				vehicleApproval.setFinanceManagerApprovalDate(new java.util.Date());
+				vehicleApproval.setFinanceManagerApprovalDate(new Date());
 				vehicleApproval.setState(5);
 				vehicleApproval.setFinanceManagerName(uName);
 				vehicleApproval.setFinanceManagerRemark(_vehicleApproval.getFinanceManagerRemark());
@@ -814,7 +814,7 @@ public class VehicleApprovalService {
 					return false;
 				}
 
-				vehicleApproval.setAssurerApprovalDate(new java.util.Date());
+				vehicleApproval.setAssurerApprovalDate(new Date());
 				vehicleApproval.setState(2);
 				vehicleApproval.setAssurerName(uName);
 				vehicleApproval.setAssurerRemark(_vehicleApproval.getAssurerRemark());
@@ -864,7 +864,7 @@ public class VehicleApprovalService {
 //					return false;
 //				}
 
-				vehicleApproval.setManagerApprovalDate(new java.util.Date());
+				vehicleApproval.setManagerApprovalDate(new Date());
 				vehicleApproval.setState(3);
 				vehicleApproval.setManagerName(uName);
 				vehicleApproval.setManagerRemark(_vehicleApproval.getManagerRemark());
@@ -908,7 +908,7 @@ public class VehicleApprovalService {
 //					return false;
 //				}
 
-				vehicleApproval.setApprovalDirectorDate(new java.util.Date());
+				vehicleApproval.setApprovalDirectorDate(new Date());
 				vehicleApproval.setState(6);
 				vehicleApproval.setDirectorName(uName);
 				vehicleApproval.setDirectorRemark(_vehicleApproval.getDirectorRemark());
@@ -931,13 +931,13 @@ public class VehicleApprovalService {
 				ObjectAccess.saveOrUpdate(contract);
 				vehicleApproval.setAssurerRemark(_vehicleApproval.getAssurerRemark());
 				vehicleApproval.setAssurerName(uName);
-				vehicleApproval.setAssurerApprovalDate(new java.util.Date());
+				vehicleApproval.setAssurerApprovalDate(new Date());
 				vehicleApproval.setIsapprovalAssurer(_vehicleApproval.getIsapprovalAssurer());
 				vehicleApproval.setState(3);//直接跳过收款员
 			} else if (state == 2) {
 				vehicleApproval.setCashierRemark(_vehicleApproval.getCashierRemark());
 				vehicleApproval.setCashierName(uName);
-				vehicleApproval.setCashierApprovalDate(new java.util.Date());
+				vehicleApproval.setCashierApprovalDate(new Date());
 				vehicleApproval.setState(3);
 			} else if (state == 3) {
 				String carframeNum = contract.getCarframeNum();
@@ -950,19 +950,19 @@ public class VehicleApprovalService {
 
 				vehicleApproval.setManagerRemark(_vehicleApproval.getManagerRemark());
 				vehicleApproval.setManagerName(uName);
-				vehicleApproval.setManagerApprovalDate(new java.util.Date());
+				vehicleApproval.setManagerApprovalDate(new Date());
 				vehicleApproval.setState(4);
 				vehicleApproval.setIsapprovalManager(_vehicleApproval.getIsapprovalManager());
 			}else if (state == 4) {
 				vehicleApproval.setOfficeRemark(_vehicleApproval.getOfficeRemark());
 				vehicleApproval.setOfficeName(uName);
-				vehicleApproval.setApprovalOfficeDate(new java.util.Date());
+				vehicleApproval.setApprovalOfficeDate(new Date());
 				vehicleApproval.setState(5);
 				vehicleApproval.setIsapprovalOffice(_vehicleApproval.getIsapprovalOffice());
 			} else if (state == 5) {
 				vehicleApproval.setFinanceRemark(_vehicleApproval.getFinanceRemark());
 				vehicleApproval.setFinanceName(uName);
-				vehicleApproval.setApprovalFinanceDate(new java.util.Date());
+				vehicleApproval.setApprovalFinanceDate(new Date());
 				vehicleApproval.setState(6);
 				vehicleApproval.setIsapprovalFinance(_vehicleApproval.getIsapprovalFinance());
 			} else if (state == 6) {
@@ -975,13 +975,13 @@ public class VehicleApprovalService {
 
 				vehicleApproval.setFinanceManagerRemark(_vehicleApproval.getFinanceManagerRemark());
 				vehicleApproval.setFinanceManagerName(uName);
-				vehicleApproval.setFinanceManagerApprovalDate(new java.util.Date());
+				vehicleApproval.setFinanceManagerApprovalDate(new Date());
 				vehicleApproval.setState(7);
 				vehicleApproval.setIsapprovalFinanceManager(_vehicleApproval.getIsapprovalFinanceManager());
 			}  else if (state == 7) {
 				vehicleApproval.setDirectorRemark(_vehicleApproval.getDirectorRemark());
 				vehicleApproval.setDirectorName(uName);
-				vehicleApproval.setApprovalDirectorDate(new java.util.Date());
+				vehicleApproval.setApprovalDirectorDate(new Date());
 				vehicleApproval.setState(8);
 				vehicleApproval.setIsapprovalDirector(_vehicleApproval.getIsapprovalDirector());
 
