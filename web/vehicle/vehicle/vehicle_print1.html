@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>车辆管理档案卡</title>
+  <style>
+    table {
+      border-right: 1px solid ;
+      border-bottom: 1px solid ;
+
+    }
+
+    table td {
+      border-left: 1px solid ;
+      border-top: 1px solid ;
+      text-align: center;
+    }
+
+    .A4Size{
+      width: 175mm;
+      height: 262mm;
+      border: solid hidden;
+    }
+    .text-bigger{
+      font-size: larger;
+      font-weight: bold;
+    }
+
+    @media print{
+      .no-print{
+        display: none;
+      }
+    }
+
+    @media screen {
+      .no-screen{
+        display: none;
+      }
+    }
+
+  </style>
+  <script src="https://cdn.bootcss.com/angular.js/1.6.7/angular.min.js"></script>
+</head>
+<body>
+<div class="A4Size" ng-app="myapp" ng-controller="printController">
+  <h1 style="text-align: center;">车辆管理档案卡</h1>
+  <table  width="100%">
+    <tbody>
+    <tr>
+      <td colspan="4" class="text-bigger">重大交通事故&nbsp;<a href="javascript:;" ng-click="attachAccident()"></a></td>
+    </tr>
+    <tr>
+      <td>事故时间</td>
+      <td colspan="3">事故详细情况</td>
+    </tr>
+    <tr>
+      <td >&nbsp;<br><br>&nbsp;</td>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td >&nbsp;<br><br>&nbsp;</td>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td >&nbsp;<br><br>&nbsp;</td>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="4" class="text-bigger">设施补办变更</td>
+    </tr>
+    <tr>
+      <td>设施名称</td>
+      <td>补办（变更）原因</td>
+      <td>补办时间</td>
+      <td>经办人</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    </tbody>
+  </table>
+  <div style="float: left;font-size: smaller;">倾力打造哈尔滨市出租汽车第一品牌</div>
+  <div style="float: right;font-size: smaller;">哈尔滨大众交通运输有限责任公司</div>
+</div>
+<script type="module">
+  const app = angular.module("myapp",[]);
+  app.controller("printController",function ($scope) {
+
+  });
+</script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 package com.dz.module.charge;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.*;
 
 /**
  * @author doggy

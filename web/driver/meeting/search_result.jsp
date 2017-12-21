@@ -62,6 +62,7 @@ Page pg = (Page)request.getAttribute("page");
             alert('您没有选择任何一条数据');
             return;
         }
+        if(confirm("确认删除该例会记录？"))
         $.get('/DZOMS/driver/meeting/deleteMeeting?meeting.id='+selected_val,function (data) {
             alert(data.msg);
             window.location.reload();

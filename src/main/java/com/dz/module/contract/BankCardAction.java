@@ -83,7 +83,7 @@ public class BankCardAction extends ActionSupport implements ServletRequestAware
         Transaction tx = null;
         try {
             tx = s.beginTransaction();
-            Query query = s.createQuery("delete from BankCardOfVehicle where vehicle.carframeNum=:cardId");
+            Query query = s.createQuery("delete from BankCardOfVehicle where bankCard.id=:cardId");
             query.setInteger("cardId",bankCard.getId());
             s.delete(bankCard);
             query.executeUpdate();

@@ -1,7 +1,11 @@
 package com.dz.common.test;
 
+import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.other.Timer;
+import com.dz.module.driver.DriverService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -13,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.TimerTask;
 
 public class DataTrackFilter implements Filter{
 	
@@ -68,7 +73,7 @@ public class DataTrackFilter implements Filter{
 	        }
 		}
 		
-		ctx = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext()); 
+//		ctx = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
 		
 		nextFilter.doFilter(request, response);
 	}
@@ -78,14 +83,26 @@ public class DataTrackFilter implements Filter{
 		
 	}
 
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public void init(final FilterConfig filterConfig) throws ServletException {
 		String webRootPath =filterConfig.getServletContext().getRealPath("/");  
         System.setProperty("com.dz.root" , webRootPath);
         String path =System.getProperty("com.dz.root");  
         System.out.println("com.dz.root:"+path);  
-        
+
         new Timer().startTcpServer();
-        
+
+		DataTrackFilter.ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
+
+        java.util.Timer timer = new java.util.Timer();
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+//				ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
+				DriverService driverService = DataTrackFilter.ctx.getBean(DriverService.class);
+				driverService.sendMessageToQualification();
+			}
+		};
+		timer.schedule(task,1000,86400000);
 	}
 	private String decodeStringArray(String[] ss){
 		if(ss.length == 0)

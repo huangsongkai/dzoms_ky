@@ -2,34 +2,51 @@ package com.dz.module.charge;
 
 import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.DateUtil;
+import com.dz.common.global.MD5;
 import com.dz.common.global.TimePass;
 import com.dz.common.other.ObjectAccess;
+import com.dz.common.other.ExcelOutputUtil.MyELFunctionExtend;
 import com.dz.module.charge.bank.BankItem;
+import com.dz.module.charge.bank.XmlPacket;
 import com.dz.module.charge.bank.ZhaoShangDiscount;
 import com.dz.module.contract.*;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleDao;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.jxls.area.Area;
+import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.formula.FastFormulaProcessor;
+import org.jxls.util.JxlsHelper;
+import org.jxls.util.TransformerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import sun.security.ssl.HandshakeInStream;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author doggy
@@ -40,10 +57,10 @@ import java.util.*;
 public class ChargeAction extends ActionSupport{
     private static final int EVERYPAGE = 20;
     /**
-     *
-     */
-    private static final long serialVersionUID = -8426604215311846476L;
-    private static final String STRING_RESULT = "string_result";
+	 * 
+	 */
+	private static final long serialVersionUID = -8426604215311846476L;
+	private static final String STRING_RESULT = "string_result";
     private static final String JSON_RESULT = "json_result";
     private static final String DISPATCH = "dispatch";
     @Autowired
@@ -76,7 +93,7 @@ public class ChargeAction extends ActionSupport{
     private int currentPage;
     //总页数.
     private int pageLimit;
-
+    
     private BankRecordTmp tmp;
 
     /*********************************************************************************************************************/
@@ -292,10 +309,10 @@ public class ChargeAction extends ActionSupport{
 //            currentPage = 1;
 //        Page page = PageUtil.createPage(EVERYPAGE,(int)contractService.searchAllAvaliableCount(time,department),currentPage);
 //        pageLimit = page.getTotalPage();
-
-        if(status>4||status<0)
-            status=4;
-
+    	
+    	if(status>4||status<0)
+    		status=4;
+    	
         List<CheckChargeTable> tables = service.getAllCheckChargeTable(time,department,null,status);
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
@@ -347,13 +364,13 @@ public class ChargeAction extends ActionSupport{
 //        jspPage="show/tongji.jsp";
 //        return SUCCESS;
 //    }
-
+    
     public String tongji(){
-        //不分页
-
+    	//不分页
+    	
 //        if(currentPage == 0)
 //            currentPage = 1;
-
+        
         //status 0,1,2,3,4 欠费,正常,未交,已交,全部
 //        int count;
 //        if(licenseNum != null&&licenseNum.length()==7)
@@ -364,9 +381,9 @@ public class ChargeAction extends ActionSupport{
 //        pageLimit = page.getTotalPage();
 
         List<CheckChargeTable> tables = service.getAllCheckChargeTable(time,department,licenseNum,status);
-
+        
         HttpServletRequest request = ServletActionContext.getRequest();
-
+       
         request.setAttribute("tables", tables);
         request.setAttribute("currentClearTime", time);
         jspPage="show/tongji.jsp";
@@ -411,14 +428,14 @@ public class ChargeAction extends ActionSupport{
 
         return "excel_stream";
     }
-
+	 
     //按部门获取对账表
     public String getCheckChargeTableByDept(){
         Date current = service.getCurrentTime(department);
         List<CheckChargeTable> tables = service.getAllCheckChargeTable(current,department,null,4);
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+		Map<String,Object> request = (Map<String,Object>)context.get("request");
         request.put("tables",tables);
         jspPage = "show/getCheckChargeTableByDept.jsp";
         return SUCCESS;
@@ -431,7 +448,7 @@ public class ChargeAction extends ActionSupport{
         List<CheckTablePerCar> tables = service.getACarChargeTable(licenseNum, timePass);
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+		Map<String,Object> request = (Map<String,Object>)context.get("request");
         request.put("a_car_table",tables);
         jspPage = "show/a_car_check_charge_table.jsp";
         return SUCCESS;
@@ -461,7 +478,7 @@ public class ChargeAction extends ActionSupport{
         List<BankRecord> records = service.exportBankFile(time,department);
         File f = new File("bankFile.txt");
         PrintWriter pw = new PrintWriter(f);
-
+        
         for(BankRecord br:records){
             if(br.getMoney().intValue() == 0)
                 continue;
@@ -476,7 +493,7 @@ public class ChargeAction extends ActionSupport{
                 }
             }
             if(bc == null){
-                continue;
+            	continue;
             }
             String s = br.getLicenseNum()+"|";
             s += br.getDriverName().trim()+"|";
@@ -489,7 +506,7 @@ public class ChargeAction extends ActionSupport{
         fileName = sdf.format(time)+".txt";
         fileName = new String(fileName.getBytes(),"ISO8859-1");
         txtFile = new FileInputStream(f);
-
+        
         return "stream";
     }
 
@@ -505,110 +522,110 @@ public class ChargeAction extends ActionSupport{
         jspPage = "bankfile_import.jsp";
         return SUCCESS;
     }
-
+    
     public String reimportFromTmp(){
-        BankRecordTmp tmp = ObjectAccess.getObject(BankRecordTmp.class, id);
-        if (tmp==null||tmp.getStatus()!=2) {
-            jsonObject = false;
-        }else{
-            tmp.setError(null);
-            tmp.setStatus(0);
-            ObjectAccess.saveOrUpdate(tmp);
-
-            service.fromTmpToSql();
-
-            jsonObject = true;
-        }
-
-        return JSON_RESULT;
+    	BankRecordTmp tmp = ObjectAccess.getObject(BankRecordTmp.class, id);
+    	if (tmp==null||tmp.getStatus()!=2) {
+    		jsonObject = false;
+		}else{
+			tmp.setError(null);
+			tmp.setStatus(0);
+			ObjectAccess.saveOrUpdate(tmp);
+			
+			service.fromTmpToSql();
+			
+			jsonObject = true;
+		}
+    	
+    	return JSON_RESULT;
     }
-
+    
     public String updateTmp(){
-        BankRecordTmp r = ObjectAccess.getObject(BankRecordTmp.class, tmp.getId());
-        if (r==null||r.getStatus()!=2) {
-            jsonObject = false;
-        }else{
-            r.setLicenseNum(tmp.getLicenseNum());
-            r.setDriverName(tmp.getDriverName());
-            r.setBankCardNum(tmp.getBankCardNum());
-            ObjectAccess.saveOrUpdate(r);
-            jsonObject = true;
-        }
-        return JSON_RESULT;
+    	BankRecordTmp r = ObjectAccess.getObject(BankRecordTmp.class, tmp.getId());
+    	if (r==null||r.getStatus()!=2) {
+    		jsonObject = false;
+		}else{
+			r.setLicenseNum(tmp.getLicenseNum());
+			r.setDriverName(tmp.getDriverName());
+			r.setBankCardNum(tmp.getBankCardNum());
+			ObjectAccess.saveOrUpdate(r);
+			jsonObject = true;
+		}
+    	return JSON_RESULT;
     }
-
-
-
+    
+    
+    
     public void rollbackImport() throws IOException{
-        ServletActionContext.getResponse().setContentType("text/plain");
-        ServletActionContext.getResponse().setCharacterEncoding("utf-8");
-        PrintWriter out = ServletActionContext.getResponse().getWriter();
-
-        JSONArray jarray = JSONArray.fromObject(jsonStr);
-
-        Session session  = HibernateSessionFactory.getSession();
-        Transaction tx = null;
-        String msg = "操作成功！";
-        int fid = 0 ;
-        try{
-            tx = session.beginTransaction();
-            for(int i=0 ;i<jarray.size();i++){
-                int id = Integer.parseInt(jarray.get(i).toString());
-                BankRecordTmp bt = (BankRecordTmp) session.get(BankRecordTmp.class, id);
-                String licenseNum = bt.getLicenseNum();
-                fid = bt.getFid();
-                Query q_v = session.createQuery("select carframeNum from Vehicle where licenseNum=:carnum");
-                q_v.setString("carnum", licenseNum);
-                q_v.setMaxResults(1);
-                String carframeNum = q_v.uniqueResult().toString();
-                Query q_dept = session.createQuery("select branchFirm from Contract where carframeNum=:id ");
-                q_dept.setString("id", carframeNum);
-                q_dept.setMaxResults(1);
-                String dept = q_dept.uniqueResult().toString();
-                Query query = session.createQuery("from ClearTime where department = :dept");
-                query.setString("dept",dept);
-                Object obj = query.uniqueResult();
-                ClearTime ct = (ClearTime)obj;
-                Date current = ct.getCurrent();
-                if(isYearAndMonth(current,bt.getInTime())){
-                    Query q_c = session.createQuery("delete from ChargePlan where feeType='add_bank' and comment=:id");
-                    q_c.setString("id", ""+id);
-                    q_c.executeUpdate();
-                    session.delete(bt);
-                }else{
-                    msg="已结账的数据不能回退！";
-                }
-            }
-
-            Query q_f = session.createQuery("select count(*) from BankRecordTmp where fid=:id ");
-            q_f.setInteger("id", fid);
-            long ct = (long) q_f.uniqueResult();
-            if(ct==0){
-                BankFile bf = (BankFile) session.get(BankFile.class, fid);
-                session.delete(bf);
-            }
-            tx.commit();
-        }catch(HibernateException ex){
-            ex.printStackTrace();
-            if(tx!=null){
-                tx.rollback();
-            }
-            msg = "回退失败，错误信息："+ex.getMessage();
-        }finally{
-            HibernateSessionFactory.closeSession();
-        }
-
-        out.print(msg);
-
-        out.flush();
-        out.close();
+    	ServletActionContext.getResponse().setContentType("text/plain");
+		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
+		PrintWriter out = ServletActionContext.getResponse().getWriter();
+		        
+		JSONArray jarray = JSONArray.fromObject(jsonStr);
+		
+		Session session  = HibernateSessionFactory.getSession();
+		Transaction tx = null;
+		String msg = "操作成功！";
+		int fid = 0 ;
+		try{
+			tx = session.beginTransaction();
+			for(int i=0 ;i<jarray.size();i++){
+				int id = Integer.parseInt(jarray.get(i).toString());
+				BankRecordTmp bt = (BankRecordTmp) session.get(BankRecordTmp.class, id);
+				String licenseNum = bt.getLicenseNum();
+				fid = bt.getFid();
+				Query q_v = session.createQuery("select carframeNum from Vehicle where licenseNum=:carnum");
+				q_v.setString("carnum", licenseNum);
+				q_v.setMaxResults(1);
+				String carframeNum = q_v.uniqueResult().toString();
+				Query q_dept = session.createQuery("select branchFirm from Contract where carframeNum=:id ");
+				q_dept.setString("id", carframeNum);
+				q_dept.setMaxResults(1);
+				String dept = q_dept.uniqueResult().toString();
+				Query query = session.createQuery("from ClearTime where department = :dept");
+		        query.setString("dept",dept);
+		        Object obj = query.uniqueResult();
+		        ClearTime ct = (ClearTime)obj;
+		        Date current = ct.getCurrent();
+		        if(isYearAndMonth(current,bt.getInTime())){
+		        	Query q_c = session.createQuery("delete from ChargePlan where feeType='add_bank' and comment=:id");
+		        	q_c.setString("id", ""+id);
+		        	q_c.executeUpdate();
+		        	session.delete(bt);
+		        }else{
+		        	msg="已结账的数据不能回退！";
+		        }
+			}
+			
+			Query q_f = session.createQuery("select count(*) from BankRecordTmp where fid=:id ");
+			q_f.setInteger("id", fid);
+			long ct = (long) q_f.uniqueResult();
+			if(ct==0){
+				BankFile bf = (BankFile) session.get(BankFile.class, fid);
+				session.delete(bf);
+			}
+			tx.commit();
+		}catch(HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+			msg = "回退失败，错误信息："+ex.getMessage();
+		}finally{
+			HibernateSessionFactory.closeSession();
+		}
+		
+		out.print(msg);
+		
+		out.flush();
+		out.close();
     }
-
+    
     //显示数据
     public String showBankRecords(){
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+		Map<String,Object> request = (Map<String,Object>)context.get("request");
         List<BankRecordTmp> brts = service.getBankRecordByTimeAndStatus(time,status);
         request.put("tables",brts);
 
@@ -625,7 +642,7 @@ public class ChargeAction extends ActionSupport{
     public String getAMonthGetMoney(){
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+		Map<String,Object> request = (Map<String,Object>)context.get("request");
         List<ChargePlan> plans = service.getAMonthRecords(licenseNum,time);
         CollectionUtils.filter(plans, new Predicate() {
             @Override
@@ -644,7 +661,7 @@ public class ChargeAction extends ActionSupport{
     public String finalClear(){
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+		Map<String,Object> request = (Map<String,Object>)context.get("request");
         boolean result = service.finalClearAll(department);
         if(result){
             message = "操作成功";
@@ -663,18 +680,18 @@ public class ChargeAction extends ActionSupport{
 //        List<BankRecord> unClears = service.getUnClearRecord(date,department,null);
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+		Map<String,Object> request = (Map<String,Object>)context.get("request");
         jspPage = "showClearPage.jsp";
 //        request.put("unClears",unClears);
         request.put("message",request.get("message"));
         return SUCCESS;
     }
-
+    
     public String getCurrentTime(){
-        if("全部".equals(department))
-            department = "total";
-        jsonObject = service.getCurrentTime(department);
-        return JSON_RESULT;
+    	if("全部".equals(department))
+    		department = "total";
+    	jsonObject = service.getCurrentTime(department);
+    	return JSON_RESULT;
     }
 
     public String getCurrentMonth(){
@@ -703,68 +720,68 @@ public class ChargeAction extends ActionSupport{
         if(year1 == year2 && month1 >= month2) return true;
         return false;
     }
-
+    
     private boolean useContractEnd;
     @Autowired
     private VehicleDao vehicleDao;
     @Autowired
     private ContractDao contractDao;
-
+   
     public void setVehicleDao(VehicleDao vehicleDao) {
-        this.vehicleDao = vehicleDao;
-    }
-
+		this.vehicleDao = vehicleDao;
+	}
+    
 
     public void setContractService(ContractService contractService) {
-        this.contractService = contractService;
-    }
+		this.contractService = contractService;
+	}
 
 
-    public void setContractDao(ContractDao contractDao) {
-        this.contractDao = contractDao;
-    }
+	public void setContractDao(ContractDao contractDao) {
+		this.contractDao = contractDao;
+	}
 
 
-    //展示的表格！！！
+	//展示的表格！！！
     //单车多月的台帐
-    public String singleCarAndMuiltyMonthCheckShow(){
+	public String singleCarAndMuiltyMonthCheckShow(){
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
         Map<String,Object> request = (Map<String,Object>)context.get("request");
         List<CheckChargeTable> tables = new ArrayList<>();
-
+        
         block:{
-            if(timePass == null || licenseNum == null || timePass.getStartTime() == null){
+        if(timePass == null || licenseNum == null || timePass.getStartTime() == null){
 
-            }
-            else{
-                Date start = timePass.getStartTime();
-                Date end = timePass.getEndTime();
-
-                if(useContractEnd||timePass.getEndTime()==null){
-                    Vehicle vehicle = new Vehicle();
-                    vehicle.setLicenseNum(licenseNum);
-                    vehicle = vehicleDao.selectByLicense(vehicle);
-                    if(vehicle == null){
-                        break block;
-                    }
-                    Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),timePass.getStartTime());
-                    if(contract == null){
-                        break block;
-                    }
-                    end = contract.getContractEndDate();
+        }
+        else{
+            Date start = timePass.getStartTime();
+            Date end = timePass.getEndTime();
+            
+            if(useContractEnd||timePass.getEndTime()==null){
+            	Vehicle vehicle = new Vehicle();
+                vehicle.setLicenseNum(licenseNum);
+                vehicle = vehicleDao.selectByLicense(vehicle);
+                if(vehicle == null){
+                   break block;
                 }
-
-
-                while(isYM1BGYM2(end, start)){
-                    CheckChargeTable cct = service.getSingleCarAndMonthCheckTableByLicenseNum(licenseNum, start);
-                    if(cct != null){
-                        tables.add(cct);
-                    }
-                    start = DateUtil.getNextMonth(start);
+                Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),timePass.getStartTime());
+                if(contract == null){
+                	break block;
                 }
-
+            	end = contract.getContractEndDate();
             }
+            
+            
+            while(isYM1BGYM2(end, start)){
+                CheckChargeTable cct = service.getSingleCarAndMonthCheckTableByLicenseNum(licenseNum, start);
+                if(cct != null){
+                    tables.add(cct);
+                }
+                start = DateUtil.getNextMonth(start);
+            }
+            
+        }
         }
         jspPage = "show/singleCarAndMuiltyMonthCheckShow.jsp";
         request.put("tables",tables);
@@ -782,15 +799,15 @@ public class ChargeAction extends ActionSupport{
         else{
             while(isYM1BGYM2(end, start)){
                 List<ChargePlan> plans = service.getAMonthRecords(licenseNum, start);
-
+                
                 if (start.getDate()>26) {
-                    Calendar dt = Calendar.getInstance();
-                    dt.setTime(start);
-                    dt.add(Calendar.MONTH, 1);
-                    plans = service.getAMonthRecords(licenseNum, dt.getTime());
-                } else {
-                    plans = service.getAMonthRecords(licenseNum, start);
-                }
+                	Calendar dt = Calendar.getInstance();
+                	dt.setTime(start);
+                	dt.add(Calendar.MONTH, 1);
+                	plans = service.getAMonthRecords(licenseNum, dt.getTime());
+				} else {
+					plans = service.getAMonthRecords(licenseNum, start);
+				}
 
                 CollectionUtils.filter(plans,new Predicate(){
                     @Override
@@ -940,42 +957,42 @@ public class ChargeAction extends ActionSupport{
         if(isFileExisted == true){
             message = "导入文件失败，该文件已导入！";
         }else{
-            JSONArray json = JSONArray.fromObject(jsonStr);
+        	 JSONArray json = JSONArray.fromObject(jsonStr);
 //           json.toArray();
-            @SuppressWarnings("unchecked")
-            List<BankRecord> brs= (List<BankRecord>) CollectionUtils.collect(json, new Transformer() {
-                @Override
-                public Object transform(Object obj) {
-                    JSONObject jso = (JSONObject) obj;
-                    BankRecord ai = new BankRecord();
-                    ai.setDriverName(jso.getString("name"));
-                    ai.setLicenseNum(jso.getString("licenseNum"));
-                    ai.setMoney(BigDecimal.valueOf(Double.parseDouble(jso.getString("Money"))));
-                    Map<String,BankCard> map = new HashMap<String, BankCard>();
-                    BankCard bc = new BankCard();
-                    bc.setCardNumber(jso.getString("cardNum"));
-                    bc.setCardClass("哈尔滨银行");
+           @SuppressWarnings("unchecked")
+           List<BankRecord> brs= (List<BankRecord>) CollectionUtils.collect(json, new Transformer() {
+               @Override
+               public Object transform(Object obj) {
+                   JSONObject jso = (JSONObject) obj;
+                   BankRecord ai = new BankRecord();
+                   ai.setDriverName(jso.getString("name"));
+                   ai.setLicenseNum(jso.getString("licenseNum"));
+                   ai.setMoney(BigDecimal.valueOf(Double.parseDouble(jso.getString("Money"))));
+                   Map<String,BankCard> map = new HashMap<String, BankCard>();
+                   BankCard bc = new BankCard();
+                   bc.setCardNumber(jso.getString("cardNum"));
+                   bc.setCardClass("哈尔滨银行");
 //                   System.out.println("bc --> "+bc.getCardNumber());
-                    BankCardOfVehicle bv = new BankCardOfVehicle();
-                    bv.setBankCard(bc);
-                    ai.setBankCards(Arrays.asList(bv));
-                    return ai;
-                }
-            });
-
-            Calendar nm = Calendar.getInstance();
-            nm.setTime(time);
-            if(nm.get(Calendar.DATE)>26){
-                nm.add(Calendar.MONTH, 1);
-            }
-            nm.set(Calendar.DATE, 1);
-            int fid = service.writeMd5(filename,nm.getTime());
-
+                   BankCardOfVehicle bv = new BankCardOfVehicle();
+                   bv.setBankCard(bc);
+                   ai.setBankCards(Arrays.asList(bv));
+                   return ai;
+               }
+           });
+           
+           Calendar nm = Calendar.getInstance();
+           nm.setTime(time);
+           if(nm.get(Calendar.DATE)>26){
+           	nm.add(Calendar.MONTH, 1);
+           }
+           nm.set(Calendar.DATE, 1);
+           int fid = service.writeMd5(filename,nm.getTime());
+           
             service.importFile(brs,recorder,fid);
             message = " 数据导入成功\n";
 //            service.writeMd5(md5Str);
-
-
+            
+            
         }
         request.put("message",message);
         return SUCCESS;
@@ -998,7 +1015,7 @@ public class ChargeAction extends ActionSupport{
 //                }
 //            }
 //        });
-
+        
         for(BatchPlan bp:bps){
             String type = bp.getFeeType();
             if(type.equals("plan_base_contract")){
@@ -1019,18 +1036,18 @@ public class ChargeAction extends ActionSupport{
                 bp.setFeeType("其他费用");
                 bp.setFee(bp.getFee().negate());
             }
-
+           
         }
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
         Map<String,Object> request = (Map<String,Object>)context.get("request");
         request.put("bps",bps);
 //        System.out.println(bps);
-
+        
         Vehicle vehicle = new Vehicle();
         vehicle.setLicenseNum(licenseNum);
         Vehicle v = vehicleDao.selectByLicense(vehicle);
-
+        
         if(v != null){
             Contract contract = contractDao.selectByCarId(v.getCarframeNum());
             request.put("contract",contract);
@@ -1098,7 +1115,7 @@ public class ChargeAction extends ActionSupport{
             }
         }else if("charge_add".equals(visitType)){
             if(success){
-                request.put("chargePlan", chargePlan);
+            	request.put("chargePlan", chargePlan);
                 jspPage = "charge_add.jsp";
                 message = "添加收入成功。";
             }else{
@@ -1362,45 +1379,45 @@ public class ChargeAction extends ActionSupport{
 
 
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
 
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
 
 
-    public BankRecordTmp getTmp() {
-        return tmp;
-    }
+	public BankRecordTmp getTmp() {
+		return tmp;
+	}
 
 
 
-    public void setTmp(BankRecordTmp tmp) {
-        this.tmp = tmp;
-    }
+	public void setTmp(BankRecordTmp tmp) {
+		this.tmp = tmp;
+	}
 
 
-    public boolean getUseContractEnd() {
-        return useContractEnd;
-    }
+	public boolean getUseContractEnd() {
+		return useContractEnd;
+	}
 
 
-    public void setUseContractEnd(boolean useContractEnd) {
-        this.useContractEnd = useContractEnd;
-    }
+	public void setUseContractEnd(boolean useContractEnd) {
+		this.useContractEnd = useContractEnd;
+	}
 
 
-    public String getFilename() {
-        return filename;
-    }
+	public String getFilename() {
+		return filename;
+	}
 
 
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 }

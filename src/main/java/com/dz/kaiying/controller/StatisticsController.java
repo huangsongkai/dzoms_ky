@@ -92,7 +92,7 @@ public class StatisticsController extends BaseController{
         String[] states = {"待开业新车","运营中","已报废","待开业二手车","待审核的新车"};
         List<ValuePairDTO> distList = new ArrayList<ValuePairDTO>();
         for(int i = 0; i<states.length; i++){
-            distList.add(new ValuePairDTO<String, Integer>(states[i], counts[i]));
+             distList.add(new ValuePairDTO<String, Integer>(states[i], counts[i]));
         }
         return success("", distList);
     }

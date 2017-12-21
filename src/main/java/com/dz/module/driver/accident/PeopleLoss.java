@@ -1,7 +1,8 @@
 package com.dz.module.driver.accident;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="peopleloss",catalog = "ky_dzomsdb")

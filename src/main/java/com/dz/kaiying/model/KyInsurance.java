@@ -13,43 +13,43 @@ public class KyInsurance implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id" )
     private Integer id;
 
     @Column(name = "tbdh")
     private String tbdh; //投保单号
 
-    @Column(name = "bdh")
+    @Column(name = "bdh" )
     private String bdh; //保单号
 
     @Column(name = "tdh")
     private String tdh; //团单号
 
-    @Column(name = "cph") //车牌号
+    @Column(name = "cph" ) //车牌号
     private String cph;
 
     @Column(name = "bbxr")//被保险人
     private String bbxr;
 
-    @Column(name = "bxqq") //保险启期
+    @Column(name = "bxqq" ) //保险启期
     private String bxqq;
 
-    @Column(name = "bxzq") //保险止期
+    @Column(name = "bxzq" ) //保险止期
     private String bxzq;
 
     @Column(name = "czr") //操作人
     private String czr;
 
-    @Column(name = "zbe") //总保额
+    @Column(name = "zbe" ) //总保额
     private String zbe;
 
-    @Column(name = "zbf") //总保费
+    @Column(name = "zbf" ) //总保费
     private String zbf;
 
-    @Column(name = "lrsj") //录入时间
+    @Column(name = "lrsj" ) //录入时间
     private String lrsj;
 
-    @Column(name = "create_date") //创建时间
+    @Column(name = "create_date" ) //创建时间
     private Date createDate;
 
 

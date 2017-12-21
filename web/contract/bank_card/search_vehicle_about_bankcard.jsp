@@ -140,8 +140,7 @@
                                     </select></td>
 
                                     <td style="border-top: 0px;">车牌号</td>
-                                    <td style="
-                                    border-top: 0px;">
+                                    <td style="border-top: 0px;">
                                         <input type="text" id="license_num"
                                                name="vehicle.licenseNum" class="input"
                                                value="黑A" onfocus="carFocus()"/>

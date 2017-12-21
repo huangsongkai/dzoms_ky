@@ -86,6 +86,21 @@
             $("[name='vehicleSele']").attr("target",target);
         }
 
+        function _toPrint1() {
+            var selected_val = $("input[name='cbx']:checked").val();
+            if(selected_val==null||selected_val.length==0){
+                alert("请选择一条数据");
+                return;
+            }
+            var url = "/DZOMS/vehicle/vehicle/vehicle_print2.jsp?id="+selected_val;
+            window.open(url, "_blank");
+        }
+
+        function _toPrint2() {
+            var url = "/DZOMS/vehicle/vehicle/vehicle_print1.jsp";
+            window.open(url, "_blank");
+        }
+
         function _detail(){
             var selected_val = $("input[name='cbx']:checked").val();
             var url = "/DZOMS/vehicle/vehiclePreshow?vehicle.carframeNum="+selected_val;
@@ -168,14 +183,16 @@
                                 导出</button>
                             <!-- <button  onclick="_toPrint()" type="button" class="button icon-print text-green" style="line-height: 6px;">
                                                        打印</button>-->
+                            <button onclick="_toPrint1()" type="button" class="button icon-print text-blue" style="line-height: 6px;">
+                                打印档案卡(第一页)</button>
+                            <button onclick="_toPrint2()" type="button" class="button icon-print text-blue" style="line-height: 6px;">
+                                打印档案卡(第二页)</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="panel-body">
-
-
             <table class="table table-striped table-bordered table-hover">
                 <tr>
                     <th>选择</th>

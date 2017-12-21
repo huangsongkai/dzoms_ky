@@ -18,8 +18,10 @@ import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleService;
 import com.opensymphony.xwork2.ActionContext;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
@@ -30,6 +32,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.javatuples.Triplet;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -733,72 +737,108 @@ public class DriverAction extends BaseAction{
 		//v = vehicleService.selectById(v);
 		Vehicle v = ObjectAccess.getObject(Vehicle.class, d.getBusinessApplyCarframeNum());
 
-		d.setBusinessReciveTime(driver.getBusinessReciveTime());
-		d.setBusinessReciveRegistrant(driver.getBusinessReciveRegistrant());
-		d.setBusinessReciveRegistTime(driver.getBusinessReciveRegistTime());
-		d.setEmployeeNum(driver.getEmployeeNum());
-		d.setIsInCar(true);
-		d.setBusinessApplyState(2);
-		d.setDriverClass(d.getBusinessApplyDriverClass());
-		d.setCarframeNum(v.getCarframeNum());
-		d.setDept(v.getDept());
-
-		ObjectAccess.saveOrUpdate(d);
-		//driverService.driverUpdate(d,families);
-
-		if("主驾".equals(d.getDriverClass())){
-			v.setFirstDriver(d.getIdNum());
-			if(d.getIdNum().equals(v.getSecondDriver())){
-				v.setSecondDriver(null);
-			}
-			if(d.getIdNum().equals(v.getThirdDriver())){
-				v.setThirdDriver(null);
-			}
-			if(d.getIdNum().equals(v.getTempDriver())){
-				v.setTempDriver(null);
-			}
-		}else if("副驾".equals(d.getDriverClass())){
-			v.setSecondDriver(d.getIdNum());
-			if(d.getIdNum().equals(v.getFirstDriver())){
-				v.setFirstDriver(null);
-			}
-			if(d.getIdNum().equals(v.getThirdDriver())){
-				v.setThirdDriver(null);
-			}
-			if(d.getIdNum().equals(v.getTempDriver())){
-				v.setTempDriver(null);
-			}
-		}else if("三驾".equals(d.getDriverClass())){
-			v.setThirdDriver(d.getIdNum());
-			if(d.getIdNum().equals(v.getFirstDriver())){
-				v.setFirstDriver(null);
-			}
-			if(d.getIdNum().equals(v.getSecondDriver())){
-				v.setSecondDriver(null);
-			}
-			if(d.getIdNum().equals(v.getTempDriver())){
-				v.setTempDriver(null);
-			}
-		}else if("临驾".equals(d.getDriverClass())){
-			v.setTempDriver(d.getIdNum());
+		String rawIdnum = null;
+		switch (d.getBusinessApplyDriverClass()){
+			case "主驾":
+				rawIdnum = v.getFirstDriver();
+				break;
+			case "副驾":
+				rawIdnum = v.getSecondDriver();
+				break;
+			case "三驾":
+				rawIdnum = v.getThirdDriver();
+		}
+		if(StringUtils.isNotEmpty(rawIdnum)){
+			Driver rd = ObjectAccess.getObject(Driver.class,rawIdnum);
+			request.setAttribute("msgStr",
+					String.format("%s驾驶员%s,%s未下车，请先进行下车操作",v.getLicenseNum(),rd.getName(),rd.getIdNum()));
+			return SUCCESS;
 		}
 
-		//vehicleService.updateVehicle(v);
-		ObjectAccess.saveOrUpdate(v);
+		Session s = null;
+		Transaction tx = null;
 
-		String basePath = System.getProperty("com.dz.root") +"data/driver/"+driver.getIdNum();
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			d.setBusinessReciveTime(driver.getBusinessReciveTime());
+			d.setBusinessReciveRegistrant(driver.getBusinessReciveRegistrant());
+			d.setBusinessReciveRegistTime(driver.getBusinessReciveRegistTime());
+			d.setEmployeeNum(driver.getEmployeeNum());
+			d.setIsInCar(true);
+			d.setBusinessApplyState(2);
+			d.setDriverClass(d.getBusinessApplyDriverClass());
+			d.setCarframeNum(v.getCarframeNum());
+			d.setDept(v.getDept());
+
+			s.saveOrUpdate(d);
+			//driverService.driverUpdate(d,families);
+
+			if("主驾".equals(d.getDriverClass())){
+				v.setFirstDriver(d.getIdNum());
+				if(d.getIdNum().equals(v.getSecondDriver())){
+					v.setSecondDriver(null);
+				}
+				if(d.getIdNum().equals(v.getThirdDriver())){
+					v.setThirdDriver(null);
+				}
+				if(d.getIdNum().equals(v.getTempDriver())){
+					v.setTempDriver(null);
+				}
+			}else if("副驾".equals(d.getDriverClass())){
+				v.setSecondDriver(d.getIdNum());
+				if(d.getIdNum().equals(v.getFirstDriver())){
+					v.setFirstDriver(null);
+				}
+				if(d.getIdNum().equals(v.getThirdDriver())){
+					v.setThirdDriver(null);
+				}
+				if(d.getIdNum().equals(v.getTempDriver())){
+					v.setTempDriver(null);
+				}
+			}else if("三驾".equals(d.getDriverClass())){
+				v.setThirdDriver(d.getIdNum());
+				if(d.getIdNum().equals(v.getFirstDriver())){
+					v.setFirstDriver(null);
+				}
+				if(d.getIdNum().equals(v.getSecondDriver())){
+					v.setSecondDriver(null);
+				}
+				if(d.getIdNum().equals(v.getTempDriver())){
+					v.setTempDriver(null);
+				}
+			}else if("临驾".equals(d.getDriverClass())){
+				v.setTempDriver(d.getIdNum());
+			}
+
+			//vehicleService.updateVehicle(v);
+			s.saveOrUpdate(v);
+
+			String basePath = System.getProperty("com.dz.root") +"data/driver/"+driver.getIdNum();
 
 //	System.out.println(drive_vehicle_photo);
 //	System.out.println(drive_photo);
 
-		if(StringUtils.length(drive_vehicle_photo)==30)
-			FileUploadUtil.store(drive_vehicle_photo,new File(basePath,"drive_vehicle_photo.jpg"));
-		if(StringUtils.length(drive_photo)==30)
-			FileUploadUtil.store(drive_photo,new File(basePath,"photo.jpg"));
+			if(StringUtils.length(drive_vehicle_photo)==30)
+				FileUploadUtil.store(drive_vehicle_photo,new File(basePath,"drive_vehicle_photo.jpg"));
+			if(StringUtils.length(drive_photo)==30)
+				FileUploadUtil.store(drive_photo,new File(basePath,"photo.jpg"));
 
-		Driverincar record = ObjectAccess.execute(String.format("from Driverincar where carframeNum='%s' and idNumber='%s' and operation='证照申请' and finished=false", v.getCarframeNum(),d.getIdNum()));
-		record.setFinished(true);
-		ObjectAccess.saveOrUpdate(record);
+			Driverincar record = ObjectAccess.executeSingle(String.format("from Driverincar where carframeNum='%s' and idNumber='%s' and operation='证照申请' and finished=false", v.getCarframeNum(),d.getIdNum()),s);
+			record.setFinished(true);
+			s.saveOrUpdate(record);
+
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
+
 		//record = new Driverincar(d.getCarframeNum(),d.getIdNum(),"上车",d.getBusinessReciveTime());
 		//driverService.addDriverInCarRecord(record);
 		return SUCCESS;

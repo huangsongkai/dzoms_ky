@@ -98,10 +98,24 @@
 
         function _toPrintApply(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
+
             var url = "/DZOMS/driver/driverPreprint_apply?driver.idNum="+selected_val;
             window.open(url,"驾驶员申请表打印",'width=800,height=600,resizable=yes,scrollbars=yes');
+        }
+
+        function _toPrintContract() {
+            var selected_val = $("input[name='cbx']:checked").val();
+            if(selected_val==undefined){
+                alert('您没有选择任何一条数据');
+                return;
+            }
+
+            var url = "/DZOMS/driver/driver_print_contract.jsp?idNum="+selected_val;
+            window.open(url,"_blank");
         }
 
         function showDetail(id){
@@ -182,6 +196,8 @@
                                 打印申请表</button>
                             <button  onclick="_toPrintApply()" type="button" class="button icon-print text-green" style="line-height: 6px;">
                                 打印录入表</button>
+                            <button  onclick="_toPrintContract()" type="button" class="button icon-print text-green" style="line-height: 6px;">
+                                打印驾驶员聘用协议</button>
                         </div>
                     </div>
                 </div>
@@ -200,6 +216,7 @@
                     <th class="sex                     selected_able">性别        </th>
                     <th class="driverClass selected_able">驾驶员属性</th>
                     <th class="phoneNum1 selected_able">电话号码</th>
+                    <th class="qualificationNum        selected_able">资格证号(旧)</th>
                     <th class="qualificationNum        selected_able">资格证号    </th>
                     <th class="idNum                   selected_able">身份证号    </th>
                     <th class="employeeNum             selected_able">员工号      </th>
@@ -221,6 +238,7 @@
                             <td class="sex                selected_able"><s:property value="%{#v.sex?'男':'女'}"/></td>
                             <td class="driverClass selected_able"><s:property value="%{#v.driverClass}"/></td>
                             <td class="phoneNum1 selected_able"><s:property value="%{#v.phoneNum1}"/></td>
+                            <td class="qualificationNum   selected_able"><s:property value='%{#v.qualificationNo}'/></td>
                             <td class="qualificationNum   selected_able"><s:property value='%{#v.qualificationNum}'/></td>
                             <td class="idNum              selected_able"><s:property value='%{#v.idNum}'/></td>
                             <td class="employeeNum        selected_able"><s:property value='%{#v.employeeNum}'/></td>

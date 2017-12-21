@@ -4,9 +4,9 @@ import com.dz.common.factory.HibernateSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.*;
 
 import static com.dz.common.other.TimeComm.convertDate;
 import static javax.persistence.GenerationType.IDENTITY;

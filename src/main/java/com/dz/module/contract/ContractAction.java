@@ -1,7 +1,24 @@
 package com.dz.module.contract;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.BaseAction;
+import com.dz.common.global.DateUtil;
 import com.dz.common.global.Page;
 import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.PageUtil;
@@ -16,8 +33,10 @@ import com.dz.module.user.message.Message;
 import com.dz.module.user.message.MessageToUser;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleService;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.BooleanUtils;
@@ -30,15 +49,6 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 @Controller
 @Scope("prototype")
 public class ContractAction extends BaseAction {
@@ -417,9 +427,9 @@ public class ContractAction extends BaseAction {
 					"carframeNum",
 					"carNum",
 					"contractFrom",
-					"rentFirst",
-					"rent",
-					"feeAlter",
+//					"rentFirst",
+//					"rent",
+//					"feeAlter",
 					"contractBeginDate",
 					"contractEndDate",
 					"isRenew",
@@ -450,9 +460,6 @@ public class ContractAction extends BaseAction {
 		} finally{
 			HibernateSessionFactory.closeSession();
 		}
-
-
-
 
 		return SUCCESS;
 	}

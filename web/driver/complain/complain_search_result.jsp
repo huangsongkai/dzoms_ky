@@ -411,19 +411,4 @@ Page pg = (Page)request.getAttribute("page");
 
 </div>
 </body>
- <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
-    </script>
 </html>

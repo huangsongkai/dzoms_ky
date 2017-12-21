@@ -40,6 +40,7 @@ $(document).ready(function(){
 					$("#search_form input[name='states']:checked").prop("readonly",true);
 				}else{
 					$("#search_form input[name='states']:checked").removeAttr("disabled");
+					$("#search_form input[name='states']:checked").removeAttr("readonly");
 				}
 			});
 			
@@ -159,32 +160,4 @@ $(document).ready(function(){
 </div>
     <script type="text/javascript" src="/DZOMS/res/js/DateTimeHelper.js" ></script>
 </body>
-
- <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    	function iFrameHeight() {
-	try{
-var ifm= document.getElementById("result_form");   
-var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
-
-$(document).ready(function(){
-	window.setInterval('iFrameHeight();',3600);
-});
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
-    </script>
 </html>

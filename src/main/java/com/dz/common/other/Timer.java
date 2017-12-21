@@ -1,26 +1,32 @@
 package com.dz.common.other;
 
-import com.dz.common.factory.HibernateSessionFactory;
-import com.dz.module.vehicle.Vehicle;
-import com.opensymphony.xwork2.ActionContext;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.FileUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.joda.time.DateTime;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.module.vehicle.Vehicle;
+
+import com.opensymphony.xwork2.ActionContext;
 
 @Component
 public class Timer {
@@ -178,8 +184,5 @@ public class Timer {
 			e.printStackTrace();
 		} catch (Exception e){
 		}
-	}
-
-	public void synHistory() {
 	}
 }

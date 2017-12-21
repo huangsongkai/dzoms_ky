@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * Created by huang on 2017/4/24.
  */
-
 public interface HibernateDao<T, PK extends Serializable> {
     // 根据主键获取实体。如果没有相应的实体，返回 null。
     T get(Class<T> c, PK id);

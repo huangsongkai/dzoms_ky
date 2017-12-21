@@ -39,6 +39,7 @@ $(document).ready(function(){
 				if($("#search_form input[name='states']:checked").length==1){
 					$("#search_form input[name='states']:checked").prop("readonly",true);
 				}else{
+					$("#search_form input[name='states']:checked").removeAttr("disabled");
 					$("#search_form input[name='states']:checked").removeAttr("readonly");
 				}
 			});

@@ -50,29 +50,29 @@
         function set_date(){
             /*var startdate_raw = $("#startdate_raw").val();
 
-             //新车开业 减免3天
-             try{
-             var startdate_raw_arr = startdate_raw.split("/");
-             startdate_raw_arr[2] = parseInt(startdate_raw_arr[2])+3;
-             var startdate_month_days = getDaysOfMonth(startdate_raw_arr[0],startdate_raw_arr[1]-1);
-             if(startdate_raw_arr[2]>startdate_month_days){
-             startdate_raw_arr[2] -= startdate_month_days;
+            //新车开业 减免3天
+            try{
+                var startdate_raw_arr = startdate_raw.split("/");
+                startdate_raw_arr[2] = parseInt(startdate_raw_arr[2])+3;
+                var startdate_month_days = getDaysOfMonth(startdate_raw_arr[0],startdate_raw_arr[1]-1);
+                if(startdate_raw_arr[2]>startdate_month_days){
+                    startdate_raw_arr[2] -= startdate_month_days;
 
-             if(startdate_raw_arr==12){
-             startdate_raw_arr[0]++;
-             startdate_raw_arr[1]=1;
-             }else{
-             startdate_raw_arr[1]++;
-             }
-             }
+                    if(startdate_raw_arr==12){
+                        startdate_raw_arr[0]++;
+                        startdate_raw_arr[1]=1;
+                    }else{
+                        startdate_raw_arr[1]++;
+                    }
+                }
 
-             var startdate_new_str = startdate_raw_arr[0] +"/"
-             +((startdate_raw_arr[1]<10)?"0":"") +startdate_raw_arr[1] +"/"
-             +((startdate_raw_arr[2]<10)?"0":"") + startdate_raw_arr[2];
-             $("#startdate").val(startdate_new_str);
-             }catch(e){
-             //TODO handle the exception
-             }*/
+                var startdate_new_str = startdate_raw_arr[0] +"/"
+                    +((startdate_raw_arr[1]<10)?"0":"") +startdate_raw_arr[1] +"/"
+                    +((startdate_raw_arr[2]<10)?"0":"") + startdate_raw_arr[2];
+                $("#startdate").val(startdate_new_str);
+            }catch(e){
+                //TODO handle the exception
+            }*/
 
             if($("#enddate").val().trim().length==0){
                 var arr = $("#startdate").val().split("/");
@@ -153,28 +153,28 @@
             }
 
             /*if($("input[name='rentFirst_Month']").val()==""||$("input[name='rentFirst_Month']").val()=="NaN")
-             $("input[name='rentFirst_Month']").val(months);*/
+            	$("input[name='rentFirst_Month']").val(months);*/
 
 
             /* var HTML = "<tr></th><th colspan=14 onclick='tablehide()'><h4  id='head'><p>隐藏制定计划</p></h4></th></tr>";
 
              HTML += "<tr class='hide'><th></th><th>1月</th><th>2月</th><th>3月</th><th>4月</th><th>5月</th><th>6月</th><th>7月</th><th>8月</th><th>9月</th><th>10月</th><th>11月</th><th>12月</th></tr>";
              for (i = 0; i <= enddate["year"]-startdate["year"]; i++) {
-             HTML += "<tr class='hide'><th>" + (startdate["year"]+i) + "年</th>";
-             for (j = 0; j < 12; j++) {
-             HTML += "<td><input type=\"text\" id=" + i + "," + j+ " size=\"10\" class='input' name='rentArr' value=\""+per_money+"\"/></td>";
-             }
-             HTML += "</tr>";
+                 HTML += "<tr class='hide'><th>" + (startdate["year"]+i) + "年</th>";
+                 for (j = 0; j < 12; j++) {
+                     HTML += "<td><input type=\"text\" id=" + i + "," + j+ " size=\"10\" class='input' name='rentArr' value=\""+per_money+"\"/></td>";
+                 }
+                 HTML += "</tr>";
              }
              //alert(HTML);
 
              $("#plan").html(HTML);
 
              for (i = 0; i < startdate["month"] - 1; i++) {
-             $("#0," + i).attr("disabled", "disabled");
+                 $("#0," + i).attr("disabled", "disabled");
              }
              for (i = enddate["month"] - 1; i < 12; i++) {
-             $("#"+enddate["year"]-startdate["year"]+"," + i).attr("disabled", "disabled");
+                 $("#"+enddate["year"]-startdate["year"]+"," + i).attr("disabled", "disabled");
              }
 
              $("#plan input[disabled]").val("");*/
@@ -193,29 +193,29 @@
             var comment = $(".dialog-win .comment").val();
 
             /*var beginMonthString = beginMonth.year + '/' + ( beginMonth.month < 10 ? "0" + beginMonth.month : beginMonth.month);
-             if(beginTime==beginMonthString){
-             beginTime = $("#startdate").val();
-             }else{
-             var byear = beginTime.split("/")[0];
-             var bmonth = beginTime.split("/")[1];
-             if(bmonth==1){
-             beginTime=(byear-1)+"/12/27";
-             }else{
-             beginTime=byear+"/"+(bmonth-1<10?"0"+(bmonth-1):(bmonth-1))+"/27";
-             }
-             }
+            if(beginTime==beginMonthString){
+                beginTime = $("#startdate").val();
+            }else{
+                var byear = beginTime.split("/")[0];
+                var bmonth = beginTime.split("/")[1];
+                if(bmonth==1){
+                    beginTime=(byear-1)+"/12/27";
+                }else{
+                    beginTime=byear+"/"+(bmonth-1<10?"0"+(bmonth-1):(bmonth-1))+"/27";
+                }
+            }
 
-             var endMonthString = endMonth.year + '/' + ( endMonth.month < 10 ? "0" + endMonth.month : endMonth.month);
-             if(endTime==endMonthString){
-             endTime = $("#enddate").val();
-             }else{
-             /*var arr = endTime.split("/");
-             var year=parseInt(arr[0]);
-             var month=parseInt(arr[1]);
-             endTime+="/"+getDaysOfMonth(year,month-1);*\/
-             endTime+="/26";
-             }
-             */
+            var endMonthString = endMonth.year + '/' + ( endMonth.month < 10 ? "0" + endMonth.month : endMonth.month);
+            if(endTime==endMonthString){
+                endTime = $("#enddate").val();
+            }else{
+                /*var arr = endTime.split("/");
+                var year=parseInt(arr[0]);
+                var month=parseInt(arr[1]);
+                endTime+="/"+getDaysOfMonth(year,month-1);*\/
+                endTime+="/26";
+            }
+            */
             var $option = $('<option></option>');
             $option.append($('<input name="beginTime" readonly="readonly" style="display:none;"/>').val(beginTime));
 
@@ -711,7 +711,7 @@
                                 </label>
                             </div>
                             <div class="field" >
-                                <s:textfield cssClass="input" name="contract.rentFirst" readonly="true"/>
+                                <s:textfield cssClass="input" name="contract.rentFirst"/>
                                 <input type="hidden" name="rentFirst_MonthEach" />
                             </div>
                         </div>
@@ -1117,7 +1117,13 @@
             $('#submit-button').click();
         }
     }
-    button_bind(".submitbutton","确定提交?","beforeSubmit()");
+//    button_bind(".submitbutton","确定提交?","beforeSubmit()");
+
+    $(".submitbutton").click(function () {
+        if(confirm("确定提交?")){
+            beforeSubmit();
+        }
+    });
 
     $(function(){
         $showdialogs=function(e){

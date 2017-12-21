@@ -219,264 +219,264 @@
             var planListArr = [];
             var hasContractBegin = false, hasContractEnd = false;
             $("#rentList option").each(function () {
-                        var begin = $(this).find("input[name='beginTime']").val();
-                        var end = $(this).find("input[name='endTime']").val();
-                        var money = $(this).find("input[name='rentAmount']").val();
-                        var comment = $(this).find("input[name='comment']").val();
+                var begin = $(this).find("input[name='beginTime']").val();
+                var end = $(this).find("input[name='endTime']").val();
+                var money = $(this).find("input[name='rentAmount']").val();
+                var comment = $(this).find("input[name='comment']").val();
 
-                        planListArr.push({"begin": begin, "end": end, "money": money, "comment": comment});
+                planListArr.push({"begin": begin, "end": end, "money": money, "comment": comment});
 
-                        $("input[name='planList']").val($.toJSON(planListArr));
+                $("input[name='planList']").val($.toJSON(planListArr));
 
-                        $("#rentList option").each(function () {
-                            var begin = $(this).find("input[name='beginTime']").val();
-                            var end = $(this).find("input[name='endTime']").val();
-                            var money = $(this).find("input[name='rentAmount']").val();
+                $("#rentList option").each(function () {
+                    var begin = $(this).find("input[name='beginTime']").val();
+                    var end = $(this).find("input[name='endTime']").val();
+                    var money = $(this).find("input[name='rentAmount']").val();
 
-                            var beginArr = begin.split("/");
-                            //var beginArr = [contract_start_date.year,contract_start_date.month,contract_start_date.date];
-                            var endArr = end.split("/");
-                            //这一段时间的起始月在数组中的位置
-                            var month_rank = (beginArr[0] - beginMonth.year) * 12 + (beginArr[1] - beginMonth.month) + (beginArr[2] > 26 ? 1 : 0);
-                            var local_months = (endArr[0] - beginArr[0]) * 12 + (endArr[1] - beginArr[1]) + (beginArr[2] < 27 ? 1 : 0) + (endArr[2] > 26 ? 1 : 0);
+                    var beginArr = begin.split("/");
+                    //var beginArr = [contract_start_date.year,contract_start_date.month,contract_start_date.date];
+                    var endArr = end.split("/");
+                    //这一段时间的起始月在数组中的位置
+                    var month_rank = (beginArr[0] - beginMonth.year) * 12 + (beginArr[1] - beginMonth.month) + (beginArr[2] > 26 ? 1 : 0);
+                    var local_months = (endArr[0] - beginArr[0]) * 12 + (endArr[1] - beginArr[1]) + (beginArr[2] < 27 ? 1 : 0) + (endArr[2] > 26 ? 1 : 0);
 
-                            for (var i = 1; i < local_months - 1; i++) {
-                                rentArr[month_rank + i] += parseFloat(money) * 1.00;
-                                rentDays[month_rank + i] += 30;
-                            }
+                    for (var i = 1; i < local_months - 1; i++) {
+                        rentArr[month_rank + i] += parseFloat(money) * 1.00;
+                        rentDays[month_rank + i] += 30;
+                    }
 
-                            if (local_months == 1) {
-                                //这一段时间在一个月里面
-                                var days = 0;
-                                if (beginArr[2] == 27 && endArr[2] == 26) {
-                                    days = 30;
-                                } else if (beginArr[2] > 26) {
-                                    if (endArr[2] > 26) {
-                                        days = endArr[2] - beginArr[2] + 1;
-                                    } else {
-                                        //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+1+parseInt(endArr[2]);
-                                        days = 31 - beginArr[2] + parseInt(endArr[2]) + (beginArr[2] > 30 ? 1 : 0);
-                                    }
-                                } else {
-                                    days = endArr[2] - beginArr[2] + 1;
-                                }
-                                var planOfRent = parseFloat(money) / 30 * days;
-                                rentArr[month_rank] += planOfRent;
-                                rentDays[month_rank] += days;
+                    if (local_months == 1) {
+                        //这一段时间在一个月里面
+                        var days = 0;
+                        if (beginArr[2] == 27 && endArr[2] == 26) {
+                            days = 30;
+                        } else if (beginArr[2] > 26) {
+                            if (endArr[2] > 26) {
+                                days = endArr[2] - beginArr[2] + 1;
                             } else {
-                                //这一段时间分属不同的月
-                                //第一个月
-                                if (beginArr[2] == 27) {
-                                    days = 30;
-                                } else if (beginArr[2] > 27) {
-                                    //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+27;
-                                    days = 57 - beginArr[2] + (beginArr[2] > 30 ? 1 : 0);
-                                } else {
-                                    days = 27 - beginArr[2];
-                                }
-                                var planOfRent = parseFloat(money) / 30 * days;
-                                rentArr[month_rank] += planOfRent;
-                                rentDays[month_rank] += days;
-
-                                //最后一个月
-                                if (endArr[2] == 26) {
-                                    days = 30;
-                                } else if (endArr[2] >= 30) {
-                                    days = 4;
-                                } else if (endArr[2] > 26) {
-                                    days = endArr[2] - 26;
-                                } else {
-                                    //days = parseInt(getDaysOfMonth(endArr[0],endArr[1]-1))+parseInt(endArr[2])-26;
-                                    days = 4 + parseInt(endArr[2]);
-                                }
-                                planOfRent = parseFloat(money) / 30 * days;
-                                rentArr[month_rank + local_months - 1] += planOfRent;
-                                rentDays[month_rank + local_months - 1] += days;
+                                //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+1+parseInt(endArr[2]);
+                                days = 31 - beginArr[2] + parseInt(endArr[2]) + (beginArr[2] > 30 ? 1 : 0);
                             }
-
-                        });
-
-                        $("#rentList option").each(function () {
-                            var begin = $(this).find("input[name='beginTime']").val();
-                            var end = $(this).find("input[name='endTime']").val();
-                            var money = $(this).find("input[name='rentAmount']").val();
-
-                            var beginArr = begin.split("/");
-                            //var beginArr = [contract_start_date.year,contract_start_date.month,contract_start_date.date];
-                            var endArr = end.split("/");
-                            //这一段时间的起始月在数组中的位置
-                            var month_rank = (beginArr[0] - beginMonth.year) * 12 + (beginArr[1] - beginMonth.month) + (beginArr[2] > 26 ? 1 : 0);
-                            var local_months = (endArr[0] - beginArr[0]) * 12 + (endArr[1] - beginArr[1]) + (beginArr[2] < 27 ? 1 : 0) + (endArr[2] > 26 ? 1 : 0);
-
-                        });
-
-                        $("#plan tr.data-tr").remove();
-
-                        var $plan = $("#plan");
-                        var rentArrIndex = 0;
-                        if (beginMonth.year == endMonth.year) {
-                            var $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(beginMonth.year + "年"));
-                            for (var month = 1; month < beginMonth.month; month++) {
-                                var $td = $("<td />").text("  ").appendTo($tr);
-                            }
-                            for (var month = beginMonth.month; month <= endMonth.month; month++) {
-                                var $td = $("<td />").appendTo($tr);
-                                var $input = $('<input class="data-td input auto" size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
-                            }
-                            for (var month = endMonth.month; month < 12; month++) {
-                                var $td = $("<td />").text("  ").appendTo($tr);
-                            }
-                            $plan.append($tr);
+                        } else {
+                            days = endArr[2] - beginArr[2] + 1;
                         }
-                        else {
-                            //首年
-                            var $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(beginMonth.year + "年"));
-                            for (var month = 1; month < beginMonth.month; month++) {
-                                var $td = $("<td />").text("  ").appendTo($tr);
-                            }
-                            for (var month = beginMonth.month; month <= 12; month++) {
-                                var $td = $("<td />").appendTo($tr);
-                                var $input = $('<input class="data-td input auto" size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
-                            }
-                            $plan.append($tr);
-
-                            //第二年 -- 倒数第二年
-                            for (var year = beginMonth.year + 1; year < endMonth.year; year++) {
-                                $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(year + "年"));
-                                for (var month = 1; month <= 12; month++) {
-                                    var $td = $("<td />").appendTo($tr);
-                                    var $input = $('<input class="data-td input auto" size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
-                                }
-                                $plan.append($tr);
-                            }
-
-                            //最后一年
-                            $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(endMonth.year + "年"));
-                            for (var month = 1; month <= endMonth.month; month++) {
-                                var $td = $("<td />").appendTo($tr);
-                                var $input = $('<input class="data-td input auto " size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
-                            }
-                            for (var month = endMonth.month; month < 12; month++) {
-                                var $td = $("<td />").text("  ").appendTo($tr);
-                            }
-                            $plan.append($tr);
+                        var planOfRent = parseFloat(money) / 30 * days;
+                        rentArr[month_rank] += planOfRent;
+                        rentDays[month_rank] += days;
+                    } else {
+                        //这一段时间分属不同的月
+                        //第一个月
+                        if (beginArr[2] == 27) {
+                            days = 30;
+                        } else if (beginArr[2] > 27) {
+                            //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+27;
+                            days = 57 - beginArr[2] + (beginArr[2] > 30 ? 1 : 0);
+                        } else {
+                            days = 27 - beginArr[2];
                         }
+                        var planOfRent = parseFloat(money) / 30 * days;
+                        rentArr[month_rank] += planOfRent;
+                        rentDays[month_rank] += days;
+
+                        //最后一个月
+                        if (endArr[2] == 26) {
+                            days = 30;
+                        } else if (endArr[2] >= 30) {
+                            days = 4;
+                        } else if (endArr[2] > 26) {
+                            days = endArr[2] - 26;
+                        } else {
+                            //days = parseInt(getDaysOfMonth(endArr[0],endArr[1]-1))+parseInt(endArr[2])-26;
+                            days = 4 + parseInt(endArr[2]);
+                        }
+                        planOfRent = parseFloat(money) / 30 * days;
+                        rentArr[month_rank + local_months - 1] += planOfRent;
+                        rentDays[month_rank + local_months - 1] += days;
+                    }
+
+                });
+
+                $("#rentList option").each(function () {
+                    var begin = $(this).find("input[name='beginTime']").val();
+                    var end = $(this).find("input[name='endTime']").val();
+                    var money = $(this).find("input[name='rentAmount']").val();
+
+                    var beginArr = begin.split("/");
+                    //var beginArr = [contract_start_date.year,contract_start_date.month,contract_start_date.date];
+                    var endArr = end.split("/");
+                    //这一段时间的起始月在数组中的位置
+                    var month_rank = (beginArr[0] - beginMonth.year) * 12 + (beginArr[1] - beginMonth.month) + (beginArr[2] > 26 ? 1 : 0);
+                    var local_months = (endArr[0] - beginArr[0]) * 12 + (endArr[1] - beginArr[1]) + (beginArr[2] < 27 ? 1 : 0) + (endArr[2] > 26 ? 1 : 0);
+
+                });
+
+                $("#plan tr.data-tr").remove();
+
+                var $plan = $("#plan");
+                var rentArrIndex = 0;
+                if (beginMonth.year == endMonth.year) {
+                    var $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(beginMonth.year + "年"));
+                    for (var month = 1; month < beginMonth.month; month++) {
+                        var $td = $("<td />").text("  ").appendTo($tr);
+                    }
+                    for (var month = beginMonth.month; month <= endMonth.month; month++) {
+                        var $td = $("<td />").appendTo($tr);
+                        var $input = $('<input class="data-td input auto" size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
+                    }
+                    for (var month = endMonth.month; month < 12; month++) {
+                        var $td = $("<td />").text("  ").appendTo($tr);
+                    }
+                    $plan.append($tr);
+                }
+                else {
+                    //首年
+                    var $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(beginMonth.year + "年"));
+                    for (var month = 1; month < beginMonth.month; month++) {
+                        var $td = $("<td />").text("  ").appendTo($tr);
+                    }
+                    for (var month = beginMonth.month; month <= 12; month++) {
+                        var $td = $("<td />").appendTo($tr);
+                        var $input = $('<input class="data-td input auto" size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
+                    }
+                    $plan.append($tr);
+
+                    //第二年 -- 倒数第二年
+                    for (var year = beginMonth.year + 1; year < endMonth.year; year++) {
+                        $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(year + "年"));
+                        for (var month = 1; month <= 12; month++) {
+                            var $td = $("<td />").appendTo($tr);
+                            var $input = $('<input class="data-td input auto" size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
+                        }
+                        $plan.append($tr);
+                    }
+
+                    //最后一年
+                    $tr = $('<tr class="hide data-tr"></tr>').append($("<td />").text(endMonth.year + "年"));
+                    for (var month = 1; month <= endMonth.month; month++) {
+                        var $td = $("<td />").appendTo($tr);
+                        var $input = $('<input class="data-td input auto " size="10" />').val(rentArr[rentArrIndex++].toFixed(2)).appendTo($td);
+                    }
+                    for (var month = endMonth.month; month < 12; month++) {
+                        var $td = $("<td />").text("  ").appendTo($tr);
+                    }
+                    $plan.append($tr);
+                }
 
 //生成实际的收费数组
-                        //减免 天数
-                        var discountDays = $('[name="contract.discountDays"]').val();
-                        discountDays = parseInt(discountDays);
+                //减免 天数
+                var discountDays = $('[name="contract.discountDays"]').val();
+                discountDays = parseInt(discountDays);
 
-                        //var contract_start_date_arr = $("#startdate").val().split("/");
-                        var contract_start_date_arr = $("#operate_card_date").val().split("/");
+                //var contract_start_date_arr = $("#startdate").val().split("/");
+                var contract_start_date_arr = $("#operate_card_date").val().split("/");
 
-                        var contract_start_date = {
-                            "year": parseInt(contract_start_date_arr[0]),
-                            "month": parseInt(contract_start_date_arr[1]),
-                            "date": parseInt(contract_start_date_arr[2])
-                        };
+                var contract_start_date = {
+                    "year": parseInt(contract_start_date_arr[0]),
+                    "month": parseInt(contract_start_date_arr[1]),
+                    "date": parseInt(contract_start_date_arr[2])
+                };
 
-                        //计算实际收费开始日期
+                //计算实际收费开始日期
 
-                        for (var i = 0; i < discountDays; i++) {
-                            contract_start_date.date++;
-                            if (contract_start_date.date > 30) {
-                                contract_start_date.date -= 30;
-                                contract_start_date.month++;
+                for (var i = 0; i < discountDays; i++) {
+                    contract_start_date.date++;
+                    if (contract_start_date.date > 30) {
+                        contract_start_date.date -= 30;
+                        contract_start_date.month++;
 
-                                if (contract_start_date.month > 12) {
-                                    contract_start_date.month -= 12;
-                                    contract_start_date.year++;
-                                }
-                            }
+                        if (contract_start_date.month > 12) {
+                            contract_start_date.month -= 12;
+                            contract_start_date.year++;
                         }
-
-                        rentArr = [];
-                        rentDays = [];
-                        for (var i = 0; i < months; i++) rentArr.push(0);
-                        for (var i = 0; i < months; i++) rentDays.push(0);
-
-
-                        $("#rentList option").each(function () {
-                            var begin = $(this).find("input[name='beginTime']").val();
-                            var end = $(this).find("input[name='endTime']").val();
-                            var money = $(this).find("input[name='rentAmount']").val();
-
-                            var beginArr = begin.split("/");
-
-                            if (beginArr[0] < contract_start_date.year
-                                    || (beginArr[0] == contract_start_date.year && beginArr[1] < contract_start_date.month)
-                                    || (beginArr[0] == contract_start_date.year && beginArr[1] == contract_start_date.month && beginArr[2] < contract_start_date.date )) {
-                                beginArr = [contract_start_date.year, contract_start_date.month, contract_start_date.date];
-                            }
-
-                            //var beginArr = [contract_start_date.year,contract_start_date.month,contract_start_date.date];
-                            var endArr = end.split("/");
-                            //这一段时间的起始月在数组中的位置
-                            var month_rank = (beginArr[0] - beginMonth.year) * 12 + (beginArr[1] - beginMonth.month) + (beginArr[2] > 26 ? 1 : 0);
-                            var local_months = (endArr[0] - beginArr[0]) * 12 + (endArr[1] - beginArr[1]) + (beginArr[2] < 27 ? 1 : 0) + (endArr[2] > 26 ? 1 : 0);
-
-                            for (var i = 1; i < local_months - 1; i++) {
-                                rentArr[month_rank + i] += parseFloat(money) * 1.00;
-                                rentDays[month_rank + i] += 30;
-                            }
-
-                            if (local_months == 1) {
-                                //这一段时间在一个月里面
-                                var days = 0;
-                                if (beginArr[2] == 27 && endArr[2] == 26) {
-                                    days = 30;
-                                } else if (beginArr[2] > 26) {
-                                    if (endArr[2] > 26) {
-                                        days = endArr[2] - beginArr[2] + 1;
-                                    } else {
-                                        //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+1+parseInt(endArr[2]);
-                                        days = 31 - beginArr[2] + parseInt(endArr[2]) + (beginArr[2] > 30 ? 1 : 0);
-                                    }
-                                } else {
-                                    days = endArr[2] - beginArr[2] + 1;
-                                }
-                                var planOfRent = parseFloat(money) / 30 * days;
-                                rentArr[month_rank] += planOfRent;
-                                rentDays[month_rank] += days;
-                            } else {
-                                //这一段时间分属不同的月
-                                //第一个月
-                                if (beginArr[2] == 27) {
-                                    days = 30;
-                                } else if (beginArr[2] > 27) {
-                                    //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+27;
-                                    days = 57 - beginArr[2] + (beginArr[2] > 30 ? 1 : 0);
-                                } else {
-                                    days = 27 - beginArr[2];
-                                }
-                                var planOfRent = parseFloat(money) / 30 * days;
-                                rentArr[month_rank] += planOfRent;
-                                rentDays[month_rank] += days;
-
-                                //最后一个月
-                                if (endArr[2] == 26) {
-                                    days = 30;
-                                } else if (endArr[2] >= 30) {
-                                    days = 4;
-                                } else if (endArr[2] > 26) {
-                                    days = endArr[2] - 26;
-                                } else {
-                                    //days = parseInt(getDaysOfMonth(endArr[0],endArr[1]-1))+parseInt(endArr[2])-26;
-                                    days = 4 + parseInt(endArr[2]);
-                                }
-                                planOfRent = parseFloat(money) / 30 * days;
-                                rentArr[month_rank + local_months - 1] += planOfRent;
-                                rentDays[month_rank + local_months - 1] += days;
-                            }
-
-                        });
-
-                        geneRentPlanState = 1;
-
                     }
-            );
+                }
+
+                rentArr = [];
+                rentDays = [];
+                for (var i = 0; i < months; i++) rentArr.push(0);
+                for (var i = 0; i < months; i++) rentDays.push(0);
+
+
+                $("#rentList option").each(function () {
+                    var begin = $(this).find("input[name='beginTime']").val();
+                    var end = $(this).find("input[name='endTime']").val();
+                    var money = $(this).find("input[name='rentAmount']").val();
+
+                    var beginArr = begin.split("/");
+
+                    if (beginArr[0] < contract_start_date.year
+                        || (beginArr[0] == contract_start_date.year && beginArr[1] < contract_start_date.month)
+                        || (beginArr[0] == contract_start_date.year && beginArr[1] == contract_start_date.month && beginArr[2] < contract_start_date.date )) {
+                        beginArr = [contract_start_date.year, contract_start_date.month, contract_start_date.date];
+                    }
+
+                    //var beginArr = [contract_start_date.year,contract_start_date.month,contract_start_date.date];
+                    var endArr = end.split("/");
+                    //这一段时间的起始月在数组中的位置
+                    var month_rank = (beginArr[0] - beginMonth.year) * 12 + (beginArr[1] - beginMonth.month) + (beginArr[2] > 26 ? 1 : 0);
+                    var local_months = (endArr[0] - beginArr[0]) * 12 + (endArr[1] - beginArr[1]) + (beginArr[2] < 27 ? 1 : 0) + (endArr[2] > 26 ? 1 : 0);
+
+                    for (var i = 1; i < local_months - 1; i++) {
+                        rentArr[month_rank + i] += parseFloat(money) * 1.00;
+                        rentDays[month_rank + i] += 30;
+                    }
+
+                    if (local_months == 1) {
+                        //这一段时间在一个月里面
+                        var days = 0;
+                        if (beginArr[2] == 27 && endArr[2] == 26) {
+                            days = 30;
+                        } else if (beginArr[2] > 26) {
+                            if (endArr[2] > 26) {
+                                days = endArr[2] - beginArr[2] + 1;
+                            } else {
+                                //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+1+parseInt(endArr[2]);
+                                days = 31 - beginArr[2] + parseInt(endArr[2]) + (beginArr[2] > 30 ? 1 : 0);
+                            }
+                        } else {
+                            days = endArr[2] - beginArr[2] + 1;
+                        }
+                        var planOfRent = parseFloat(money) / 30 * days;
+                        rentArr[month_rank] += planOfRent;
+                        rentDays[month_rank] += days;
+                    } else {
+                        //这一段时间分属不同的月
+                        //第一个月
+                        if (beginArr[2] == 27) {
+                            days = 30;
+                        } else if (beginArr[2] > 27) {
+                            //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+27;
+                            days = 57 - beginArr[2] + (beginArr[2] > 30 ? 1 : 0);
+                        } else {
+                            days = 27 - beginArr[2];
+                        }
+                        var planOfRent = parseFloat(money) / 30 * days;
+                        rentArr[month_rank] += planOfRent;
+                        rentDays[month_rank] += days;
+
+                        //最后一个月
+                        if (endArr[2] == 26) {
+                            days = 30;
+                        } else if (endArr[2] >= 30) {
+                            days = 4;
+                        } else if (endArr[2] > 26) {
+                            days = endArr[2] - 26;
+                        } else {
+                            //days = parseInt(getDaysOfMonth(endArr[0],endArr[1]-1))+parseInt(endArr[2])-26;
+                            days = 4 + parseInt(endArr[2]);
+                        }
+                        planOfRent = parseFloat(money) / 30 * days;
+                        rentArr[month_rank + local_months - 1] += planOfRent;
+                        rentDays[month_rank + local_months - 1] += days;
+                    }
+
+                });
+
+                geneRentPlanState = 1;
+            });
+
         }
+
             $(document).ready(function () {
                 if ($('[name="contract.contractBeginDate"]').val().trim().length == 0) {
                     var noe_date = new Date();

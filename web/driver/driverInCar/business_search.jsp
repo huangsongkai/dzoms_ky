@@ -27,7 +27,7 @@
 
 <script type="text/javascript" src="/DZOMS/res/js/JsonList.js" ></script>
 <script type="text/javascript" src="/DZOMS/res/js/TableList.js" ></script>
-
+	<jsp:include page="/common/msg_info.jsp"></jsp:include>
 <script>
 $(document).ready(function(){
 			$("#search_form").find("select").change(function(){
@@ -147,32 +147,4 @@ $(document).ready(function(){
 		yearStart:2000,     //设置最小年份
     });
 </script>
-
- <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    	function iFrameHeight() {
-	try{
-var ifm= document.getElementById("result_form");   
-var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
-
-$(document).ready(function(){
-	window.setInterval('iFrameHeight();',3600);
-});
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
-    </script>
 </html>

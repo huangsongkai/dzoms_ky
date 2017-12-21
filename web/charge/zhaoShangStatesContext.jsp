@@ -20,10 +20,10 @@
 <div class="line">
     <div class="panel  margin-small" >
         <div class="panel-head">
-            <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele"  target="result_form">
-                <input type="hidden" name="orderby" value="id desc">
+            <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele" target="result_form">
                 <input type="hidden" name="url" value="/charge/zhaoShangStates.jsp" />
                 <input type="hidden" name="className" value="com.dz.module.charge.bank.ZhaoShangDiscount"/>
+                <input type="hidden" name="orderby" value="id desc">
                 <div class="form-group">
                     <div class="label">
                         <label>状态</label>

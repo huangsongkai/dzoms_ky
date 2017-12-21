@@ -366,7 +366,7 @@ public class ActivitiService  extends TaskBaseResource{
 
         public String getStarter() {
             return starter;
-        }
+    }
 
         public void setStarter(String starter) {
             this.starter = starter;

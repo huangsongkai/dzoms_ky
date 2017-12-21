@@ -1,5 +1,6 @@
 package com.dz.common.factory;
 
+import com.dz.common.test.DataTrackFilter;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -57,7 +58,8 @@ public class HibernateSessionFactory {
      *
      */
     public static void rebuildSessionFactory() {
-        ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(ServletActionContext.getServletContext());
+//        ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(ServletActionContext.getServletContext());
+        ApplicationContext app = DataTrackFilter.getCtx();
         instance = app.getBean(HibernateSessionFactory.class);
         sessionFactory = localSessionFactoryBean.getObject();
     }
@@ -80,7 +82,7 @@ public class HibernateSessionFactory {
      *  return session factory
      *
      */
-    public static SessionFactory getSessionFactory() {
+    public static org.hibernate.SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 

@@ -93,7 +93,7 @@
     <ul class="bread text-main" style="font-size: larger;">
         <li>车辆管理</li>
         <li>查询</li>
-        <li>Ï查询车辆技术信息</li>
+        <li>查询车辆技术信息</li>
     </ul>
 </div>
 

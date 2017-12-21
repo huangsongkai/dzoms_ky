@@ -198,7 +198,7 @@ function GetQueryString(name){
 					condition:" state=3 ",
 					callback:function(){
 						var licenseNum = $("#oldLicenseNum").val();
-						$.post("/DZOMS/common/doit",{"condition":"from Contract c where c.state=1 and c.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum='"+licenseNum+"') order by contractBeginDate desc "},function(data){
+						$.post("/DZOMS/common/doit",{"condition":"from Contract c where c.state=1 and c.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum='"+licenseNum+"') order by id desc "},function(data){
 							var contract=data["affect"];
     						$("#contractFrom").val(contract["id"]);
    							$('[name="url"]').val("/vehicle/CreateApproval/vehicle_approval01.jsp");

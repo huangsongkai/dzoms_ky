@@ -1,13 +1,14 @@
 package com.dz.module.driver.meeting;
 // default package
 
-import com.dz.module.driver.Driver;
-import org.apache.commons.lang.BooleanUtils;
-
-import javax.persistence.*;
 import java.util.Date;
 
+import javax.persistence.*;
 import static javax.persistence.GenerationType.IDENTITY;
+
+import org.apache.commons.lang.BooleanUtils;
+
+import com.dz.module.driver.Driver;
 
 /**
  * MeetingCheck entity. @author MyEclipse Persistence Tools
@@ -177,6 +178,24 @@ public class MeetingCheck implements java.io.Serializable {
 			}
 		}
 		
+		return false;
+	}
+
+	@Transient
+	public boolean isDangri(){
+		Date nct = new Date(needCheckTime.getTime());
+		nct.setHours(23);
+		nct.setMinutes(30);
+		Date nc_before = new Date(needCheckTime.getTime());
+		nc_before.setHours(0);
+		nc_before.setMinutes(30);
+
+		if(BooleanUtils.isNotTrue(isChecked)){
+			return false;
+		}else if(checkTime.after(nc_before)&&checkTime.before(nct)){
+			return true;
+		}
+
 		return false;
 	}
 

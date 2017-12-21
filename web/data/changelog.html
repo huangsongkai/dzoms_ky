@@ -5,6 +5,54 @@
 <title>更新日志</title>
 </head>
 <body>
+<h1>2017-10-26 更新记录</h1>
+<ul>
+	<li>驾驶员修改页面的表单验证</li>
+	<li>事故录入页面加长</li>
+	<li>例会管理<br>
+		<ul>
+			<li>例会签到页面拆分</li>
+			<li>例会客户端多次签到后资源消耗问题</li>
+		</ul>
+	</li>
+</ul>
+
+<h1>2017-09-25 更新记录</h1>
+<ul>
+	<li>修正车辆转包选取前一份合同错误的问题<br>
+		<ul>
+			<li>\web\vehicle\CreateApproval\vehicle_approval01.jsp 第201行选取合同的查询语句修改</li>
+			<li>原语句为<code>from Contract c where c.state=1 and c.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum='"+licenseNum+"') order by <em style="color: red;">contractBeginDate</em> desc </code></li>
+			<li>修改为<code>from Contract c where c.state=1 and c.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum='"+licenseNum+"') order by <em style="color: red;">id</em> desc </code></li>
+		</ul>
+	</li>
+	<li>修正银行卡删除不完全的问题<br>
+		<ul>
+			<li>\src\main\java\com\dz\module\contract\ContractAction.java 第86行修改</li>
+			<li>原语句为<code>delete from BankCardOfVehicle where <em style="color: red;">vehicle.carframeNum</em>=:cardId</code></li>
+			<li>修改为<code>delete from BankCardOfVehicle where <em style="color: red;">bankCard.id</em>=:cardId</code></li>
+		</ul>
+	</li>
+</ul>
+
+<h1>2017-09-21 更新记录</h1>
+<ul>
+	<li>银行卡管理<br>
+	<ul>
+		<li>新增银行卡--人员关联查询功能</li>
+		<li>导入副驾的银行卡信息</li>
+		<li>数据库修改<code>INSERT INTO `dzomsdb`.`authority` (`aid`, `aname`, `gname`, `mname`, `tname`, `url`, `order`, `cssClass`, `icon`, `visible`, `frameSize`, `img`) VALUES ('419', '银行卡驾驶员关联查询', '财务', '银行卡管理', '银行卡--驾驶员', 'contract/bank_card/search_driver_about_bankcard.jsp', '4', NULL, NULL, '', '2500', NULL);
+		</code><code>INSERT INTO `dzomsdb`.`relation_ra` (`id`, `rid`, `aid`) VALUES ('868', '107', '419');
+		</code></li>
+	</ul>
+	</li>
+	<li>驾驶员管理<br>
+	<ul>
+		<li>驾驶员上下车记录导出Excel</li>
+	</ul>
+	</li>
+</ul>
+
 <h1>2017-08-10 更新记录</h1>
 <ul>
 	<li>运营数据管理<br>

@@ -324,7 +324,7 @@ function CheckImgExists(imgurl) {
                             </label>
                         </div>
                         <div class="field">
-                            <s:textfield cssClass="input"  name="driver.qualificationNum" />
+                            <s:textfield cssClass="input"  name="driver.qualificationNo" />
                         </div>
                     </div>
                 </td>
