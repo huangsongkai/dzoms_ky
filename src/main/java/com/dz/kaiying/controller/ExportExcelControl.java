@@ -5,36 +5,36 @@ package com.dz.kaiying.controller;
 public class ExportExcelControl {
 //
 //	/**
-//	 * ÃèÊö£ºÍ¨¹ı jquery.form.js ²å¼şÌá¹©µÄajax·½Ê½µ¼³öExcel
+//	 * æè¿°ï¼šé€šè¿‡ jquery.form.js æ’ä»¶æä¾›çš„ajaxæ–¹å¼å¯¼å‡ºExcel
 //	 * @param request
 //	 * @param response
 //	 * @throws Exception
 //	 */
 //	@RequestMapping(value="ajaxExport.do",method={RequestMethod.GET,RequestMethod.POST})
 //	public  String  ajaxUploadExcel(HttpServletRequest request,HttpServletResponse response) throws Exception {
-//		System.out.println("Í¨¹ı jquery.form.js Ìá¹©µÄajax·½Ê½µ¼³öÎÄ¼ş£¡");
+//		System.out.println("é€šè¿‡ jquery.form.js æä¾›çš„ajaxæ–¹å¼å¯¼å‡ºæ–‡ä»¶ï¼");
 //		OutputStream os = null;
-//		Workbook wb = null;    //¹¤×÷±¡
+//		Workbook wb = null;    //å·¥ä½œè–„
 //
 //		try {
-//			//Ä£ÄâÊı¾İ¿âÈ¡Öµ
+//			//æ¨¡æ‹Ÿæ•°æ®åº“å–å€¼
 //			List<InfoVo> lo = new ArrayList<InfoVo>();
 //			for (int i = 0; i < 8; i++) {
 //				InfoVo vo = new InfoVo();
 //				vo.setCode("110"+i);
 //				vo.setDate("2015-11-0"+i);
 //				vo.setMoney("1000"+i+".00");
-//				vo.setName("±±¾©ÖĞÖ§0"+i);
+//				vo.setName("åŒ—äº¬ä¸­æ”¯0"+i);
 //				lo.add(vo);
 //			}
 //
-//			//µ¼³öExcelÎÄ¼şÊı¾İ
+//			//å¯¼å‡ºExcelæ–‡ä»¶æ•°æ®
 //			ExportExcelUtil util = new ExportExcelUtil();
-//			File file =util.getExcelDemoFile("/ExcelDemo/ÊÂ¹ÊÄ£°å.xlsx");
+//			File file =util.getExcelDemoFile("/ExcelDemo/äº‹æ•…æ¨¡æ¿.xlsx");
 //			String sheetName="sheet1";
 //			wb = util.writeNewExcel(file, sheetName,lo);
 //
-//			String fileName="»ú¹¹Âë.xlsx";
+//			String fileName="æœºæ„ç .xlsx";
 //			response.setContentType("application/vnd.ms-excel");
 //			response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode(fileName, "utf-8"));
 //			os = response.getOutputStream();

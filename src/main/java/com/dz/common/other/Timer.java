@@ -109,80 +109,80 @@ public class Timer {
 		}
 	}
 	
-	@Scheduled(cron="0 0 0 0/3 * ?")
-	public void synVehicle(){
-		JSONArray jarr = new JSONArray();
-		Session session = HibernateSessionFactory.getSession();
-		Query query = session.createQuery("from Vehicle where state=1");
-		List<Vehicle> vehicles = query.list();
-		for (Vehicle vehicle : vehicles) {
-			JSONObject json = new JSONObject();
-			json.put("carframeNum", vehicle.getCarframeNum());
-			json.put("dept", vehicle.getDept());
-			json.put("licenseNum", vehicle.getLicenseNum());
-			jarr.add(json);
-		}
-		
-		Properties elecConf = new Properties();
-		try {
-			elecConf.load(Timer.class.getResourceAsStream("Electric.properties"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		String ip = elecConf.getProperty("ip");
-		String port = elecConf.getProperty("port");
-		
-		if (ip==null) {
-			ip="125.211.198.176";
-		}
-		if (port==null) {
-			port="8080";
-		}
-		
-		String url = "http://"+ip+":"+port+"/DzElectric/synVehicle";
-		
-		//TODO　Post to remote electric vehicle list
-		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(url);
-		
-		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
-		
-		postMethod.addParameter("jsonStr", jarr.toString());
-		
-		try {
-			int result = httpClient.executeMethod(postMethod);
-			if(result==200){
-	        	InputStream input2 = postMethod.getResponseBodyAsStream();
-		        
-	        	StringBuffer sb = new StringBuffer();
-		        int l;
-		        byte[] tmp = new byte[65536];
-		       // System.out.println();
-		        while ((l = input2.read(tmp)) > 0) {
-		        	sb.append(new String(tmp,0,l,"utf-8"));
-		        }
-		        String ss = sb.toString();
-		        
-		        JSONObject jobj = JSONObject.fromObject(ss);
-		        
-		        if ("success".equals(jobj.getString("status"))) {
-		        	System.out.println("违章系统，车辆信息同步成功！共同步"+jobj.getInt("number")+"条数据、");
-					return;
-				}else{
-					System.err.println("违章系统，车辆信息同步失败！原因是："+jobj.getString("reason"));
-					return;
-				}
-		        
-			}
-		} catch (HttpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e){
-		}
-	}
+//	@Scheduled(cron="0 0 0 0/3 * ?")
+//	public void synVehicle(){
+//		JSONArray jarr = new JSONArray();
+//		Session session = HibernateSessionFactory.getSession();
+//		Query query = session.createQuery("from Vehicle where state=1");
+//		List<Vehicle> vehicles = query.list();
+//		for (Vehicle vehicle : vehicles) {
+//			JSONObject json = new JSONObject();
+//			json.put("carframeNum", vehicle.getCarframeNum());
+//			json.put("dept", vehicle.getDept());
+//			json.put("licenseNum", vehicle.getLicenseNum());
+//			jarr.add(json);
+//		}
+//
+//		Properties elecConf = new Properties();
+//		try {
+//			elecConf.load(Timer.class.getResourceAsStream("Electric.properties"));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		String ip = elecConf.getProperty("ip");
+//		String port = elecConf.getProperty("port");
+//
+//		if (ip==null) {
+//			ip="125.211.198.176";
+//		}
+//		if (port==null) {
+//			port="8080";
+//		}
+//
+//		String url = "http://"+ip+":"+port+"/DzElectric/synVehicle";
+//
+//		//TODO　Post to remote electric vehicle list
+//		HttpClient httpClient = new HttpClient();
+//		PostMethod postMethod = new PostMethod(url);
+//
+//		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
+//
+//		postMethod.addParameter("jsonStr", jarr.toString());
+//
+//		try {
+//			int result = httpClient.executeMethod(postMethod);
+//			if(result==200){
+//	        	InputStream input2 = postMethod.getResponseBodyAsStream();
+//
+//	        	StringBuffer sb = new StringBuffer();
+//		        int l;
+//		        byte[] tmp = new byte[65536];
+//		       // System.out.println();
+//		        while ((l = input2.read(tmp)) > 0) {
+//		        	sb.append(new String(tmp,0,l,"utf-8"));
+//		        }
+//		        String ss = sb.toString();
+//
+//		        JSONObject jobj = JSONObject.fromObject(ss);
+//
+//		        if ("success".equals(jobj.getString("status"))) {
+//		        	System.out.println("违章系统，车辆信息同步成功！共同步"+jobj.getInt("number")+"条数据、");
+//					return;
+//				}else{
+//					System.err.println("违章系统，车辆信息同步失败！原因是："+jobj.getString("reason"));
+//					return;
+//				}
+//
+//			}
+//		} catch (HttpException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (Exception e){
+//		}
+//	}
 }

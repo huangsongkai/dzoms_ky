@@ -43,13 +43,8 @@ import com.dz.module.charge.ChargeDao;
 import com.dz.module.charge.ChargePlan;
 import com.dz.module.contract.Contract;
 import com.dz.module.contract.ContractDao;
-import com.dz.module.driver.Driver;
-import com.dz.module.driver.DriverService;
-import com.dz.module.driver.Driverincar;
-import com.dz.module.driver.Families;
-import com.dz.module.user.RelationUr;
-import com.dz.module.user.Role;
-import com.dz.module.user.User;
+import com.dz.module.driver.*;
+import com.dz.module.user.*;
 import com.dz.module.user.message.Message;
 import com.dz.module.user.message.MessageToUser;
 import com.opensymphony.xwork2.ActionContext;
@@ -387,6 +382,7 @@ public class VehicleApprovalService {
 				}
 
 				@Override
+				@SuppressWarnings("unused")
 				public String getRealPath(String path) {
 					// TODO Auto-generated method stub
 					return null;
@@ -651,6 +647,7 @@ public class VehicleApprovalService {
 				}
 
 				@Override
+				@SuppressWarnings("unused")
 				public boolean isRequestedSessionIdFromUrl() {
 					// TODO Auto-generated method stub
 					return false;

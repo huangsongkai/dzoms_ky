@@ -48,7 +48,8 @@ public class ReceiptService {
          try{
         	 tx = session.beginTransaction();
         	 if("进货".equals(receiptRecord.getStyle())){
-                 rollDao.addFromSeg(receiptRecord.getStartNum(),receiptRecord.getEndNum(),new Date().getYear()+1900,session);
+                 rollDao.addFromSeg(receiptRecord.getStartNum(),receiptRecord.getEndNum(),
+                 @SuppressWarnings("unused") new Date().getYear()+1900,session);
                  receiptRecord.setYear(new Date().getYear()+1900);
              }else{
                  rollDao.markAsUsed(receiptRecord.getStartNum(), receiptRecord.getEndNum(),session);
