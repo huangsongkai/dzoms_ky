@@ -203,7 +203,7 @@ public class JobDutiesService extends BaseService{
         String userName = user.getUname();
         String department = user.getDepartment();
         if ("汤伟丽".equals(userName) || "孙大勇".equals(userName) || "刘波".equals(userName)) {
-            valsMap.put("userName","王星");//动态办理人
+            valsMap.put("userName2","王星");//动态办理人
             activitiService.complete(taskId+"", valsMap, saveEvaluateDTO.getEvaluateName());
             result.setSuccess("保存成功",null);
             return result;

@@ -125,7 +125,7 @@ public class JobDutyController {
     }
     @RequestMapping(value = "/departmentEvaluate/{taskId}", method = RequestMethod.POST)
     @ResponseBody
-    public Result savedepartmentEvaluate(@PathVariable Integer taskId,  @RequestBody SaveEvaluateDTO saveEvaluateDTO, HttpServletRequest request ) throws Exception {
+    public Result savedepartmentEvaluate(@PathVariable Integer taskId, @RequestBody SaveEvaluateDTO saveEvaluateDTO, HttpServletRequest request ) throws Exception {
         return jobDutiesService.savedepartmentEvaluate(saveEvaluateDTO, taskId);
     }
     /**

@@ -2123,7 +2123,6 @@ var Managementkp = function (_Performance) {
       recScorezp: [],
       recScorebm: [],
       recInputs: [],
-      recKpGroup: [],
       evaluateName: "",
       totalZiping: "",
       totalBumen: "",
@@ -2160,13 +2159,19 @@ var Managementkp = function (_Performance) {
               var zipingSum = 0;
               var bumenSum = 0;
               var kpgroupSum = 0;
-              var recKpGroup = [];
               var regectReason = "";
               for (var i in data) {
-                recKpGroup.push(data[i].kpgroup);
-                zipingSum += parseInt(data[i].personal.score);
-                bumenSum += parseInt(data[i].bumen.score);
-                kpgroupSum += parseInt(data[i].childProValue);
+                if (data[i].personal) {
+                  zipingSum += parseInt(data[i].personal.score);
+                }
+                if (data[i].bumen) {
+                  bumenSum += parseInt(data[i].bumen.score);
+                }
+                if (this.props.department == "historykp") {
+                  kpgroupSum += parseInt(data[i].kpgroup.score);
+                } else {
+                  kpgroupSum += parseInt(data[i].childProValue);
+                }
                 if (data[i].reason) {
                   regectReason = " * 退回理由：" + data[i].reason;
                 }
@@ -2179,7 +2184,6 @@ var Managementkp = function (_Performance) {
               }
               self.setState({
                 recData: data,
-                recKpGroup: recKpGroup,
                 evaluateName: evaluateName,
                 totalZiping: zipingSum,
                 totalBumen: bumenSum,
@@ -2372,10 +2376,21 @@ var Managementkp = function (_Performance) {
       var recScorezp = this.state.recScorezp;
       var recScorebm = this.state.recScorebm;
       var recData = this.state.recData;
-      var recKpGroup = this.state.recKpGroup;
       var maxValue = [];
       for (var i in recData) {
         maxValue.push(recData[i].childProValue);
+      }
+      var completeDefaultValue;
+      if (this.props.department == "historykp") {
+        for (var index in this.state.recData) {
+          if (this.state.recData[index].kpgroup) {
+            completeDefaultValue = this.state.recData[index].kpgroup.complete;
+          } else {
+            completeDefaultValue = "";
+          }
+        }
+      } else {
+        completeDefaultValue = "";
       }
       var columns = [{
         title: '项目',
@@ -2411,19 +2426,19 @@ var Managementkp = function (_Performance) {
           title: "个人",
           dataIndex: "personal",
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal.complete, autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "department",
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].bumen.complete, autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: _this3.props.department == "historykp" ? _this3.state.recData[index].kpgroup.complete : "", disabled: _this3.props.department == "historykp" ? true : false });
+            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: completeDefaultValue, disabled: _this3.props.department == "historykp" ? true : false });
           }
         }]
       }, {
@@ -2439,19 +2454,19 @@ var Managementkp = function (_Performance) {
           title: "自评",
           dataIndex: "ziping",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal.score, disabled: true });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.score : "", disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].bumen.score, disabled: true });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.score : "", disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? _this3.state.recData[index].kpgroup.score : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? _this3.state.recData[index].kpgroup ? _this3.state.recData[index].kpgroup.score : "" : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }]
       }];
