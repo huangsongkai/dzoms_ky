@@ -52,6 +52,8 @@ public class ActivitiService  extends TaskBaseResource{
     @Resource
     FormService formService;
 
+
+
     @Transactional
     public  void deploy(String processFileName){
         //部署相关的流程配置
@@ -223,19 +225,20 @@ public class ActivitiService  extends TaskBaseResource{
      *
      */
     public void processReject(String taskId){
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         try {
             Map<String, Object> variables;
-            // 取得当前任务
+            // 取得当前任务.当前任务节点
             HistoricTaskInstance currTask = historyService
                     .createHistoricTaskInstanceQuery().taskId(taskId)
                     .singleResult();
-            // 取得流程实例
+            // 取得流程实例，流程实例
             ProcessInstance instance = runtimeService
                     .createProcessInstanceQuery()
                     .processInstanceId(currTask.getProcessInstanceId())
                     .singleResult();
             if (instance == null) {
-                //流程已经结束
+//                return "ERROR";
             }
             variables = instance.getProcessVariables();
             // 取得流程定义
@@ -243,17 +246,22 @@ public class ActivitiService  extends TaskBaseResource{
                     .getDeployedProcessDefinition(currTask
                             .getProcessDefinitionId());
             if (definition == null) {
-                //流程定义未找到
+//                return "ERROR";
             }
             // 取得上一步活动
             ActivityImpl currActivity = ((ProcessDefinitionImpl) definition)
                     .findActivity(currTask.getTaskDefinitionKey());
+
+            //也就是节点间的连线
             List<PvmTransition> nextTransitionList = currActivity
                     .getIncomingTransitions();
             // 清除当前活动的出口
             List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
+            //新建一个节点连线关系集合
+
             List<PvmTransition> pvmTransitionList = currActivity
                     .getOutgoingTransitions();
+            //
             for (PvmTransition pvmTransition : pvmTransitionList) {
                 oriPvmTransitionList.add(pvmTransition);
             }
@@ -276,6 +284,9 @@ public class ActivitiService  extends TaskBaseResource{
                     .taskDefinitionKey(currTask.getTaskDefinitionKey()).list();
             for (Task task : tasks) {
                 taskService.complete(task.getId(), variables);
+//                UserInfo user = SessionUtil.getUser();
+//              Authentication.setAuthenticatedUserId(user.getUserId()+"");//批注人的名称  一定要写，不然查看的时候不知道人物信息
+//              taskService.addComment(taskId, null, comment);//comment为批注内容
                 historyService.deleteHistoricTaskInstance(task.getId());
             }
             // 恢复方向
@@ -285,11 +296,13 @@ public class ActivitiService  extends TaskBaseResource{
             for (PvmTransition pvmTransition : oriPvmTransitionList) {
                 pvmTransitionList.add(pvmTransition);
             }
-
+//            return "SUCCESS";
         } catch (Exception e) {
-
+            e.printStackTrace();
+//            return "ERROR";
         }
-    }
+
+}
     @Transactional
     public DataResponse getTasks( Map<String, String> requestParams, HttpServletRequest httpRequest) {
         DateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分");
@@ -371,6 +384,9 @@ public class ActivitiService  extends TaskBaseResource{
         public void setStarter(String starter) {
             this.starter = starter;
         }
+
+
     }
+
 
 }

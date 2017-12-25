@@ -121,6 +121,7 @@
 	<bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
 	<bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
 
+
 	<!-- 集成REST服务需要的bean -->
 	<bean id="restResponseFactory" class="org.activiti.rest.service.api.RestResponseFactory" />
 	<bean id="contentTypeResolver" class="org.activiti.rest.common.application.DefaultContentTypeResolver" />
