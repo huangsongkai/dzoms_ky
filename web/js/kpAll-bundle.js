@@ -154,6 +154,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         contentType: 'application/json',
         success: function (data) {
           var data = data.data;
+          // console.log(data)
           var evaluateName = "";
           if (data) {
             for (var i = 0; i < data.length; i++) {
@@ -163,7 +164,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
             var regectReason = "";
             for (var i in data) {
               if (!this.keyPairs[data[i].id]) {
-                this.keyPairs[data[i].id] = { inputs: [], score: "" };
+                this.keyPairs[data[i].id] = { inputs: "", score: "" };
                 this.keyPairs[data[i].id].score = data[i].childProValue;
               }
               if (data[i].reason) {
@@ -215,7 +216,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         value = 0;
       }
       index = this.state.recData[index].id;
-      if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: [], score: "" };
+      if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: "", score: "" };
       this.keyPairs[index].score = value;
       var sum = 0;
       for (var i in this.keyPairs) {
@@ -230,7 +231,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
     value: function onChange(index, seq, value) {
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
-        this.keyPairs[index] = { inputs: [], score: "" };
+        this.keyPairs[index] = { inputs: "", score: "" };
       }
       if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs[seq] = value;else this.keyPairs[index].inputs[seq] = value.target.value;
     }
@@ -239,9 +240,20 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
     value: function ondateChange(index, seq, date, dateString) {
       index = this.state.recData[index].id;
       //console.log(dateString);
-      if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: [], score: "" };
+      if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: "", score: "" };
       this.keyPairs[index].inputs[seq] = dateString;
       //console.log(this.keyPairs);
+    }
+  }, {
+    key: 'onCompleteChange',
+    value: function onCompleteChange(index, value) {
+      // console.log(index,value)
+      index = this.state.recData[index].id;
+      if (!this.keyPairs[index]) {
+        this.keyPairs[index] = { inputs: "", score: "" };
+      }
+      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs = value;else this.keyPairs[index].inputs = value.target.value;
+      // console.log(this.keyPairs)
     }
   }, {
     key: 'spToInput',
@@ -366,9 +378,25 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       }, {
         title: '完成情况',
         dataIndex: 'complete',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
+        children: [{
+          title: "个人",
+          dataIndex: "personal",
+          render: function render(text, record, index) {
+            return _react3.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
+          }
+        }, {
+          title: "部门",
+          dataIndex: "department",
+          render: function render(text, record, index) {
+            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+          }
+        }, {
+          title: "考评组",
+          dataIndex: "kpGroup",
+          render: function render(text, record, index) {
+            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+          }
+        }]
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
@@ -386,10 +414,16 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
           }
         }, {
           title: "部门",
-          dataIndex: "bumen"
+          dataIndex: "bumen",
+          render: function render(text, record, index) {
+            return _react3.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
+          }
         }, {
           title: "考评组",
-          dataIndex: "pfgroup"
+          dataIndex: "pfgroup",
+          render: function render(text, record, index) {
+            return _react3.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
+          }
         }]
       }];
       var _state = this.state,
@@ -1319,17 +1353,11 @@ var Bumenkp = function (_Performance) {
               data[i]["key"] = data[i].id;
               evaluateName = data[0].evaluateName;
             }
-            var ziping = [];
-            var inputs = [];
-            var bumen = [];
             var zipingSum = 0;
             var bumenSum = 0;
             var regectReason = "";
             for (var i in data) {
-              bumen.push(data[i].bumen);
-              ziping.push(data[i].ziping);
-              inputs.push(data[i].inputs);
-              zipingSum += parseInt(data[i].ziping);
+              zipingSum += parseInt(data[i].personal.score);
               bumenSum += parseInt(data[i].childProValue);
               if (data[i].reason) {
                 regectReason = " * 退回理由：" + data[i].reason;
@@ -1337,15 +1365,12 @@ var Bumenkp = function (_Performance) {
             }
             for (var i in data) {
               if (!this.keyPairs[data[i].id]) {
-                this.keyPairs[data[i].id] = "";
-                this.keyPairs[data[i].id] = data[i].childProValue;
+                this.keyPairs[data[i].id] = { inputs: "", score: "" };
+                this.keyPairs[data[i].id].score = data[i].childProValue;
               }
             }
             this.setState({
               recData: data,
-              recScorezp: ziping,
-              recInputs: inputs,
-              recScorebm: bumen,
               evaluateName: evaluateName,
               totalZiping: zipingSum,
               totalBumen: bumenSum,
@@ -1368,17 +1393,28 @@ var Bumenkp = function (_Performance) {
       }
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
-        this.keyPairs[index] = "";
+        this.keyPairs[index] = { inputs: "", score: "" };
       }
-      this.keyPairs[index] = value;
+      this.keyPairs[index].score = value;
       // console.log(this.keyPairs)
       var sum = 0;
       for (var i in this.keyPairs) {
-        sum += this.keyPairs[i];
+        sum += this.keyPairs[i].score;
       }
       this.setState({
         totalBumen: sum
       });
+    }
+  }, {
+    key: 'onCompleteChange',
+    value: function onCompleteChange(index, value) {
+      // console.log(index,value)
+      index = this.state.recData[index].id;
+      if (!this.keyPairs[index]) {
+        this.keyPairs[index] = { inputs: "", score: "" };
+      }
+      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs = value;else this.keyPairs[index].inputs = value.target.value;
+      // console.log(this.keyPairs)
     }
   }, {
     key: 'spToInput',
@@ -1486,10 +1522,10 @@ var Bumenkp = function (_Performance) {
       result["evaluateName"] = this.state.evaluateName;
       var total = 0;
       for (var i in result.departmentEvaluate) {
-        total += result.departmentEvaluate[i];
+        total += result.departmentEvaluate[i].score;
       }
       result["total"] = total;
-      console.log(result);
+      // console.log(result); 
       //发给后台的数据
       var self = this;
       $.ajax({
@@ -1559,9 +1595,25 @@ var Bumenkp = function (_Performance) {
       }, {
         title: '完成情况',
         dataIndex: 'complete',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
+        children: [{
+          title: "个人",
+          dataIndex: "personal",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal.complete, autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+          }
+        }, {
+          title: "部门",
+          dataIndex: "department",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
+          }
+        }, {
+          title: "考评组",
+          dataIndex: "kpGroup",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+          }
+        }]
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
@@ -1575,7 +1627,7 @@ var Bumenkp = function (_Performance) {
           title: "自评",
           dataIndex: "ziping",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: recScorezp[index], disabled: !(_this3.props.department == "ziping"), onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal.score, disabled: true });
           }
         }, {
           title: "部门",
@@ -1585,11 +1637,12 @@ var Bumenkp = function (_Performance) {
           }
         }, {
           title: "考评组",
-          dataIndex: "pfgroup"
-
+          dataIndex: "pfgroup",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
+          }
         }]
       }];
-      // (key)=>this.spToInput.bind(this,key)
       var _state = this.state,
           loading = _state.loading,
           selectedRowKeys = _state.selectedRowKeys;
@@ -2070,12 +2123,12 @@ var Managementkp = function (_Performance) {
       recScorezp: [],
       recScorebm: [],
       recInputs: [],
-      recKpGroup: [],
       evaluateName: "",
       totalZiping: "",
       totalBumen: "",
       totalkpgroup: "",
-      visible: false
+      visible: false,
+      regectReason: ""
     };
     _this.keyPairs = {};
     _this.key = 0;
@@ -2103,38 +2156,39 @@ var Managementkp = function (_Performance) {
                 data[i]["key"] = data[i].id;
                 evaluateName = data[0].evaluateName;
               }
-              var ziping = [];
-              var inputs = [];
-              var bumen = [];
               var zipingSum = 0;
               var bumenSum = 0;
               var kpgroupSum = 0;
-              var recKpGroup = [];
+              var regectReason = "";
               for (var i in data) {
-                bumen.push(data[i].bumen);
-                ziping.push(data[i].ziping);
-                inputs.push(data[i].inputs);
-                recKpGroup.push(data[i].kpgroup);
-                zipingSum += parseInt(data[i].ziping);
-                bumenSum += parseInt(data[i].bumen);
-                kpgroupSum += parseInt(data[i].childProValue);
+                if (data[i].personal) {
+                  zipingSum += parseInt(data[i].personal.score);
+                }
+                if (data[i].bumen) {
+                  bumenSum += parseInt(data[i].bumen.score);
+                }
+                if (this.props.department == "historykp") {
+                  kpgroupSum += parseInt(data[i].kpgroup.score);
+                } else {
+                  kpgroupSum += parseInt(data[i].childProValue);
+                }
+                if (data[i].reason) {
+                  regectReason = " * 退回理由：" + data[i].reason;
+                }
               }
               for (var i in data) {
                 if (!this.keyPairs[data[i].id]) {
-                  this.keyPairs[data[i].id] = { "score": "", "remark": "" };
+                  this.keyPairs[data[i].id] = { inputs: "", score: "" };
                   this.keyPairs[data[i].id].score = data[i].childProValue;
                 }
               }
               self.setState({
                 recData: data,
-                recScorezp: ziping,
-                recInputs: inputs,
-                recScorebm: bumen,
-                recKpGroup: recKpGroup,
                 evaluateName: evaluateName,
                 totalZiping: zipingSum,
                 totalBumen: bumenSum,
-                totalkpgroup: kpgroupSum
+                totalkpgroup: kpgroupSum,
+                regectReason: regectReason
               });
             } else {
               recData: "";
@@ -2156,7 +2210,7 @@ var Managementkp = function (_Performance) {
       }
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
-        this.keyPairs[index] = { "score": "", "remark": "" };
+        this.keyPairs[index] = { inputs: "", score: "" };
       }
       this.keyPairs[index].score = value;
       var sum = 0;
@@ -2168,13 +2222,15 @@ var Managementkp = function (_Performance) {
       });
     }
   }, {
-    key: 'onNoteChange',
-    value: function onNoteChange(index, value) {
+    key: 'onCompleteChange',
+    value: function onCompleteChange(index, value) {
+      // console.log(index,value)
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
-        this.keyPairs[index] = { "score": "", "remark": "" };
+        this.keyPairs[index] = { inputs: "", score: "" };
       }
-      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].remark = value;else this.keyPairs[index].remark = value.target.value;;
+      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs = value;else this.keyPairs[index].inputs = value.target.value;
+      // console.log(this.keyPairs)
     }
   }, {
     key: 'spToInput',
@@ -2320,10 +2376,21 @@ var Managementkp = function (_Performance) {
       var recScorezp = this.state.recScorezp;
       var recScorebm = this.state.recScorebm;
       var recData = this.state.recData;
-      var recKpGroup = this.state.recKpGroup;
       var maxValue = [];
       for (var i in recData) {
         maxValue.push(recData[i].childProValue);
+      }
+      var completeDefaultValue;
+      if (this.props.department == "historykp") {
+        for (var index in this.state.recData) {
+          if (this.state.recData[index].kpgroup) {
+            completeDefaultValue = this.state.recData[index].kpgroup.complete;
+          } else {
+            completeDefaultValue = "";
+          }
+        }
+      } else {
+        completeDefaultValue = "";
       }
       var columns = [{
         title: '项目',
@@ -2355,9 +2422,25 @@ var Managementkp = function (_Performance) {
       }, {
         title: '完成情况',
         dataIndex: 'complete',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
+        children: [{
+          title: "个人",
+          dataIndex: "personal",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+          }
+        }, {
+          title: "部门",
+          dataIndex: "department",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+          }
+        }, {
+          title: "考评组",
+          dataIndex: "kpGroup",
+          render: function render(text, record, index) {
+            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: completeDefaultValue, disabled: _this3.props.department == "historykp" ? true : false });
+          }
+        }]
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
@@ -2371,27 +2454,21 @@ var Managementkp = function (_Performance) {
           title: "自评",
           dataIndex: "ziping",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorezp[index], disabled: !(_this3.props.department == "ziping"), onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.score : "", disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, max: maxValue[index], defaultValue: recScorebm[index], disabled: !(_this3.props.department == "bumen"), onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.score : "", disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? recKpGroup[index] : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? _this3.state.recData[index].kpgroup ? _this3.state.recData[index].kpgroup.score : "" : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }]
-      }, {
-        title: '备注',
-        dataIndex: 'remark',
-        render: function render(text, record, index) {
-          return _react2.default.createElement(TextArea, { autosize: { minRows: 1 }, style: { width: 100 }, onChange: _this3.onNoteChange.bind(_this3, index) });
-        }
       }];
       // (key)=>this.spToInput.bind(this,key)
       var _state = this.state,
@@ -2464,6 +2541,11 @@ var Managementkp = function (_Performance) {
             _button2.default,
             { type: 'danger', style: { margin: '0 15px', float: 'right', padding: '6px 30px' }, disabled: this.props.department == "historykp" ? true : false, onClick: this.returned.bind(this) },
             '\u9000\u56DE'
+          ),
+          _react2.default.createElement(
+            'p',
+            { style: { float: 'right', padding: '5px', color: 'red' } },
+            this.props.department == "historykp" ? "" : this.state.regectReason ? this.state.regectReason : ''
           )
         ),
         _react2.default.createElement(
@@ -2679,28 +2761,8 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
       });
     }
   }, {
-    key: 'getCookie',
-    value: function getCookie(name) {
-      var arr,
-          reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-      if (arr = document.cookie.match(reg)) return unescape(arr[2]);else return null;
-    }
-  }, {
     key: 'showAddModal',
     value: function showAddModal() {
-      this.props.form.resetFields();
-      var proName = this.getCookie("proName");
-      var department = this.getCookie("department");
-      var recData = this.props.recData;
-      this.props.form.setFields({
-        proName: {
-          value: proName
-        },
-        department: {
-          value: department
-        }
-      });
-      // console.log(value)
       this.setState({
         visible: true,
         type: "post"
@@ -2760,8 +2822,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         visible: true,
         type: "put"
       });
-      //const {getFieldsValue} =this.props.form;
-      // console.log(getFieldsValue()); //可以获取到修改之后的对象
     }
     //删除
 
@@ -2837,7 +2897,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
           //测试添加start
           // recData.splice(0,0,tableData); //添到数组最前面的位置
           // this.props.transferMsg(recData);   
-          // this.props.form.resetFields();    
           //测试添加end
         } else {
           _this2.setState({
@@ -2866,7 +2925,7 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         contentType: 'application/json',
         success: function success(data) {
           if (data.status > 0) {
-            that.props.form.resetFields();
+            // that.props.form.resetFields();    
             //console.log("aaaa");
             if (type == "put") {
               for (var i in id) {
@@ -3140,9 +3199,6 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
   }, {
     key: 'onSelectChange',
     value: function onSelectChange(selectedRowKeys) {
-      //console.log('selectedRowKeys changed: ', selectedRowKeys);
-      // this.setState({selectedRowKeys});
-      // console.log(selectedRowKeys);
       this.setState({ selectedRowKeys: selectedRowKeys });
       return selectedRowKeys;
     }

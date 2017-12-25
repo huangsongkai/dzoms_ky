@@ -200,7 +200,7 @@ public class ItemController {
     public String bgsstartprocess (HttpServletRequest request) throws Exception {
         String itemId = request.getParameter("itemId");
         String num = request.getParameter("num");
-        itemService.startitem(itemId, num, "office_item_purchase");
+        itemService.startitem(itemId, num, "office_item_purchase", request);
         return "activity/task_list";
     }
 
@@ -211,7 +211,7 @@ public class ItemController {
     public String yybstartprocess (HttpServletRequest request) throws Exception {
         String itemId = request.getParameter("itemId");
         String num = request.getParameter("num");
-        itemService.startitem(itemId, num, "operation_item_purchase");
+        itemService.startitem(itemId, num, "operation_item_purchase", request);
         return "activity/task_list";
     }
 
@@ -246,7 +246,7 @@ public class ItemController {
     public String startbgsitem (HttpServletRequest request) throws Exception {
         String itemId = request.getParameter("itemId");
         String num = request.getParameter("num");
-        itemService.startitem(itemId, num, "item_grant");
+        itemService.startitem(itemId, num, "item_grant", request);
         return "activity/task_list";
     }
 

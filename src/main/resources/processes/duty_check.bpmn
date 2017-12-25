@@ -3,11 +3,11 @@
   <process id="duty_check" name="绩效考核" isExecutable="true">
     <startEvent id="sid-FF43B632-0FFA-4961-87FC-376FCB6CDC6E"></startEvent>
     <userTask id="sid-29B25B2C-0C31-4D0E-8322-F23FDBDAFBA5" name="个人打分" activiti:formKey="duty/self_evaluate" activiti:assignee="${userName1}" ></userTask>
-    <userTask id="sid-23F7720F-6CD2-43A5-A687-5FB37B28DBF2" name="部门经理打分" activiti:formKey="duty/department_evaluate" activiti:assignee="${userName}" ></userTask>
+    <userTask id="sid-23F7720F-6CD2-43A5-A687-5FB37B28DBF2" name="部门经理打分" activiti:formKey="duty/department_evaluate" activiti:assignee="${userName2}" ></userTask>
     <sequenceFlow id="sid-94342720-F028-4C67-AEA9-C3C020069D23" sourceRef="sid-29B25B2C-0C31-4D0E-8322-F23FDBDAFBA5" targetRef="sid-23F7720F-6CD2-43A5-A687-5FB37B28DBF2"></sequenceFlow>
-    <userTask id="sid-D5203BCF-946F-49E2-BFD8-E1221A7EC9B9" name="考核小组打分" activiti:formKey="duty/manager_evaluate"  activiti:assignee="${userName}" ></userTask>
+    <userTask id="sid-D5203BCF-946F-49E2-BFD8-E1221A7EC9B9" name="考核小组打分" activiti:formKey="duty/manager_evaluate"  activiti:assignee="${userName3}" ></userTask>
     <sequenceFlow id="sid-1187BDCC-6951-4EE8-B623-4662FD9919B9" sourceRef="sid-23F7720F-6CD2-43A5-A687-5FB37B28DBF2" targetRef="sid-D5203BCF-946F-49E2-BFD8-E1221A7EC9B9"></sequenceFlow>
-    <userTask id="sid-200AF3D8-0290-4489-999F-8582812386F1" name="个人确认分数" activiti:assignee="${userName1}"></userTask>
+    <userTask id="sid-200AF3D8-0290-4489-999F-8582812386F1" name="个人确认分数" activiti:assignee="${userName4}"></userTask>
     <sequenceFlow id="sid-C5673FCF-6423-4D3E-9DFB-4045984150A1" sourceRef="sid-D5203BCF-946F-49E2-BFD8-E1221A7EC9B9" targetRef="sid-200AF3D8-0290-4489-999F-8582812386F1"></sequenceFlow>
     <intermediateThrowEvent id="sid-E8DBFC3C-E864-4C09-8BB9-EB4203F7A1EE"></intermediateThrowEvent>
     <sequenceFlow id="sid-58ECF5BC-9B79-4C0D-9BA9-FF64445FAECC" sourceRef="sid-200AF3D8-0290-4489-999F-8582812386F1" targetRef="sid-E8DBFC3C-E864-4C09-8BB9-EB4203F7A1EE"></sequenceFlow>

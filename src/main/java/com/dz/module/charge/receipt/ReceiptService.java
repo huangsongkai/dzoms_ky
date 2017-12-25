@@ -1,5 +1,6 @@
 package com.dz.module.charge.receipt;
 
+import com.dz.common.factory.HibernateSessionFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -7,10 +8,6 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dz.common.factory.HibernateSessionFactory;
-
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +16,7 @@ import java.util.List;
  *         Created on 15-12-28.
  */
 @Service
+@SuppressWarnings("unused")
 public class ReceiptService {
     @Autowired
     private RollDao rollDao;
@@ -42,6 +40,7 @@ public class ReceiptService {
     public List<RemoveRecord> searchRemoves(Date startTime,Date endTime){
         return removeRecordDao.searchRecord(startTime,endTime);
     }
+
     public boolean addRecord(ReceiptRecord receiptRecord){
     	 Session session = HibernateSessionFactory.getSession();
          Transaction tx = null;
@@ -49,7 +48,7 @@ public class ReceiptService {
         	 tx = session.beginTransaction();
         	 if("进货".equals(receiptRecord.getStyle())){
                  rollDao.addFromSeg(receiptRecord.getStartNum(),receiptRecord.getEndNum(),
-                 @SuppressWarnings("unused") new Date().getYear()+1900,session);
+                 new Date().getYear()+1900,session);
                  receiptRecord.setYear(new Date().getYear()+1900);
              }else{
                  rollDao.markAsUsed(receiptRecord.getStartNum(), receiptRecord.getEndNum(),session);

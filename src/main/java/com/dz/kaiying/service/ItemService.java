@@ -12,6 +12,8 @@ import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -279,12 +281,16 @@ public class ItemService extends BaseService{
 
     }
 
-    public Result startitem(String itemId, String num, String processName) {
+    public Result startitem(String itemId, String num, String processName, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String userName = user.getUname();
         List<Item> itemList = itemDao.find("from Item where id =" + itemId);
         Map map = new HashMap();
         map.put("商品id",itemId);
         map.put("数量",num);
         map.put("商品名称",itemList.get(0).getItemName());
+        map.put("userName1", userName);
         activitiUtilService.startProcessByRuntime(processName,map);
         result.setSuccess("流程启动成功",null);
         return result;

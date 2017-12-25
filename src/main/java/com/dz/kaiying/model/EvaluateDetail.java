@@ -24,9 +24,6 @@ public class EvaluateDetail implements java.io.Serializable {
 
     @Column(name = "evaluate_name" )
     private String evaluateName; //考评名称
-
-
-
     @Column(name = "pro_name")
     private String proName;
 
@@ -44,6 +41,9 @@ public class EvaluateDetail implements java.io.Serializable {
 
     @Column(name = "job_standard")
     private String jobStandard;
+
+
+
 
     @Column(name = "self_inputs" )
     private String selfInputs;

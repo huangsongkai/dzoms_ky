@@ -224,7 +224,9 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
             recCph: [], //后台请求回来的车牌号数组
             confirmLoading: false,
             visible: false,
-            imgVisible: false
+            imgVisible: false,
+            errorMessage: "",
+            message: ""
         };
         _this.CphValue = ""; //后面的车牌号
         _this.cphId = ""; //车牌号ID
@@ -243,9 +245,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
         value: function changecphValue(CphValue) {
             this.CphValue = CphValue;
             var cph = this.cphPrefix + CphValue;
-            //console.log(cph);
             this.objCph[this.cphId] = cph;
-            //console.log(this.objCph);
         }
     }, {
         key: 'selectInfoErrorMessage',
@@ -340,21 +340,55 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
         value: function handleOk() {
             var _this3 = this;
 
-            this.setState({
-                ModalText: 'The modal will be closed after two seconds',
-                confirmLoading: true
+            this.props.form.validateFields(function (err, values) {
+                var flag = false;
+                if (values.reason) {
+                    //这里要自己手写验证，formItem嵌套formItem点同意的时候也会验证这个属性，会导致同意不通过
+                    _this3.setState({
+                        message: ""
+                    });
+                    flag = true;
+                } else {
+                    _this3.setState({
+                        message: "请输入理由在提交"
+                    });
+                }
+                values["taskId"] = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
+                if (flag) {
+                    var self = _this3;
+                    $.ajax({
+                        type: "post",
+                        url: self.props.regectUrl,
+                        data: JSON.stringify(values),
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function success(data) {
+                            self.setState({
+                                visible: false
+                            });
+                            if (data.status > 0) {
+                                _modal2.default.success({
+                                    title: '提示信息',
+                                    content: '回退成功！'
+                                });
+                                window.location.href = self.props.jumpUrl;
+                            } else {
+                                _modal2.default.error({
+                                    title: '提示信息',
+                                    content: '回退失败！'
+                                });
+                            }
+                        },
+                        error: function error(data) {
+                            alert("失败");
+                        }
+                    });
+                }
             });
-            setTimeout(function () {
-                _this3.setState({
-                    visible: false,
-                    confirmLoading: false
-                });
-            }, 1000);
         }
     }, {
         key: 'handleCancel',
         value: function handleCancel() {
-            console.log('Clicked cancel button');
             this.setState({
                 visible: false
             });
@@ -373,14 +407,12 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
 
             var formItemLayout = {
                 labelCol: { span: 4 },
-                wrapperCol: { span: 16 }
+                wrapperCol: { span: 20 }
             };
-            var panels = this.props.data.map(function (col, index) {
-                //console.log(col.name);  
+            var panels = self.props.data.map(function (col, index) {
                 //如果有localVariables属性的
                 if (col.variables) {
                     inputGroup = col.variables.map(function (i) {
-                        //console.log(i);
                         return _react3.default.createElement(
                             'div',
                             null,
@@ -679,7 +711,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                                     _react3.default.createElement(
                                         _button2.default,
                                         { type: 'danger', style: { marginLeft: 5, width: 100 }, onClick: self.showModal.bind(self) },
-                                        '\u8FD4\u56DE\u4E0A\u4E00\u6B65'
+                                        '\u9000\u56DE'
                                     ),
                                     _react3.default.createElement(
                                         _button2.default,
@@ -696,9 +728,21 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                                             onCancel: self.handleCancel.bind(self)
                                         },
                                         _react3.default.createElement(
-                                            'p',
-                                            null,
-                                            '\u8FD4\u56DE\u4E0A\u4E00\u6B65\u5C06\u4F1A\u628A\u4EFB\u52A1\u56DE\u9000\u7ED9\u4E0A\u4E00\u4E2A\u90E8\u95E8\uFF0C\u786E\u5B9A\u8981\u6267\u884C\u8BE5\u64CD\u4F5C\u5417\uFF1F'
+                                            FormItem,
+                                            _extends({
+                                                label: '\u9000\u56DE\u7406\u7531',
+                                                style: { 'width': '100%' }
+                                            }, formItemLayout),
+                                            getFieldDecorator('reason')(_react3.default.createElement(
+                                                'div',
+                                                null,
+                                                _react3.default.createElement(_input2.default, { style: { 'width': '100%' } }),
+                                                _react3.default.createElement(
+                                                    'span',
+                                                    { style: { color: '#F04134' } },
+                                                    self.state.message
+                                                )
+                                            ))
                                         )
                                     )
                                 )
