@@ -118,6 +118,11 @@
             window.open(url,"_blank");
         }
 
+        function _toPrintCard() {
+            var url = "/DZOMS/driver/driverCardPrint.html";
+            window.open(url,"_blank");
+        }
+
         function showDetail(id){
             //alert(id);
             layer.open({
@@ -198,6 +203,8 @@
                                 打印录入表</button>
                             <button  onclick="_toPrintContract()" type="button" class="button icon-print text-green" style="line-height: 6px;">
                                 打印驾驶员聘用协议</button>
+                            <button  onclick="_toPrintCard()" type="button" class="button icon-print text-green" style="line-height: 6px;">
+                                打印驾驶员档案卡</button>
                         </div>
                     </div>
                 </div>
