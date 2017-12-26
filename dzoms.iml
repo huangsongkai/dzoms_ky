@@ -19,6 +19,25 @@
       </configuration>
       <facet type="Struts2" name="Struts 2">
         <configuration>
+          <fileset id="s2fileset" name="My Fileset " removed="false">
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/common/download/down-load.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/charge/struts-charge.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/vehicle/newcheck/struts-check.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/common/struts-common.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/complain/struts-complain.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/struts-driver-base.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/struts-driver.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/kaiying/struts-kaiying.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/meeting/struts-meeting.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/praise/struts-praise.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/charge/receipt/struts-receipt.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/struts-select.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/vehicle/struts-vehicle.xml</file>
+            <file>file://$MODULE_DIR$/src/main/resources/struts.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/contract/struts_contract.xml</file>
+            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/user/struts_manage.xml</file>
+            <file>jar://$MAVEN_REPOSITORY$/org/apache/struts/struts2-core/2.3.8/struts2-core-2.3.8.jar!/struts-default.xml</file>
+          </fileset>
           <propertiesKeys disabled="false" />
         </configuration>
       </facet>

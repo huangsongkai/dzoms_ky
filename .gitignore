@@ -2,7 +2,6 @@
 *.orig
 /.settings
 /classes
-/WebRoot/WEB_INF/classes
 web/WEB_INF/lib
 .classpath
 .project
