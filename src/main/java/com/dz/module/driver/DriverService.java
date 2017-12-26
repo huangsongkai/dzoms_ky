@@ -1,8 +1,6 @@
 package com.dz.module.driver;
 
-import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.Page;
-import com.dz.common.other.MessageClient;
 import com.dz.common.other.ObjectAccess;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
@@ -10,16 +8,10 @@ import com.dz.module.vehicle.Vehicle;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -260,80 +252,5 @@ public class DriverService {
 
 	List<Driver> search(Page page, Triplet<String, String, Object>... conditions) {
 		return driverDao.search(page, conditions);
-	}
-
-
-	@Value("#{configProperties['messageSequenceNum']}")
-	private String messageSequenceNum;
-	@Value("#{configProperties['messagePassword']}")
-	private String messagePassword;
-
-	/**
-	 * 发送消息给资格证即将到期的在车驾驶员
-	 */
-	public void sendMessageToQualification(){
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH,1);
-		Calendar _3daysBefore = Calendar.getInstance();
-		calendar.add(Calendar.DATE,-3);
-
-		Session s = null;
-		Transaction tx = null;
-		try {
-			s = HibernateSessionFactory.getSession();
-			tx = s.beginTransaction();
-
-			Query query = s.createQuery("from Driver d where d.qualificationValidDate <:dt and " +
-					"not exists (select 1 from QualificationMessageLog ql " +
-					"where ql.idNum=d.idNum and ql.sendTime>:bfd)");
-			query.setDate("dt",calendar.getTime());
-			query.setDate("bfd",_3daysBefore.getTime());
-			List<Driver> sendList = query.list();
-
-			System.out.println(messageSequenceNum);
-			System.out.println(messagePassword);
-
-			MessageClient client = new MessageClient(messageSequenceNum,messagePassword);
-
-			for (Driver driver : sendList) {
-				String phoneNum = driver.getPhoneNum1();
-
-				String content = String.format("您的资格证即将到期！到期日期：%tF,剩余%d天。",
-						driver.getQualificationValidDate(),
-						(driver.getQualificationValidDate().getTime()-new Date().getTime())/86400000+1);
-				String resultStr = client.fakeSendMessage(phoneNum,content,"","","");
-
-				QualificationMessageLog log = new QualificationMessageLog();
-				log.setIdNum(driver.getIdNum());
-				log.setPhoneNum(phoneNum);
-				log.setSendTime(new Date());
-				log.setContext(content);
-				log.setReturnVal(resultStr);
-
-				s.save(log);
-			}
-
-			tx.commit();
-		}catch (HibernateException ex){
-			ex.printStackTrace();
-			if(tx!=null){
-				tx.rollback();
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			if(tx!=null){
-				tx.rollback();
-			}
-		} finally {
-			HibernateSessionFactory.closeSession();
-		}
-	}
-
-	public void setMessagePassword(String messagePassword) {
-		this.messagePassword = messagePassword;
-	}
-
-	public void setMessageSequenceNum(String messageSequenceNum) {
-		this.messageSequenceNum = messageSequenceNum;
 	}
 }

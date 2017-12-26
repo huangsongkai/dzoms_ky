@@ -1,7 +1,7 @@
 package com.dz.kaiying.service.statistics;
 
 import com.dz.kaiying.repository.hiber.HibernateDao;
-import com.dz.module.vehicle.electric.ElectricHistory;
+import com.dz.module.electric.ElectricHistory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

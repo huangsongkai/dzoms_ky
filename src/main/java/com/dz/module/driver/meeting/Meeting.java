@@ -16,7 +16,7 @@ public class Meeting implements java.io.Serializable {
 	// Fields
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 7940691657796301187L;
 	private Integer id;
@@ -47,8 +47,8 @@ public class Meeting implements java.io.Serializable {
 
 	/** full constructor */
 	public Meeting(String meetingName, Integer meetingClass, Integer fileInfo,
-			String meetingContext, Integer driverList, Date meetingTime,
-			Float grade, Integer registrant, Date registTime) {
+				   String meetingContext, Integer driverList, Date meetingTime,
+				   Float grade, Integer registrant, Date registTime) {
 		this.meetingName = meetingName;
 		this.meetingClass = meetingClass;
 		this.fileInfo = fileInfo;

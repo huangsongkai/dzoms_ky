@@ -244,7 +244,7 @@ public class JobDutiesService extends BaseService{
             queryEvaluateDTO.setTaskId(taskId+"");
             SaveEvaluateDetailDTO mySelfDetailDTO = new SaveEvaluateDetailDTO();
             mySelfDetailDTO.setInputs(evaluateDetail.getSelfInputs());
-            mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
+            mySelfDetailDTO.setComplete(evaluateDetail.getManagerInputs());
             mySelfDetailDTO.setScore(evaluateDetail.getSelfScore());
             queryEvaluateDTO.setPersonal(mySelfDetailDTO);
             queryEvaluateDTOList.add(queryEvaluateDTO);
@@ -315,7 +315,7 @@ public class JobDutiesService extends BaseService{
 
             SaveEvaluateDetailDTO departmentDetailDTO = new SaveEvaluateDetailDTO();
             departmentDetailDTO.setInputs(evaluateDetail.getManagerInputs());
-            departmentDetailDTO.setComplete(evaluateDetail.getSelfInputs());
+            departmentDetailDTO.setComplete(evaluateDetail.getManagerInputs());
             departmentDetailDTO.setScore(evaluateDetail.getManagerScore());
             queryEvaluateDTO.setBumen(departmentDetailDTO);
             queryEvaluateDTOList.add(queryEvaluateDTO);

@@ -56,8 +56,6 @@ public class Driver implements java.io.Serializable {
 	private String drivingLicenseNum;
 	private Date drivingLicenseDate;
 	private String drivingLicenseType;
-	//2017-10-18 新增 资格证号
-	private String qualificationNo;
 	private String qualificationNum;
 	private Date qualificationDate;
 	private Date qualificationValidDate;
@@ -112,6 +110,7 @@ public class Driver implements java.io.Serializable {
 	private Date insertTime;
 	private Boolean isQualified;
 	private Boolean isContractorPassed;
+	private String qualificationNo;
 	
 	private String applyLicenseNum;
 
@@ -957,7 +956,6 @@ public class Driver implements java.io.Serializable {
 	public void setApplyLicenseNum(String applyLicenseNum) {
 		this.applyLicenseNum = applyLicenseNum;
 	}
-
 	@Column(name="qualification_no")
 	public String getQualificationNo() {
 		return qualificationNo;

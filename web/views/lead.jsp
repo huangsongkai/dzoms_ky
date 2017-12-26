@@ -10,15 +10,15 @@
 <head>
     <meta charset="utf-8">
     <title>统计</title>
-    <link href="/css/bootstrap.css" rel="stylesheet" />
-    <link href="/css/tjStyle.css" rel="stylesheet" />
+    <link href="/DZOMS/ky/css/bootstrap.css" rel="stylesheet" />
+    <link href="/DZOMS/ky/css/tjStyle.css" rel="stylesheet" />
     <style type="text/css">
 
     </style>
     <!-- 引入 echarts.js -->
-    <script src="/js/jquery-2.2.1.min.js"></script>
-    <script src="/js/echarts-all.js"></script>
-    <script src="/js/dark.js"></script>
+    <script src="/DZOMS/ky/js/jquery-2.2.1.min.js"></script>
+    <script src="/DZOMS/ky/js/echarts-all.js"></script>
+    <script src="/DZOMS/ky/js/dark.js"></script>
 </head>
 <body>
 <body>

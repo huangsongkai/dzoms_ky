@@ -1,13 +1,9 @@
-package com.dz.module.vehicle.electric;
+package com.dz.module.electric;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.global.BaseAction;
+import com.dz.common.other.ObjectAccess;
+import com.dz.module.vehicle.Vehicle;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.Query;
@@ -16,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.dz.common.factory.HibernateSessionFactory;
-import com.dz.common.global.BaseAction;
-import com.dz.common.other.ObjectAccess;
-import com.dz.module.vehicle.Vehicle;
-import com.dz.module.vehicle.service.ServiceDetail;
-import com.dz.module.vehicle.service.ServiceError;
-import com.dz.module.vehicle.service.ServiceSpace;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @Scope(value="prototype")

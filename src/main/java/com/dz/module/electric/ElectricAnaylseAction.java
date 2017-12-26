@@ -1,4 +1,4 @@
-package com.dz.module.vehicle.electric;
+package com.dz.module.electric;
 
 import com.dz.common.global.BaseAction;
 import com.dz.common.other.ObjectAccess;
@@ -89,7 +89,7 @@ public class ElectricAnaylseAction extends BaseAction {
 		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
 
 		Timer timer = new Timer();
-		//timer.synHistory();
+		timer.synHistory();
 		
 		ServletActionContext.getResponse().sendRedirect("/DZOMS/vehicle/electric/syn_search.jsp");
 	}

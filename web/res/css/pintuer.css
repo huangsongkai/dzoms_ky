@@ -1088,7 +1088,8 @@ a:focus,a:hover{color:#0a8;} /*閾炬帴-鎮诞棰滆壊*/
 	
 }
 body{
-	background-color:transparent;
+	background-color:#fff;
+    padding:5px 40px;
 }
 
 .table {

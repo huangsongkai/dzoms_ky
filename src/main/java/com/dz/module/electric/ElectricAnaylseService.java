@@ -1,4 +1,4 @@
-package com.dz.module.vehicle.electric;
+package com.dz.module.electric;
 
 import java.io.File;
 import java.io.FileInputStream;

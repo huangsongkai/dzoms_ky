@@ -5,7 +5,6 @@ import com.dz.common.global.Page;
 import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.PageUtil;
 import com.dz.common.other.TimeComm;
-import com.dz.kaiying.util.StringUtil;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.opensymphony.xwork2.ActionSupport;
@@ -38,8 +37,6 @@ public class BankCardAction extends ActionSupport implements ServletRequestAware
             bankCard.setOperator(user.getUid());
             bankCard.setOpeTime(TimeComm.getCurrentTime());
         }
-        bankCard.setIdNumber(StringUtils.trim(bankCard.getIdNumber()));
-        bankCard.setCardNumber(StringUtils.trim(bankCard.getCardNumber()));
         boolean flag = bankCardService.bankCardAdd(bankCard);
         if (!flag) {
             this.addActionError("添加银行卡失败。");
@@ -86,7 +83,7 @@ public class BankCardAction extends ActionSupport implements ServletRequestAware
         Transaction tx = null;
         try {
             tx = s.beginTransaction();
-            Query query = s.createQuery("delete from BankCardOfVehicle where bankCard.id=:cardId");
+            Query query = s.createQuery("delete from BankCardOfVehicle where vehicle.carframeNum=:cardId");
             query.setInteger("cardId",bankCard.getId());
             s.delete(bankCard);
             query.executeUpdate();

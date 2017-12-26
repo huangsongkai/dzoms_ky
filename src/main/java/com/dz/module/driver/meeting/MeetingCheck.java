@@ -1,14 +1,13 @@
 package com.dz.module.driver.meeting;
 // default package
 
-import java.util.Date;
-
-import javax.persistence.*;
-import static javax.persistence.GenerationType.IDENTITY;
-
+import com.dz.module.driver.Driver;
 import org.apache.commons.lang.BooleanUtils;
 
-import com.dz.module.driver.Driver;
+import javax.persistence.*;
+import java.util.Date;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * MeetingCheck entity. @author MyEclipse Persistence Tools

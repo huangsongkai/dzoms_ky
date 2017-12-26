@@ -15,7 +15,6 @@ import com.dz.module.driver.DriverDao;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleDao;
-
 import com.opensymphony.xwork2.ActionContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -25,16 +24,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -177,7 +171,7 @@ public class ChargeService {
                     List<BankCardOfVehicle> bl = bankCard.getbOfVList();
                     if(bl!=null){
                         for (BankCardOfVehicle bankCardOfVehicle:bl)
-                            s.delete(bankCardOfVehicle);
+                            s.delete(bl);
                     }
                     s.delete(bankCard);
                     continue;
@@ -457,60 +451,60 @@ public class ChargeService {
     }
 
     public BankRecord getBankRecord(Date time,String carframeNum){
-    	BankRecord record = null;
+        BankRecord record = null;
 
-    	Session session = null;
-    	try{
-    		session = HibernateSessionFactory.getSession();
-    		String hql = "select new com.dz.module.charge.BankRecord("
-    						+ "d.idNum as idNum,"
-    						+ "d.name as driverName,"
-    						+ "c.carframeNum as carframeNum,"
-    						+ "c.carNum as licenseNum,"
-    						+ "sum(case when year(p.time)>year(:date) then 0.0 "
-    						+ "         when year(p.time)=year(:date) and month(p.time)>month(:date) then 0.0 "
-    						+ "         when year(cl.current)>year(p.time) then 0.0 "
-    						+ "         when year(cl.current)=year(p.time) and month(cl.current)>month(p.time) then 0.0 "
-    						+ "         when p.feeType like 'plan%add%' then -p.fee "
-    						+ "         when p.feeType like 'plan%sub%' then p.fee "
-    						+ "         when p.feeType like 'plan%' then -p.fee "
-    						+ "         when p.feeType like '%add%' then p.fee "
-    						+ "         else -p.fee "
-    						+ "end) as derserve"
-    						+ ","
-    						+ "avg(case when year(cl.current)<year(:date) then c.account"
-    						+ "      when year(cl.current)=year(:date) and month(cl.current)<=month(:date) then c.account "
-    						+ "      when p.feeType='last_month_left' then p.fee"
-    						+ "      else 0.0 "
-    						+ "end) as left,"
-                            + "c.id as contractId "
-    					+ ") "
-    					+ "from ChargePlan p,Contract c,ClearTime cl,Driver d "
-    					+ "where cl.department=c.branchFirm "
-    					+ "and p.contractId=c.id "
-    					+ "and c.state in (0,-1,1,4) "
-    					+ "and c.carframeNum like :carframeNum "
-    					+ "and c.idNum=d.idNum "
-    					+ "and p.isClear != true "
-    					+ "and ( "
-    					+ "    (c.abandonedFinalTime is null) "
-    					+ "  or (YEAR(c.abandonedFinalTime )*12+MONTH(c.abandonedFinalTime )+(case when DAY(c.abandonedFinalTime )>26 then 1 else 0 end) >= (YEAR(:date)*12+MONTH(:date)))"
-    					+ ") "
-    					+ "group by c.id "
-    					+ "order by c.branchFirm,c.carNum";
+        Session session = null;
+        try{
+            session = HibernateSessionFactory.getSession();
+            String hql = "select new com.dz.module.charge.BankRecord("
+                    + "d.idNum as idNum,"
+                    + "d.name as driverName,"
+                    + "c.carframeNum as carframeNum,"
+                    + "c.carNum as licenseNum,"
+                    + "sum(case when year(p.time)>year(:date) then 0.0 "
+                    + "         when year(p.time)=year(:date) and month(p.time)>month(:date) then 0.0 "
+                    + "         when year(cl.current)>year(p.time) then 0.0 "
+                    + "         when year(cl.current)=year(p.time) and month(cl.current)>month(p.time) then 0.0 "
+                    + "         when p.feeType like 'plan%add%' then -p.fee "
+                    + "         when p.feeType like 'plan%sub%' then p.fee "
+                    + "         when p.feeType like 'plan%' then -p.fee "
+                    + "         when p.feeType like '%add%' then p.fee "
+                    + "         else -p.fee "
+                    + "end) as derserve"
+                    + ","
+                    + "avg(case when year(cl.current)<year(:date) then c.account"
+                    + "      when year(cl.current)=year(:date) and month(cl.current)<=month(:date) then c.account "
+                    + "      when p.feeType='last_month_left' then p.fee"
+                    + "      else 0.0 "
+                    + "end) as left,"
+                    + "c.id as contractId "
+                    + ") "
+                    + "from ChargePlan p,Contract c,ClearTime cl,Driver d "
+                    + "where cl.department=c.branchFirm "
+                    + "and p.contractId=c.id "
+                    + "and c.state in (0,-1,1,4) "
+                    + "and c.carframeNum like :carframeNum "
+                    + "and c.idNum=d.idNum "
+                    + "and p.isClear != true "
+                    + "and ( "
+                    + "    (c.abandonedFinalTime is null) "
+                    + "  or (YEAR(c.abandonedFinalTime )*12+MONTH(c.abandonedFinalTime )+(case when DAY(c.abandonedFinalTime )>26 then 1 else 0 end) >= (YEAR(:date)*12+MONTH(:date)))"
+                    + ") "
+                    + "group by c.id "
+                    + "order by c.branchFirm,c.carNum";
 
-    		Query query = session.createQuery(hql);
+            Query query = session.createQuery(hql);
 
             query.setString("carframeNum", "%"+carframeNum+"%");
 
-    		query.setDate("date", time);
-    		query.setMaxResults(1);
-    		record = (BankRecord) query.uniqueResult();
-       	}catch(HibernateException ex){
-    		ex.printStackTrace();
-    	}finally{
-    		HibernateSessionFactory.closeSession();
-    	}
+            query.setDate("date", time);
+            query.setMaxResults(1);
+            record = (BankRecord) query.uniqueResult();
+        }catch(HibernateException ex){
+            ex.printStackTrace();
+        }finally{
+            HibernateSessionFactory.closeSession();
+        }
 
         return record;
     }
@@ -641,14 +635,14 @@ public class ChargeService {
 
             BigDecimal heton,insurance,other;
             if(heton_base.equals(heton_base_raw)||heton_base_raw.equals(BigDecimal.ZERO)){
-            	heton = calculatePlan(plans,"contract");
-            	insurance = calculatePlan(plans,"insurance");
-            	other = calculatePlan(plans,"other");
+                heton = calculatePlan(plans,"contract");
+                insurance = calculatePlan(plans,"insurance");
+                other = calculatePlan(plans,"other");
             }else{
-            	heton = calculatePlanNoClear(plans,"contract");
-            	insurance = calculatePlanNoClear(plans,"insurance");
-            	other = calculatePlanNoClear(plans,"other");
-            	heton_base = heton_base_raw;
+                heton = calculatePlanNoClear(plans,"contract");
+                insurance = calculatePlanNoClear(plans,"insurance");
+                other = calculatePlanNoClear(plans,"other");
+                heton_base = heton_base_raw;
             }
 
             cpc.setBaoxian(insurance);
@@ -716,7 +710,7 @@ public class ChargeService {
      * @return 单车多月对账表
      */
     @SuppressWarnings("deprecation")
-	public List<CheckTablePerCar> getACarChargeTable(String CarId,TimePass timePass){
+    public List<CheckTablePerCar> getACarChargeTable(String CarId,TimePass timePass){
         List<CheckTablePerCar> table = new ArrayList<>();
         Vehicle tmp = new Vehicle();
         tmp.setLicenseNum(CarId);
@@ -769,9 +763,9 @@ public class ChargeService {
             CheckChargeTable cct = ObjectAccess.execute(hql);
 
             if(cct==null){
-            	cpc.setLeft(getlastMontAccountLeft(contract.getId(), d));
+                cpc.setLeft(getlastMontAccountLeft(contract.getId(), d));
             }else{
-            	cpc.setLeft(cct.getLastMonthOwe());
+                cpc.setLeft(cct.getLastMonthOwe());
             }
 
             cpc.setThisMonthLeft(cpc.getRealAll().subtract(cpc.getPlanAll()));
@@ -808,45 +802,45 @@ public class ChargeService {
         Transaction tx = null;
 
         try{
-        	tx= session.beginTransaction();
+            tx= session.beginTransaction();
 
 //        	2017/06/06 使用对账表的结果直接作为清账结果
 //        	for(Contract contract:contractList){
 //        		clear(contract.getId(),deptTime);
 //        	}
 
-        	for(CheckChargeTable cct : tables){
+            for(CheckChargeTable cct : tables){
 //            	2017/06/06 使用对账表的结果直接作为清账结果      下面3行此次新增
-        		Contract c = (Contract) session.get(Contract.class, cct.getContractId());
-        		c.setAccount(cct.getThisMonthTotalOwe());
-        		session.saveOrUpdate(c);
+                Contract c = (Contract) session.get(Contract.class, cct.getContractId());
+                c.setAccount(cct.getThisMonthTotalOwe());
+                session.saveOrUpdate(c);
 
-        		session.save(cct);
+                session.save(cct);
             }
 
-        	String hql="select c1,c2 from Contract c1,Contract c2 where c1.contractFrom=c2.id and (c2.abandonedFinalTime is null or (YEAR(c2.abandonedFinalTime)*12+MONTH(c2.abandonedFinalTime)+(case when DAY(c2.abandonedFinalTime)>26 then 1 else 0 end) >= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime)) ))";
+            String hql="select c1,c2 from Contract c1,Contract c2 where c1.contractFrom=c2.id and (c2.abandonedFinalTime is null or (YEAR(c2.abandonedFinalTime)*12+MONTH(c2.abandonedFinalTime)+(case when DAY(c2.abandonedFinalTime)>26 then 1 else 0 end) >= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime)) ))";
 
-        	Query query = session.createQuery(hql);
-        	query.setDate("currentClearTime", deptTime);
+            Query query = session.createQuery(hql);
+            query.setDate("currentClearTime", deptTime);
 
-        	List<Object[]> list = query.list();
+            List<Object[]> list = query.list();
 
-        	for(Object[] oarr:list){
-        		Contract c = (Contract) oarr[0];
-        		Contract oc = (Contract) oarr[1];
+            for(Object[] oarr:list){
+                Contract c = (Contract) oarr[0];
+                Contract oc = (Contract) oarr[1];
 
-        		if(c.getAccount()==null)
-        			c.setAccount(BigDecimal.ZERO);
+                if(c.getAccount()==null)
+                    c.setAccount(BigDecimal.ZERO);
 
-        		if(oc.getAccount()!=null)
-        			c.setAccount(c.getAccount().add(oc.getAccount()));
+                if(oc.getAccount()!=null)
+                    c.setAccount(c.getAccount().add(oc.getAccount()));
 
-        		oc.setAccount(BigDecimal.ZERO);
-        		session.saveOrUpdate(c);
-        		session.saveOrUpdate(oc);
-        	}
+                oc.setAccount(BigDecimal.ZERO);
+                session.saveOrUpdate(c);
+                session.saveOrUpdate(oc);
+            }
 
-        	 //清账后对整体的清账日期进行再计算
+            //清账后对整体的清账日期进行再计算
             boolean res = clearTimeDao.plusAMonth(dept,session);
             Date time1 = clearTimeDao.getCurrent("一部",session);
             Date time2 = clearTimeDao.getCurrent("二部",session);
@@ -862,14 +856,14 @@ public class ChargeService {
 //                System.out.println(totalTime);
             }
 
-        	tx.commit();
+            tx.commit();
         }catch(HibernateException ex){
-        	ex.printStackTrace();
-        	if(tx!=null)
-        		tx.rollback();
-        	return false;
+            ex.printStackTrace();
+            if(tx!=null)
+                tx.rollback();
+            return false;
         }finally{
-        	HibernateSessionFactory.closeSession();
+            HibernateSessionFactory.closeSession();
         }
 
         return true;
@@ -894,17 +888,17 @@ public class ChargeService {
         if(contract == null){
             return plans;
         }else if(contract.getState() != 0){
-	        if(contract.getBranchFirm()!=null&&contract.getContractEndDate()!=null){
-	        	Calendar cl = Calendar.getInstance();
-	        	Date clearTime = clearTimeDao.getCurrent(contract.getBranchFirm());
-	        	cl.setTime(clearTime);
-	        	cl.add(Calendar.MONTH, -1);
-	        	if(cl.getTime().after(contract.getContractEndDate())){
-	        		return plans;
-	        	}
-	        }else{
-	        	return plans;
-	        }
+            if(contract.getBranchFirm()!=null&&contract.getContractEndDate()!=null){
+                Calendar cl = Calendar.getInstance();
+                Date clearTime = clearTimeDao.getCurrent(contract.getBranchFirm());
+                cl.setTime(clearTime);
+                cl.add(Calendar.MONTH, -1);
+                if(cl.getTime().after(contract.getContractEndDate())){
+                    return plans;
+                }
+            }else{
+                return plans;
+            }
         }
 
         plans = chargeDao.getAllRecords(contract.getId(),date);
@@ -926,12 +920,12 @@ public class ChargeService {
         vehicle.setLicenseNum(licenseNum);
         vehicle = vehicleDao.selectByLicense(vehicle);
         if(vehicle == null){
-        	System.out.println("找不到车辆！");
+            System.out.println("找不到车辆！");
             return moneys;
         }
         Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),time);
         if(contract == null || ( contract.getState() != 0 && contract.getState() != 1)){
-        	System.out.println("找不到合同！");
+            System.out.println("找不到合同！");
             return moneys;
         }
         List<ChargePlan> plans = chargeDao.getUnclears(contract.getId(), time);
@@ -983,8 +977,8 @@ public class ChargeService {
             }
         });
         CollectionUtils.filter(list,new Predicate(){
-			@Override
-			public boolean evaluate(Object o) {
+            @Override
+            public boolean evaluate(Object o) {
                 if (o == null) return false;
                 else return true;
             }
@@ -1006,7 +1000,7 @@ public class ChargeService {
      */
     public boolean fromTmpToSql(){
         Date current = clearTimeDao.getCurrent("total");
-		List<BankRecordTmp> list = bankRecordTmpDao.selectByTimeAndStaus(current,0);
+        List<BankRecordTmp> list = bankRecordTmpDao.selectByTimeAndStaus(current,0);
         List<BankRecordTmp> badRecords = new ArrayList<>();
         List<ChargePlan> cps = new ArrayList<>();
         Date now = new Date();
@@ -1016,13 +1010,13 @@ public class ChargeService {
             vehicle.setLicenseNum(brt.getLicenseNum());
             vehicle = vehicleDao.selectByLicense(vehicle);
             if(vehicle == null){
-            	brt.setError("找不到车号");
+                brt.setError("找不到车号");
                 badRecords.add(brt);
                 continue;
             }
             Contract c = contractDao.selectByCarId(vehicle.getCarframeNum(),DateUtil.getNextMonth26(brt.getInTime()));
             if(c == null){
-            	brt.setError("找不到车号");
+                brt.setError("找不到车号");
                 badRecords.add(brt);
                 continue;
             }
@@ -1051,7 +1045,7 @@ public class ChargeService {
 //            BankCard bc=bankCardDao.getBankCardForPayByDriverId(driver.getIdNum(),vehicle.getCarframeNum(),"哈尔滨银行");
 
             if(bc==null){
-            	brt.setError("银行卡信息未录入");
+                brt.setError("银行卡信息未录入");
                 badRecords.add(brt);
                 continue;
             }
@@ -1083,7 +1077,7 @@ public class ChargeService {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
             for(ChargePlan cp:cps)
-            	session.save(cp);
+                session.save(cp);
             for(BankRecordTmp brt:badRecords){
                 brt.setStatus(2);
                 session.update(brt);
@@ -1156,9 +1150,9 @@ public class ChargeService {
      */
     private BigDecimal calculateItemIn(List<ChargePlan> plans,String feeType){
         //函数相当于：以insurance为例
-    	//sql select COALESCE(sum(fee),0)-(select COALESCE(sum(fee),0) from Charge_Plan where fee_Type like 'plan%' and fee_Type like '%insurance%' and fee_Type like '%sub%') from Charge_Plan where fee_Type like 'plan%' and fee_Type like '%insurance%' and fee_Type like '%add%'
-    	//hql select COALESCE(sum(fee),0)-(select COALESCE(sum(fee),0) from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%sub%') from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%add%'
-    	BigDecimal fee = new BigDecimal(0);
+        //sql select COALESCE(sum(fee),0)-(select COALESCE(sum(fee),0) from Charge_Plan where fee_Type like 'plan%' and fee_Type like '%insurance%' and fee_Type like '%sub%') from Charge_Plan where fee_Type like 'plan%' and fee_Type like '%insurance%' and fee_Type like '%add%'
+        //hql select COALESCE(sum(fee),0)-(select COALESCE(sum(fee),0) from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%sub%') from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%add%'
+        BigDecimal fee = new BigDecimal(0);
         for(ChargePlan plan:plans){
             if(!plan.getFeeType().startsWith("plan") && plan.getFeeType().contains(feeType)){
                 if(plan.getFeeType().contains("add")){
@@ -1202,8 +1196,8 @@ public class ChargeService {
     private BigDecimal calculatePlanNoClear(List<ChargePlan> plans,String type){
         BigDecimal fee = new BigDecimal(0);
         for(ChargePlan plan:plans){
-        	if(plan.isClear())
-        		continue;
+            if(plan.isClear())
+                continue;
             if(type.equals("plan_base_contract")){
                 if(plan.getFeeType().equals("plan_base_contract"))
                     fee = fee.add(plan.getFee());
@@ -1229,13 +1223,13 @@ public class ChargeService {
      * @return 金额
      */
     public BigDecimal getlastMontAccountLeft(int contractId,Date date){
-    	//该函数相当于：
-    	//select
-    	//(case when year(cl.current)<year(:date) then c.account
+        //该函数相当于：
+        //select
+        //(case when year(cl.current)<year(:date) then c.account
         //      when year(cl.current)=year(:date) and month(cl.current)<=month(:date) then c.account
         //      else sum(case when feeType='last_month_left' then fee else 0 end)
         //end)
-    	//from Contract c,ClearTime cl where cl.department=c.branchFirm and c.id=:cid
+        //from Contract c,ClearTime cl where cl.department=c.branchFirm and c.id=:cid
 
         BigDecimal left = null;
         // from Contract c where c.id=:cid
@@ -1249,7 +1243,7 @@ public class ChargeService {
         if(DateUtil.isYM1BGYM2(date,currentMonth)){
             left = contractDao.getAccount(contractId);
         }else{
-        	//该else block相当于 select fee from ChargePlan where contractId = :contractId  and time is not null and year(time)=year(:date) and month(time)=month(:date) and feeType='last_month_left'
+            //该else block相当于 select fee from ChargePlan where contractId = :contractId  and time is not null and year(time)=year(:date) and month(time)=month(:date) and feeType='last_month_left'
 
             List<ChargePlan> plans = chargeDao.getAllRecords(contractId,date);
             for(ChargePlan plan:plans){
@@ -1272,8 +1266,8 @@ public class ChargeService {
      * @return none
      */
     private boolean clear(int contractId,Date clearTime) throws HibernateException{
-    	Session session = HibernateSessionFactory.getSession();
-    	Contract c = (Contract) session.get(Contract.class,contractId);
+        Session session = HibernateSessionFactory.getSession();
+        Contract c = (Contract) session.get(Contract.class,contractId);
         BigDecimal account = c.getAccount();
         //记录上月余额
         ChargePlan lastMonthRecord = new ChargePlan();
@@ -1453,18 +1447,18 @@ public class ChargeService {
         }
 
         {
-        	Calendar tm = Calendar.getInstance();
-        	tm.setTime(plan.getTime());
-        	if(tm.get(Calendar.DATE)>26){
-        		tm.add(Calendar.MONTH, 1);
-        	}
-        	tm.set(Calendar.DATE, 1);
+            Calendar tm = Calendar.getInstance();
+            tm.setTime(plan.getTime());
+            if(tm.get(Calendar.DATE)>26){
+                tm.add(Calendar.MONTH, 1);
+            }
+            tm.set(Calendar.DATE, 1);
         }
         if(plan.getFee() == null) return false;
         boolean flag = chargeDao.addChargePlan(plan);
         return flag;
     }
-    
+
     /**
      * 添加单车单月计划，除了约定变更，所有的其他添加都最终调用该方法,不再具有清帐功能
      * @param plan
@@ -1485,12 +1479,12 @@ public class ChargeService {
                 plan.setTime(clearTimeDao.getCurrent(contract.getBranchFirm(),session));
             }
         {
-        	Calendar tm = Calendar.getInstance();
-        	tm.setTime(plan.getTime());
-        	if(tm.get(Calendar.DATE)>26){
-        		tm.add(Calendar.MONTH, 1);
-        	}
-        	tm.set(Calendar.DATE, 1);
+            Calendar tm = Calendar.getInstance();
+            tm.setTime(plan.getTime());
+            if(tm.get(Calendar.DATE)>26){
+                tm.add(Calendar.MONTH, 1);
+            }
+            tm.set(Calendar.DATE, 1);
         }
         if(plan.getFee() == null) return;
         session.saveOrUpdate(plan);
@@ -1570,300 +1564,300 @@ public class ChargeService {
         chargeDao.addAndDiv(cid,time);
     }
 
-	/**
-	     * Page limit added.
-	     * 获得一个/全部部门 一个月的财务对账表.
-	     * @param date 要查询的月份
-	     * @param dept 查询的部门 若为"全部" 则查询所有
-	     * @param page 分页
-	     * @return
-	     */
-    	@Deprecated
-	    public List<CheckChargeTable> getAllCheckChargeTable(Date date, String dept, Page page){
-	        List<CheckChargeTable> table = new ArrayList<>();
-	        //相当于：from Contract where state in (0,-1,1,4) and (abandonedFinalTime is null or (YEAR(abandonedFinalTime)*12+MONTH(abandonedFinalTime)+(case when DAY(abandonedFinalTime)>26 then 1 else 0 end) >= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime))))
-	        List<Contract> contractList = contractDao.contractSearchAllAvilable(date,dept,page);
-	        //TODO:I don't know if it is necessary to filter here
-	        fileterContract(contractList);
-	        for(Contract c:contractList){
-	            int id = c.getId();
-	            List<ChargePlan> plans = new ArrayList<>();
-	//            Date currentMonth = clearTimeDao.getCurrent(c.getBranchFirm());
-	//            if(isYM1BGYM2(date,currentMonth)){
-	//                while(isYM1BGYM2(date,currentMonth)){
-	//                    plans.addAll(chargeDao.getAllRecords(id,currentMonth));
-	//                    currentMonth = getNextMonth(currentMonth);
-	//                }
-	//            }else{
-	          //相当于from ChargePlan where contractId = :contractId  and time is not null and year(time)=year(:date) and month(time)=month(:date) 
-	            plans = chargeDao.getAllRecords(id,date);
-	//            }
-	            CheckChargeTable cct = new CheckChargeTable();
-	            //set header
-	            cct.setContractId(id);
-	            cct.setTime(date);
-	            Driver d = new Driver();
-	            d.setIdNum(c.getIdNum());
-	            Driver driver = driverDao.selectById(d.getIdNum());
-	            if(driver != null){
-	                cct.setDriverName(driver.getName());
-	                cct.setDriverId(driver.getIdNum());
-	                cct.setDept(driver.getDept());
-	            }
-	            //TODO:wait to add department
-	            if("全部".equals(dept)||c.getBranchFirm().equals(dept)){
-	                Vehicle vehicle = vehicleDao.selectByFrameId(c.getCarframeNum());
-	                if(vehicle != null) {
-	                    cct.setCarNumber(vehicle.getLicenseNum());
-	                    cct.setDept(vehicle.getDept());
-	                }
-	                //set message
-	                
-	              //函数相当于：以insurance为例
-	              //hql select COALESCE(sum(fee),0)-(select COALESCE(sum(fee),0) from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%sub%') from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%add%'
-	              //或          select (sum(case when feeType like '%add%' then fee else (-fee) end)) from ChargePlan where feeType like '%insurance%'
-	              //或          select (
-	              //       sum(case 
-	              //	       when feeType not like '%insurance%' then 0
-	              //           when feeType like '%add%' then fee 
-	              //           else (-fee) end)
-	              //     ) from ChargePlan
-	                cct.setBank(calculateItemIn(plans, "bank"));
-	                cct.setCash(calculateItemIn(plans,"cash"));
-	                cct.setInsurance(calculateItemIn(plans,"insurance"));
-	                cct.setOilAdd(calculateItemIn(plans,"oil"));
-	                cct.setOther(calculateItemIn(plans, "other"));
-	                cct.setPlanAll(calculateTotalPlan(plans));
-	                BigDecimal lastMonth = getlastMontAccountLeft(id,date);
-	                cct.generated(lastMonth);
-	                table.add(cct);
-	            }
-	        }
-	        return table;
-	    }
+    /**
+     * Page limit added.
+     * 获得一个/全部部门 一个月的财务对账表.
+     * @param date 要查询的月份
+     * @param dept 查询的部门 若为"全部" 则查询所有
+     * @param page 分页
+     * @return
+     */
+    @Deprecated
+    public List<CheckChargeTable> getAllCheckChargeTable(Date date, String dept, Page page){
+        List<CheckChargeTable> table = new ArrayList<>();
+        //相当于：from Contract where state in (0,-1,1,4) and (abandonedFinalTime is null or (YEAR(abandonedFinalTime)*12+MONTH(abandonedFinalTime)+(case when DAY(abandonedFinalTime)>26 then 1 else 0 end) >= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime))))
+        List<Contract> contractList = contractDao.contractSearchAllAvilable(date,dept,page);
+        //TODO:I don't know if it is necessary to filter here
+        fileterContract(contractList);
+        for(Contract c:contractList){
+            int id = c.getId();
+            List<ChargePlan> plans = new ArrayList<>();
+            //            Date currentMonth = clearTimeDao.getCurrent(c.getBranchFirm());
+            //            if(isYM1BGYM2(date,currentMonth)){
+            //                while(isYM1BGYM2(date,currentMonth)){
+            //                    plans.addAll(chargeDao.getAllRecords(id,currentMonth));
+            //                    currentMonth = getNextMonth(currentMonth);
+            //                }
+            //            }else{
+            //相当于from ChargePlan where contractId = :contractId  and time is not null and year(time)=year(:date) and month(time)=month(:date)
+            plans = chargeDao.getAllRecords(id,date);
+            //            }
+            CheckChargeTable cct = new CheckChargeTable();
+            //set header
+            cct.setContractId(id);
+            cct.setTime(date);
+            Driver d = new Driver();
+            d.setIdNum(c.getIdNum());
+            Driver driver = driverDao.selectById(d.getIdNum());
+            if(driver != null){
+                cct.setDriverName(driver.getName());
+                cct.setDriverId(driver.getIdNum());
+                cct.setDept(driver.getDept());
+            }
+            //TODO:wait to add department
+            if("全部".equals(dept)||c.getBranchFirm().equals(dept)){
+                Vehicle vehicle = vehicleDao.selectByFrameId(c.getCarframeNum());
+                if(vehicle != null) {
+                    cct.setCarNumber(vehicle.getLicenseNum());
+                    cct.setDept(vehicle.getDept());
+                }
+                //set message
+
+                //函数相当于：以insurance为例
+                //hql select COALESCE(sum(fee),0)-(select COALESCE(sum(fee),0) from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%sub%') from ChargePlan where feeType like 'plan%' and feeType like '%insurance%' and feeType like '%add%'
+                //或          select (sum(case when feeType like '%add%' then fee else (-fee) end)) from ChargePlan where feeType like '%insurance%'
+                //或          select (
+                //       sum(case
+                //	       when feeType not like '%insurance%' then 0
+                //           when feeType like '%add%' then fee
+                //           else (-fee) end)
+                //     ) from ChargePlan
+                cct.setBank(calculateItemIn(plans, "bank"));
+                cct.setCash(calculateItemIn(plans,"cash"));
+                cct.setInsurance(calculateItemIn(plans,"insurance"));
+                cct.setOilAdd(calculateItemIn(plans,"oil"));
+                cct.setOther(calculateItemIn(plans, "other"));
+                cct.setPlanAll(calculateTotalPlan(plans));
+                BigDecimal lastMonth = getlastMontAccountLeft(id,date);
+                cct.generated(lastMonth);
+                table.add(cct);
+            }
+        }
+        return table;
+    }
 
     public List<CheckChargeTable> getAllCheckChargeTable(Date date,String dept, String licenseNum, int status/**0,1,2,3,4 -- 欠费,正常,未交,已交,全部*/) {
-		if(date==null)
-			date=new Date();
-		
-		Calendar clear_time = Calendar.getInstance();
-		clear_time.setTime(getCurrentTime("全部".equals(dept)?"total":dept));
-		clear_time.add(Calendar.DATE, -1);
-		
-		Session session = HibernateSessionFactory.getSession();
-		try{
-			if(date.before(clear_time.getTime())){
-				String ql = "from CheckChargeTable where YEAR(time)=:year and MONTH(time)=:month ";
-				
-				if (dept!=null&&!"全部".equals(dept)) {
-					ql+="and dept = :dept ";
-				}
-				
-				if(!StringUtils.isEmpty(licenseNum)){
-					ql+="and carNumber like :carNum ";
-				}
-				
-				String ql2;
-				switch(status){
-				case 1://正常  ThisMonthTotalOwe>0 
-					ql2 =  "and thisMonthTotalOwe >=0.0 ";
-					break;
-				case 0://欠费
-					ql2 =  "and thisMonthTotalOwe<0.0 ";
-					break;
-				case 2://未交
-					ql2 = "and bank <= 0.0 ";
-					break;
-				case 3://已交
-					ql2 = "and bank >0.0 ";
-					break;
-				default:
-					ql2 = "";
-				}
-				
-				Query qy = session.createQuery(ql+ql2);
-				
-				if (dept!=null&&!"全部".equals(dept)) {
-					qy.setString("dept",dept);
-				}
-				
-				if(!StringUtils.isEmpty(licenseNum)){
-					qy.setString("carNum","%"+licenseNum+"%");
-				}
-				qy.setInteger("year", date.getYear()+1900);
-				qy.setInteger("month", date.getMonth()+1);
-				
-				List<CheckChargeTable> lst = qy.list();
-				return lst;
-			}
-			
-			String hql =// "select c.id "
-					//+ "from Contract c "
-					//+ "where c.state in (0,-1,1,4) "
-					"and c.state in (0,-1,1,4) "
-					+ "and (c.abandonedFinalTime is null or (YEAR(c.abandonedFinalTime)*12+MONTH(c.abandonedFinalTime)+(case when DAY(c.abandonedFinalTime)>26 then 1 else 0 end) "
-					+ ">= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime)))) ";
-			
-			if (dept!=null&&!"全部".equals(dept)) {
-				hql+="and c.branchFirm = :dept ";
-			}
-			
-			if(!StringUtils.isEmpty(licenseNum)){
-				hql+="and c.carNum like :carNum ";
-			}
-			
-			String hql2;
-			
-			switch(status){
-			case 1://正常  ThisMonthTotalOwe>0 
-				hql2 =  "having "
+        if(date==null)
+            date=new Date();
+
+        Calendar clear_time = Calendar.getInstance();
+        clear_time.setTime(getCurrentTime("全部".equals(dept)?"total":dept));
+        clear_time.add(Calendar.DATE, -1);
+
+        Session session = HibernateSessionFactory.getSession();
+        try{
+            if(date.before(clear_time.getTime())){
+                String ql = "from CheckChargeTable where YEAR(time)=:year and MONTH(time)=:month ";
+
+                if (dept!=null&&!"全部".equals(dept)) {
+                    ql+="and dept = :dept ";
+                }
+
+                if(!StringUtils.isEmpty(licenseNum)){
+                    ql+="and carNumber like :carNum ";
+                }
+
+                String ql2;
+                switch(status){
+                    case 1://正常  ThisMonthTotalOwe>0
+                        ql2 =  "and thisMonthTotalOwe >=0.0 ";
+                        break;
+                    case 0://欠费
+                        ql2 =  "and thisMonthTotalOwe<0.0 ";
+                        break;
+                    case 2://未交
+                        ql2 = "and bank <= 0.0 ";
+                        break;
+                    case 3://已交
+                        ql2 = "and bank >0.0 ";
+                        break;
+                    default:
+                        ql2 = "";
+                }
+
+                Query qy = session.createQuery(ql+ql2);
+
+                if (dept!=null&&!"全部".equals(dept)) {
+                    qy.setString("dept",dept);
+                }
+
+                if(!StringUtils.isEmpty(licenseNum)){
+                    qy.setString("carNum","%"+licenseNum+"%");
+                }
+                qy.setInteger("year", date.getYear()+1900);
+                qy.setInteger("month", date.getMonth()+1);
+
+                List<CheckChargeTable> lst = qy.list();
+                return lst;
+            }
+
+            String hql =// "select c.id "
+                    //+ "from Contract c "
+                    //+ "where c.state in (0,-1,1,4) "
+                    "and c.state in (0,-1,1,4) "
+                            + "and (c.abandonedFinalTime is null or (YEAR(c.abandonedFinalTime)*12+MONTH(c.abandonedFinalTime)+(case when DAY(c.abandonedFinalTime)>26 then 1 else 0 end) "
+                            + ">= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime)))) ";
+
+            if (dept!=null&&!"全部".equals(dept)) {
+                hql+="and c.branchFirm = :dept ";
+            }
+
+            if(!StringUtils.isEmpty(licenseNum)){
+                hql+="and c.carNum like :carNum ";
+            }
+
+            String hql2;
+
+            switch(status){
+                case 1://正常  ThisMonthTotalOwe>0
+                    hql2 =  "having "
 //						+ "avg(case when year(cl.current)<year(:currentClearTime) then c.account"
 //				        + "      when year(cl.current)=year(:currentClearTime) and month(cl.current)<=month(:currentClearTime) then c.account "
 //				        + "      when p.feeType='last_month_left' then p.fee"
 //				        + "      else 0.0 "
 //				        + "end)- "
-						+ " avg(c.account) - "
-				        + "sum(case "
-						+ "when p.feeType like '%plan_sub%' then -p.fee "
-						+ "when p.feeType like '%plan_%' then p.fee "
+                            + " avg(c.account) - "
+                            + "sum(case "
+                            + "when p.feeType like '%plan_sub%' then -p.fee "
+                            + "when p.feeType like '%plan_%' then p.fee "
 //						+ "when p.feeType like '%bank%' then 0.0 "
 //						+ "when p.feeType like '%cash%' then 0.0 "
 //						+ "when p.feeType like '%oilAdd%' then 0.0 "
 //						+ "when p.feeType like '%insurance%' then 0.0 "
 //						+ "when p.feeType like '%other%' then 0.0 "
-						+ "when p.feeType like '%sub%' then p.fee "
-						+ "else (-p.fee) end)>=0.0 ";
-				break;
-			case 0://欠费
-				hql2 =  "having "
+                            + "when p.feeType like '%sub%' then p.fee "
+                            + "else (-p.fee) end)>=0.0 ";
+                    break;
+                case 0://欠费
+                    hql2 =  "having "
 //						+ "avg(case when year(cl.current)<year(:currentClearTime) then c.account"
 //				        + "      when year(cl.current)=year(:currentClearTime) and month(cl.current)<=month(:currentClearTime) then c.account "
 //				        + "      when p.feeType='last_month_left' then p.fee"
 //				        + "      else 0.0 "
 //				        + "end)- "
-						+" avg(c.account) - "
-				        + "sum(case "
-				        + "when p.feeType like '%plan_sub%' then -p.fee "
-						+ "when p.feeType like '%plan_%' then p.fee "
+                            +" avg(c.account) - "
+                            + "sum(case "
+                            + "when p.feeType like '%plan_sub%' then -p.fee "
+                            + "when p.feeType like '%plan_%' then p.fee "
 //						+ "when p.feeType like '%bank%' then 0.0 "
 //						+ "when p.feeType like '%cash%' then 0.0 "
 //						+ "when p.feeType like '%oilAdd%' then 0.0 "
 //						+ "when p.feeType like '%insurance%' then 0.0 "
 //						+ "when p.feeType like '%other%' then 0.0 "
-						+ "when p.feeType like '%sub%' then p.fee "
-						+ "else (-p.fee) end)<0.0 ";
-				break;
-			case 2://未交
-				hql2 = "having "
-						+ "sum(case "
-						+ "when p.feeType not like '%bank%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) <=0.0 ";
-				break;
-			case 3://已交
-				hql2 = "having "
-						+ "sum(case "
-						+ "when p.feeType not like '%bank%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) >0.0 ";
-				break;
-			default:
-				hql2 = "";
-			}
-			
-			String hql_out ="select new com.dz.module.charge.CheckChargeTable("
-					+ "p.contractId as contractId,p.time as time,"
-						+ "sum(case "
-						+ "when p.feeType not like '%bank' then 0.0 "
-						+ "when p.feeType like '%plan%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) as bank1"
-						+ ","
+                            + "when p.feeType like '%sub%' then p.fee "
+                            + "else (-p.fee) end)<0.0 ";
+                    break;
+                case 2://未交
+                    hql2 = "having "
+                            + "sum(case "
+                            + "when p.feeType not like '%bank%' then 0.0 "
+                            + "when p.feeType like '%add%' then p.fee "
+                            + "else (-p.fee) end) <=0.0 ";
+                    break;
+                case 3://已交
+                    hql2 = "having "
+                            + "sum(case "
+                            + "when p.feeType not like '%bank%' then 0.0 "
+                            + "when p.feeType like '%add%' then p.fee "
+                            + "else (-p.fee) end) >0.0 ";
+                    break;
+                default:
+                    hql2 = "";
+            }
+
+            String hql_out ="select new com.dz.module.charge.CheckChargeTable("
+                    + "p.contractId as contractId,p.time as time,"
+                    + "sum(case "
+                    + "when p.feeType not like '%bank' then 0.0 "
+                    + "when p.feeType like '%plan%' then 0.0 "
+                    + "when p.feeType like '%add%' then p.fee "
+                    + "else (-p.fee) end) as bank1"
+                    + ","
                     + "sum(case "
                     + "when p.feeType not like '%bank2%' then 0.0 "
                     + "when p.feeType like '%plan%' then 0.0 "
                     + "when p.feeType like '%add%' then p.fee "
                     + "else (-p.fee) end) as bank2"
                     + ","
-						+ "sum(case "
-						+ "when p.feeType not like '%cash%' then 0.0 "
-						+ "when p.feeType like '%plan%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) as cash"
-						+ ","
-						+ "sum(case "
-						+ "when p.feeType not like '%insurance%' then 0.0 "
-						+ "when p.feeType like '%plan%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) as insurance"
-						+ ","
-						+ "sum(case "
-						+ "when p.feeType not like '%oil%' then 0.0 "
-						+ "when p.feeType like '%plan%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) as oilAdd"
-						+ ","
-						+ "sum(case "
-						+ "when p.feeType not like '%other%' then 0.0 "
-						+ "when p.feeType like '%plan%' then 0.0 "
-						+ "when p.feeType like '%add%' then p.fee "
-						+ "else (-p.fee) end) as other"
-						+ ","
-						+ "sum(case "
-						+ "when p.feeType not like '%plan%' then 0.0 "
-						+ "when p.feeType like '%sub%' then -p.fee "
-						+ "else (p.fee) end) as planAll "
-						+ ","
-						+ "c.carNum as carNumber,"
-						+ "c.branchFirm as dept,"
-						+ "d.name as driverName, "
-						+ "avg(case when year(cl.current)<year(:currentClearTime) then c.account"
-				        + "      when year(cl.current)=year(:currentClearTime) and month(cl.current)<=month(:currentClearTime) then c.account "
-				        + "      when p.feeType='last_month_left' then p.fee"
-				        + "      else 0.0 "
-				        + "end) as lastMonthOwe "
-					+ ") from ChargePlan "
-					//+ "where contractId in (" + hql+ " ) "
-					+ "p ,Contract c,Driver d,ClearTime cl "
-					+ "where p.contractId=c.id and d.idNum=c.idNum and cl.department=c.branchFirm "
-					+ "and p.isClear != true "
-					+ hql
-					
-					+ "and p.time is not null and year(p.time)=year(:currentClearTime) and month(p.time)=month(:currentClearTime) "
-					
-					+ "group by c.id "
-					+ hql2
-					
-					+ "order by c.branchFirm,c.carNum";
+                    + "sum(case "
+                    + "when p.feeType not like '%cash%' then 0.0 "
+                    + "when p.feeType like '%plan%' then 0.0 "
+                    + "when p.feeType like '%add%' then p.fee "
+                    + "else (-p.fee) end) as cash"
+                    + ","
+                    + "sum(case "
+                    + "when p.feeType not like '%insurance%' then 0.0 "
+                    + "when p.feeType like '%plan%' then 0.0 "
+                    + "when p.feeType like '%add%' then p.fee "
+                    + "else (-p.fee) end) as insurance"
+                    + ","
+                    + "sum(case "
+                    + "when p.feeType not like '%oil%' then 0.0 "
+                    + "when p.feeType like '%plan%' then 0.0 "
+                    + "when p.feeType like '%add%' then p.fee "
+                    + "else (-p.fee) end) as oilAdd"
+                    + ","
+                    + "sum(case "
+                    + "when p.feeType not like '%other%' then 0.0 "
+                    + "when p.feeType like '%plan%' then 0.0 "
+                    + "when p.feeType like '%add%' then p.fee "
+                    + "else (-p.fee) end) as other"
+                    + ","
+                    + "sum(case "
+                    + "when p.feeType not like '%plan%' then 0.0 "
+                    + "when p.feeType like '%sub%' then -p.fee "
+                    + "else (p.fee) end) as planAll "
+                    + ","
+                    + "c.carNum as carNumber,"
+                    + "c.branchFirm as dept,"
+                    + "d.name as driverName, "
+                    + "avg(case when year(cl.current)<year(:currentClearTime) then c.account"
+                    + "      when year(cl.current)=year(:currentClearTime) and month(cl.current)<=month(:currentClearTime) then c.account "
+                    + "      when p.feeType='last_month_left' then p.fee"
+                    + "      else 0.0 "
+                    + "end) as lastMonthOwe "
+                    + ") from ChargePlan "
+                    //+ "where contractId in (" + hql+ " ) "
+                    + "p ,Contract c,Driver d,ClearTime cl "
+                    + "where p.contractId=c.id and d.idNum=c.idNum and cl.department=c.branchFirm "
+                    + "and p.isClear != true "
+                    + hql
+
+                    + "and p.time is not null and year(p.time)=year(:currentClearTime) and month(p.time)=month(:currentClearTime) "
+
+                    + "group by c.id "
+                    + hql2
+
+                    + "order by c.branchFirm,c.carNum";
 
 //			Query query = session.createQuery(hql_out).setResultTransformer(Transformers.aliasToBean(CheckChargeTable.class));
-			Query query = session.createQuery(hql_out);
-			
-			if (dept!=null&&!"全部".equals(dept)) {
-				query.setString("dept",dept);
-			}
-			
-			if(!StringUtils.isEmpty(licenseNum)){
-				query.setString("carNum","%"+licenseNum+"%");
-			}
-			
-			query.setDate("currentClearTime", date);
-		
-			return query.list();
-		}catch(HibernateException ex){
-			ex.printStackTrace();
-			return new ArrayList<>();
-		}finally{
-			HibernateSessionFactory.closeSession();
-		}
-	}
+            Query query = session.createQuery(hql_out);
 
-	public void addAndDiv(Integer cid, Date time, Session session) throws HibernateException {
-		chargeDao.addAndDiv(cid, time, session);
-	}
+            if (dept!=null&&!"全部".equals(dept)) {
+                query.setString("dept",dept);
+            }
 
-	public void setCleared(Integer srcId, Date beginDate, Session session) throws HibernateException{
-		// TODO Auto-generated method stub
-		chargeDao.setCleared(srcId, beginDate,session);
-	}
+            if(!StringUtils.isEmpty(licenseNum)){
+                query.setString("carNum","%"+licenseNum+"%");
+            }
+
+            query.setDate("currentClearTime", date);
+
+            return query.list();
+        }catch(HibernateException ex){
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }finally{
+            HibernateSessionFactory.closeSession();
+        }
+    }
+
+    public void addAndDiv(Integer cid, Date time, Session session) throws HibernateException {
+        chargeDao.addAndDiv(cid, time, session);
+    }
+
+    public void setCleared(Integer srcId, Date beginDate, Session session) throws HibernateException{
+        // TODO Auto-generated method stub
+        chargeDao.setCleared(srcId, beginDate,session);
+    }
 }

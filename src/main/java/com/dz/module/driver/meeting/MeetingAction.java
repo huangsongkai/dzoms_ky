@@ -1,26 +1,17 @@
 package com.dz.module.driver.meeting;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.global.BaseAction;
+import com.dz.common.global.Page;
+import com.dz.common.other.FileAccessUtil;
+import com.dz.common.other.ObjectAccess;
+import com.dz.common.other.PageUtil;
+import com.dz.common.other.TimeComm;
+import com.dz.module.driver.Driver;
+import com.dz.module.user.User;
 import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.struts2.ServletActionContext;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -33,15 +24,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.xml.sax.SAXException;
 
-import com.dz.common.global.BaseAction;
-import com.dz.common.global.Page;
-import com.dz.common.other.FileAccessUtil;
-import com.dz.common.other.ObjectAccess;
-import com.dz.common.other.PageUtil;
-import com.dz.common.other.TimeComm;
-import com.dz.module.contract.Contract;
-import com.dz.module.driver.Driver;
-import com.dz.module.user.User;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @Scope("prototype")
@@ -359,8 +346,8 @@ public class MeetingAction extends BaseAction {
 		checkEndDate.setMinutes(30);
 
 
-		Driver d = (Driver) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.Driver",idNum);
-		Meeting m = (Meeting) com.dz.common.other.ObjectAccess.getObject("com.dz.module.driver.meeting.Meeting",meetingId);
+		Driver d = (Driver) ObjectAccess.getObject("com.dz.module.driver.Driver",idNum);
+		Meeting m = (Meeting) ObjectAccess.getObject("com.dz.module.driver.meeting.Meeting",meetingId);
 
 		Date checkMostBegin;
 		long mostBegin=Long.MAX_VALUE;
