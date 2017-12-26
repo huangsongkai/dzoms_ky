@@ -171,7 +171,7 @@ public class ChargeService {
                     List<BankCardOfVehicle> bl = bankCard.getbOfVList();
                     if(bl!=null){
                         for (BankCardOfVehicle bankCardOfVehicle:bl)
-                            s.delete(bl);
+                            s.delete(bankCardOfVehicle);
                     }
                     s.delete(bankCard);
                     continue;

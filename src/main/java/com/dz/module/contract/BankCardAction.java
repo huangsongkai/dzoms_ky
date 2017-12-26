@@ -83,7 +83,7 @@ public class BankCardAction extends ActionSupport implements ServletRequestAware
         Transaction tx = null;
         try {
             tx = s.beginTransaction();
-            Query query = s.createQuery("delete from BankCardOfVehicle where vehicle.carframeNum=:cardId");
+            Query query = s.createQuery("delete from BankCardOfVehicle where bankCard.id=:cardId");
             query.setInteger("cardId",bankCard.getId());
             s.delete(bankCard);
             query.executeUpdate();
@@ -179,8 +179,8 @@ public class BankCardAction extends ActionSupport implements ServletRequestAware
             if (rcv_count==0){
                 Query query_rcv_top1= s.createQuery(
                         "from BankCardOfVehicle bv " +
-                        "where bv.vehicle.carframeNum=:carNum " +
-                        "order by bv.bankCard.id");
+                                "where bv.vehicle.carframeNum=:carNum " +
+                                "order by bv.bankCard.id");
                 query_rcv_top1.setString("carNum",bankCard.getCarNum());
                 query_rcv_top1.setMaxResults(1);
                 BankCardOfVehicle bankCardOfVehicle = (BankCardOfVehicle) query_rcv_top1.uniqueResult();

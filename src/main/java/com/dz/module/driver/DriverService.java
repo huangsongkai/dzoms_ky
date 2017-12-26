@@ -1,6 +1,8 @@
 package com.dz.module.driver;
 
+import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.Page;
+import com.dz.common.other.MessageClient;
 import com.dz.common.other.ObjectAccess;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
@@ -8,10 +10,16 @@ import com.dz.module.vehicle.Vehicle;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +27,9 @@ import java.util.List;
 public class DriverService {
 	@Autowired
 	private DriverDao driverDao;
-	
+
 	public DriverService(){
-		
+
 	}
 
 	public boolean appendScore(Driver driver){
@@ -33,16 +41,16 @@ public class DriverService {
 	public Driver selectById(String idNum){
 		return driverDao.selectById(idNum);
 	}
-	
+
 	public boolean driverAdd(Driver driver, List<Families> families) {
 		User user = ((User)ServletActionContext.getRequest().getSession().getAttribute("user"));
 		if (driver == null) {
 			return false;
 		}
-		
+
 		driver.setIsInCar(false);
 		driver.setRegistrant(user.getUid());
-		
+
 		if(families != null)
 		{
 			for (int i = 0; i < families.size(); i++)
@@ -50,12 +58,12 @@ public class DriverService {
 		}
 		return driverDao.driverAdd(driver, families);
 	}
-	
+
 	public boolean driverUpdate(Driver driver, List<Families> families) {
 		if (driver == null) {
 			return false;
 		}
-		
+
 		Driver d = driverDao.selectById(driver.getIdNum());
 		if(d==null){
 			//该司机不存在
@@ -63,13 +71,13 @@ public class DriverService {
 		}
 		if(d.getStatus() != 0)
 			driver.setStatus(d.getStatus());
-		
+
 		if(families != null)
 		{
 			for (int i = 0; i < families.size(); i++)
 				families.get(i).setIdNum(driver.getIdNum());
 		}
-		
+
 		driver.setShenqingren(d.getShenqingren());
 		driver.setLururen(d.getLururen());
 		driver.setBangonshifuzeren(d.getBangonshifuzeren());
@@ -93,10 +101,10 @@ public class DriverService {
 		driver.setBusinessReciveCancelRegistTime(d.getBusinessReciveCancelRegistTime());
 		driver.setBusinessApplyState(d.getBusinessApplyState());
 		driver.setBusinessApplyCancelState(d.getBusinessApplyCancelState());
-		
+
 		driver.setBusinessApplyCarframeNum(d.getBusinessApplyCarframeNum());
 		driver.setBusinessApplyDriverClass(d.getBusinessApplyDriverClass());
-		
+
 		driver.setCarframeNum(d.getCarframeNum());
 		driver.setIsInCar(d.getIsInCar());
 		driver.setDept(d.getDept());
@@ -108,15 +116,15 @@ public class DriverService {
 		driver.setIsContractorPassed(d.getIsContractorPassed());
 		//driver.setApplyLicenseNum(d.getApplyLicenseNum());
 		driver.setScore(d.getScore());
-		
+
 		return driverDao.driverUpdate(driver, families);
 	}
-	
+
 	public boolean driverSaveOrUpdate(Driver driver, List<Families> families){
 		if (driver == null) {
 			return false;
 		}
-		
+
 		Driver d = driverDao.selectById(driver.getIdNum());
 		if(d==null){//该司机不存在
 			//TODO 此处由于不存在培训与承租人员审批过程，故全部直接设为true
@@ -127,28 +135,28 @@ public class DriverService {
 		}
 		return this.driverUpdate(driver, families);
 	}
-	
+
 	public int driverSearchTotal(){
 		return driverDao.searchCount((Triplet<String,String,Object>[]) null);
 	}
-	
+
 	public List<Driver> driverSearch(Page page){
 		return driverDao.search(page,(Triplet<String,String,Object>[])null);
 	}
 
 	@Deprecated
 	public List<Driver> driverSearchCondition(Page page, String idNum,
-			Date beginDate, Date endDate, Boolean isInCar,Triplet<String, String, Object>... conditions) {
-		
+											  Date beginDate, Date endDate, Boolean isInCar,Triplet<String, String, Object>... conditions) {
+
 		return driverDao.driverSearchCondition(page,idNum,beginDate,endDate,isInCar,conditions);
 	}
-	
+
 	@Deprecated
 	public int driverSearchConditionTotal(String idNum, Date beginDate,
-			Date endDate, Boolean isInCar,Triplet<String, String, Object>... conditions){
+										  Date endDate, Boolean isInCar,Triplet<String, String, Object>... conditions){
 		return driverDao.driverSearchConditionTotal(idNum, beginDate, endDate, isInCar,conditions);
 	}
-	
+
 	public Boolean addBadRecord(Driver driver,String reason){
 		if(driver != null ){
 			Driver d = driverDao.selectById(driver.getIdNum());
@@ -169,16 +177,16 @@ public class DriverService {
 		}
 		return false;
 	}
-	
+
 	@Deprecated
 	public List<Driver> searchAllBadDriver(){
 		return driverDao.searchAllBadDriver();
 	}
-	
+
 	public void setDriverDao(DriverDao driverDao) {
 		this.driverDao = driverDao;
 	}
-	
+
 	public DriverDao getDriverDao() {
 		return driverDao;
 	}
@@ -187,70 +195,145 @@ public class DriverService {
 	}
 
 	@Deprecated
-	public List<Vehicle> driverCarSearch(Page page, String idName, String idNum, String linence_num) {		
+	public List<Vehicle> driverCarSearch(Page page, String idName, String idNum, String linence_num) {
 		return driverDao.driverCarSearch(page,idName,idNum,linence_num);
 	}
 
 	@Deprecated
 	public int driverCarSearchTotal(String idName, String idNum,
-			String linence_num) {
+									String linence_num) {
 		return driverDao.driverCarSearchTotal(idName,idNum,linence_num);
 	}
-	
+
 	public Driver selectByName(String name,String carframeNum) {
 		return ObjectAccess.execute("from Driver d where d.name='"+name+"' and (d.carframeNum='"+carframeNum+"' or d.businessApplyCarframeNum='"+carframeNum+"' )");
 	}
-	
+
 	public List<Families> selectFamily(Driver driver){
 		return driverDao.selectFamily(driver);
 	}
-	
+
 	public void addDriverInCarRecord(Driverincar record) {
 		driverDao.addDriverInCarRecord(record);
 	}
-	
+
 	@Deprecated
 	public int selectDriverInCarByConditionCount(Date beginDate,Date endDate,Vehicle vehicle,Driver driver, String operation, Boolean finished) {
 		return driverDao.selectDriverInCarByConditionCount(beginDate, endDate, vehicle, driver,operation,finished);
 	}
-	
+
 	@Deprecated
 	public List<Driverincar> selectDriverInCarByCondition(Page page,Date beginDate,Date endDate,Vehicle vehicle,Driver driver, String operation, Boolean finished) {
 		return driverDao.selectDriverInCarByCondition(page, beginDate, endDate, vehicle, driver,operation,finished);
 	}
-	
+
 	@Deprecated
 	public int driverSearchConditionTotal( Date beginDate,
-			Date endDate,Driver driver) throws HibernateException {
+										   Date endDate,Driver driver) throws HibernateException {
 		return driverDao.driverSearchConditionTotal(beginDate, endDate, driver);
 	}
-	
+
 	@Deprecated
-	public List<Driver> driverSearchCondition(Page page, 
-			Date beginDate, Date endDate, Driver driver)
+	public List<Driver> driverSearchCondition(Page page,
+											  Date beginDate, Date endDate, Driver driver)
 			throws HibernateException {
 		return driverDao.driverSearchCondition(page, beginDate, endDate, driver);
 	}
-	
+
 	public void addLeaveRecord(Driverleave record) {
 		driverDao.addLeaveRecord(record);
 	}
 
 	public int selectDriverLeaveByConditionCount(Date beginDate, Date endDate,
-			Vehicle vehicle, Driver driver, Boolean finished, String operation) {
+												 Vehicle vehicle, Driver driver, Boolean finished, String operation) {
 		return driverDao.selectDriverLeaveByConditionCount(beginDate, endDate, vehicle, driver,finished,operation);
 	}
 
 	public List<Driverleave> selectDriverLeaveByCondition(Page page, Date beginDate,
-			Date endDate, Vehicle vehicle, Driver driver, Boolean finished, String operation) {
+														  Date endDate, Vehicle vehicle, Driver driver, Boolean finished, String operation) {
 		return driverDao.selectDriverLeaveByCondition(page, beginDate, endDate, vehicle, driver,finished,operation);
 	}
-	
+
 	int searchCount(Triplet<String, String, Object>... conditions) {
 		return driverDao.searchCount(conditions);
 	}
 
 	List<Driver> search(Page page, Triplet<String, String, Object>... conditions) {
 		return driverDao.search(page, conditions);
+	}
+
+
+	@Value("#{configProperties['messageSequenceNum']}")
+	private String messageSequenceNum;
+	@Value("#{configProperties['messagePassword']}")
+	private String messagePassword;
+
+	/**
+	 * 发送消息给资格证即将到期的在车驾驶员
+	 */
+	public void sendMessageToQualification(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MONTH,1);
+		Calendar _3daysBefore = Calendar.getInstance();
+		calendar.add(Calendar.DATE,-3);
+
+		Session s = null;
+		Transaction tx = null;
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			Query query = s.createQuery("from Driver d where d.qualificationValidDate <:dt and " +
+					"not exists (select 1 from QualificationMessageLog ql " +
+					"where ql.idNum=d.idNum and ql.sendTime>:bfd)");
+			query.setDate("dt",calendar.getTime());
+			query.setDate("bfd",_3daysBefore.getTime());
+			List<Driver> sendList = query.list();
+
+			System.out.println(messageSequenceNum);
+			System.out.println(messagePassword);
+
+			MessageClient client = new MessageClient(messageSequenceNum,messagePassword);
+
+			for (Driver driver : sendList) {
+				String phoneNum = driver.getPhoneNum1();
+
+				String content = String.format("您的资格证即将到期！到期日期：%tF,剩余%d天。",
+						driver.getQualificationValidDate(),
+						(driver.getQualificationValidDate().getTime()-new Date().getTime())/86400000+1);
+				String resultStr = client.fakeSendMessage(phoneNum,content,"","","");
+
+				QualificationMessageLog log = new QualificationMessageLog();
+				log.setIdNum(driver.getIdNum());
+				log.setPhoneNum(phoneNum);
+				log.setSendTime(new Date());
+				log.setContext(content);
+				log.setReturnVal(resultStr);
+
+				s.save(log);
+			}
+
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		} finally {
+			HibernateSessionFactory.closeSession();
+		}
+	}
+
+	public void setMessagePassword(String messagePassword) {
+		this.messagePassword = messagePassword;
+	}
+
+	public void setMessageSequenceNum(String messageSequenceNum) {
+		this.messageSequenceNum = messageSequenceNum;
 	}
 }
