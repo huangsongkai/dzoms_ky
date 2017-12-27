@@ -653,22 +653,45 @@ public class DriverAction extends BaseAction{
 	}
 
 	public String addBusinessApply() throws IOException{
-		Driver d = driverService.selectById(driver.getIdNum());
+		Session s = null;
+		Transaction tx = null;
 
-		Vehicle v = new Vehicle();
-		v.setCarframeNum(driver.getCarframeNum());
-		v = vehicleService.selectById(v);
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
 
-		d.setRestTime(driver.getRestTime());
-		d.setBusinessApplyCarframeNum(driver.getCarframeNum());
-		d.setBusinessApplyDriverClass(driver.getDriverClass());
-		d.setBusinessApplyTime(driver.getBusinessApplyTime());
-		d.setBusinessApplyRegistrant(driver.getBusinessApplyRegistrant());
-		d.setBusinessApplyRegistTime(driver.getBusinessApplyRegistTime());
+			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
+			d.setRestTime(driver.getRestTime());
+			d.setBusinessApplyCarframeNum(driver.getCarframeNum());
+			d.setBusinessApplyDriverClass(driver.getDriverClass());
+			d.setBusinessApplyTime(driver.getBusinessApplyTime());
+			d.setBusinessApplyRegistrant(driver.getBusinessApplyRegistrant());
+			d.setBusinessApplyRegistTime(driver.getBusinessApplyRegistTime());
 
-		d.setBusinessApplyState(1);
-		//driverService.driverUpdate(d,families);
-		ObjectAccess.saveOrUpdate(d);
+			d.setBusinessApplyState(1);
+			s.saveOrUpdate(d);
+
+			String basePath = System.getProperty("com.dz.root") +"data/driver/"+driver.getIdNum();
+
+			if(StringUtils.length(drive_vehicle_photo)==30)
+				FileUploadUtil.store(drive_vehicle_photo,new File(basePath,"drive_vehicle_photo.jpg"));
+			if(StringUtils.length(drive_photo)==30)
+				FileUploadUtil.store(drive_photo,new File(basePath,"photo.jpg"));
+
+			Driverincar record = new Driverincar(d.getBusinessApplyCarframeNum(),d.getIdNum(),"证照申请",d.getBusinessApplyTime());
+			record.setFinished(false);
+			record.setDriverClass(d.getBusinessApplyDriverClass());
+			s.save(record);
+
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
 
 //		if(d.getDriverClass().equals("主驾")){
 //			v.setFirstDriver(d.getIdNum());
@@ -708,21 +731,6 @@ public class DriverAction extends BaseAction{
 //		}
 //
 //		vehicleService.updateVehicle(v);
-
-		String basePath = System.getProperty("com.dz.root") +"data/driver/"+driver.getIdNum();
-
-//		System.out.println(drive_vehicle_photo);
-//		System.out.println(drive_photo);
-
-		if(StringUtils.length(drive_vehicle_photo)==30)
-			FileUploadUtil.store(drive_vehicle_photo,new File(basePath,"drive_vehicle_photo.jpg"));
-		if(StringUtils.length(drive_photo)==30)
-			FileUploadUtil.store(drive_photo,new File(basePath,"photo.jpg"));
-
-		Driverincar record = new Driverincar(d.getBusinessApplyCarframeNum(),d.getIdNum(),"证照申请",d.getBusinessApplyTime());
-		record.setFinished(false);
-		record.setDriverClass(d.getBusinessApplyDriverClass());
-		driverService.addDriverInCarRecord(record);
 		return SUCCESS;
 	}
 
