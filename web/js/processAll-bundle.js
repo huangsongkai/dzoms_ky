@@ -86,9 +86,9 @@ var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(52);
+var _css2 = __webpack_require__(53);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(52);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -110,9 +110,9 @@ var _form = __webpack_require__(32);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _css6 = __webpack_require__(53);
+var _css6 = __webpack_require__(49);
 
-var _select = __webpack_require__(48);
+var _select = __webpack_require__(43);
 
 var _select2 = _interopRequireDefault(_select);
 
@@ -130,7 +130,7 @@ var _collapse2 = _interopRequireDefault(_collapse);
 
 var _css9 = __webpack_require__(109);
 
-var _radio = __webpack_require__(90);
+var _radio = __webpack_require__(89);
 
 var _radio2 = _interopRequireDefault(_radio);
 
@@ -160,7 +160,7 @@ var _reactDom = __webpack_require__(10);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SelectInfo = __webpack_require__(91);
+var _SelectInfo = __webpack_require__(90);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
@@ -844,7 +844,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                 height: "28px",
                 lineHeight: "28px"
             };
-            var rows = processVarInfo.map(function (rows) {
+            var rows = processVarInfo.map(function (row) {
                 return _react3.default.createElement(
                     'div',
                     { style: conStyle },
@@ -854,7 +854,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                         _react3.default.createElement(
                             'span',
                             null,
-                            rows.variable.name,
+                            row.variable.name,
                             '\uFF1A'
                         )
                     ),
@@ -864,11 +864,13 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                         _react3.default.createElement(
                             'span',
                             null,
-                            rows.variable.value
+                            row.variable.value
                         )
                     )
                 );
             });
+
+            console.log(rows);
 
             return rows;
         }
@@ -1036,10 +1038,11 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
                 success: function success(result) {
                     //console.log(result);
                     recResult.splice(0, 0, result);
+                    console.log(result);
                     window.processInstanceId = result.processInstanceId;
                     $.ajax({
                         type: "GET",
-                        url: "/DZOMS/ky/history/historic-process-instances/" + window.processInstanceId,
+                        url: "/DZOMS/ky/history/historic-process-instances/" + window.processInstanceId + "?size=1000",
                         dataType: 'json',
                         contentType: 'application/json',
                         success: function success(result) {
@@ -1054,9 +1057,10 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
                             alert("操作失败");
                         }
                     });
+                    console.log(window.processInstanceId);
                     $.ajax({
                         type: "GET",
-                        url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId,
+                        url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
                         dataType: 'json',
                         contentType: 'application/json',
                         success: function success(result) {
@@ -1064,11 +1068,14 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
                                 var expNull = null;
                                 var taskDataList = {};
                                 var startFormData = [];
+
                                 for (var i = 0; i < result.data.length; i++) {
                                     if (result.data[i].taskId === expNull) {
                                         startFormData.push(result.data[i]);
                                     }
                                 }
+                                console.log("-------------------");
+                                console.log(startFormData);
                                 self.setState({
                                     // recResult:taskArray,
                                     processVarInfo: startFormData
@@ -1081,7 +1088,7 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
                     });
                     $.ajax({
                         type: "GET",
-                        url: "/DZOMS/ky/history/historic-task-instances?processInstanceId=" + window.processInstanceId,
+                        url: "/DZOMS/ky/history/historic-task-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
                         dataType: 'json',
                         contentType: 'application/json',
                         success: function success(result) {
@@ -1203,9 +1210,9 @@ var _form = __webpack_require__(32);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _css2 = __webpack_require__(53);
+var _css2 = __webpack_require__(49);
 
-var _select = __webpack_require__(48);
+var _select = __webpack_require__(43);
 
 var _select2 = _interopRequireDefault(_select);
 
@@ -1223,7 +1230,7 @@ var _collapse2 = _interopRequireDefault(_collapse);
 
 var _css5 = __webpack_require__(109);
 
-var _radio = __webpack_require__(90);
+var _radio = __webpack_require__(89);
 
 var _radio2 = _interopRequireDefault(_radio);
 
@@ -1237,7 +1244,7 @@ var _reactDom = __webpack_require__(10);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SelectInfo = __webpack_require__(91);
+var _SelectInfo = __webpack_require__(90);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 

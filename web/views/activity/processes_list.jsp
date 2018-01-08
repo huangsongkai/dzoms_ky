@@ -21,7 +21,7 @@
 </body>
 <script type="text/javascript">
     var pageUrls ={
-        processesListUrl : "/DZOMS/ky/repository/process-definitions?size=100" , //get 流程列表
+        processesListUrl : "/DZOMS/ky/repository/process-definitions?size=1000" , //get 流程列表
         executeStartForm:"/DZOMS/ky/activity/process/startForm/"   //跳转到startForm页
     }
 </script>

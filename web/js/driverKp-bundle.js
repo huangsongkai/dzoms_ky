@@ -12,9 +12,9 @@ var _table = __webpack_require__(30);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(36);
+var _css2 = __webpack_require__(37);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -36,11 +36,11 @@ var _index6 = _interopRequireDefault(_index5);
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Sorter = __webpack_require__(43);
+var _Sorter = __webpack_require__(44);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-__webpack_require__(82);
+__webpack_require__(98);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -232,11 +232,11 @@ var _table = __webpack_require__(30);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(36);
+var _css2 = __webpack_require__(49);
 
-var _datePicker = __webpack_require__(35);
+var _select = __webpack_require__(43);
 
-var _datePicker2 = _interopRequireDefault(_datePicker);
+var _select2 = _interopRequireDefault(_select);
 
 var _index = __webpack_require__(21);
 
@@ -256,11 +256,9 @@ var _index6 = _interopRequireDefault(_index5);
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Sorter = __webpack_require__(43);
+var _Sorter = __webpack_require__(44);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
-
-__webpack_require__(82);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -296,11 +294,29 @@ function _wrapComponent(id) {
   };
 }
 
-var MonthPicker = _datePicker2.default.MonthPicker,
-    RangePicker = _datePicker2.default.RangePicker;
-
+// const { MonthPicker, RangePicker } = DatePicker;
+// import 'moment/locale/zh-cn';
 // moment.locale('zh-cn');
 var _sorter = new _Sorter2.default();
+var date = new Date();
+var year = date.getFullYear();
+var years = [year, year - 1, year - 2, year - 3, year - 4];
+
+var calc = function calc(col, total, ratio) {
+  var isOwner = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : -1;
+
+  if (isOwner == 0) {
+    return 0;
+  }
+  var score = 0;
+  if (col == '0') {
+    return 0;
+  } else {
+    score = parseInt(col) * ratio;
+  }
+  score = score > total ? total : score;
+  return score;
+};
 var columns = [{
   title: '序号',
   dataIndex: 'index',
@@ -311,14 +327,14 @@ var columns = [{
       ++index
     );
   },
-  width: 50,
+  width: 80,
   //sorter: (a, b) => sorter.sortFgs(a.fgs, b.fgs),
   fixed: 'left'
 }, {
-  title: '分公司',
+  title: '公司',
   dataIndex: 'fgs',
   filters: [{ text: '一部', value: '一部' }, { text: '二部', value: '二部' }, { text: '三部', value: '三部' }],
-  width: 120,
+  width: 80,
   filterMultiple: false,
   onFilter: function onFilter(value, record) {
     return record.fgs.indexOf(value) === 0;
@@ -329,7 +345,7 @@ var columns = [{
   fixed: 'left'
 }, {
   title: '姓名',
-  width: 100,
+  width: 80,
   dataIndex: 'xm',
   // filters: [
   // { text: '黄嵩凯', value: '黄嵩凯' },
@@ -340,12 +356,46 @@ var columns = [{
   },
   fixed: 'left'
 }, {
+  title: '车主',
+  dataIndex: 'isOwner',
+  render: function render(text) {
+    return text == 1 ? React.createElement(
+      'span',
+      null,
+      '\u662F'
+    ) : React.createElement(
+      'span',
+      null,
+      '\u5426'
+    );
+  },
+  fixed: 'left',
+  width: 80
+}, {
   title: '主副驾',
   dataIndex: 'zfj',
   sorter: function sorter(a, b) {
     return _sorter.sort(a.zfj, b.zfj);
   },
-  width: 100
+  width: 80
+}, {
+  title: '参与评选',
+  dataIndex: 'isNew',
+  render: function render(text) {
+    return text == 0 ? React.createElement(
+      'span',
+      null,
+      '\u662F'
+    ) : React.createElement(
+      'span',
+      null,
+      '\u5426'
+    );
+  },
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.isNew, b.isNew);
+  },
+  width: 80
 }, {
   title: '车牌号',
   dataIndex: 'cph',
@@ -356,7 +406,61 @@ var columns = [{
   sorter: function sorter(a, b) {
     return _sorter.sort(a.cph, b.cph);
   },
-  width: 150
+  width: 100
+}, {
+  title: '租金迟交',
+  dataIndex: 'zj',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.zj, b.zj);
+  },
+  width: 80
+}, {
+  title: '小分',
+  width: 80,
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.zj_score, b.zj_score);
+  },
+  dataIndex: 'zj_score'
+}, {
+  title: '法律诉讼',
+  dataIndex: 'law',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.law, b.law);
+  },
+  width: 80
+}, {
+  title: '小分',
+  width: 80,
+  render: function render() {
+    return 0;
+  }
+}, {
+  title: '保险迟交',
+  dataIndex: 'insurance',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.insurance, b.insurance);
+  },
+  width: 80
+}, {
+  title: '小分',
+  width: 80,
+  render: function render() {
+    return 0;
+  }
+}, {
+  title: '投诉',
+  dataIndex: 'ts',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.ts, b.ts);
+  },
+  width: 80
+}, {
+  title: '小分',
+  dataIndex: 'ts_score',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.ts_score, b.ts_score);
+  },
+  width: 80
 }, {
   title: '事故',
   dataIndex: 'sg',
@@ -365,10 +469,10 @@ var columns = [{
   },
   width: 80
 }, {
-  title: '路检',
-  dataIndex: 'lj',
+  title: '小分',
+  dataIndex: 'sg_score',
   sorter: function sorter(a, b) {
-    return a.age - b.age;
+    return _sorter.sort(a.sg_score, b.sg_score);
   },
   width: 80
 }, {
@@ -379,19 +483,26 @@ var columns = [{
   },
   width: 80
 }, {
-  title: '投诉',
-  dataIndex: 'ts',
+  title: '小分',
+  width: 80,
   sorter: function sorter(a, b) {
-    return _sorter.sort(a.ts, b.ts);
+    return _sorter.sort(a.wz_score, b.wz_score);
+  },
+  dataIndex: 'wz_score'
+}, {
+  title: '路检',
+  dataIndex: 'lj',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.lj, b.lj);
   },
   width: 80
 }, {
-  title: '租金迟交',
-  dataIndex: 'zj',
+  title: '小分',
+  width: 80,
   sorter: function sorter(a, b) {
-    return _sorter.sort(a.zj, b.zj);
+    return a.lj_score - b.lj_score;
   },
-  width: 80
+  dataIndex: 'lj_score'
 }, {
   title: '例会缺席',
   dataIndex: 'lh',
@@ -400,31 +511,94 @@ var columns = [{
   },
   width: 80
 }, {
-  title: '活动',
+  title: '小分',
+  width: 80,
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.lh_score, b.lh_score);
+  },
+  dataIndex: 'lh_score'
+}, {
+  title: '减分总评',
+  dataIndex: 'score',
+  sorter: function sorter(a, b) {
+    return _sorter.sort(a.score, b.score);
+  },
+  render: function render(text, record, index) {
+    return record.isNew == 0 ? React.createElement(
+      'div',
+      { style: { backgroundColor: '#00FFCC' } },
+      record.score
+    ) : React.createElement(
+      'div',
+      { style: { backgroundColor: 'grey' } },
+      record.score
+    );
+  },
+  width: 80
+}, {
+  title: '参加活动',
   dataIndex: 'hd',
   sorter: function sorter(a, b) {
     return _sorter.sort(a.hd, b.hd);
   },
   width: 80
 }, {
-  title: '媒体',
+  title: '小分',
+  width: 80,
+  dataIndex: 'hd_score'
+}, {
+  title: '媒体表扬',
   dataIndex: 'mt',
   sorter: function sorter(a, b) {
     return _sorter.sort(a.mt, b.mt);
   },
   width: 80
 }, {
-  title: '表扬',
+  title: '小分',
+  width: 80,
+  dataIndex: 'mt_score'
+}, {
+  title: '乘客表彰',
   dataIndex: 'by',
   sorter: function sorter(a, b) {
     return _sorter.sort(a.by, b.by);
   },
   width: 80
 }, {
-  title: '总分',
-  dataIndex: 'score',
+  title: '小分',
+  width: 80,
+  dataIndex: 'by_score'
+}, {
+  title: '二维码',
+  dataIndex: 'pay',
   sorter: function sorter(a, b) {
-    return _sorter.sort(a.score, b.score);
+    return _sorter.sort(a.by, b.by);
+  },
+  render: function render(text, record) {
+    return text || 0;
+  },
+  width: 80
+}, {
+  title: '小分',
+  width: 80,
+  dataIndex: 'pay_score',
+  render: function render(text, record) {
+    return 0;
+  }
+}, {
+  title: '加分总评',
+  dataIndex: 'score2',
+  // sorter: (a, b) => sorter.sort(a.by, b.by),
+  render: function render(text, record, index) {
+    return record.isNew == 0 ? React.createElement(
+      'div',
+      { style: { backgroundColor: 'red' } },
+      record.score2 || 0
+    ) : React.createElement(
+      'div',
+      { style: { backgroundColor: 'grey' } },
+      record.score2 || 0
+    );
   },
   width: 80
 }];
@@ -453,23 +627,54 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
     key: 'componentDidMount',
     value: function componentDidMount() {
       var self = this;
-      $.get("/DZOMS/ky/driverKp/dtoList", function (data) {
+      $.get("/DZOMS/ky/driverKp/dtoList/" + years[1], function (data) {
+        var records = data.data;
+        for (var i in records) {
+          var record = records[i];
+          record['zj_score'] = calc(record.zj, 20, 5, record.isOwner);
+          record['ts_score'] = calc(record.ts, 20, 5);
+          record['sg_score'] = calc(record.sg, 30, 5, record.isOwner);
+          record['wz_score'] = calc(record.wz, 20, 5, record.isOwner);
+          record['lj_score'] = calc(record.lj, 20, 5, record.isOwner);
+          record['lh_score'] = calc(record.lh, 10, 2);
+          record['score'] = 100 - record['zj_score'] - record['ts_score'] - record['sg_score'] - record['wz_score'] - record['lj_score'] - record['lh_score'];
+          record['hd_score'] = calc(record.hd, 5, 2);
+          record['mt_score'] = calc(record.mt, 10, 5);
+          record['by_score'] = calc(record.by, 5, 2);
+          record['score2'] = record['hd_score'] + record['mt_score'] + record['by_score'];
+        }
         self.setState({
-          data: data.data,
+          data: records,
           loading: false
         });
       });
     }
   }, {
-    key: 'monthChange',
-    value: function monthChange(date, dateString) {
+    key: 'handleChange',
+    value: function handleChange(dateString) {
       var self = this;
       self.setState({
         loading: true
       });
       $.get("/DZOMS/ky/driverKp/dtoList/" + dateString, function (data) {
+        var records = data.data;
+        console.log(data.data);
+        for (var i in records) {
+          var record = records[i];
+          record['zj_score'] = calc(record.zj, 20, 5, record.isOwner);
+          record['ts_score'] = calc(record.ts, 20, 5);
+          record['sg_score'] = calc(record.sg, 30, 5, record.isOwner);
+          record['wz_score'] = calc(record.wz, 20, 5, record.isOwner);
+          record['lj_score'] = calc(record.lj, 20, 5, record.isOwner);
+          record['lh_score'] = calc(record.lj, 10, 2);
+          record['score'] = 100 - record['zj_score'] - record['ts_score'] - record['sg_score'] - record['wz_score'] - record['lj_score'] - record['lh_score'];
+          record['hd_score'] = calc(record.hd, 5, 2);
+          record['mt_score'] = calc(record.mt, 10, 5);
+          record['by_score'] = calc(record.by, 5, 2);
+          record['score2'] = record['hd_score'] + record['mt_score'] + record['by_score'];
+        }
         self.setState({
-          data: data.data,
+          data: records,
           loading: false
         });
       });
@@ -485,8 +690,41 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
           { style: { font: 'bold', fontSize: '18px', textAlign: 'center' } },
           '\u9A7E\u9A76\u5458\u767E\u5206\u8003\u6838'
         ),
-        React.createElement(MonthPicker, { onChange: this.monthChange.bind(this), placeholder: '\u9009\u62E9\u65F6\u95F4' }),
-        React.createElement(_table2.default, { style: { textAlign: 'center' }, scroll: { x: 1320, y: 800 }, size: 'middle', columns: columns, dataSource: this.state.data, pagination: false, loading: this.state.loading,
+        React.createElement(
+          _select2.default,
+          {
+            style: { width: 200 },
+            placeholder: '\u9009\u62E9\u5E74\u4EFD',
+            defaultValue: years[1],
+            onChange: this.handleChange.bind(this)
+          },
+          React.createElement(
+            Option,
+            { value: years[0] },
+            years[0]
+          ),
+          React.createElement(
+            Option,
+            { value: years[1] },
+            years[1]
+          ),
+          React.createElement(
+            Option,
+            { value: years[2] },
+            years[2]
+          ),
+          React.createElement(
+            Option,
+            { value: years[3] },
+            years[3]
+          ),
+          React.createElement(
+            Option,
+            { value: years[4] },
+            years[4]
+          )
+        ),
+        React.createElement(_table2.default, { style: { textAlign: 'center' }, scroll: { x: 2800, y: 800 }, size: 'middle', columns: columns, dataSource: this.state.data, pagination: false, loading: this.state.loading,
           onChange: onChange })
       );
     }

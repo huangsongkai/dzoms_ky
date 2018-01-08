@@ -144,7 +144,7 @@ public class JobDutiesService extends BaseService{
             System.out.println("key =" + key + " value = " + value);
             UserJobDuties userJobDuties = new UserJobDuties();
             userJobDuties.setPersonId(saveUserJobDutiesDTO.getPersonId());
-            userJobDuties.setScore(Integer.parseInt(value));
+            userJobDuties.setScore(Double.parseDouble(value));
             userJobDuties.setJobDutiesId(key);
             userJobDutiesDao.save(userJobDuties);
         }
@@ -154,7 +154,7 @@ public class JobDutiesService extends BaseService{
 
     // TODO: 2017/5/24  session 获取那块的用户Id
     public Result myEvaluate(HttpServletRequest request, Integer taskId) throws Exception {
-        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM 生成时间 HH:mm");
         HttpSession session = request.getSession();
         List <QueryEvaluateDTO> queryEvaluateDTOList = new ArrayList<>();
         if (session != null){
@@ -186,7 +186,7 @@ public class JobDutiesService extends BaseService{
                 evaluateDetail.setEvaluateName(saveEvaluateDTO.getEvaluateName());
                 evaluateDetail.setSelfInputs(saveEvaluateDetailDTO.getInputs());
                 evaluateDetail.setJobDutyId(jobDutyId);
-                evaluateDetail.setSelfTotal((double)saveEvaluateDTO.getTotal());
+                evaluateDetail.setSelfTotal(saveEvaluateDTO.getTotal());
                 evaluateDetail.setSelfScore(saveEvaluateDetailDTO.getScore());
                 List jobDutyList = jobDutyDao.find("from JobDuty where id =" + jobDutyId);
                 JobDuty jobDuty  = (JobDuty) jobDutyList.get(0);
@@ -244,7 +244,7 @@ public class JobDutiesService extends BaseService{
             queryEvaluateDTO.setTaskId(taskId+"");
             SaveEvaluateDetailDTO mySelfDetailDTO = new SaveEvaluateDetailDTO();
             mySelfDetailDTO.setInputs(evaluateDetail.getSelfInputs());
-            mySelfDetailDTO.setComplete(evaluateDetail.getManagerInputs());
+            mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
             mySelfDetailDTO.setScore(evaluateDetail.getSelfScore());
             queryEvaluateDTO.setPersonal(mySelfDetailDTO);
             queryEvaluateDTOList.add(queryEvaluateDTO);
@@ -267,7 +267,7 @@ public class JobDutiesService extends BaseService{
                     evaluateDetail.setManagerDate(new Date());
                     evaluateDetail.setManagerScore(saveEvaluateDetailDTO.getScore());
                     evaluateDetail.setManagerInputs(saveEvaluateDetailDTO.getInputs());
-                    evaluateDetail.setManagerTotal(Double.parseDouble(saveEvaluateDTO.getTotal()+""));
+                    evaluateDetail.setManagerTotal(saveEvaluateDTO.getTotal());
                     evaluateDetailDao.update(evaluateDetail);
                 }
             }
@@ -338,7 +338,7 @@ public class JobDutiesService extends BaseService{
                     evaluateDetail.setGroupDate(new Date());
                     evaluateDetail.setGroupScore(saveEvaluateDetailDTO.getScore());
                     evaluateDetail.setGroupInputs(saveEvaluateDetailDTO.getInputs());
-                    evaluateDetail.setGroupTotal(Double.parseDouble(saveEvaluateDTO.getTotal()+""));
+                    evaluateDetail.setGroupTotal(saveEvaluateDTO.getTotal());
                     evaluateDetailDao.update(evaluateDetail);
                 }
             }
@@ -368,12 +368,16 @@ public class JobDutiesService extends BaseService{
 
         List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
         Iterator itr = result1.iterator();
-        String name= (String) result1.get(0);
-        ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
-        listHistory1DTO.setName(name);
-        List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
-        listHistory1DTO.setId(evaluateDetail.get(0).getId());
-        listHistory1DTOList.add(listHistory1DTO);
+
+        for (int j = 0; j< result1.size(); j++){
+            String name= (String) result1.get(j);
+            ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
+            listHistory1DTO.setName(name);
+            List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
+            listHistory1DTO.setId(evaluateDetail.get(0).getId());
+            listHistory1DTOList.add(listHistory1DTO);
+        }
+
         listHistoryDTO.setDetail(listHistory1DTOList);
         listHistoryDTO.setPersonId(personId);
         User user = userDao1.getUserByUid(personId);
@@ -419,7 +423,7 @@ public class JobDutiesService extends BaseService{
             SaveEvaluateDetailDTO groupDetailDTO = new SaveEvaluateDetailDTO();
             groupDetailDTO.setComplete(evaluateDetail.getGroupInputs());
             groupDetailDTO.setScore(evaluateDetail.getGroupScore());
-            queryEvaluateDTO.setBumen(groupDetailDTO);
+            queryEvaluateDTO.setKpgroup(groupDetailDTO);
 
 
             queryEvaluateDTOList.add(queryEvaluateDTO);
@@ -434,21 +438,21 @@ public class JobDutiesService extends BaseService{
         List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" );
         if(remark.equals("manager")){
             for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
-                evaluateDetail.setManagerDate(null);
-                evaluateDetail.setManagerInputs("");
-                evaluateDetail.setManagerScore(0);
-                evaluateDetail.setManagerTotal(0.0);
-                evaluateDetail.setRegect(regectDTO.getReason());
-                evaluateDetailDao.update(evaluateDetail);
+//                evaluateDetail.setManagerDate(null);
+//                evaluateDetail.setManagerInputs("");
+//                evaluateDetail.setManagerScore(0.0);
+//                evaluateDetail.setManagerTotal(0.0);
+//                evaluateDetail.setRegect(regectDTO.getReason());
+//                evaluateDetailDao.update(evaluateDetail);
             }
         }else if (remark.equals("group")){
             for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
-                evaluateDetail.setGroupDate(null);
-                evaluateDetail.setGroupInputs("");
-                evaluateDetail.setGroupScore(0);
-                evaluateDetail.setGroupTotal(0.0);
-                evaluateDetail.setRegect(regectDTO.getReason());
-                evaluateDetailDao.update(evaluateDetail);
+//                evaluateDetail.setGroupDate(null);
+//                evaluateDetail.setGroupInputs("");
+//                evaluateDetail.setGroupScore(0.0);
+//                evaluateDetail.setGroupTotal(0.0);
+//                evaluateDetail.setRegect(regectDTO.getReason());
+//                evaluateDetailDao.update(evaluateDetail);
             }
         }
         activitiTest.turnBackNew(regectDTO.getTaskId()+"","驳回成功",null);

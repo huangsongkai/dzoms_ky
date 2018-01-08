@@ -15,7 +15,6 @@
 	/*width: 95%;*/
 	/*margin:0 auto;*/
 /*}*/
-
 #taskDetails{
 	border:1px solid #ddd;
 }
@@ -25,8 +24,8 @@
 	margin:0 auto;
 }
 .processInfo{
-	width:520px;
-	height:200px;
+	width:610px;
+	min-height:200px;
 	float:left;
 }
 .processImg{

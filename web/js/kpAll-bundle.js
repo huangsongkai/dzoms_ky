@@ -28,15 +28,15 @@ var _modal = __webpack_require__(39);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css4 = __webpack_require__(52);
+var _css4 = __webpack_require__(53);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(52);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _css5 = __webpack_require__(36);
+var _css5 = __webpack_require__(37);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -350,28 +350,33 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       }
       var columns = [{
         title: '项目',
-        dataIndex: 'proName'
+        dataIndex: 'proName',
+        width: 80
       }, {
         title: '子项目',
         dataIndex: 'childProName',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
-      }, {
-        title: '工作职责',
-        dataIndex: 'jobResponsibility',
+        width: 80,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '分数',
         dataIndex: 'childProValue',
+        width: 80,
+        render: function render(text, record, index) {
+          return _this3.spToInput(text, index);
+        }
+      }, {
+        title: '工作职责',
+        dataIndex: 'jobResponsibility',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -381,25 +386,29 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         children: [{
           title: "个人",
           dataIndex: "personal",
+          width: 200,
           render: function render(text, record, index) {
-            return _react3.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
+            return _react3.default.createElement(TextArea, { autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
           dataIndex: "department",
+          width: 200,
           render: function render(text, record, index) {
-            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 4, maxRows: 10 } });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
+          width: 200,
           render: function render(text, record, index) {
-            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 4, maxRows: 10 } });
           }
         }]
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -409,18 +418,21 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         children: [{
           title: "自评",
           dataIndex: "score",
+          width: 50,
           render: function render(text, record, index) {
             return _react3.default.createElement(_inputNumber2.default, { min: 1, defaultValue: maxValue[index], onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
+          width: 50,
           render: function render(text, record, index) {
             return _react3.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
+          width: 50,
           render: function render(text, record, index) {
             return _react3.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
           }
@@ -457,7 +469,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
             hasSelected ? '\u5DF2\u9009\u62E9 ' + selectedRowKeys.length + ' \u6761' : ''
           )
         ),
-        _react3.default.createElement(_table2.default, { bordered: true, rowSelection: rowSelection, pagination: false, columns: columns, dataSource: this.state.recData }),
+        _react3.default.createElement(_table2.default, { scroll: { x: 1200 }, bordered: true, rowSelection: rowSelection, pagination: false, columns: columns, dataSource: this.state.recData }),
         _react3.default.createElement(
           'div',
           { style: { margin: '10px 0' } },
@@ -585,7 +597,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _icon = __webpack_require__(37);
+var _icon = __webpack_require__(35);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -678,9 +690,9 @@ var _transfer = __webpack_require__(521);
 
 var _transfer2 = _interopRequireDefault(_transfer);
 
-var _css3 = __webpack_require__(52);
+var _css3 = __webpack_require__(53);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(52);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -1245,9 +1257,9 @@ var _table = __webpack_require__(30);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css3 = __webpack_require__(52);
+var _css3 = __webpack_require__(53);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(52);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -1257,9 +1269,9 @@ var _modal = __webpack_require__(39);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(36);
+var _css5 = __webpack_require__(37);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -1567,28 +1579,33 @@ var Bumenkp = function (_Performance) {
       }
       var columns = [{
         title: '项目',
-        dataIndex: 'proName'
+        dataIndex: 'proName',
+        width: 80
       }, {
         title: '子项目',
         dataIndex: 'childProName',
+        width: 80,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '分数',
         dataIndex: 'childProValue',
+        width: 80,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -1598,25 +1615,29 @@ var Bumenkp = function (_Performance) {
         children: [{
           title: "个人",
           dataIndex: "personal",
+          width: 200,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal.complete, autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal.complete, autosize: { minRows: 4, maxRows: 10 }, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "department",
+          width: 200,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
+            return _react2.default.createElement(TextArea, { autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
+          width: 200,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+            return _react2.default.createElement(TextArea, { disabled: true, autosize: { minRows: 4, maxRows: 10 } });
           }
         }]
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -1626,18 +1647,21 @@ var Bumenkp = function (_Performance) {
         children: [{
           title: "自评",
           dataIndex: "ziping",
+          width: 50,
           render: function render(text, record, index) {
             return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal.score, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
+          width: 50,
           render: function render(text, record, index) {
             return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: maxValue[index], disabled: !(_this3.props.department == "bumen"), onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
+          width: 50,
           render: function render(text, record, index) {
             return _react2.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
           }
@@ -1675,7 +1699,7 @@ var Bumenkp = function (_Performance) {
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react2.default.createElement(_table2.default, { bordered: true, key: this.key, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
+        _react2.default.createElement(_table2.default, { bordered: true, key: this.key, scroll: { x: 1200 }, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
         _react2.default.createElement(
           'div',
           { style: { margin: '10px 0' } },
@@ -1763,9 +1787,9 @@ var _table = __webpack_require__(30);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(53);
+var _css2 = __webpack_require__(49);
 
-var _select = __webpack_require__(48);
+var _select = __webpack_require__(43);
 
 var _select2 = _interopRequireDefault(_select);
 
@@ -1775,9 +1799,9 @@ var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css4 = __webpack_require__(36);
+var _css4 = __webpack_require__(37);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -1805,7 +1829,7 @@ var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(82);
+__webpack_require__(98);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2041,9 +2065,9 @@ var _table = __webpack_require__(30);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css3 = __webpack_require__(52);
+var _css3 = __webpack_require__(53);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(52);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -2059,9 +2083,9 @@ var _input = __webpack_require__(38);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css6 = __webpack_require__(36);
+var _css6 = __webpack_require__(37);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -2168,7 +2192,9 @@ var Managementkp = function (_Performance) {
                   bumenSum += parseInt(data[i].bumen.score);
                 }
                 if (this.props.department == "historykp") {
-                  kpgroupSum += parseInt(data[i].kpgroup.score);
+                  if (data[i].kpgroup) {
+                    kpgroupSum += parseInt(data[i].kpgroup.score);
+                  }
                 } else {
                   kpgroupSum += parseInt(data[i].childProValue);
                 }
@@ -2394,28 +2420,33 @@ var Managementkp = function (_Performance) {
       }
       var columns = [{
         title: '项目',
-        dataIndex: 'proName'
+        dataIndex: 'proName',
+        width: 80
       }, {
         title: '子项目',
         dataIndex: 'childProName',
+        width: 80,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '分数',
         dataIndex: 'childProValue',
+        width: 80,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -2425,25 +2456,29 @@ var Managementkp = function (_Performance) {
         children: [{
           title: "个人",
           dataIndex: "personal",
+          width: 200,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.complete : "", autosize: { minRows: 4, maxRows: 10 }, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "department",
+          width: 200,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 4, maxRows: 10 }, disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
+          width: 200,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: completeDefaultValue, disabled: _this3.props.department == "historykp" ? true : false });
+            return _react2.default.createElement(TextArea, { autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: completeDefaultValue, disabled: _this3.props.department == "historykp" ? true : false });
           }
         }]
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -2453,18 +2488,21 @@ var Managementkp = function (_Performance) {
         children: [{
           title: "自评",
           dataIndex: "ziping",
+          width: 50,
           render: function render(text, record, index) {
             return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.score : "", disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
+          width: 50,
           render: function render(text, record, index) {
             return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.score : "", disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
+          width: 50,
           render: function render(text, record, index) {
             return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? _this3.state.recData[index].kpgroup ? _this3.state.recData[index].kpgroup.score : "" : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
           }
@@ -2503,7 +2541,7 @@ var Managementkp = function (_Performance) {
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react2.default.createElement(_table2.default, { bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
+        _react2.default.createElement(_table2.default, { scroll: { x: 1200 }, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
         _react2.default.createElement(
           'div',
           { style: { margin: '10px 0' } },
@@ -2603,9 +2641,9 @@ var _table = __webpack_require__(30);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(53);
+var _css2 = __webpack_require__(49);
 
-var _select = __webpack_require__(48);
+var _select = __webpack_require__(43);
 
 var _select2 = _interopRequireDefault(_select);
 
@@ -2621,9 +2659,9 @@ var _modal = __webpack_require__(39);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(36);
+var _css5 = __webpack_require__(37);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -2663,7 +2701,7 @@ var _reactDom = __webpack_require__(10);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(43);
+var _Sorter = __webpack_require__(44);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
@@ -2914,8 +2952,8 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         tableData["id"] = id[i];
       }
       console.log(tableData);
-      document.cookie = "department" + "=" + tableData.department;
-      document.cookie = "proName" + "=" + tableData.proName;
+      // document.cookie="department"+"="+tableData.department;
+      // document.cookie="proName"+"="+tableData.proName;
       //后台处理  
       $.ajax({
         type: type,
@@ -3266,6 +3304,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
         dataIndex: 'department',
         key: 'department',
         filters: filterData.department,
+        width: 80,
         sorter: function sorter(a, b) {
           return new _Sorter2.default().sort(a.department, b.department);
         },
@@ -3276,6 +3315,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
         title: '项目',
         dataIndex: 'proName',
         filters: filterData.proName,
+        width: 80,
         sorter: function sorter(a, b) {
           return new _Sorter2.default().sort(a.proName, b.proName);
         },
@@ -3285,30 +3325,35 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
       }, {
         title: '子项目',
         dataIndex: 'childProName',
+        width: 80,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
+        width: 200,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '完成情况',
         dataIndex: 'complete',
+        width: 300,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
@@ -3326,7 +3371,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
 
       return _react3.default.createElement(
         'div',
-        null,
+        { style: { marginBottom: 50 } },
         _react3.default.createElement(
           'div',
           { style: { marginBottom: 16 } },
@@ -3340,7 +3385,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react3.default.createElement(_table2.default, { key: this.key++, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, scroll: { x: 1200 }, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
       );
     }
   }]);
@@ -3431,7 +3476,7 @@ var _omit = __webpack_require__(63);
 
 var _omit2 = _interopRequireDefault(_omit);
 
-var _KeyCode = __webpack_require__(46);
+var _KeyCode = __webpack_require__(47);
 
 var _KeyCode2 = _interopRequireDefault(_KeyCode);
 
@@ -3439,7 +3484,7 @@ var _input = __webpack_require__(38);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _icon = __webpack_require__(37);
+var _icon = __webpack_require__(35);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -4222,7 +4267,7 @@ var _reactLazyLoad = __webpack_require__(934);
 
 var _reactLazyLoad2 = _interopRequireDefault(_reactLazyLoad);
 
-var _checkbox = __webpack_require__(89);
+var _checkbox = __webpack_require__(88);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
@@ -4346,7 +4391,7 @@ var _PureRenderMixin = __webpack_require__(126);
 
 var _PureRenderMixin2 = _interopRequireDefault(_PureRenderMixin);
 
-var _checkbox = __webpack_require__(89);
+var _checkbox = __webpack_require__(88);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
@@ -4626,7 +4671,7 @@ var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _icon = __webpack_require__(37);
+var _icon = __webpack_require__(35);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -5616,7 +5661,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _rcTrigger = __webpack_require__(84);
+var _rcTrigger = __webpack_require__(83);
 
 var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 
@@ -5624,7 +5669,7 @@ var _Menus = __webpack_require__(782);
 
 var _Menus2 = _interopRequireDefault(_Menus);
 
-var _KeyCode = __webpack_require__(46);
+var _KeyCode = __webpack_require__(47);
 
 var _KeyCode2 = _interopRequireDefault(_KeyCode);
 

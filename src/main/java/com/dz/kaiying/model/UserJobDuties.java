@@ -19,7 +19,7 @@ public class UserJobDuties implements java.io.Serializable {
 	private Integer jobDutiesId;
 
 	@Column(name = "score")
-	private Integer score;
+	private Double score;
 
 	@Column(name = "person_id")
 	private Integer personId;
@@ -40,11 +40,11 @@ public class UserJobDuties implements java.io.Serializable {
 		this.jobDutiesId = jobDutiesId;
 	}
 
-	public Integer getScore() {
+	public Double getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(Double score) {
 		this.score = score;
 	}
 

@@ -318,7 +318,10 @@ public class ActivitiService  extends TaskBaseResource{
         List<TaskDto> taskDtoList = new ArrayList<TaskDto>();
         for(Task task : taskList){
             TaskDto taskDto = new TaskDto();
-            taskDto.setName(task.getName());
+            if(task.getName().indexOf("duty_check") != -1){
+                System.out.println("包含");
+                taskDto.setName("绩效考核");
+            }
             taskDto.setStarter(historyService.createHistoricProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId());
             taskDto.setAssignee(task.getAssignee());
             taskDto.setCreateTime(format.format(task.getCreateTime()));
@@ -329,6 +332,9 @@ public class ActivitiService  extends TaskBaseResource{
         biba.setData(taskDtoList);
         return biba;
     }
+
+
+
     public class TaskDto{
         String name;
         String starter;

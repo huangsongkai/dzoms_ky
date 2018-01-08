@@ -1,3 +1,4 @@
+
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%><%@taglib
 	uri="/struts-tags" prefix="s"%><%@ page language="java"
 	import="java.util.*, com.dz.module.vehicle.VehicleApproval,com.dz.module.user.User"
@@ -55,8 +56,9 @@
             <li>表扬落实</li>
         </ul>
     </div>
-    
+
     <form name="dealpraise" action="/DZOMS/driver/praise/dealPraise" method="post">
+        <s:hidden name="praise.idNum"/>
         <s:hidden name="praise.id"/>
         <div class="container">
             <table class="table table-hover">

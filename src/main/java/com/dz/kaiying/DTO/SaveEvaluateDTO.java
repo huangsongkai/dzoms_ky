@@ -14,7 +14,7 @@ public class SaveEvaluateDTO implements java.io.Serializable {
 	private Map<Integer, SaveEvaluateDetailDTO> selfEvaluate;
 	private Map<Integer, SaveEvaluateDetailDTO> departmentEvaluate;
 	private Map<Integer, SaveEvaluateDetailDTO> managerEvaluate;
-	private Integer total;
+	private Double total;
 	private String evaluateName;
 
 	public Map<Integer, SaveEvaluateDetailDTO> getSelfEvaluate() {
@@ -41,11 +41,11 @@ public class SaveEvaluateDTO implements java.io.Serializable {
 		this.managerEvaluate = managerEvaluate;
 	}
 
-	public Integer getTotal() {
+	public Double getTotal() {
 		return total;
 	}
 
-	public void setTotal(Integer total) {
+	public void setTotal(Double total) {
 		this.total = total;
 	}
 

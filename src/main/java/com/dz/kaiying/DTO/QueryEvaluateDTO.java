@@ -5,7 +5,7 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 	private Integer id;// 工作职责表id
 	private String proName;
 	private String childProName;
-	private Integer childProValue;
+	private Double childProValue;
 	private String jobResponsibility;
 	private String jobStandard;
 	private String scoreStandard;
@@ -50,11 +50,11 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 		this.childProName = childProName;
 	}
 
-	public Integer getChildProValue() {
+	public Double getChildProValue() {
 		return childProValue;
 	}
 
-	public void setChildProValue(Integer childProValue) {
+	public void setChildProValue(Double childProValue) {
 		this.childProValue = childProValue;
 	}
 

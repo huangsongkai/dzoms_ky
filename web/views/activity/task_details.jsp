@@ -23,7 +23,7 @@
     var pageUrls ={
         chepaihaoUrl:"/chepaihaoA",   //如果该页有关于车牌号选择的
         submitTasksUrl:"/DZOMS/ky/activity/task/", //提交数据 POST
-        getTasksUrl:"/DZOMS/ky/runtime/tasks/",
+        getTasksUrl:"/DZOMS/ky/style.css/tasks/",
         getTaskDataUrl:"/DZOMS/ky/history/historic-task-instances/",
         getRuntimeDataUrl:"/DZOMS/ky/form/form-data?taskId=",
         hisProcessUrl:"/DZOMS/ky/history/historic-process-instances/",
