@@ -3,7 +3,7 @@ package com.dz.kaiying.DTO;
 
 public class UserJobDutyDTO implements java.io.Serializable {
 	private Integer key;
-	private Double score;
+	private int sortId;
 
 
 	public Integer getKey() {
@@ -14,11 +14,11 @@ public class UserJobDutyDTO implements java.io.Serializable {
 		this.key = key;
 	}
 
-	public Double getScore() {
-		return score;
+	public int getSortId() {
+		return sortId;
 	}
 
-	public void setScore(Double score) {
-		this.score = score;
+	public void setSortId(int sortId) {
+		this.sortId = sortId;
 	}
 }

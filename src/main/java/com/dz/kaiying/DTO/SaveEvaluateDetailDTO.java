@@ -12,6 +12,15 @@ public class SaveEvaluateDetailDTO implements java.io.Serializable {
 	private String inputs;
 	private Double score;
 	private String complete;
+	private String remarks;
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 
 	public String getComplete() {
 		return complete;

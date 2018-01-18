@@ -82,7 +82,7 @@ public class JobDutyController {
      * 用户的工作职责
      * @return
      */
-    @RequestMapping(value = "/userJob/{id}", method = RequestMethod.GET)
+        @RequestMapping(value = "/userJob/{id}", method = RequestMethod.GET)
     @ResponseBody
 
     public Result queryUserJob(@PathVariable int id){

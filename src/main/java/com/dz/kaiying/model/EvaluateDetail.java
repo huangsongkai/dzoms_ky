@@ -4,6 +4,7 @@ package com.dz.kaiying.model;
 import javax.persistence.*;
 import java.util.Date;
 
+import static com.ibm.media.codec.audio.g723.G723Tables.s;
 import static javax.persistence.GenerationType.IDENTITY;
 
 
@@ -41,6 +42,8 @@ public class EvaluateDetail implements java.io.Serializable {
 
     @Column(name = "job_standard")
     private String jobStandard;
+    @Column(name = "sort_id")
+    private int sortId;
 
 
 
@@ -83,8 +86,10 @@ public class EvaluateDetail implements java.io.Serializable {
     @Column(name = "group_total")
     private Double groupTotal;
 
-    @Column(name = "group_remark")
-    private String remark;
+
+
+    @Column(name = "remarks")
+    private String remarks;
 
     @Column(name = "regect")
     private String regect;
@@ -266,12 +271,12 @@ public class EvaluateDetail implements java.io.Serializable {
         this.groupTotal = groupTotal;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getRemarks() {
+        return remarks;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     public String getRegect() {
@@ -281,4 +286,13 @@ public class EvaluateDetail implements java.io.Serializable {
     public void setRegect(String regect) {
         this.regect = regect;
     }
+
+    public int getSortId() {
+        return sortId;
+    }
+
+    public void setSortId(int sortId) {
+        this.sortId = sortId;
+    }
+
 }

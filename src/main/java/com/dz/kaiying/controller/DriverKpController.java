@@ -23,7 +23,7 @@ public class DriverKpController extends BaseController{
         return "driverKp/index";
     }
 
-    @RequestMapping(value = "/calcParams", method = RequestMethod.GET)
+    @RequestMapping(value = "/calc", method = RequestMethod.GET)
     public String calcParams () throws Exception {
         return "driverKp/driverKpCalcParams";
     }

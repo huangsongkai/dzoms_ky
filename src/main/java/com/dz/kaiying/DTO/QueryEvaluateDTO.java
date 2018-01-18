@@ -10,13 +10,32 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 	private String jobStandard;
 	private String scoreStandard;
 	private String evaluateName;
+	private String complete;
 	private String reason;
+	private String remarks;
+
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 
 	private String taskId;
 
 	private SaveEvaluateDetailDTO personal;
 	private SaveEvaluateDetailDTO bumen;
 	private SaveEvaluateDetailDTO kpgroup;
+
+	public String getComplete() {
+		return complete;
+	}
+
+	public void setComplete(String complete) {
+		this.complete = complete;
+	}
 
 	public String getTaskId() {
 		return taskId;
