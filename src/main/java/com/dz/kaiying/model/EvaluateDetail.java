@@ -86,14 +86,44 @@ public class EvaluateDetail implements java.io.Serializable {
     @Column(name = "group_total")
     private Double groupTotal;
 
-
-
     @Column(name = "remarks")
     private String remarks;
 
-    @Column(name = "regect")
-    private String regect;
 
+
+    @Column(name = "regect_self")
+    private String regect_self;
+
+    @Column(name = "regect_manager")
+    private String regect_manager;
+
+    @Column(name = "regect_group")
+    private String regect_group;
+
+
+    public String getRegect_self() {
+        return regect_self;
+    }
+
+    public void setRegect_self(String regect_self) {
+        this.regect_self = regect_self;
+    }
+
+    public String getRegect_manager() {
+        return regect_manager;
+    }
+
+    public void setRegect_manager(String regect_manager) {
+        this.regect_manager = regect_manager;
+    }
+
+    public String getRegect_group() {
+        return regect_group;
+    }
+
+    public void setRegect_group(String regect_group) {
+        this.regect_group = regect_group;
+    }
 
     public Integer getId() {
         return id;
@@ -277,14 +307,6 @@ public class EvaluateDetail implements java.io.Serializable {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
-    }
-
-    public String getRegect() {
-        return regect;
-    }
-
-    public void setRegect(String regect) {
-        this.regect = regect;
     }
 
     public int getSortId() {

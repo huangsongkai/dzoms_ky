@@ -1,6 +1,8 @@
 package com.dz.kaiying.controller;
 
-import com.dz.kaiying.DTO.*;
+import com.dz.kaiying.DTO.SaveEvaluateDTO;
+import com.dz.kaiying.DTO.SaveUserJobDutyDTO;
+import com.dz.kaiying.QueryRegectDTO;
 import com.dz.kaiying.model.JobDuty;
 import com.dz.kaiying.service.ActivitiUtilService;
 import com.dz.kaiying.service.JobDutiesService;
@@ -171,7 +173,7 @@ public class JobDutyController {
      */
     @RequestMapping(value = "/managerRegect", method = RequestMethod.POST)
     @ResponseBody
-    public Result managerEvaluateRegect(@RequestBody RegectDTO regectDTO, HttpServletRequest request) throws Exception {
+    public Result managerEvaluateRegect(@RequestBody QueryRegectDTO regectDTO, HttpServletRequest request) throws Exception {
         return jobDutiesService.managerEvaluateRegect(regectDTO,"manager");
     }
 
@@ -181,7 +183,7 @@ public class JobDutyController {
      */
     @RequestMapping(value = "/groupRegect", method = RequestMethod.POST)
     @ResponseBody
-    public Result groupEvaluateRegect(@RequestBody RegectDTO regectDTO,  HttpServletRequest request) throws Exception {
+    public Result groupEvaluateRegect(@RequestBody QueryRegectDTO regectDTO,  HttpServletRequest request) throws Exception {
         return jobDutiesService.managerEvaluateRegect(regectDTO,"group");
     }
     /**
@@ -190,7 +192,7 @@ public class JobDutyController {
      */
     @RequestMapping(value = "/regect", method = RequestMethod.POST)
     @ResponseBody
-    public Result Regect(@RequestBody RegectDTO regectDTO,  HttpServletRequest request) throws Exception {
+    public Result Regect(@RequestBody QueryRegectDTO regectDTO,  HttpServletRequest request) throws Exception {
         return jobDutiesService.managerEvaluateRegect(regectDTO," ");
     }
 

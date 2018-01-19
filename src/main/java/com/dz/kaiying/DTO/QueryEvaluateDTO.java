@@ -11,7 +11,7 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 	private String scoreStandard;
 	private String evaluateName;
 	private String complete;
-	private String reason;
+	private Reason reason;
 	private String remarks;
 
 
@@ -109,11 +109,11 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 		this.evaluateName = evaluateName;
 	}
 
-	public String getReason() {
+	public Reason getReason() {
 		return reason;
 	}
 
-	public void setReason(String reason) {
+	public void setReason(Reason reason) {
 		this.reason = reason;
 	}
 

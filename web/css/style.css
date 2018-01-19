@@ -2,9 +2,9 @@
 	width:95%;
 	margin:0 auto;
 }
-@media screen and (max-width: 1800px) {
+@media screen and (max-width: 1600px) {
     .container,#container{
-       width: 1800px;
+       width: 1600px;
        overflow-x: scroll;
     }
 }

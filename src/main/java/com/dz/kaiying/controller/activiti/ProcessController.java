@@ -1,6 +1,8 @@
 package com.dz.kaiying.controller.activiti;
 
 
+import com.dz.kaiying.model.EvaluateDetail;
+import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.service.ActivitiService;
 import com.dz.kaiying.util.Result;
 import com.dz.module.user.User;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by song on 2017/1/7.
@@ -32,6 +37,8 @@ public class ProcessController {
     private RepositoryService repositoryService;
     @Resource
     private ResultWrapper resultWrapper;
+    @Resource
+    HibernateDao<EvaluateDetail, Integer> evaluateDetailDao;
 
     @RequestMapping(value="/deploy/{fileName}", method= RequestMethod.GET)
     @ResponseBody
@@ -67,10 +74,22 @@ public class ProcessController {
     }
     @RequestMapping(value="/startForm/{processKey}", method= RequestMethod.GET)
     public String startForm1(@PathVariable String processKey, HttpServletRequest request) {
-
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String userName = user.getUname();
+        String date = formatter.format(new Date());
+        if (processKey.equals("duty_check")){
+            List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail");
+            for ( EvaluateDetail evaluateDetail: evaluateDetailList) {
+                if(evaluateDetail.getEvaluateName().indexOf(date) != -1){
+                    System.out.println("包含");
+                    return "activity/task_list";
+                }else{
+                    System.out.println("不包含");
+                }
+            }
+        }
         String processInstanceId = activitiService.startForm(userName, processKey, request.getParameterMap(), request);
         return "activity/task_list";
     }

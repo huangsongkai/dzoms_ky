@@ -5,14 +5,15 @@ package com.dz.kaiying.DTO;
  */
 
 public class RegectDTO {
-    String reason;
+
+    Reason reason;
     String taskId;
 
-    public String getReason() {
+    public Reason getReason() {
         return reason;
     }
 
-    public void setReason(String reason) {
+    public void setReason(Reason reason) {
         this.reason = reason;
     }
 
