@@ -1,6 +1,7 @@
 package com.dz.kaiying.controller;
 
 import com.dz.kaiying.model.DriverKpParams;
+import com.dz.kaiying.model.DriverKpParamsDTO;
 import com.dz.kaiying.service.DriverKpService;
 import com.dz.kaiying.util.Result;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ public class DriverKpController extends BaseController{
 
     @RequestMapping(value = "/calc", method = RequestMethod.GET)
     public String calcParams () throws Exception {
-        return "driverKp/driverKpCalcParams";
+        return "driverKp/calc";
     }
 
     @ResponseBody
@@ -41,7 +42,7 @@ public class DriverKpController extends BaseController{
 
     @ResponseBody
     @RequestMapping(value = "/calcParams", method = RequestMethod.POST)
-    public Result postCalcParams (@RequestBody DriverKpParams driverKpParams) throws Exception {
+    public Result postCalcParams (@RequestBody DriverKpParamsDTO driverKpParams) throws Exception {
         if(driverKpService.updateParams(driverKpParams))
             return success("success", "");
         return fail("error");

@@ -7,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="renderer" content="webkit">
-    <title>驾驶员百分考核</title>
+    <title>百分考核评分细则</title>
     <style type="text/css">
         .ant-spin-nested-loading{
             text-align: left;
@@ -17,9 +17,7 @@
     <!-- Optional theme -->
 </head>
 <body>
-<div id="root">
-</div>
-<div id="example">
+<div id="DriverKpCalcParams">
 </div>
 <script src="/DZOMS/ky/js/commonV3.js"></script>
 <script src="/DZOMS/ky/js/driverKp-bundle.js"></script>

@@ -2,6 +2,7 @@ package com.dz.kaiying.service;
 
 import com.dz.kaiying.DTO.DriverKpDTO;
 import com.dz.kaiying.model.DriverKpParams;
+import com.dz.kaiying.model.DriverKpParamsDTO;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.HibernateUtil;
 import com.dz.kaiying.util.TimeUtil;
@@ -9,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.util.List;
  * Created by song on 2017/7/5.
  */
 @Service
+@Transactional
 public class DriverKpService {
     @Resource
     HibernateDao<DriverKpParams, Integer> driverKpParamsDao;
@@ -87,7 +90,7 @@ public class DriverKpService {
             driverKpDTO.setPay(0);
             driverKpDTO.setPay_score(0);
 
-            CalcScore(driverKpDTO);
+            calcScore(driverKpDTO);
             /*score = score - driverKpDTO.getSg()-driverKpDTO.getWz()-driverKpDTO.getTs()-driverKpDTO.getLh()
                     +driverKpDTO.getHd()+driverKpDTO.getBy()+driverKpDTO.getMt();
             driverKpDTO.setScore(score);*/
@@ -114,12 +117,14 @@ public class DriverKpService {
         return 0;
     }
 
-    void CalcScore(DriverKpDTO driverKpDTO){
+    void calcScore(DriverKpDTO driverKpDTO){
         String[] properties = {"zj", "insurance", };
-        DriverKpParams original = driverKpParamsDao.get(DriverKpParams.class, 1);
-
-        if(original == null){
+        List<DriverKpParams> originalList = driverKpParamsDao.loadAll(DriverKpParams.class);
+        DriverKpParams original;
+        if(originalList.size() == 0)
             return;
+        else{
+            original = originalList.get(0);
         }
 
         int score;
@@ -181,11 +186,15 @@ public class DriverKpService {
     }
 
 
-    public boolean updateParams(DriverKpParams driverKpParams){
-        DriverKpParams original = driverKpParamsDao.get(DriverKpParams.class, 1);
+    public boolean updateParams(DriverKpParamsDTO driverKpParams){
+        List<DriverKpParams> originalList = driverKpParamsDao.loadAll(DriverKpParams.class);
+        DriverKpParams original;
         try {
-            if(original == null)
+            if(originalList.size() == 0)
                 original = new DriverKpParams();
+            else{
+                original = originalList.get(0);
+            }
             BeanUtils.copyProperties(original, driverKpParams);
             driverKpParamsDao.saveOrUpdate(original);
         } catch (Exception e) {
@@ -196,7 +205,12 @@ public class DriverKpService {
 
 
     public DriverKpParams getCalcParams() {
-        return driverKpParamsDao.get(DriverKpParams.class, 1);
+        List<DriverKpParams> originalList = driverKpParamsDao.loadAll(DriverKpParams.class);
+        if(originalList.size() == 0)
+            return null;
+        else{
+            return originalList.get(0);
+        }
     }
 
 
