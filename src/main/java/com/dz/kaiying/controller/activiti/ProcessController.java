@@ -83,8 +83,11 @@ public class ProcessController {
             List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail");
             for ( EvaluateDetail evaluateDetail: evaluateDetailList) {
                 if(evaluateDetail.getEvaluateName().indexOf(date) != -1){
-                    System.out.println("包含");
-                    return "activity/task_list";
+                    if(evaluateDetail.getEvaluateName().indexOf(userName.trim()) != -1){
+                        return "activity/task_list";
+                    }else{
+
+                    }
                 }else{
                     System.out.println("不包含");
                 }

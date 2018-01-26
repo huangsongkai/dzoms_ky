@@ -155,6 +155,17 @@ public class JobDutyController {
         User user = (User) session.getAttribute("user");
         return jobDutiesService.listHistory(user.getUid() ,request);
     }
+    /**
+     * 考评历史信息
+     * historyxinxi
+     */
+    @RequestMapping(value = "/history/{year}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result historyYear(@PathVariable Integer year,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        return jobDutiesService.listHistory(user.getUid() ,request, year);
+    }
 
     /**
      * 考评历史纤细信息

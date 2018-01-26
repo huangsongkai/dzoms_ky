@@ -22,12 +22,11 @@
 }
 .processInfos{
 	width:80%;
-	overflow: hidden;
 	margin:0 auto;
 }
 .processInfo{
 	width:520px;
-	height:200px;
+	min-height:200px;
 	float:left;
 }
 .processImg{
@@ -88,3 +87,6 @@ input.ant-input-number-input[disabled]{
 	width: 2000px;
 	overflow-x: scroll;
 }*/
+div.ant-modal-body div.ant-row{
+	display: inline-block;
+}

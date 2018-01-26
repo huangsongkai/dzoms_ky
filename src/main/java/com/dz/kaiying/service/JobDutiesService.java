@@ -509,14 +509,49 @@ public class JobDutiesService extends BaseService{
                 evaluateDetail.setRegect_group(regectDTO.getReason());
                 evaluateDetailDao.update(evaluateDetail);
             }
-        }
-        for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
-            evaluateDetail.setRegect_self(regectDTO.getReason());      
-            evaluateDetailDao.update(evaluateDetail);
+        }else{
+            for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
+                evaluateDetail.setRegect_self(regectDTO.getReason());
+                evaluateDetailDao.update(evaluateDetail);
+            }
         }
         activitiTest.turnBackNew(regectDTO.getTaskId()+"","驳回成功",null);
         //activitiService.processReject(regectDTO.getTaskId()+"");
         result.setSuccess("驳回成功",null);
+        return result;
+    }
+
+    public Result listHistory(Integer uid, HttpServletRequest request, Integer year) {
+        ListHistoryDTO listHistoryDTO = new ListHistoryDTO();
+        List<ListHistory1DTO>listHistory1DTOList = new ArrayList<>();
+        HttpSession session = request.getSession();
+        User user1 = (User) session.getAttribute("user");
+        String userName = user1.getUname();
+        String sql ="";
+        if("admin".equals(userName) || "考核组".equals(userName)){
+
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and selfDate BETWEEN '"+year+"-01-01' AND '"+year+"-12-30' ";
+        }else{
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId ="+uid+"and selfDate BETWEEN '"+year+"-01-01' AND '"+year+"-12-30'";
+        }
+
+        List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+        Iterator itr = result1.iterator();
+
+        for (int j = 0; j< result1.size(); j++){
+            String name= (String) result1.get(j);
+            ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
+            listHistory1DTO.setName(name);
+            List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
+            listHistory1DTO.setId(evaluateDetail.get(0).getId());
+            listHistory1DTOList.add(listHistory1DTO);
+        }
+
+        listHistoryDTO.setDetail(listHistory1DTOList);
+        listHistoryDTO.setPersonId(uid);
+        User user = userDao1.getUserByUid(uid);
+        listHistoryDTO.setPersonName(user.getUname());
+        result.setSuccess("查询成功",listHistoryDTO);
         return result;
     }
 }
