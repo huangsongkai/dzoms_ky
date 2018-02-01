@@ -98,4 +98,7 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>com.dz.common.test.SpringContextListener</listener-class>
+    </listener>
 </web-app>

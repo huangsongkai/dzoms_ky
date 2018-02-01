@@ -1,7 +1,6 @@
 package com.dz.common.factory;
 
-import com.dz.common.test.DataTrackFilter;
-import org.apache.struts2.ServletActionContext;
+import com.dz.common.test.SpringContextListener;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 @Service
 public class HibernateSessionFactory {
@@ -58,8 +56,7 @@ public class HibernateSessionFactory {
      *
      */
     public static void rebuildSessionFactory() {
-        ApplicationContext app = DataTrackFilter.getCtx();
-//        ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(ServletActionContext.getServletContext());
+        ApplicationContext app = SpringContextListener.getApplicationContext();
         instance = app.getBean(HibernateSessionFactory.class);
         sessionFactory = localSessionFactoryBean.getObject();
     }

@@ -77,14 +77,15 @@
 Triplet<String, String, Object> condition_dept1 = Triplet.with("idNum", "in (select idNum from Driver where isInCar=true and  carframeNum in (select carframeNum from Vehicle where dept='一部')) and 1=",(Object)1);
 Triplet<String, String, Object> condition_dept2 = Triplet.with("idNum", "in (select idNum from Driver where isInCar=true and  carframeNum in (select carframeNum from Vehicle where dept='二部')) and 1=",(Object)1);
 Triplet<String, String, Object> condition_dept3 = Triplet.with("idNum", "in (select idNum from Driver where isInCar=true and  carframeNum in (select carframeNum from Vehicle where dept='三部')) and 1=",(Object)1);
-Triplet<String, String, Object> condition_in_car = Triplet.with("idNum", "in (select idNum from Driver where isInCar=true) and 1=",(Object)1);
+Triplet<String, String, Object> condition_in_car = Triplet.with("idNum", "in (select idNum from Driver where isInCar=true and  carframeNum in (select carframeNum from Vehicle where dept in ('一部','二部','三部'))) and 1=",(Object)1);
+//Triplet<String, String, Object> condition_has_dept = Triplet.with("idNum","in (select idNum from Driver where isInCar")
 Triplet<String, String, Object> conditon_spacial = Triplet.with("checkClass", "like",(Object) "%特殊情况%");
 Triplet<String, String, Object> conditon_manaul_leave = Triplet.with("checkClass", "like",(Object) "%收卡%");
 Triplet<String, String, Object> conditon_not_manaul_leave = Triplet.with("checkClass", "not like",(Object) "%收卡%");
 Triplet<String, String, Object> conditon_checked = Triplet.with("isChecked", "=",(Object)true);
 Triplet<String, String, Object> conditon_not_dangri = Triplet.with("checkClass", "not like",(Object)"%未按规定日期参加例会%");
 Triplet<String, String, Object> conditon_not_spacial = Triplet.with("checkClass", "not like",(Object)"%特殊情况%");
-Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select idNum from Driver where dept is not null ) and 1=", (Object)1);
+Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select idNum from Driver where dept in ('一部','二部','三部') ) and 1=", (Object)1);
  %>
 			<s:if test="%{meeting.meetingTimeL1!=null}">
 				<tr>
@@ -414,16 +415,16 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					</td>
 					<td>
 						<%int leaveNum = 0;//md.selectLeaveNumber(meeting.getId(),null);
-							int manualLeave = md.selectMeetingCheckCount(meeting.getId(),conditon_manaul_leave);
+							int manualLeave = md.selectMeetingCheckCount(meeting.getId(),dept_need,conditon_manaul_leave);
 							leaveNum += manualLeave;
-						int specialNum = md.selectMeetingCheckCount(meeting.getId(),conditon_spacial); 
+						int specialNum = md.selectMeetingCheckCount(meeting.getId(),dept_need,conditon_spacial);
 						int shouldNum = planNum - leaveNum - specialNum;
 						%>
 						<%= shouldNum %>
 					</td>
 					<td>
 						<%
-						List<MeetingCheck> dangriList = md.selectMeetingCheck(meeting.getId(),condition_in_car,conditon_checked,conditon_not_dangri,conditon_not_spacial,conditon_not_manaul_leave);
+						List<MeetingCheck> dangriList = md.selectMeetingCheck(meeting.getId(),dept_need,conditon_checked,conditon_not_dangri,conditon_not_spacial,conditon_not_manaul_leave);
 						
 						dangriList = (List<MeetingCheck>)CollectionUtils.select(dangriList, new Predicate(){
 							public boolean evaluate(Object object){

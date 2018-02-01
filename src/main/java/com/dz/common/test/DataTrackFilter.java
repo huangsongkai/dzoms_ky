@@ -1,13 +1,9 @@
 package com.dz.common.test;
 
-import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.other.Timer;
 import com.dz.module.driver.DriverService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.struts2.ServletActionContext;
-import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -20,12 +16,6 @@ import java.util.Map;
 import java.util.TimerTask;
 
 public class DataTrackFilter implements Filter{
-
-	private static ApplicationContext ctx;
-
-	public static ApplicationContext getCtx() {
-		return ctx;
-	}
 
 	public void doFilter(ServletRequest trequest, ServletResponse tresponse,
 						 FilterChain nextFilter) throws IOException, ServletException {
@@ -73,8 +63,6 @@ public class DataTrackFilter implements Filter{
 			}
 		}
 
-//		ctx = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
-
 		nextFilter.doFilter(request, response);
 	}
 
@@ -91,14 +79,15 @@ public class DataTrackFilter implements Filter{
 
 		new Timer().startTcpServer();
 
-		DataTrackFilter.ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
+
+		final ApplicationContext ctx = SpringContextListener.getApplicationContext();
 
 		java.util.Timer timer = new java.util.Timer();
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
 //				ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
-				DriverService driverService = DataTrackFilter.ctx.getBean(DriverService.class);
+				DriverService driverService = ctx.getBean(DriverService.class);
 				driverService.sendMessageToQualification();
 			}
 		};

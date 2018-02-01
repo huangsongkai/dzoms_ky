@@ -887,6 +887,11 @@ public class DriverAction extends BaseAction{
 			d.setBusinessApplyState(0);
 			d.setBusinessApplyDriverClass(null);
 			d.setBusinessApplyCarframeNum(null);
+
+			/**
+			 * 清除指纹编号
+			 */
+			d.setFingerprintNum(null);
 		}
 
 		if(d.getDriverClass().equals("主驾")){
