@@ -58,6 +58,7 @@
     
     <form name="dealpraise" action="/DZOMS/driver/praise/dealPraise" method="post">
         <s:hidden name="praise.id"/>
+        <s:hidden name="praise.idNum"/>
         <div class="container">
             <table class="table table-hover">
                 <tr>
@@ -105,7 +106,7 @@
                     <td class="tableleft">司机</td>
                     
                     <td>
-                    	<s:textfield cssClass="input" name="idNum" value="%{#t_driver.name}"/></td>
+                    	<s:textfield cssClass="input" name="driverName" value="%{#t_driver.name}"/></td>
                     <td class="tableleft">电话</td>
                     <td><s:textfield cssClass="input" name="telephone" value="%{#t_driver.phoneNum1}"/></td>
                     <td class="tableleft">分公司归属</td>
