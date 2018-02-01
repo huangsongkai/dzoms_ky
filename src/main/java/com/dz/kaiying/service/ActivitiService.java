@@ -1,6 +1,7 @@
 package com.dz.kaiying.service;
 
 import com.dz.module.user.User;
+import com.dz.module.user.UserDao;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
@@ -51,6 +52,9 @@ public class ActivitiService  extends TaskBaseResource{
 
     @Resource
     FormService formService;
+
+    @Resource
+    UserDao userDao1;
 
 
 
@@ -318,17 +322,28 @@ public class ActivitiService  extends TaskBaseResource{
         List<TaskDto> taskDtoList = new ArrayList<TaskDto>();
         for(Task task : taskList){
             TaskDto taskDto = new TaskDto();
-            taskDto.setName(task.getName());
+            taskDto.setProcessDefinitionId(task.getProcessDefinitionId());
+            if(task.getProcessDefinitionId().indexOf("duty_check") != -1){
+                System.out.println("包含");
+                taskDto.setProcessDefinitionId("绩效考核");
+            }
             taskDto.setStarter(historyService.createHistoricProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId());
+            User user = new User();
+            user.setUname(historyService.createHistoricProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId());
+            User user1 = userDao1.getUser(user);
+            taskDto.setDepartment(user1.getDepartment());
             taskDto.setAssignee(task.getAssignee());
             taskDto.setCreateTime(format.format(task.getCreateTime()));
-            taskDto.setProcessDefinitionId(task.getProcessDefinitionId());
             taskDto.setId(task.getId());
+            taskDto.setName(task.getName());
             taskDtoList.add(taskDto);
         }
         biba.setData(taskDtoList);
         return biba;
     }
+
+
+
     public class TaskDto{
         String name;
         String starter;
@@ -336,6 +351,15 @@ public class ActivitiService  extends TaskBaseResource{
         String createTime;
         String id;
         String processDefinitionId;
+        String department;
+
+        public String getDepartment() {
+            return department;
+        }
+
+        public void setDepartment(String department) {
+            this.department = department;
+        }
 
         public String getAssignee() {
             return assignee;

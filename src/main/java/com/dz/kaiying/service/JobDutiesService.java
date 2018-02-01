@@ -1,6 +1,7 @@
 package com.dz.kaiying.service;
 
 import com.dz.kaiying.DTO.*;
+import com.dz.kaiying.QueryRegectDTO;
 import com.dz.kaiying.model.*;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.Result;
@@ -9,10 +10,7 @@ import com.dz.module.user.UserDao;
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.beanutils.BeanUtils;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,18 +65,18 @@ public class JobDutiesService extends BaseService{
     private Result result = new Result();
 
 
-    //定时任务启动绩效考核  5 0 0 5 * ?   每月5号
-    @Scheduled(cron="5 0 0 5 * ? ") //每个月五号执行
-    public void stratrJobDuty(){
-        List<User> userList = userDao1.getAll();
-        for (User user: userList) {
-            Map<String, String> variableMap = new HashMap<String, String>();
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("duty_check").latestVersion().singleResult();
-            variableMap.put("userName1", user.getUname());
-            ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), variableMap);
-        }
-
-    }
+//    //定时任务启动绩效考核  5 0 0 5 * ?   每月5号
+//    @Scheduled(cron="5 0 0 5 * ? ") //每个月五号执行
+//    public void stratrJobDuty(){
+//        List<User> userList = userDao1.getAll();
+//        for (User user: userList) {
+//            Map<String, String> variableMap = new HashMap<String, String>();
+//            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("duty_check").latestVersion().singleResult();
+//            variableMap.put("userName1", user.getUname());
+//            ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), variableMap);
+//        }
+//
+//    }
 
     public Result<JobDuty> queryAll() {
         List<JobDuty> JobDutiesList = jobDutyDao.find("from JobDuty");
@@ -119,12 +117,12 @@ public class JobDutiesService extends BaseService{
     }
 
     public Result queryUserJob(int id) {
-        List<UserJobDuties> userJobDuties = userJobDutiesDao.find(" from UserJobDuties where personId = "+id);
+        List<UserJobDuties> userJobDuties = userJobDutiesDao.find(" from UserJobDuties where personId = "+id+" ORDER BY sortId");
         List<UserJobDutyDTO> userJobDutiesDTOList = new ArrayList<>();
         for (UserJobDuties userJobs : userJobDuties ) {
             UserJobDutyDTO userJobDutiesDTO = new UserJobDutyDTO();
             userJobDutiesDTO.setKey(userJobs.getJobDutiesId());
-            userJobDutiesDTO.setScore(userJobs.getScore());
+            userJobDutiesDTO.setSortId(userJobs.getSortId());
             userJobDutiesDTOList.add(userJobDutiesDTO);
         }
         result.setSuccess("查询成功",userJobDutiesDTOList);
@@ -144,7 +142,7 @@ public class JobDutiesService extends BaseService{
             System.out.println("key =" + key + " value = " + value);
             UserJobDuties userJobDuties = new UserJobDuties();
             userJobDuties.setPersonId(saveUserJobDutiesDTO.getPersonId());
-            userJobDuties.setScore(Integer.parseInt(value));
+            userJobDuties.setSortId(Integer.parseInt(value));
             userJobDuties.setJobDutiesId(key);
             userJobDutiesDao.save(userJobDuties);
         }
@@ -154,18 +152,47 @@ public class JobDutiesService extends BaseService{
 
     // TODO: 2017/5/24  session 获取那块的用户Id
     public Result myEvaluate(HttpServletRequest request, Integer taskId) throws Exception {
-        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM 生成时间 HH:mm");
+        String evaluateName = (String) taskService.getVariable(taskId + "", "考核名称");
+        String personId = (String) taskService.getVariable(taskId + "", "人员ID");
         HttpSession session = request.getSession();
         List <QueryEvaluateDTO> queryEvaluateDTOList = new ArrayList<>();
         if (session != null){
             User user = (User) session.getAttribute("user");
             Integer userId = user.getUid();
-            List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + userId);
+            List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + userId+" ORDER BY sortId");
             for (UserJobDuties userJobDuties: userJobDutiesList) {
                 QueryEvaluateDTO queryEvaluateDTO = new QueryEvaluateDTO();
+                if (evaluateName != null && evaluateName != ""){
+                    List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+evaluateName+"' and personId ="+personId+ "and jobDutyId = "+userJobDuties.getJobDutiesId()+" ORDER BY sortId");
+                    EvaluateDetail evaluateDetail = evaluateDetailList.get(0);
+                    SaveEvaluateDetailDTO mySelfDetailDTO = new SaveEvaluateDetailDTO();
+                    mySelfDetailDTO.setScore(evaluateDetail.getSelfScore());
+                    mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
+                    queryEvaluateDTO.setPersonal(mySelfDetailDTO);
+
+                    SaveEvaluateDetailDTO departmentDetailDTO = new SaveEvaluateDetailDTO();
+                    departmentDetailDTO.setComplete(evaluateDetail.getManagerInputs());
+                    departmentDetailDTO.setScore(evaluateDetail.getManagerScore());
+                    queryEvaluateDTO.setBumen(departmentDetailDTO);
+
+                    SaveEvaluateDetailDTO groupDetailDTO = new SaveEvaluateDetailDTO();
+                    groupDetailDTO.setComplete(evaluateDetail.getGroupInputs());
+                    groupDetailDTO.setScore(evaluateDetail.getGroupScore());
+                    queryEvaluateDTO.setKpgroup(groupDetailDTO);
+
+                    Reason reason = new Reason();
+                    reason.setPersonal(evaluateDetailList.get(0).getRegect_self());
+                    reason.setBumen(evaluateDetailList.get(0).getRegect_manager());
+                    reason.setKpgroup(evaluateDetailList.get(0).getRegect_group());
+                    queryEvaluateDTO.setReason(reason);
+                }
                 List<JobDuty> jobDutyList = jobDutyDao.find(" from JobDuty where id = " + userJobDuties.getJobDutiesId());
                 BeanUtils.copyProperties(queryEvaluateDTO, jobDutyList.get(0));  //前边是空值 后边是有值得  进行对象copy
-                queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
+                //queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
+                SaveEvaluateDetailDTO saveEvaluateDetailDTO = new SaveEvaluateDetailDTO();
+                saveEvaluateDetailDTO.setComplete(jobDutyList.get(0).getComplete());
+                queryEvaluateDTO.setPersonal(saveEvaluateDetailDTO);
                 queryEvaluateDTO.setEvaluateName(user.getUname()+dateFormater.format(new Date())+"绩效考核");
                 queryEvaluateDTOList.add(queryEvaluateDTO);
             }
@@ -185,9 +212,12 @@ public class JobDutiesService extends BaseService{
                 evaluateDetail.setSelfDate(new Date());
                 evaluateDetail.setEvaluateName(saveEvaluateDTO.getEvaluateName());
                 evaluateDetail.setSelfInputs(saveEvaluateDetailDTO.getInputs());
+                evaluateDetail.setRemarks(saveEvaluateDetailDTO.getRemarks());
                 evaluateDetail.setJobDutyId(jobDutyId);
-                evaluateDetail.setSelfTotal((double)saveEvaluateDTO.getTotal());
+                evaluateDetail.setSelfTotal(saveEvaluateDTO.getTotal());
                 evaluateDetail.setSelfScore(saveEvaluateDetailDTO.getScore());
+                List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + userId+" and jobDutiesId = "+jobDutyId );
+                evaluateDetail.setSortId(userJobDutiesList.get(0).getSortId());
                 List jobDutyList = jobDutyDao.find("from JobDuty where id =" + jobDutyId);
                 JobDuty jobDuty  = (JobDuty) jobDutyList.get(0);
                 BeanUtils.copyProperties(evaluateDetail, jobDuty);  //前边是空值 后边是有值得  进行对象copy
@@ -202,8 +232,8 @@ public class JobDutiesService extends BaseService{
         User user = userDao1.getUserByUid(userId);
         String userName = user.getUname();
         String department = user.getDepartment();
-        if ("汤伟丽".equals(userName) || "孙大勇".equals(userName) || "刘波".equals(userName)) {
-            valsMap.put("userName2","王星");//动态办理人
+        if ("刘波".equals(userName)) {
+            valsMap.put("userName2","刘波");//动态办理人
             activitiService.complete(taskId+"", valsMap, saveEvaluateDTO.getEvaluateName());
             result.setSuccess("保存成功",null);
             return result;
@@ -227,14 +257,14 @@ public class JobDutiesService extends BaseService{
     public Result departmentEvaluate(HttpServletRequest request, Integer taskId) throws InvocationTargetException, IllegalAccessException {
         String personId = (String) taskService.getVariable(taskId + "", "人员ID");
         String evaluateName = (String) taskService.getVariable(taskId + "", "考核名称");
-        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+evaluateName+"' and personId ="+personId); //自评分主表 拼条件
+        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+evaluateName+"' and personId ="+personId+" ORDER BY sortId"); //自评分主表 拼条件
         List<QueryEvaluateDTO> queryEvaluateDTOList = new ArrayList<>();
         for ( EvaluateDetail evaluateDetail: evaluateDetailList ) {
             QueryEvaluateDTO queryEvaluateDTO = new QueryEvaluateDTO();
             List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + personId+" and jobDutiesId = "+evaluateDetail.getJobDutyId() );
             UserJobDuties userJobDuties = userJobDutiesList.get(0);
             queryEvaluateDTO.setChildProName(evaluateDetail.getChildProName());
-            queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
+            //queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
             queryEvaluateDTO.setJobResponsibility(evaluateDetail.getJobResponsibility());
             queryEvaluateDTO.setJobStandard(evaluateDetail.getJobStandard());
             queryEvaluateDTO.setScoreStandard(evaluateDetail.getScoreStandard());
@@ -242,11 +272,29 @@ public class JobDutiesService extends BaseService{
             queryEvaluateDTO.setProName(evaluateDetail.getProName());
             queryEvaluateDTO.setEvaluateName(evaluateDetail.getEvaluateName());
             queryEvaluateDTO.setTaskId(taskId+"");
+            queryEvaluateDTO.setRemarks(evaluateDetail.getRemarks());
+
+            Reason reason = new Reason();
+            reason.setPersonal(evaluateDetail.getRegect_self());
+            reason.setBumen(evaluateDetail.getRegect_manager());
+            reason.setKpgroup(evaluateDetail.getRegect_group());
+            queryEvaluateDTO.setReason(reason);
+
             SaveEvaluateDetailDTO mySelfDetailDTO = new SaveEvaluateDetailDTO();
-            mySelfDetailDTO.setInputs(evaluateDetail.getSelfInputs());
-            mySelfDetailDTO.setComplete(evaluateDetail.getManagerInputs());
             mySelfDetailDTO.setScore(evaluateDetail.getSelfScore());
+            mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
             queryEvaluateDTO.setPersonal(mySelfDetailDTO);
+
+            SaveEvaluateDetailDTO departmentDetailDTO = new SaveEvaluateDetailDTO();
+            departmentDetailDTO.setComplete(evaluateDetail.getManagerInputs());
+            departmentDetailDTO.setScore(evaluateDetail.getManagerScore());
+            queryEvaluateDTO.setBumen(departmentDetailDTO);
+
+            SaveEvaluateDetailDTO groupDetailDTO = new SaveEvaluateDetailDTO();
+            groupDetailDTO.setComplete(evaluateDetail.getGroupInputs());
+            groupDetailDTO.setScore(evaluateDetail.getGroupScore());
+            queryEvaluateDTO.setKpgroup(groupDetailDTO);
+
             queryEvaluateDTOList.add(queryEvaluateDTO);
         }
         result.setSuccess("查询成功",queryEvaluateDTOList);
@@ -267,7 +315,8 @@ public class JobDutiesService extends BaseService{
                     evaluateDetail.setManagerDate(new Date());
                     evaluateDetail.setManagerScore(saveEvaluateDetailDTO.getScore());
                     evaluateDetail.setManagerInputs(saveEvaluateDetailDTO.getInputs());
-                    evaluateDetail.setManagerTotal(Double.parseDouble(saveEvaluateDTO.getTotal()+""));
+                    evaluateDetail.setManagerTotal(saveEvaluateDTO.getTotal());
+                    evaluateDetail.setRemarks(saveEvaluateDetailDTO.getRemarks());
                     evaluateDetailDao.update(evaluateDetail);
                 }
             }
@@ -289,7 +338,7 @@ public class JobDutiesService extends BaseService{
         String personId = (String) taskService.getVariable(taskId + "", "人员ID");
         String evaluateName = (String) taskService.getVariable(taskId + "", "考核名称");
 
-        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+evaluateName+"' and personId ="+personId); //自评分主表 拼条件
+        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+evaluateName+"' and personId ="+personId+" ORDER BY sortId"); //自评分主表 拼条件
         List<ManagerEvaluateDTO> managerEvaluateDTOList = new ArrayList<ManagerEvaluateDTO>();
         List<QueryEvaluateDTO> queryEvaluateDTOList = new ArrayList<>();
         for ( EvaluateDetail evaluateDetail: evaluateDetailList ) {
@@ -298,7 +347,7 @@ public class JobDutiesService extends BaseService{
             UserJobDuties userJobDuties = userJobDutiesList.get(0);
             ManagerEvaluateDTO managerEvaluateDTO = new ManagerEvaluateDTO();
             queryEvaluateDTO.setChildProName(evaluateDetail.getChildProName());
-            queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
+           // queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
             queryEvaluateDTO.setJobResponsibility(evaluateDetail.getJobResponsibility());
             queryEvaluateDTO.setJobStandard(evaluateDetail.getJobStandard());
             queryEvaluateDTO.setScoreStandard(evaluateDetail.getScoreStandard());
@@ -306,18 +355,27 @@ public class JobDutiesService extends BaseService{
             queryEvaluateDTO.setProName(evaluateDetail.getProName());
             queryEvaluateDTO.setEvaluateName(evaluateDetail.getEvaluateName());
             queryEvaluateDTO.setTaskId(taskId+"");
-
+            queryEvaluateDTO.setRemarks(evaluateDetail.getRemarks());
             SaveEvaluateDetailDTO mySelfDetailDTO = new SaveEvaluateDetailDTO();
-            mySelfDetailDTO.setInputs(evaluateDetail.getSelfInputs());
-            mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
             mySelfDetailDTO.setScore(evaluateDetail.getSelfScore());
+            mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
             queryEvaluateDTO.setPersonal(mySelfDetailDTO);
 
             SaveEvaluateDetailDTO departmentDetailDTO = new SaveEvaluateDetailDTO();
-            departmentDetailDTO.setInputs(evaluateDetail.getManagerInputs());
             departmentDetailDTO.setComplete(evaluateDetail.getManagerInputs());
             departmentDetailDTO.setScore(evaluateDetail.getManagerScore());
             queryEvaluateDTO.setBumen(departmentDetailDTO);
+
+            Reason reason = new Reason();
+            reason.setPersonal(evaluateDetail.getRegect_self());
+            reason.setBumen(evaluateDetail.getRegect_manager());
+            reason.setKpgroup(evaluateDetail.getRegect_group());
+            queryEvaluateDTO.setReason(reason);
+
+            SaveEvaluateDetailDTO groupDetailDTO = new SaveEvaluateDetailDTO();
+            groupDetailDTO.setComplete(evaluateDetail.getGroupInputs());
+            groupDetailDTO.setScore(evaluateDetail.getGroupScore());
+            queryEvaluateDTO.setKpgroup(groupDetailDTO);
             queryEvaluateDTOList.add(queryEvaluateDTO);
         }
         result.setSuccess("查询成功",queryEvaluateDTOList);
@@ -338,7 +396,8 @@ public class JobDutiesService extends BaseService{
                     evaluateDetail.setGroupDate(new Date());
                     evaluateDetail.setGroupScore(saveEvaluateDetailDTO.getScore());
                     evaluateDetail.setGroupInputs(saveEvaluateDetailDTO.getInputs());
-                    evaluateDetail.setGroupTotal(Double.parseDouble(saveEvaluateDTO.getTotal()+""));
+                    evaluateDetail.setGroupTotal(saveEvaluateDTO.getTotal());
+                    evaluateDetail.setRemarks(saveEvaluateDetailDTO.getRemarks());
                     evaluateDetailDao.update(evaluateDetail);
                 }
             }
@@ -361,19 +420,23 @@ public class JobDutiesService extends BaseService{
         String sql ="";
         if("admin".equals(userName) || "考核组".equals(userName)){
 
-            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null";
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null ";
         }else{
             sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId ="+personId;
         }
 
         List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
         Iterator itr = result1.iterator();
-        String name= (String) result1.get(0);
-        ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
-        listHistory1DTO.setName(name);
-        List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
-        listHistory1DTO.setId(evaluateDetail.get(0).getId());
-        listHistory1DTOList.add(listHistory1DTO);
+
+        for (int j = 0; j< result1.size(); j++){
+            String name= (String) result1.get(j);
+            ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
+            listHistory1DTO.setName(name);
+            List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
+            listHistory1DTO.setId(evaluateDetail.get(0).getId());
+            listHistory1DTOList.add(listHistory1DTO);
+        }
+
         listHistoryDTO.setDetail(listHistory1DTOList);
         listHistoryDTO.setPersonId(personId);
         User user = userDao1.getUserByUid(personId);
@@ -386,26 +449,24 @@ public class JobDutiesService extends BaseService{
         List<ManagerEvaluate> managerEvaluate = managerEvaluateDao.find("from ManagerEvaluate where id ="+id); //自评分主表 拼条件
         List<ManagerEvaluateDetail> managerEvaluateDaoList = managerEvaluateDao.find("from ManagerEvaluateDetail where managerEvaluateId ="+id);
 
-
-
-        List<EvaluateDetail> evaluateDetailList0 = evaluateDetailDao.find("from EvaluateDetail where id ="+id);
+        List<EvaluateDetail> evaluateDetailList0 = evaluateDetailDao.find("from EvaluateDetail where id ="+id+" ORDER BY sortId");
         EvaluateDetail evaluateDetail0 = evaluateDetailList0.get(0);
         String evaluateName = evaluateDetail0.getEvaluateName();
-        List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" );
+        List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" +" ORDER BY sortId");
         List<QueryEvaluateDTO> queryEvaluateDTOList = new ArrayList<>();
         for ( EvaluateDetail evaluateDetail : evaluateDetailList1 ) {
-            List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + evaluateDetail.getPersonId()+" and jobDutiesId = "+evaluateDetail.getJobDutyId() );
+            List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + evaluateDetail.getPersonId()+" and jobDutiesId = "+evaluateDetail.getJobDutyId() +" ORDER BY sortId");
             UserJobDuties userJobDuties = userJobDutiesList.get(0);
             QueryEvaluateDTO queryEvaluateDTO = new QueryEvaluateDTO();
             queryEvaluateDTO.setChildProName(evaluateDetail.getChildProName());
-            queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
+            //queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
             queryEvaluateDTO.setJobResponsibility(evaluateDetail.getJobResponsibility());
             queryEvaluateDTO.setJobStandard(evaluateDetail.getJobStandard());
             queryEvaluateDTO.setScoreStandard(evaluateDetail.getScoreStandard());
             queryEvaluateDTO.setId(evaluateDetail.getJobDutyId());
             queryEvaluateDTO.setProName(evaluateDetail.getProName());
             queryEvaluateDTO.setEvaluateName(evaluateDetail.getEvaluateName());
-
+            queryEvaluateDTO.setRemarks(evaluateDetail.getRemarks());
             SaveEvaluateDetailDTO mySelfDetailDTO = new SaveEvaluateDetailDTO();
             mySelfDetailDTO.setScore(evaluateDetail.getSelfScore());
             mySelfDetailDTO.setComplete(evaluateDetail.getSelfInputs());
@@ -419,7 +480,13 @@ public class JobDutiesService extends BaseService{
             SaveEvaluateDetailDTO groupDetailDTO = new SaveEvaluateDetailDTO();
             groupDetailDTO.setComplete(evaluateDetail.getGroupInputs());
             groupDetailDTO.setScore(evaluateDetail.getGroupScore());
-            queryEvaluateDTO.setBumen(groupDetailDTO);
+            queryEvaluateDTO.setKpgroup(groupDetailDTO);
+
+            Reason reason = new Reason();
+            reason.setPersonal(evaluateDetail.getRegect_self());
+            reason.setBumen(evaluateDetail.getRegect_manager());
+            reason.setKpgroup(evaluateDetail.getRegect_group());
+            queryEvaluateDTO.setReason(reason);
 
 
             queryEvaluateDTOList.add(queryEvaluateDTO);
@@ -429,31 +496,62 @@ public class JobDutiesService extends BaseService{
     }
 
 
-    public Result managerEvaluateRegect(RegectDTO regectDTO, String remark) throws Exception {
+  public Result managerEvaluateRegect(QueryRegectDTO regectDTO, String remark) throws Exception {
         String evaluateName = (String) taskService.getVariable(regectDTO.getTaskId() + "", "考核名称");
         List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" );
         if(remark.equals("manager")){
             for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
-                evaluateDetail.setManagerDate(null);
-                evaluateDetail.setManagerInputs("");
-                evaluateDetail.setManagerScore(0);
-                evaluateDetail.setManagerTotal(0.0);
-                evaluateDetail.setRegect(regectDTO.getReason());
+                evaluateDetail.setRegect_manager(regectDTO.getReason());
                 evaluateDetailDao.update(evaluateDetail);
             }
         }else if (remark.equals("group")){
             for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
-                evaluateDetail.setGroupDate(null);
-                evaluateDetail.setGroupInputs("");
-                evaluateDetail.setGroupScore(0);
-                evaluateDetail.setGroupTotal(0.0);
-                evaluateDetail.setRegect(regectDTO.getReason());
+                evaluateDetail.setRegect_group(regectDTO.getReason());
+                evaluateDetailDao.update(evaluateDetail);
+            }
+        }else{
+            for (EvaluateDetail evaluateDetail : evaluateDetailList1) {
+                evaluateDetail.setRegect_self(regectDTO.getReason());
                 evaluateDetailDao.update(evaluateDetail);
             }
         }
         activitiTest.turnBackNew(regectDTO.getTaskId()+"","驳回成功",null);
         //activitiService.processReject(regectDTO.getTaskId()+"");
         result.setSuccess("驳回成功",null);
+        return result;
+    }
+
+    public Result listHistory(Integer uid, HttpServletRequest request, Integer year) {
+        ListHistoryDTO listHistoryDTO = new ListHistoryDTO();
+        List<ListHistory1DTO>listHistory1DTOList = new ArrayList<>();
+        HttpSession session = request.getSession();
+        User user1 = (User) session.getAttribute("user");
+        String userName = user1.getUname();
+        String sql ="";
+        if("admin".equals(userName) || "考核组".equals(userName)){
+
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and selfDate BETWEEN '"+year+"-01-01' AND '"+year+"-12-30' ";
+        }else{
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId ="+uid+"and selfDate BETWEEN '"+year+"-01-01' AND '"+year+"-12-30'";
+        }
+
+        List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+        Iterator itr = result1.iterator();
+
+        for (int j = 0; j< result1.size(); j++){
+            String name= (String) result1.get(j);
+            ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
+            listHistory1DTO.setName(name);
+            List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
+            listHistory1DTO.setId(evaluateDetail.get(0).getId());
+            listHistory1DTOList.add(listHistory1DTO);
+        }
+
+        listHistoryDTO.setDetail(listHistory1DTOList);
+        listHistoryDTO.setPersonId(uid);
+        User user = userDao1.getUserByUid(uid);
+        listHistoryDTO.setPersonName(user.getUname());
+        result.setSuccess("查询成功",listHistoryDTO);
         return result;
     }
 }

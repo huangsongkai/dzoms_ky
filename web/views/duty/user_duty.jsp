@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>职责分配</title>
-    <link rel="stylesheet" href="/DZOMS/ky/css/kpStyle.css"/>
+    <link rel="stylesheet" href="/DZOMS/ky/css/style.css"/>
 </head>
 <body>
 <div class="container">

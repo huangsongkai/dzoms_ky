@@ -5,18 +5,37 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 	private Integer id;// 工作职责表id
 	private String proName;
 	private String childProName;
-	private Integer childProValue;
+	private Double childProValue;
 	private String jobResponsibility;
 	private String jobStandard;
 	private String scoreStandard;
 	private String evaluateName;
-	private String reason;
+	private String complete;
+	private Reason reason;
+	private String remarks;
+
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 
 	private String taskId;
 
 	private SaveEvaluateDetailDTO personal;
 	private SaveEvaluateDetailDTO bumen;
 	private SaveEvaluateDetailDTO kpgroup;
+
+	public String getComplete() {
+		return complete;
+	}
+
+	public void setComplete(String complete) {
+		this.complete = complete;
+	}
 
 	public String getTaskId() {
 		return taskId;
@@ -50,11 +69,11 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 		this.childProName = childProName;
 	}
 
-	public Integer getChildProValue() {
+	public Double getChildProValue() {
 		return childProValue;
 	}
 
-	public void setChildProValue(Integer childProValue) {
+	public void setChildProValue(Double childProValue) {
 		this.childProValue = childProValue;
 	}
 
@@ -90,11 +109,11 @@ public class QueryEvaluateDTO implements java.io.Serializable {
 		this.evaluateName = evaluateName;
 	}
 
-	public String getReason() {
+	public Reason getReason() {
 		return reason;
 	}
 
-	public void setReason(String reason) {
+	public void setReason(Reason reason) {
 		this.reason = reason;
 	}
 

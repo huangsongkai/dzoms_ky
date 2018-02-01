@@ -1,6 +1,33 @@
 webpackJsonp([0],{
 
-/***/ 106:
+/***/ 1005:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(188);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(25)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(true) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept(188, function() {
+			var newContent = __webpack_require__(188);
+			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 107:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10,53 +37,53 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(24);
+var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(31);
+var _css2 = __webpack_require__(33);
 
-var _table = __webpack_require__(30);
+var _table = __webpack_require__(32);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css3 = __webpack_require__(40);
+var _css3 = __webpack_require__(42);
 
-var _modal = __webpack_require__(39);
+var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css4 = __webpack_require__(52);
+var _css4 = __webpack_require__(51);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(50);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _css5 = __webpack_require__(36);
+var _css5 = __webpack_require__(40);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
 var _css6 = __webpack_require__(29);
 
-var _input = __webpack_require__(38);
+var _input = __webpack_require__(37);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css7 = __webpack_require__(33);
+var _css7 = __webpack_require__(31);
 
-var _form = __webpack_require__(32);
+var _form = __webpack_require__(30);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(24);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(22);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -64,19 +91,27 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(23);
 
 var _index6 = _interopRequireDefault(_index5);
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
+
+var _Sorter = __webpack_require__(34);
+
+var _Sorter2 = _interopRequireDefault(_Sorter);
+
+var _Filters = __webpack_require__(38);
+
+var _Filters2 = _interopRequireDefault(_Filters);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -135,12 +170,10 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       newKey: 1,
       evaluateName: "",
       message: "",
-      totalZiping: "",
-      regectReason: ""
+      totalZiping: ""
     };
     _this.keyPairs = {};
     _this.key = 0;
-    _this.totalZiping = 0;
     return _this;
   }
 
@@ -161,25 +194,28 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
               data[i]["key"] = data[i].id;
               evaluateName = data[0].evaluateName;
             }
-            var regectReason = "";
             for (var i in data) {
               if (!this.keyPairs[data[i].id]) {
-                this.keyPairs[data[i].id] = { inputs: "", score: "" };
-                this.keyPairs[data[i].id].score = data[i].childProValue;
-              }
-              if (data[i].reason) {
-                regectReason = " * 退回理由：" + data[i].reason;
+                this.keyPairs[data[i].id] = { inputs: "", score: 0, remarks: "" };
+                this.keyPairs[data[i].id].inputs = data[i].personal.complete;
+                if (data[i].personal.score != null) {
+                  // console.log("aaaa")
+                  // console.log(data[i].personal.score)
+                  this.keyPairs[data[i].id].inputs = data[i].personal.complete;
+                  this.keyPairs[data[i].id].score = data[i].personal.score;
+                  this.keyPairs[data[i].id].remarks = data[i].remarks;
+                }
+                //this.keyPairs[data[i].id].score=data[i].childProValue;
               }
             }
-            var sum = 0;
+            var sum = 100;
             for (var i in this.keyPairs) {
-              sum += parseInt(this.keyPairs[i].score);
+              sum += parseFloat(this.keyPairs[i].score);
             }
             this.setState({
               recData: data,
               evaluateName: evaluateName,
-              totalZiping: sum,
-              regectReason: regectReason
+              totalZiping: sum
             });
           } else {
             recData: [];
@@ -218,9 +254,9 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: "", score: "" };
       this.keyPairs[index].score = value;
-      var sum = 0;
+      var sum = 100;
       for (var i in this.keyPairs) {
-        sum += parseInt(this.keyPairs[i].score);
+        sum += parseFloat(this.keyPairs[i].score);
       }
       this.setState({
         totalZiping: sum
@@ -247,12 +283,18 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
   }, {
     key: 'onCompleteChange',
     value: function onCompleteChange(index, value) {
-      // console.log(index,value)
       index = this.state.recData[index].id;
-      if (!this.keyPairs[index]) {
-        this.keyPairs[index] = { inputs: "", score: "" };
-      }
+      // if(!this.keyPairs[index]){
+      //     this.keyPairs[index] = {inputs:"", score:""}
+      // }
       if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs = value;else this.keyPairs[index].inputs = value.target.value;
+      // console.log(this.keyPairs)
+    }
+  }, {
+    key: 'onRemarkChange',
+    value: function onRemarkChange(index, value) {
+      index = this.state.recData[index].id;
+      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].remarks = value;else this.keyPairs[index].remarks = value.target.value;
       // console.log(this.keyPairs)
     }
   }, {
@@ -283,7 +325,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
             i++;
             break;
           case "#number#":
-            jsxs.push(_react3.default.createElement(_inputNumber2.default, { min: 1, defaultValue: 0, onChange: this.onChange.bind(this, index, i) }));
+            jsxs.push(_react3.default.createElement(_inputNumber2.default, { defaultValue: 0, onChange: this.onChange.bind(this, index, i) }));
             i++;
             break;
           case "#date#":
@@ -309,12 +351,12 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       var result = {};
       result["selfEvaluate"] = this.keyPairs;
       result["evaluateName"] = this.state.evaluateName;
-      var total = 0;
+      var total = 100;
       for (var i in result.selfEvaluate) {
         total += result.selfEvaluate[i].score;
       }
       result["total"] = total;
-      console.log(result);
+      // console.log(result);
       var self = this;
       //发给后台的数据
       $.ajax({
@@ -339,39 +381,85 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       });
     }
   }, {
+    key: 'genRejectrReason',
+    value: function genRejectrReason() {
+      var personal;
+      var bumen;
+      var kpgroup;
+      for (var i in this.state.recData) {
+        var self = this;
+        if (self.state.recData[i].reason) {
+          if (self.state.recData[i].reason.personal) {
+            personal = "个人退回理由：" + self.state.recData[i].reason.personal;
+          }
+          if (self.state.recData[i].reason.bumen) {
+            bumen = "部门退回理由：" + self.state.recData[i].reason.bumen;
+          }
+          if (self.state.recData[i].reason.kpgroup) {
+            kpgroup = "考评组退回理由：" + self.state.recData[i].reason.kpgroup;
+          }
+        }
+      }
+      var reasons = [];
+      reasons.push(personal, bumen, kpgroup);
+      var reasonList = reasons.map(function (row) {
+        return _react3.default.createElement(
+          'p',
+          null,
+          row
+        );
+      });
+      return reasonList;
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
 
       var recData = this.state.recData;
-      var maxValue = [];
+      var filterData = new _Filters2.default().filter(this.state.recData);
+      var remarks = [];
       for (var i in recData) {
-        maxValue.push(recData[i].childProValue);
+        if (recData[i].remarks) {
+          remarks.push(recData[i].remarks);
+        }
       }
       var columns = [{
         title: '项目',
-        dataIndex: 'proName'
+        dataIndex: 'proName',
+        width: 100,
+        filters: filterData.proName,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.proName, b.proName);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.proName.indexOf(value) === 0;
+        }
       }, {
         title: '子项目',
         dataIndex: 'childProName',
+        width: 110,
+        filters: filterData.childProName,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.childProName, b.childProName);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.childProName.indexOf(value) === 0;
+        },
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
-      }, {
-        title: '分数',
-        dataIndex: 'childProValue',
+        width: 180,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 180,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -381,25 +469,36 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         children: [{
           title: "个人",
           dataIndex: "personal",
+          width: 240,
           render: function render(text, record, index) {
-            return _react3.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
+            return _react3.default.createElement(TextArea, { defaultValue: recData[index].personal.complete, autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
           dataIndex: "department",
+          width: 240,
           render: function render(text, record, index) {
-            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 4, maxRows: 10 } });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
+          width: 240,
           render: function render(text, record, index) {
-            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+            return _react3.default.createElement(TextArea, { disabled: true, autosize: { minRows: 4, maxRows: 10 } });
           }
         }]
       }, {
+        title: '备注',
+        dataIndex: 'remarks',
+        width: 180,
+        render: function render(text, record, index) {
+          return _react3.default.createElement(TextArea, { defaultValue: remarks[index] || "个人备注：", autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
+        }
+      }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -409,20 +508,23 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         children: [{
           title: "自评",
           dataIndex: "score",
+          width: 30,
           render: function render(text, record, index) {
-            return _react3.default.createElement(_inputNumber2.default, { min: 1, defaultValue: maxValue[index], onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react3.default.createElement(_inputNumber2.default, { defaultValue: recData[index].personal.score == null ? 0 : recData[index].personal.score, onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
+          width: 30,
           render: function render(text, record, index) {
-            return _react3.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
+            return _react3.default.createElement(_inputNumber2.default, { disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
+          width: 30,
           render: function render(text, record, index) {
-            return _react3.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
+            return _react3.default.createElement(_inputNumber2.default, { disabled: true });
           }
         }]
       }];
@@ -450,14 +552,20 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         ),
         _react3.default.createElement(
           'div',
-          { style: { marginBottom: 16 } },
+          { style: { marginBottom: 5, height: 20 } },
           _react3.default.createElement(
             'span',
-            { style: { marginLeft: 8 } },
+            { style: { marginLeft: 8, float: 'left' } },
             hasSelected ? '\u5DF2\u9009\u62E9 ' + selectedRowKeys.length + ' \u6761' : ''
+          ),
+          _react3.default.createElement(
+            'div',
+            { style: { paddingLeft: '10px', color: 'red', float: 'left' } },
+            this.genRejectrReason()
           )
         ),
-        _react3.default.createElement(_table2.default, { bordered: true, rowSelection: rowSelection, pagination: false, columns: columns, dataSource: this.state.recData }),
+        _react3.default.createElement('div', { style: { clear: 'both' } }),
+        _react3.default.createElement(_table2.default, { scroll: { x: 1200 }, bordered: true, rowSelection: rowSelection, pagination: false, columns: columns, dataSource: this.state.recData }),
         _react3.default.createElement(
           'div',
           { style: { margin: '10px 0' } },
@@ -465,7 +573,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
             'span',
             { style: { float: 'right' } },
             '\u81EA\u8BC4\u603B\u5206\uFF1A',
-            this.state.totalZiping ? this.state.totalZiping : 0
+            this.state.totalZiping ? this.state.totalZiping : 100
           )
         ),
         _react3.default.createElement('div', { style: { clear: 'both' } }),
@@ -476,11 +584,6 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
             _button2.default,
             { type: 'primary', style: { margin: '0 0 0 15px', float: 'right', padding: '6px 30px' }, onClick: this.submit.bind(this) },
             '\u63D0\u4EA4'
-          ),
-          _react3.default.createElement(
-            'p',
-            { style: { float: 'right', padding: '5px', color: 'red' } },
-            this.state.regectReason ? this.state.regectReason : ''
           )
         )
       );
@@ -496,7 +599,7 @@ exports.default = Performance;
 
 /***/ }),
 
-/***/ 144:
+/***/ 147:
 /***/ (function(module, exports) {
 
 function arrayTreeFilter(data, filterFn, options) {
@@ -525,10 +628,10 @@ module.exports = arrayTreeFilter;
 
 /***/ }),
 
-/***/ 165:
+/***/ 169:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(27)();
+exports = module.exports = __webpack_require__(21)();
 // imports
 
 
@@ -540,10 +643,10 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 
 /***/ }),
 
-/***/ 182:
+/***/ 188:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(27)();
+exports = module.exports = __webpack_require__(21)();
 // imports
 
 
@@ -555,7 +658,7 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 
 /***/ }),
 
-/***/ 230:
+/***/ 242:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -569,15 +672,15 @@ var _classCallCheck2 = __webpack_require__(4);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(8);
+var _createClass2 = __webpack_require__(7);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _possibleConstructorReturn2 = __webpack_require__(7);
+var _possibleConstructorReturn2 = __webpack_require__(6);
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-var _inherits2 = __webpack_require__(6);
+var _inherits2 = __webpack_require__(5);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
@@ -585,11 +688,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _icon = __webpack_require__(37);
+var _icon = __webpack_require__(35);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _input = __webpack_require__(38);
+var _input = __webpack_require__(37);
 
 var _input2 = _interopRequireDefault(_input);
 
@@ -656,7 +759,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 455:
+/***/ 468:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -666,41 +769,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(24);
+var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(525);
+var _css2 = __webpack_require__(545);
 
-var _transfer = __webpack_require__(521);
+var _transfer = __webpack_require__(541);
 
 var _transfer2 = _interopRequireDefault(_transfer);
 
-var _css3 = __webpack_require__(52);
+var _css3 = __webpack_require__(51);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(50);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _css4 = __webpack_require__(40);
+var _css4 = __webpack_require__(42);
 
-var _modal = __webpack_require__(39);
+var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(477);
+var _css5 = __webpack_require__(493);
 
-var _cascader = __webpack_require__(476);
+var _cascader = __webpack_require__(492);
 
 var _cascader2 = _interopRequireDefault(_cascader);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(24);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(22);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -708,7 +811,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(23);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -716,7 +819,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -782,14 +885,12 @@ var Person = _wrapComponent('Person')(function (_React$Component) {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-          console.log(data.data);
           if (data) {
             var persondata = data;
             var options = [];
             var children = [];
             for (var i in persondata) {
               var flag = false;
-              //console.log(persondata);
               //检验该department是否已经存在在列表中
               var person = {
                 value: persondata[i].uname,
@@ -819,7 +920,6 @@ var Person = _wrapComponent('Person')(function (_React$Component) {
           } else {
             options: "";
           }
-          //this.spellData(options);
         }.bind(this),
         error: function error() {
           alert("请求失败");
@@ -830,7 +930,6 @@ var Person = _wrapComponent('Person')(function (_React$Component) {
     key: 'onChange',
     value: function onChange(value) {
       var targetKeys = [];
-      //console.log(value[0]);
       var department = value[0];
       var options = this.state.newOptions;
       var id = "";
@@ -948,22 +1047,6 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
       }
       if (!value || value === "") value = 0;
       this.keyPairs[key] = value;
-      var zongfen = 0;
-      console.log(this.keyPairs);
-      for (var i in this.keyPairs) {
-        if (zongfen <= 100) {
-          zongfen += this.keyPairs[i];
-          this.setState({
-            zongfen: zongfen
-          });
-        }
-      }
-      if (zongfen > 100) {
-        _modal2.default.warning({
-          title: '警告信息',
-          content: '当前分配分数为:' + zongfen + '，已超过100分，请重新分配'
-        });
-      }
     }
   }, {
     key: 'onBlur',
@@ -980,11 +1063,6 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
           return result.jobList[item] = that.keyPairs[item];
         });
       }
-      var zongfen = 0;
-      for (var i in result.jobList) {
-        zongfen += result.jobList[i];
-      }
-      console.log(zongfen);
 
       if (result.personId === "") {
         _modal2.default.error({
@@ -993,52 +1071,43 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
         });
         return;
       } else {
-        if (zongfen == 100) {
-          tranResult = result;
-          console.log(tranResult);
-          var self = this;
-          $.ajax({
-            type: "post",
-            url: this.props.userJobUrl,
-            data: JSON.stringify(tranResult),
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function success(data) {
-              if (data.status > 0) {
-                _modal2.default.success({
-                  title: '提示信息',
-                  content: '分配成功！',
-                  onOk: function onOk() {
-                    history.go(0);
-                  }
-                });
-              } else {
-                _modal2.default.error({
-                  title: '错误信息',
-                  content: '分配失败！'
-                });
-              }
-            },
-            error: function error(data) {
-              alert("失败");
+        tranResult = result;
+        // console.log(tranResult)  
+        var self = this;
+        $.ajax({
+          type: "post",
+          url: this.props.userJobUrl,
+          data: JSON.stringify(tranResult),
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function success(data) {
+            if (data.status > 0) {
+              _modal2.default.success({
+                title: '提示信息',
+                content: '分配成功！',
+                onOk: function onOk() {
+                  history.go(0);
+                }
+              });
+            } else {
+              _modal2.default.error({
+                title: '错误信息',
+                content: '分配失败！'
+              });
             }
-          });
-        } else {
-          _modal2.default.error({
-            title: '错误信息',
-            content: '各项职责占比总和应为100%才能提交成功！'
-          });
-          return;
-        }
+          },
+          error: function error(data) {
+            alert("失败");
+          }
+        });
       }
     }
   }, {
     key: 'changeId',
     value: function changeId(id) {
-      //console.log(id);
+      // console.log(id);
       this.setState({
-        personId: id,
-        zongfen: 0
+        personId: id
       });
       this.keyPairs = [];
       //根据传过来的id 判断该人是否有分配过任务
@@ -1049,13 +1118,14 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-          //console.log(data.data);               
+          console.log(data.data);
           if (data.data.length > 0) {
             var keys = [];
             var score = [];
             for (var i in data.data) {
-              keys.push(data.data[i].key);
-              score[data.data[i].key] = data.data[i].score;
+              keys.push(data.data[i].key || data.data[i].id);
+              score[data.data[i].key] = data.data[i].sortId;
+              // score[data.data[i].key]=data.data[i].score;
             }
             //this.hasPersonData(keys,score); //上面的组件选择完人，调用该方法    
             if (keys.length > 0) {
@@ -1064,17 +1134,9 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
                 score: score
               });
               this.keyPairs = score;
-              var zf = 0;
-              for (var i in score) {
-                zf = zf + score[i];
-              }
-              this.setState({
-                zongfen: zf
-              });
             } else {
               this.keyPairs = [];
             }
-            //console.log(this.keyPairs);
           } else {
             this.setState({
               targetKeys: [],
@@ -1124,12 +1186,11 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
             // parser={value => value.replace('%', '')}
             , onBlur: this.onBlur.bind(this),
             onChange: this.onChange.bind(this, item.key),
-            placeholder: '\u8BE5\u9879\u8BC4\u5206\u5360\u6BD4',
+            placeholder: '\u5E8F\u5217\u53F7',
             ref: function ref(input) {
               _this3.textInput = item.key;
             }
           }),
-          '%-',
           item.proName,
           ' / ',
           item.childProName,
@@ -1198,17 +1259,6 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
             { type: 'primary', onClick: this.cancel.bind(this) },
             '\u53D6\u6D88'
           )
-        ),
-        _react3.default.createElement(
-          'div',
-          { style: { float: 'right', 'marginTop': 13, 'marginRight': 344 } },
-          _react3.default.createElement(
-            'span',
-            null,
-            '\u5DF2\u5206\u914D\u5206\u6570\uFF1A',
-            this.state.zongfen ? this.state.zongfen : 0,
-            '/100'
-          )
         )
       );
     }
@@ -1223,7 +1273,7 @@ exports.default = Assign;
 
 /***/ }),
 
-/***/ 456:
+/***/ 469:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1233,45 +1283,45 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(24);
+var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(31);
+var _css2 = __webpack_require__(33);
 
-var _table = __webpack_require__(30);
+var _table = __webpack_require__(32);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css3 = __webpack_require__(52);
+var _css3 = __webpack_require__(51);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(50);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _css4 = __webpack_require__(40);
+var _css4 = __webpack_require__(42);
 
-var _modal = __webpack_require__(39);
+var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(36);
+var _css5 = __webpack_require__(40);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
 var _css6 = __webpack_require__(29);
 
-var _input = __webpack_require__(38);
+var _input = __webpack_require__(37);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css7 = __webpack_require__(33);
+var _css7 = __webpack_require__(31);
 
-var _form = __webpack_require__(32);
+var _form = __webpack_require__(30);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -1283,17 +1333,25 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _personalPerformance = __webpack_require__(106);
+var _personalPerformance = __webpack_require__(107);
 
 var _personalPerformance2 = _interopRequireDefault(_personalPerformance);
 
 var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
+
+var _Sorter = __webpack_require__(34);
+
+var _Sorter2 = _interopRequireDefault(_Sorter);
+
+var _Filters = __webpack_require__(38);
+
+var _Filters2 = _interopRequireDefault(_Filters);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1330,7 +1388,7 @@ var Bumenkp = function (_Performance) {
       totalZiping: "",
       totalBumen: "",
       visible: false,
-      regectReason: ""
+      zipingList: []
     };
     _this.keyPairs = {};
     _this.key = 0;
@@ -1338,6 +1396,22 @@ var Bumenkp = function (_Performance) {
   }
 
   _createClass(Bumenkp, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      var trs = document.querySelectorAll('tbody tr');
+      // console.log(this.state.zipingList)
+      //  console.log(trs)
+      for (var i = 0; i < trs.length; i++) {
+        if (this.state.zipingList[i] > 0) {
+          trs[i].style.backgroundColor = "#95CFF4";
+        } else if (this.state.zipingList[i] == 0) {
+          trs[i].style.backgroundColor = "#fff";
+        } else {
+          trs[i].style.backgroundColor = "#F5B8C8";
+        }
+      }
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       $.ajax({
@@ -1348,25 +1422,30 @@ var Bumenkp = function (_Performance) {
         success: function (data) {
           var data = data.data;
           var evaluateName = "";
+          var list = [];
           if (data) {
             for (var i = 0; i < data.length; i++) {
               data[i]["key"] = data[i].id;
               evaluateName = data[0].evaluateName;
             }
-            var zipingSum = 0;
-            var bumenSum = 0;
-            var regectReason = "";
+            var zipingSum = 100;
+            var bumenSum = 100;
             for (var i in data) {
-              zipingSum += parseInt(data[i].personal.score);
-              bumenSum += parseInt(data[i].childProValue);
-              if (data[i].reason) {
-                regectReason = " * 退回理由：" + data[i].reason;
+              zipingSum += parseFloat(data[i].personal.score);
+              if (data[i].bumen.complete != null) {
+                bumenSum += parseFloat(data[i].bumen.score);
               }
+              list.push(data[i].personal.score);
             }
             for (var i in data) {
               if (!this.keyPairs[data[i].id]) {
-                this.keyPairs[data[i].id] = { inputs: "", score: "" };
-                this.keyPairs[data[i].id].score = data[i].childProValue;
+                this.keyPairs[data[i].id] = { inputs: "", score: 0, remarks: "" };
+                // this.keyPairs[data[i].id].score = data[i].childProValue
+                if (data[i].bumen.score != null) {
+                  this.keyPairs[data[i].id].inputs = data[i].bumen.complete;
+                  this.keyPairs[data[i].id].score = data[i].bumen.score;
+                  this.keyPairs[data[i].id].remarks = data[i].remarks;
+                }
               }
             }
             this.setState({
@@ -1374,7 +1453,7 @@ var Bumenkp = function (_Performance) {
               evaluateName: evaluateName,
               totalZiping: zipingSum,
               totalBumen: bumenSum,
-              regectReason: regectReason
+              zipingList: list
             });
           } else {
             recData: "";
@@ -1392,12 +1471,8 @@ var Bumenkp = function (_Performance) {
         value = 0;
       }
       index = this.state.recData[index].id;
-      if (!this.keyPairs[index]) {
-        this.keyPairs[index] = { inputs: "", score: "" };
-      }
       this.keyPairs[index].score = value;
-      // console.log(this.keyPairs)
-      var sum = 0;
+      var sum = 100;
       for (var i in this.keyPairs) {
         sum += this.keyPairs[i].score;
       }
@@ -1459,6 +1534,37 @@ var Bumenkp = function (_Performance) {
     //部门退回 start
 
   }, {
+    key: 'genRejectrReason',
+    value: function genRejectrReason() {
+      var personal;
+      var bumen;
+      var kpgroup;
+      for (var i in this.state.recData) {
+        var self = this;
+        if (self.state.recData[i].reason) {
+          if (self.state.recData[i].reason.personal) {
+            personal = "个人退回理由：" + self.state.recData[i].reason.personal;
+          }
+          if (self.state.recData[i].reason.bumen) {
+            bumen = "部门退回理由：" + self.state.recData[i].reason.bumen;
+          }
+          if (self.state.recData[i].reason.kpgroup) {
+            kpgroup = "考评组退回理由：" + self.state.recData[i].reason.kpgroup;
+          }
+        }
+      }
+      var reasons = [];
+      reasons.push(personal, bumen, kpgroup);
+      var reasonList = reasons.map(function (row) {
+        return _react2.default.createElement(
+          'p',
+          null,
+          row
+        );
+      });
+      return reasonList;
+    }
+  }, {
     key: 'returned',
     value: function returned() {
       this.setState({
@@ -1470,6 +1576,7 @@ var Bumenkp = function (_Performance) {
     value: function handleOk(e) {
       var _this2 = this;
 
+      //退回的提交
       this.props.form.validateFields(function (err, values) {
         values["taskId"] = _this2.props.departmentEvaluate.substring(_this2.props.departmentEvaluate.lastIndexOf('/') + 1, _this2.props.departmentEvaluate.length);
         if (!err) {
@@ -1505,14 +1612,18 @@ var Bumenkp = function (_Performance) {
       });
     }
   }, {
+    key: 'onRemarkChange',
+    value: function onRemarkChange(index, value) {
+      index = this.state.recData[index].id;
+      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].remarks = value;else this.keyPairs[index].remarks = value.target.value;
+    }
+  }, {
     key: 'handleCancel',
     value: function handleCancel(e) {
       this.setState({
         visible: false
       });
     }
-    //部门退回 end
-
   }, {
     key: 'submit',
     value: function submit() {
@@ -1520,7 +1631,7 @@ var Bumenkp = function (_Performance) {
       var result = {};
       result["departmentEvaluate"] = this.keyPairs;
       result["evaluateName"] = this.state.evaluateName;
-      var total = 0;
+      var total = 100;
       for (var i in result.departmentEvaluate) {
         total += result.departmentEvaluate[i].score;
       }
@@ -1561,34 +1672,54 @@ var Bumenkp = function (_Performance) {
       };
       var recScorezp = this.state.recScorezp;
       var recData = this.state.recData;
-      var maxValue = [];
+      var remarks = [];
       for (var i in recData) {
-        maxValue.push(recData[i].childProValue);
+        if (recData[i].remarks) {
+          if (recData[i].bumen.score != null) {
+            //判断一下如果有bumen这个属性，就代表是退回状态，这时只需带着remarks即可 否则要拼接
+            remarks.push(recData[i].remarks);
+          } else {
+            remarks.push(recData[i].remarks + "\n部门备注：");
+          }
+        }
       }
+      var filterData = new _Filters2.default().filter(this.state.recData);
       var columns = [{
         title: '项目',
-        dataIndex: 'proName'
+        dataIndex: 'proName',
+        width: 100,
+        filters: filterData.proName,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.proName, b.proName);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.proName.indexOf(value) === 0;
+        }
       }, {
         title: '子项目',
         dataIndex: 'childProName',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
-      }, {
-        title: '分数',
-        dataIndex: 'childProValue',
+        width: 110,
+        filters: filterData.childProName,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.childProName, b.childProName);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.childProName.indexOf(value) === 0;
+        },
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
+        width: 180,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 180,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -1598,25 +1729,36 @@ var Bumenkp = function (_Performance) {
         children: [{
           title: "个人",
           dataIndex: "personal",
+          width: 240,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal.complete, autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: _this3.state.recData[index].personal.complete, autosize: { minRows: 4, maxRows: 10 }, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "department",
+          width: 240,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
+            return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: _this3.state.recData[index].bumen.complete ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onCompleteChange.bind(_this3, index) });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
+          width: 240,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { disabled: true, autosize: { minRows: 2, maxRows: 6 } });
+            return _react2.default.createElement(TextArea, { style: { color: "#757171" }, disabled: true, autosize: { minRows: 4, maxRows: 10 } });
           }
         }]
       }, {
+        title: '备注',
+        dataIndex: 'remarks',
+        width: 180,
+        render: function render(text, record, index) {
+          return _react2.default.createElement(TextArea, { defaultValue: remarks[index], autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
+        }
+      }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -1626,23 +1768,27 @@ var Bumenkp = function (_Performance) {
         children: [{
           title: "自评",
           dataIndex: "ziping",
+          width: 20,
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal.score, disabled: true });
+            return _react2.default.createElement(_inputNumber2.default, { defaultValue: _this3.state.recData[index].personal.score, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
+          width: 20,
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: maxValue[index], disabled: !(_this3.props.department == "bumen"), onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { defaultValue: _this3.state.recData[index].bumen.score == null ? 0 : _this3.state.recData[index].bumen.score, disabled: !(_this3.props.department == "bumen"), onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
+          width: 20,
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, disabled: true });
+            return _react2.default.createElement(_inputNumber2.default, { disabled: true });
           }
         }]
       }];
+
       var _state = this.state,
           loading = _state.loading,
           selectedRowKeys = _state.selectedRowKeys;
@@ -1668,14 +1814,20 @@ var Bumenkp = function (_Performance) {
         ),
         _react2.default.createElement(
           'div',
-          { style: { marginBottom: 16 } },
+          { style: { marginBottom: 16, height: 20 } },
           _react2.default.createElement(
             'span',
-            { style: { marginLeft: 8 } },
+            { style: { marginLeft: 8, float: 'left' } },
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
+          ),
+          _react2.default.createElement(
+            'div',
+            { style: { paddingLeft: '10px', color: 'red', float: 'left' } },
+            this.genRejectrReason()
           )
         ),
-        _react2.default.createElement(_table2.default, { bordered: true, key: this.key, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
+        _react2.default.createElement('div', { style: { clear: 'both' } }),
+        _react2.default.createElement(_table2.default, { bordered: true, key: this.key, scroll: { x: 1200 }, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
         _react2.default.createElement(
           'div',
           { style: { margin: '10px 0' } },
@@ -1706,11 +1858,6 @@ var Bumenkp = function (_Performance) {
             _button2.default,
             { type: 'danger', style: { margin: '0 15px', float: 'right', padding: '6px 30px' }, onClick: this.returned.bind(this) },
             '\u9000\u56DE'
-          ),
-          _react2.default.createElement(
-            'p',
-            { style: { float: 'right', padding: '5px', color: 'red' } },
-            this.state.regectReason ? this.state.regectReason : ''
           )
         ),
         _react2.default.createElement(
@@ -1747,43 +1894,43 @@ exports.default = Bumenkp;
 
 /***/ }),
 
-/***/ 457:
+/***/ 470:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
-var _css = __webpack_require__(31);
+var _css = __webpack_require__(33);
 
-var _table = __webpack_require__(30);
+var _table = __webpack_require__(32);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(53);
+var _css2 = __webpack_require__(52);
 
-var _select = __webpack_require__(48);
+var _select = __webpack_require__(46);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _css3 = __webpack_require__(24);
+var _css3 = __webpack_require__(26);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css4 = __webpack_require__(36);
+var _css4 = __webpack_require__(40);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css5 = __webpack_require__(33);
+var _css5 = __webpack_require__(31);
 
-var _form = __webpack_require__(32);
+var _form = __webpack_require__(30);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -1793,11 +1940,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _personalPerformance = __webpack_require__(106);
+var _personalPerformance = __webpack_require__(107);
 
 var _personalPerformance2 = _interopRequireDefault(_personalPerformance);
 
@@ -1805,7 +1952,7 @@ var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-__webpack_require__(82);
+__webpack_require__(100);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1824,193 +1971,194 @@ var dateFormat = 'YYYY/MM/DD';
 var monthFormat = 'YYYY/MM';
 
 var KpHistory = function (_Performance) {
-    _inherits(KpHistory, _Performance);
+  _inherits(KpHistory, _Performance);
 
-    function KpHistory(props) {
-        _classCallCheck(this, KpHistory);
+  function KpHistory(props) {
+    _classCallCheck(this, KpHistory);
 
-        var _this = _possibleConstructorReturn(this, (KpHistory.__proto__ || Object.getPrototypeOf(KpHistory)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (KpHistory.__proto__ || Object.getPrototypeOf(KpHistory)).call(this, props));
 
-        var date = new Date();
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1;
-        month = month < 10 ? "0" + month : month;
-        var currentDate = year.toString() + "-" + month.toString();
-        _this.state = {
-            userName: "",
-            selectedDate: currentDate, //获取系统当前时间，这个功能暂时未用。
-            recData: []
-        };
-        _this.personId = "";
-        return _this;
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    month = month < 10 ? "0" + month : month;
+    var currentDate = year.toString() + "-" + month.toString();
+    _this.state = {
+      userName: "",
+      selectedDate: currentDate, //获取系统当前时间，这个功能暂时未用。
+      recData: []
+    };
+    _this.personId = "";
+    return _this;
+  }
+
+  _createClass(KpHistory, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      $.ajax({
+        //url:"/historyxinxi",
+        url: this.props.selfEvaluateUrl,
+        type: "get",
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (data) {
+          if (data.status > 0) {
+            //var data=data.data.detail;       
+            for (var i = 0; i < data.data.detail.length; i++) {
+              data.data.detail[i]["key"] = data.data.detail[i].id;
+            }
+            this.setState({
+              recData: data.data.detail,
+              userName: data.data.personName
+            });
+            // console.log(data);
+            this.personId = data.data.personId;
+          }
+        }.bind(this),
+        error: function error() {
+          alert("请求失败");
+        }
+      });
     }
+  }, {
+    key: 'checkHistoryInfo',
+    value: function checkHistoryInfo(index, value) {
+      console.log(this.personId);
+      var id = this.state.recData[index].id;
+      window.location.href = this.props.everyMonthHistorykp + "?id=" + id + "&personId=" + this.personId;
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(value) {
+      var self = this;
+      console.log(value);
+      $.get(self.props.selfEvaluateUrl + "/" + value, function (data) {
+        console.log(data.data);
+        self.setState({
+          recData: data.data.detail
+        });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
 
-    _createClass(KpHistory, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            $.ajax({
-                //url:"/historyxinxi",
-                url: this.props.selfEvaluateUrl,
-                type: "get",
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if (data.status > 0) {
-                        //var data=data.data.detail;       
-                        for (var i = 0; i < data.data.detail.length; i++) {
-                            data.data.detail[i]["key"] = data.data.detail[i].id;
-                        }
-                        this.setState({
-                            recData: data.data.detail,
-                            userName: data.data.personName
-                        });
-                        console.log(data);
-                        this.personId = data.data.personId;
-                    }
-                }.bind(this),
-                error: function error() {
-                    alert("请求失败");
-                }
-            });
-        }
-    }, {
-        key: 'checkHistoryInfo',
-        value: function checkHistoryInfo(index, value) {
-            console.log(this.personId);
-            var id = this.state.recData[index].id;
-            window.location.href = this.props.everyMonthHistorykp + "?id=" + id + "&personId=" + this.personId;
-        }
-    }, {
-        key: 'onChange',
-        value: function onChange(value) {
-            var self = this;
-            console.log(value);
-            $.get(self.props.selfEvaluateUrl + "/" + value, function (data) {
-                self.setState({
-                    recData: data.data
-                });
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this2 = this;
+      var divStyle = {
+        fontSize: 14,
+        overflow: 'hidden'
+      };
 
-            var divStyle = {
-                fontSize: 14,
-                overflow: 'hidden'
-            };
-
-            var columns = [{
-                title: '序号',
-                dataIndex: 'id',
-                render: function render(text, record, index) {
-                    return _react2.default.createElement(
-                        'span',
-                        null,
-                        ++index
-                    );
-                }
-            }, {
-                title: '历史绩效',
-                dataIndex: 'name',
-                render: function render(text) {
-                    return _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        text
-                    );
-                }
-            }, {
-                title: '操作',
-                dataIndex: 'action',
-                render: function render(text, record, index) {
-                    return _react2.default.createElement(
-                        _button2.default,
-                        { onClick: _this2.checkHistoryInfo.bind(_this2, index) },
-                        '\u67E5\u770B'
-                    );
-                }
-            }];
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    'div',
-                    { style: divStyle },
-                    _react2.default.createElement(
-                        'div',
-                        { style: { float: 'left' } },
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            '\u5F53\u524D\u7528\u6237\uFF1A'
-                        ),
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.state.userName
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { style: { float: 'right' } },
-                        _react2.default.createElement(
-                            _select2.default,
-                            {
-                                showSearch: true,
-                                style: { float: 'right', minWidth: '100px' },
-                                placeholder: '\u5E74\u4EFD\u9009\u62E9',
-                                optionFilterProp: 'children',
-                                onChange: this.onChange.bind(this),
-                                filterOption: function filterOption(input, option) {
-                                    return option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                                }
-                            },
-                            _react2.default.createElement(
-                                Option,
-                                { value: '2020' },
-                                '2020'
-                            ),
-                            _react2.default.createElement(
-                                Option,
-                                { value: '2019' },
-                                '2019'
-                            ),
-                            _react2.default.createElement(
-                                Option,
-                                { value: '2018' },
-                                '2018'
-                            ),
-                            _react2.default.createElement(
-                                Option,
-                                { value: '2017' },
-                                '2017'
-                            ),
-                            _react2.default.createElement(
-                                Option,
-                                { value: '2016' },
-                                '2016'
-                            ),
-                            _react2.default.createElement(
-                                Option,
-                                { value: '2015' },
-                                '2015'
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'span',
-                            { style: { float: 'right', paddingTop: '4px' } },
-                            '\u65E5\u671F\uFF1A'
-                        )
-                    )
-                ),
-                _react2.default.createElement(_table2.default, { style: { overflow: 'hidden', textAlign: 'center' }, pagination: false, columns: columns, dataSource: this.state.recData })
-            );
+      var columns = [{
+        title: '序号',
+        dataIndex: 'id',
+        render: function render(text, record, index) {
+          return _react2.default.createElement(
+            'span',
+            null,
+            ++index
+          );
         }
-    }]);
+      }, {
+        title: '历史绩效',
+        dataIndex: 'name',
+        render: function render(text) {
+          return _react2.default.createElement(
+            'a',
+            { href: '#' },
+            text
+          );
+        }
+      }, {
+        title: '操作',
+        dataIndex: 'action',
+        render: function render(text, record, index) {
+          return _react2.default.createElement(
+            _button2.default,
+            { onClick: _this2.checkHistoryInfo.bind(_this2, index) },
+            '\u67E5\u770B'
+          );
+        }
+      }];
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'div',
+          { style: divStyle },
+          _react2.default.createElement(
+            'div',
+            { style: { float: 'left' } },
+            _react2.default.createElement(
+              'span',
+              null,
+              '\u5F53\u524D\u7528\u6237\uFF1A'
+            ),
+            _react2.default.createElement(
+              'span',
+              null,
+              this.state.userName
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { style: { float: 'right' } },
+            _react2.default.createElement(
+              _select2.default,
+              {
+                showSearch: true,
+                style: { float: 'right', minWidth: '100px' },
+                placeholder: '\u5E74\u4EFD\u9009\u62E9',
+                optionFilterProp: 'children',
+                onChange: this.onChange.bind(this),
+                filterOption: function filterOption(input, option) {
+                  return option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }
+              },
+              _react2.default.createElement(
+                Option,
+                { value: '2020' },
+                '2020'
+              ),
+              _react2.default.createElement(
+                Option,
+                { value: '2019' },
+                '2019'
+              ),
+              _react2.default.createElement(
+                Option,
+                { value: '2018' },
+                '2018'
+              ),
+              _react2.default.createElement(
+                Option,
+                { value: '2017' },
+                '2017'
+              ),
+              _react2.default.createElement(
+                Option,
+                { value: '2016' },
+                '2016'
+              ),
+              _react2.default.createElement(
+                Option,
+                { value: '2015' },
+                '2015'
+              )
+            ),
+            _react2.default.createElement(
+              'span',
+              { style: { float: 'right', paddingTop: '4px' } },
+              '\u65E5\u671F\uFF1A'
+            )
+          )
+        ),
+        _react2.default.createElement(_table2.default, { style: { overflow: 'hidden', textAlign: 'center' }, pagination: false, columns: columns, dataSource: this.state.recData })
+      );
+    }
+  }]);
 
-    return KpHistory;
+  return KpHistory;
 }(_personalPerformance2.default);
 
 if (document.getElementById("kpHistoryInfor")) _reactDom2.default.render(_react2.default.createElement(KpHistory, pageUrls), document.getElementById("kpHistoryInfor"));
@@ -2019,7 +2167,7 @@ exports.default = KpHistory;
 
 /***/ }),
 
-/***/ 458:
+/***/ 471:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2029,45 +2177,45 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(24);
+var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(31);
+var _css2 = __webpack_require__(33);
 
-var _table = __webpack_require__(30);
+var _table = __webpack_require__(32);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css3 = __webpack_require__(52);
+var _css3 = __webpack_require__(51);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(50);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _css4 = __webpack_require__(40);
+var _css4 = __webpack_require__(42);
 
-var _modal = __webpack_require__(39);
+var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
 var _css5 = __webpack_require__(29);
 
-var _input = __webpack_require__(38);
+var _input = __webpack_require__(37);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css6 = __webpack_require__(36);
+var _css6 = __webpack_require__(40);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css7 = __webpack_require__(33);
+var _css7 = __webpack_require__(31);
 
-var _form = __webpack_require__(32);
+var _form = __webpack_require__(30);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -2079,7 +2227,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -2087,9 +2235,17 @@ var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _personalPerformance = __webpack_require__(106);
+var _personalPerformance = __webpack_require__(107);
 
 var _personalPerformance2 = _interopRequireDefault(_personalPerformance);
+
+var _Sorter = __webpack_require__(34);
+
+var _Sorter2 = _interopRequireDefault(_Sorter);
+
+var _Filters = __webpack_require__(38);
+
+var _Filters2 = _interopRequireDefault(_Filters);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2128,7 +2284,7 @@ var Managementkp = function (_Performance) {
       totalBumen: "",
       totalkpgroup: "",
       visible: false,
-      regectReason: ""
+      scoreList: [] //存放部门打分
     };
     _this.keyPairs = {};
     _this.key = 0;
@@ -2137,6 +2293,21 @@ var Managementkp = function (_Performance) {
   }
 
   _createClass(Managementkp, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      var trs = document.querySelectorAll('tbody tr');
+      console.log(this.state.scoreList);
+      for (var i = 0; i < trs.length; i++) {
+        if (this.state.scoreList[i] > 0) {
+          trs[i].style.backgroundColor = "#95CFF4";
+        } else if (this.state.scoreList[i] == 0) {
+          trs[i].style.backgroundColor = "#fff";
+        } else {
+          trs[i].style.backgroundColor = "#F5B8C8";
+        }
+      }
+    }
+  }, {
     key: 'componentDidMount',
     value: async function componentDidMount() {
       var self = this;
@@ -2156,30 +2327,34 @@ var Managementkp = function (_Performance) {
                 data[i]["key"] = data[i].id;
                 evaluateName = data[0].evaluateName;
               }
-              var zipingSum = 0;
-              var bumenSum = 0;
-              var kpgroupSum = 0;
-              var regectReason = "";
+              var zipingSum = 100;
+              var bumenSum = 100;
+              var kpgroupSum = 100;
+              var list = [];
               for (var i in data) {
                 if (data[i].personal) {
-                  zipingSum += parseInt(data[i].personal.score);
+                  zipingSum += parseFloat(data[i].personal.score);
                 }
                 if (data[i].bumen) {
-                  bumenSum += parseInt(data[i].bumen.score);
+                  bumenSum += parseFloat(data[i].bumen.score);
                 }
-                if (this.props.department == "historykp") {
-                  kpgroupSum += parseInt(data[i].kpgroup.score);
+                if (this.props.department == "historykp" || data[i].kpgroup.complete != null) {
+                  kpgroupSum += parseFloat(data[i].kpgroup.score);
+                  list.push(data[i].kpgroup.score);
                 } else {
-                  kpgroupSum += parseInt(data[i].childProValue);
+                  list.push(data[i].bumen.score);
                 }
-                if (data[i].reason) {
-                  regectReason = " * 退回理由：" + data[i].reason;
-                }
+                console.log(list);
               }
               for (var i in data) {
                 if (!this.keyPairs[data[i].id]) {
-                  this.keyPairs[data[i].id] = { inputs: "", score: "" };
-                  this.keyPairs[data[i].id].score = data[i].childProValue;
+                  this.keyPairs[data[i].id] = { inputs: "", score: 0, remarks: "" };
+                  // this.keyPairs[data[i].id].score = data[i].childProValue
+                  if (data[i].kpgroup.score != null) {
+                    this.keyPairs[data[i].id].inputs = data[i].kpgroup.complete;
+                    this.keyPairs[data[i].id].score = data[i].kpgroup.score;
+                    this.keyPairs[data[i].id].remarks = data[i].remarks;
+                  }
                 }
               }
               self.setState({
@@ -2188,7 +2363,7 @@ var Managementkp = function (_Performance) {
                 totalZiping: zipingSum,
                 totalBumen: bumenSum,
                 totalkpgroup: kpgroupSum,
-                regectReason: regectReason
+                scoreList: list
               });
             } else {
               recData: "";
@@ -2213,9 +2388,9 @@ var Managementkp = function (_Performance) {
         this.keyPairs[index] = { inputs: "", score: "" };
       }
       this.keyPairs[index].score = value;
-      var sum = 0;
+      var sum = 100;
       for (var i in this.keyPairs) {
-        sum += parseInt(this.keyPairs[i].score);
+        sum += parseFloat(this.keyPairs[i].score);
       }
       this.setState({
         totalkpgroup: sum
@@ -2231,6 +2406,12 @@ var Managementkp = function (_Performance) {
       }
       if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs = value;else this.keyPairs[index].inputs = value.target.value;
       // console.log(this.keyPairs)
+    }
+  }, {
+    key: 'onRemarkChange',
+    value: function onRemarkChange(index, value) {
+      index = this.state.recData[index].id;
+      if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].remarks = value;else this.keyPairs[index].remarks = value.target.value;
     }
   }, {
     key: 'spToInput',
@@ -2288,6 +2469,7 @@ var Managementkp = function (_Performance) {
 
       this.props.form.validateFields(function (err, values) {
         values["taskId"] = _this2.props.managerEvaluate.substring(_this2.props.managerEvaluate.lastIndexOf('/') + 1, _this2.props.managerEvaluate.length);
+        console.log(values);
         if (!err) {
           var self = _this2;
           $.ajax({
@@ -2328,6 +2510,39 @@ var Managementkp = function (_Performance) {
       });
     }
     //退回处理 end
+    //部门退回 start
+
+  }, {
+    key: 'genRejectrReason',
+    value: function genRejectrReason() {
+      var personal;
+      var bumen;
+      var kpgroup;
+      for (var i in this.state.recData) {
+        var self = this;
+        if (self.state.recData[i].reason) {
+          if (self.state.recData[i].reason.personal) {
+            personal = "个人退回理由：" + self.state.recData[i].reason.personal;
+          }
+          if (self.state.recData[i].reason.bumen) {
+            bumen = "部门退回理由：" + self.state.recData[i].reason.bumen;
+          }
+          if (self.state.recData[i].reason.kpgroup) {
+            kpgroup = "考评组退回理由：" + self.state.recData[i].reason.kpgroup;
+          }
+        }
+      }
+      var reasons = [];
+      reasons.push(personal, bumen, kpgroup);
+      var reasonList = reasons.map(function (row) {
+        return _react2.default.createElement(
+          'p',
+          null,
+          row
+        );
+      });
+      return reasonList;
+    }
     //正常提交
 
   }, {
@@ -2336,7 +2551,7 @@ var Managementkp = function (_Performance) {
       var result = {};
       result["managerEvaluate"] = this.keyPairs;
       result["evaluateName"] = this.state.evaluateName;
-      var total = 0;
+      var total = 100;
       for (var i in result.managerEvaluate) {
         total += result.managerEvaluate[i].score;
       }
@@ -2369,6 +2584,7 @@ var Managementkp = function (_Performance) {
     value: function render() {
       var _this3 = this;
 
+      var filterData = new _Filters2.default().filter(this.state.recData);
       var formItemLayout = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 }
@@ -2376,46 +2592,70 @@ var Managementkp = function (_Performance) {
       var recScorezp = this.state.recScorezp;
       var recScorebm = this.state.recScorebm;
       var recData = this.state.recData;
-      var maxValue = [];
+      var remarks = [];
       for (var i in recData) {
-        maxValue.push(recData[i].childProValue);
-      }
-      var completeDefaultValue;
-      if (this.props.department == "historykp") {
-        for (var index in this.state.recData) {
-          if (this.state.recData[index].kpgroup) {
-            completeDefaultValue = this.state.recData[index].kpgroup.complete;
+        if (this.props.department != "historykp") {
+          if (recData[i].kpgroup.score != null) {
+            //判断一下如果有kpgroup.score这个属性，就代表是退回状态，这时只需带着remarks即可 否则要拼接
+            remarks.push(recData[i].remarks);
           } else {
-            completeDefaultValue = "";
+            remarks.push(recData[i].remarks + "\n考评组备注：");
           }
+        } else {
+          remarks.push(recData[i].remarks);
         }
-      } else {
-        completeDefaultValue = "";
       }
+      // console.log(remarks)
+      var completeDefaultValue = [];
+      var scoreDefaultValue = [];
+      //查看历史考评或者被退回时都赋默认值
+      for (var index in this.state.recData) {
+        if (this.props.department == "historykp" || this.state.recData[index].kpgroup.score != null) {
+          // console.log(this.state.recData[index].kpgroup)
+          completeDefaultValue.push(this.state.recData[index].kpgroup.complete);
+          scoreDefaultValue.push(this.state.recData[index].kpgroup.score);
+        } else {
+          completeDefaultValue.push("");
+          scoreDefaultValue.push(0);
+        }
+      }
+      // console.log(completeDefaultValue)
       var columns = [{
         title: '项目',
-        dataIndex: 'proName'
+        dataIndex: 'proName',
+        width: 100,
+        filters: filterData.proName,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.proName, b.proName);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.proName.indexOf(value) === 0;
+        }
       }, {
         title: '子项目',
         dataIndex: 'childProName',
-        render: function render(text, record, index) {
-          return _this3.spToInput(text, index);
-        }
-      }, {
-        title: '分数',
-        dataIndex: 'childProValue',
+        width: 110,
+        filters: filterData.childProName,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.childProName, b.childProName);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.childProName.indexOf(value) === 0;
+        },
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
+        width: 180,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 180,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -2425,25 +2665,36 @@ var Managementkp = function (_Performance) {
         children: [{
           title: "个人",
           dataIndex: "personal",
+          width: 240,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.complete : "", autosize: { minRows: 4, maxRows: 10 }, disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "department",
+          width: 240,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 2, maxRows: 6 }, disabled: true });
+            return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.complete : "", autosize: { minRows: 4, maxRows: 10 }, disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "kpGroup",
+          width: 240,
           render: function render(text, record, index) {
-            return _react2.default.createElement(TextArea, { autosize: { minRows: 2, maxRows: 6 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: completeDefaultValue, disabled: _this3.props.department == "historykp" ? true : false });
+            return _react2.default.createElement(TextArea, { style: { color: "#757171" }, autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onCompleteChange.bind(_this3, index), defaultValue: completeDefaultValue[index], disabled: _this3.props.department == "historykp" ? true : false });
           }
         }]
       }, {
+        title: '备注',
+        dataIndex: 'remarks',
+        width: 180,
+        render: function render(text, record, index) {
+          return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: _this3.props.department == "historykp" ? recData[index].remarks : remarks[index], autosize: { minRows: 4, maxRows: 10 }, disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onRemarkChange.bind(_this3, index) });
+        }
+      }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this3.spToInput(text, index);
         }
@@ -2453,20 +2704,23 @@ var Managementkp = function (_Performance) {
         children: [{
           title: "自评",
           dataIndex: "ziping",
+          width: 30,
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.score : "", disabled: true });
+            return _react2.default.createElement(_inputNumber2.default, { defaultValue: _this3.state.recData[index].personal ? _this3.state.recData[index].personal.score : "", disabled: true });
           }
         }, {
           title: "部门",
           dataIndex: "bumen",
+          width: 30,
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.score : "", disabled: true });
+            return _react2.default.createElement(_inputNumber2.default, { defaultValue: _this3.state.recData[index].bumen ? _this3.state.recData[index].bumen.score : "", disabled: true });
           }
         }, {
           title: "考评组",
           dataIndex: "pfgroup",
+          width: 30,
           render: function render(text, record, index) {
-            return _react2.default.createElement(_inputNumber2.default, { min: 1, defaultValue: _this3.props.department == "historykp" ? _this3.state.recData[index].kpgroup ? _this3.state.recData[index].kpgroup.score : "" : maxValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
+            return _react2.default.createElement(_inputNumber2.default, { defaultValue: scoreDefaultValue[index], disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onScoreChange.bind(_this3, index) });
           }
         }]
       }];
@@ -2496,14 +2750,20 @@ var Managementkp = function (_Performance) {
         ),
         _react2.default.createElement(
           'div',
-          { style: { marginBottom: 16 } },
+          { style: { marginBottom: 16, height: 20 } },
           _react2.default.createElement(
             'span',
-            { style: { marginLeft: 8 } },
+            { style: { marginLeft: 8, float: 'left' } },
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
+          ),
+          _react2.default.createElement(
+            'div',
+            { style: { paddingLeft: '10px', color: 'red', float: 'left' } },
+            this.genRejectrReason()
           )
         ),
-        _react2.default.createElement(_table2.default, { bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
+        _react2.default.createElement('div', { style: { clear: 'both' } }),
+        _react2.default.createElement(_table2.default, { scroll: { x: 1200 }, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, dataSource: this.state.recData }),
         _react2.default.createElement(
           'div',
           { style: { margin: '10px 0' } },
@@ -2511,20 +2771,20 @@ var Managementkp = function (_Performance) {
             'span',
             { style: { float: 'right' } },
             '\u8003\u8BC4\u7EC4\u603B\u5206\uFF1A',
-            this.state.totalkpgroup ? this.state.totalkpgroup : 0
+            this.state.totalkpgroup ? this.state.totalkpgroup : 100
           ),
           _react2.default.createElement(
             'span',
             { style: { float: 'right' } },
             '\u90E8\u95E8\u603B\u5206\uFF1A',
-            this.state.totalBumen ? this.state.totalBumen : 0,
+            this.state.totalBumen ? this.state.totalBumen : 100,
             ' \xA0\xA0'
           ),
           _react2.default.createElement(
             'span',
             { style: { float: 'right' } },
             '\u81EA\u8BC4\u603B\u5206\uFF1A',
-            this.state.totalZiping ? this.state.totalZiping : 0,
+            this.state.totalZiping ? this.state.totalZiping : 100,
             ' \xA0\xA0'
           )
         ),
@@ -2541,11 +2801,6 @@ var Managementkp = function (_Performance) {
             _button2.default,
             { type: 'danger', style: { margin: '0 15px', float: 'right', padding: '6px 30px' }, disabled: this.props.department == "historykp" ? true : false, onClick: this.returned.bind(this) },
             '\u9000\u56DE'
-          ),
-          _react2.default.createElement(
-            'p',
-            { style: { float: 'right', padding: '5px', color: 'red' } },
-            this.props.department == "historykp" ? "" : this.state.regectReason ? this.state.regectReason : ''
           )
         ),
         _react2.default.createElement(
@@ -2587,7 +2842,7 @@ exports.default = Managementkp;
 
 /***/ }),
 
-/***/ 459:
+/***/ 472:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2597,53 +2852,53 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(31);
+var _css = __webpack_require__(33);
 
-var _table = __webpack_require__(30);
+var _table = __webpack_require__(32);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(53);
+var _css2 = __webpack_require__(52);
 
-var _select = __webpack_require__(48);
+var _select = __webpack_require__(46);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _css3 = __webpack_require__(24);
+var _css3 = __webpack_require__(26);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css4 = __webpack_require__(40);
+var _css4 = __webpack_require__(42);
 
-var _modal = __webpack_require__(39);
+var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(36);
+var _css5 = __webpack_require__(40);
 
-var _datePicker = __webpack_require__(35);
+var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
 var _css6 = __webpack_require__(29);
 
-var _input = __webpack_require__(38);
+var _input = __webpack_require__(37);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css7 = __webpack_require__(33);
+var _css7 = __webpack_require__(31);
 
-var _form = __webpack_require__(32);
+var _form = __webpack_require__(30);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(24);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(22);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2651,7 +2906,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(23);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2659,15 +2914,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(43);
+var _Sorter = __webpack_require__(34);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(54);
+var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -2914,8 +3169,8 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
         tableData["id"] = id[i];
       }
       console.log(tableData);
-      document.cookie = "department" + "=" + tableData.department;
-      document.cookie = "proName" + "=" + tableData.proName;
+      // document.cookie="department"+"="+tableData.department;
+      // document.cookie="proName"+"="+tableData.proName;
       //后台处理  
       $.ajax({
         type: type,
@@ -3117,20 +3372,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
                 rules: [{ required: true, message: '该字段不能为空!' }]
               })(_react3.default.createElement(TextArea, { autosize: { minRows: 6 }, style: { 'minHeight': 200 } }))
             )
-          ),
-          _react3.default.createElement(
-            'div',
-            { style: { color: "#e4393c", marginLeft: '10px' } },
-            _react3.default.createElement(
-              'p',
-              null,
-              '*\u6E29\u99A8\u63D0\u793A\uFF1A\u8F93\u5165\u65F6\u5982\u6709\u7279\u6B8A\u7B26\u53F7\uFF0C\u8BF7\u7528\u4EE5\u4E0B\u5B57\u7B26\u66FF\u6362\uFF1A'
-            ),
-            _react3.default.createElement(
-              'p',
-              null,
-              '\u65E5\u671F\u9009\u62E9\u2014\u2014#date#\uFF0C\u8F93\u5165\u6846\u2014\u2014##'
-            )
           )
         )
       );
@@ -3266,6 +3507,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
         dataIndex: 'department',
         key: 'department',
         filters: filterData.department,
+        width: 80,
         sorter: function sorter(a, b) {
           return new _Sorter2.default().sort(a.department, b.department);
         },
@@ -3276,6 +3518,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
         title: '项目',
         dataIndex: 'proName',
         filters: filterData.proName,
+        width: 80,
         sorter: function sorter(a, b) {
           return new _Sorter2.default().sort(a.proName, b.proName);
         },
@@ -3285,30 +3528,35 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
       }, {
         title: '子项目',
         dataIndex: 'childProName',
+        width: 80,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '工作职责',
         dataIndex: 'jobResponsibility',
+        width: 200,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '工作标准',
         dataIndex: 'jobStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '完成情况',
         dataIndex: 'complete',
+        width: 300,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
       }, {
         title: '评分标准',
         dataIndex: 'scoreStandard',
+        width: 200,
         render: function render(text, record, index) {
           return _this4.spToInput(text, index);
         }
@@ -3326,7 +3574,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
 
       return _react3.default.createElement(
         'div',
-        null,
+        { style: { marginBottom: 50 } },
         _react3.default.createElement(
           'div',
           { style: { marginBottom: 16 } },
@@ -3340,7 +3588,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react3.default.createElement(_table2.default, { key: this.key++, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, scroll: { x: 1200 }, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
       );
     }
   }]);
@@ -3355,7 +3603,7 @@ exports.default = AppTable;
 
 /***/ }),
 
-/***/ 473:
+/***/ 486:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3377,7 +3625,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 476:
+/***/ 492:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3391,7 +3639,7 @@ var _extends2 = __webpack_require__(3);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _defineProperty2 = __webpack_require__(11);
+var _defineProperty2 = __webpack_require__(10);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -3399,15 +3647,15 @@ var _classCallCheck2 = __webpack_require__(4);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(8);
+var _createClass2 = __webpack_require__(7);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _possibleConstructorReturn2 = __webpack_require__(7);
+var _possibleConstructorReturn2 = __webpack_require__(6);
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-var _inherits2 = __webpack_require__(6);
+var _inherits2 = __webpack_require__(5);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
@@ -3415,11 +3663,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _rcCascader = __webpack_require__(783);
+var _rcCascader = __webpack_require__(803);
 
 var _rcCascader2 = _interopRequireDefault(_rcCascader);
 
-var _arrayTreeFilter = __webpack_require__(144);
+var _arrayTreeFilter = __webpack_require__(147);
 
 var _arrayTreeFilter2 = _interopRequireDefault(_arrayTreeFilter);
 
@@ -3427,19 +3675,19 @@ var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _omit = __webpack_require__(63);
+var _omit = __webpack_require__(61);
 
 var _omit2 = _interopRequireDefault(_omit);
 
-var _KeyCode = __webpack_require__(46);
+var _KeyCode = __webpack_require__(48);
 
 var _KeyCode2 = _interopRequireDefault(_KeyCode);
 
-var _input = __webpack_require__(38);
+var _input = __webpack_require__(37);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _icon = __webpack_require__(37);
+var _icon = __webpack_require__(35);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -3746,21 +3994,21 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 477:
+/***/ 493:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(22);
+__webpack_require__(18);
 
-__webpack_require__(963);
+__webpack_require__(988);
 
 __webpack_require__(29);
 
 /***/ }),
 
-/***/ 521:
+/***/ 541:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3770,11 +4018,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(66);
+var _toConsumableArray2 = __webpack_require__(64);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _defineProperty2 = __webpack_require__(11);
+var _defineProperty2 = __webpack_require__(10);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -3782,15 +4030,15 @@ var _classCallCheck2 = __webpack_require__(4);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(8);
+var _createClass2 = __webpack_require__(7);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _possibleConstructorReturn2 = __webpack_require__(7);
+var _possibleConstructorReturn2 = __webpack_require__(6);
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-var _inherits2 = __webpack_require__(6);
+var _inherits2 = __webpack_require__(5);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
@@ -3806,19 +4054,19 @@ var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _list = __webpack_require__(523);
+var _list = __webpack_require__(543);
 
 var _list2 = _interopRequireDefault(_list);
 
-var _operation = __webpack_require__(524);
+var _operation = __webpack_require__(544);
 
 var _operation2 = _interopRequireDefault(_operation);
 
-var _search = __webpack_require__(230);
+var _search = __webpack_require__(242);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _injectLocale = __webpack_require__(142);
+var _injectLocale = __webpack_require__(143);
 
 var _injectLocale2 = _interopRequireDefault(_injectLocale);
 
@@ -4172,7 +4420,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 522:
+/***/ 542:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4186,7 +4434,7 @@ var _extends2 = __webpack_require__(3);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _defineProperty2 = __webpack_require__(11);
+var _defineProperty2 = __webpack_require__(10);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -4194,15 +4442,15 @@ var _classCallCheck2 = __webpack_require__(4);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(8);
+var _createClass2 = __webpack_require__(7);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _possibleConstructorReturn2 = __webpack_require__(7);
+var _possibleConstructorReturn2 = __webpack_require__(6);
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-var _inherits2 = __webpack_require__(6);
+var _inherits2 = __webpack_require__(5);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
@@ -4214,15 +4462,15 @@ var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _PureRenderMixin = __webpack_require__(126);
+var _PureRenderMixin = __webpack_require__(130);
 
 var _PureRenderMixin2 = _interopRequireDefault(_PureRenderMixin);
 
-var _reactLazyLoad = __webpack_require__(934);
+var _reactLazyLoad = __webpack_require__(958);
 
 var _reactLazyLoad2 = _interopRequireDefault(_reactLazyLoad);
 
-var _checkbox = __webpack_require__(89);
+var _checkbox = __webpack_require__(90);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
@@ -4294,7 +4542,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 523:
+/***/ 543:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4304,7 +4552,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _defineProperty2 = __webpack_require__(11);
+var _defineProperty2 = __webpack_require__(10);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -4316,15 +4564,15 @@ var _classCallCheck2 = __webpack_require__(4);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(8);
+var _createClass2 = __webpack_require__(7);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _possibleConstructorReturn2 = __webpack_require__(7);
+var _possibleConstructorReturn2 = __webpack_require__(6);
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-var _inherits2 = __webpack_require__(6);
+var _inherits2 = __webpack_require__(5);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
@@ -4332,33 +4580,33 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _rcAnimate = __webpack_require__(64);
+var _rcAnimate = __webpack_require__(62);
 
 var _rcAnimate2 = _interopRequireDefault(_rcAnimate);
 
-var _PureRenderMixin = __webpack_require__(126);
+var _PureRenderMixin = __webpack_require__(130);
 
 var _PureRenderMixin2 = _interopRequireDefault(_PureRenderMixin);
 
-var _checkbox = __webpack_require__(89);
+var _checkbox = __webpack_require__(90);
 
 var _checkbox2 = _interopRequireDefault(_checkbox);
 
-var _search = __webpack_require__(230);
+var _search = __webpack_require__(242);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _item = __webpack_require__(522);
+var _item = __webpack_require__(542);
 
 var _item2 = _interopRequireDefault(_item);
 
-var _triggerEvent = __webpack_require__(473);
+var _triggerEvent = __webpack_require__(486);
 
 var _triggerEvent2 = _interopRequireDefault(_triggerEvent);
 
@@ -4592,7 +4840,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 524:
+/***/ 544:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4606,15 +4854,15 @@ var _classCallCheck2 = __webpack_require__(4);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(8);
+var _createClass2 = __webpack_require__(7);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _possibleConstructorReturn2 = __webpack_require__(7);
+var _possibleConstructorReturn2 = __webpack_require__(6);
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-var _inherits2 = __webpack_require__(6);
+var _inherits2 = __webpack_require__(5);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
@@ -4622,11 +4870,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _button = __webpack_require__(23);
+var _button = __webpack_require__(20);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _icon = __webpack_require__(37);
+var _icon = __webpack_require__(35);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -4697,40 +4945,40 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 525:
+/***/ 545:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(22);
+__webpack_require__(18);
 
-__webpack_require__(978);
+__webpack_require__(1005);
 
-__webpack_require__(220);
+__webpack_require__(230);
 
-__webpack_require__(24);
+__webpack_require__(26);
 
 __webpack_require__(29);
 
 /***/ }),
 
-/***/ 552:
+/***/ 572:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(456);
-__webpack_require__(458);
-__webpack_require__(106);
-__webpack_require__(459);
-__webpack_require__(455);
-__webpack_require__(457);
+__webpack_require__(469);
+__webpack_require__(471);
+__webpack_require__(107);
+__webpack_require__(472);
+__webpack_require__(468);
+__webpack_require__(470);
 
 /***/ }),
 
-/***/ 617:
+/***/ 637:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(root,factory){
@@ -4764,7 +5012,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(root
 
 /***/ }),
 
-/***/ 638:
+/***/ 658:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5145,11 +5393,11 @@ function toNumber(value) {
 
 module.exports = debounce;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(74)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(76)))
 
 /***/ }),
 
-/***/ 643:
+/***/ 663:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5592,11 +5840,11 @@ function toNumber(value) {
 
 module.exports = throttle;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(74)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(76)))
 
 /***/ }),
 
-/***/ 781:
+/***/ 801:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5620,19 +5868,19 @@ var _rcTrigger = __webpack_require__(84);
 
 var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 
-var _Menus = __webpack_require__(782);
+var _Menus = __webpack_require__(802);
 
 var _Menus2 = _interopRequireDefault(_Menus);
 
-var _KeyCode = __webpack_require__(46);
+var _KeyCode = __webpack_require__(48);
 
 var _KeyCode2 = _interopRequireDefault(_KeyCode);
 
-var _arrayTreeFilter = __webpack_require__(144);
+var _arrayTreeFilter = __webpack_require__(147);
 
 var _arrayTreeFilter2 = _interopRequireDefault(_arrayTreeFilter);
 
-var _arrays = __webpack_require__(959);
+var _arrays = __webpack_require__(983);
 
 var _arrays2 = _interopRequireDefault(_arrays);
 
@@ -5985,7 +6233,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 782:
+/***/ 802:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6005,11 +6253,11 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _arrayTreeFilter = __webpack_require__(144);
+var _arrayTreeFilter = __webpack_require__(147);
 
 var _arrayTreeFilter2 = _interopRequireDefault(_arrayTreeFilter);
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -6198,7 +6446,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 783:
+/***/ 803:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6208,7 +6456,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cascader = __webpack_require__(781);
+var _Cascader = __webpack_require__(801);
 
 var _Cascader2 = _interopRequireDefault(_Cascader);
 
@@ -6220,7 +6468,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 934:
+/***/ 958:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6240,23 +6488,23 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDom = __webpack_require__(10);
+var _reactDom = __webpack_require__(11);
 
-var _eventlistener = __webpack_require__(617);
+var _eventlistener = __webpack_require__(637);
 
-var _lodash = __webpack_require__(638);
+var _lodash = __webpack_require__(658);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _lodash3 = __webpack_require__(643);
+var _lodash3 = __webpack_require__(663);
 
 var _lodash4 = _interopRequireDefault(_lodash3);
 
-var _parentScroll = __webpack_require__(937);
+var _parentScroll = __webpack_require__(961);
 
 var _parentScroll2 = _interopRequireDefault(_parentScroll);
 
-var _inViewport = __webpack_require__(936);
+var _inViewport = __webpack_require__(960);
 
 var _inViewport2 = _interopRequireDefault(_inViewport);
 
@@ -6448,7 +6696,7 @@ LazyLoad.defaultProps = {
 
 /***/ }),
 
-/***/ 935:
+/***/ 959:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6473,7 +6721,7 @@ function getElementPosition(element) {
 
 /***/ }),
 
-/***/ 936:
+/***/ 960:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6484,7 +6732,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = inViewport;
 
-var _getElementPosition = __webpack_require__(935);
+var _getElementPosition = __webpack_require__(959);
 
 var _getElementPosition2 = _interopRequireDefault(_getElementPosition);
 
@@ -6525,7 +6773,7 @@ function inViewport(element, container, customOffset) {
 
 /***/ }),
 
-/***/ 937:
+/***/ 961:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6572,7 +6820,7 @@ exports.default = scrollParent;
 
 /***/ }),
 
-/***/ 959:
+/***/ 983:
 /***/ (function(module, exports) {
 
 module.exports = function shallowEqualArrays(arrA, arrB) {
@@ -6598,50 +6846,23 @@ module.exports = function shallowEqualArrays(arrA, arrB) {
 
 /***/ }),
 
-/***/ 963:
+/***/ 988:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(165);
+var content = __webpack_require__(169);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(28)(content, {});
+var update = __webpack_require__(25)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(true) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept(165, function() {
-			var newContent = __webpack_require__(165);
-			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-
-/***/ 978:
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(182);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(28)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(true) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept(182, function() {
-			var newContent = __webpack_require__(182);
+		module.hot.accept(169, function() {
+			var newContent = __webpack_require__(169);
 			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
 			update(newContent);
 		});
@@ -6652,4 +6873,4 @@ if(true) {
 
 /***/ })
 
-},[552]);
+},[572]);

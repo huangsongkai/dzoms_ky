@@ -18,8 +18,8 @@ public class UserJobDuties implements java.io.Serializable {
 	@Column(name = "job_duties_id")
 	private Integer jobDutiesId;
 
-	@Column(name = "score")
-	private Integer score;
+	@Column(name = "sort_id")
+	private int sortId;
 
 	@Column(name = "person_id")
 	private Integer personId;
@@ -40,12 +40,12 @@ public class UserJobDuties implements java.io.Serializable {
 		this.jobDutiesId = jobDutiesId;
 	}
 
-	public Integer getScore() {
-		return score;
+	public int getSortId() {
+		return sortId;
 	}
 
-	public void setScore(Integer score) {
-		this.score = score;
+	public void setSortId(int sortId) {
+		this.sortId = sortId;
 	}
 
 	public Integer getPersonId() {

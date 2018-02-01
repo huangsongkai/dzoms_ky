@@ -1,19 +1,19 @@
-package com.dz.kaiying.DTO;
+package com.dz.kaiying;
 
 /**
  * Created by song on 2017/7/5.
  */
 
-public class RegectDTO {
+public class QueryRegectDTO {
 
-    Reason reason;
+    String reason;
     String taskId;
 
-    public Reason getReason() {
+    public String getReason() {
         return reason;
     }
 
-    public void setReason(Reason reason) {
+    public void setReason(String reason) {
         this.reason = reason;
     }
 

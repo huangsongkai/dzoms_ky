@@ -4,6 +4,7 @@ package com.dz.kaiying.model;
 import javax.persistence.*;
 import java.util.Date;
 
+import static com.ibm.media.codec.audio.g723.G723Tables.s;
 import static javax.persistence.GenerationType.IDENTITY;
 
 
@@ -41,6 +42,8 @@ public class EvaluateDetail implements java.io.Serializable {
 
     @Column(name = "job_standard")
     private String jobStandard;
+    @Column(name = "sort_id")
+    private int sortId;
 
 
 
@@ -49,7 +52,7 @@ public class EvaluateDetail implements java.io.Serializable {
     private String selfInputs;
 
     @Column(name = "self_score")
-    private int selfScore;
+    private Double selfScore;
 
     @Column(name = "self_date")
     private Date selfDate;
@@ -62,7 +65,7 @@ public class EvaluateDetail implements java.io.Serializable {
     private String managerInputs;
 
     @Column(name = "manager_score")
-    private int managerScore;
+    private Double managerScore;
 
     @Column(name = "manager_date")
     private Date managerDate;
@@ -75,7 +78,7 @@ public class EvaluateDetail implements java.io.Serializable {
     private String groupInputs;
 
     @Column(name = "group_score")
-    private int groupScore;
+    private Double groupScore;
 
     @Column(name = "group_date")
     private Date groupDate;
@@ -83,19 +86,43 @@ public class EvaluateDetail implements java.io.Serializable {
     @Column(name = "group_total")
     private Double groupTotal;
 
-    @Column(name = "group_remark")
-    private String remark;
-
-    @Column(name = "regect")
-    private String regect;
+    @Column(name = "remarks")
+    private String remarks;
 
 
-    public String getRegect() {
-        return regect;
+
+    @Column(name = "regect_self")
+    private String regect_self;
+
+    @Column(name = "regect_manager")
+    private String regect_manager;
+
+    @Column(name = "regect_group")
+    private String regect_group;
+
+
+    public String getRegect_self() {
+        return regect_self;
     }
 
-    public void setRegect(String regect) {
-        this.regect = regect;
+    public void setRegect_self(String regect_self) {
+        this.regect_self = regect_self;
+    }
+
+    public String getRegect_manager() {
+        return regect_manager;
+    }
+
+    public void setRegect_manager(String regect_manager) {
+        this.regect_manager = regect_manager;
+    }
+
+    public String getRegect_group() {
+        return regect_group;
+    }
+
+    public void setRegect_group(String regect_group) {
+        this.regect_group = regect_group;
     }
 
     public Integer getId() {
@@ -186,11 +213,11 @@ public class EvaluateDetail implements java.io.Serializable {
         this.selfInputs = selfInputs;
     }
 
-    public int getSelfScore() {
+    public Double getSelfScore() {
         return selfScore;
     }
 
-    public void setSelfScore(int selfScore) {
+    public void setSelfScore(Double selfScore) {
         this.selfScore = selfScore;
     }
 
@@ -202,6 +229,14 @@ public class EvaluateDetail implements java.io.Serializable {
         this.selfDate = selfDate;
     }
 
+    public Double getSelfTotal() {
+        return selfTotal;
+    }
+
+    public void setSelfTotal(Double selfTotal) {
+        this.selfTotal = selfTotal;
+    }
+
     public String getManagerInputs() {
         return managerInputs;
     }
@@ -210,11 +245,11 @@ public class EvaluateDetail implements java.io.Serializable {
         this.managerInputs = managerInputs;
     }
 
-    public int getManagerScore() {
+    public Double getManagerScore() {
         return managerScore;
     }
 
-    public void setManagerScore(int managerScore) {
+    public void setManagerScore(Double managerScore) {
         this.managerScore = managerScore;
     }
 
@@ -226,6 +261,14 @@ public class EvaluateDetail implements java.io.Serializable {
         this.managerDate = managerDate;
     }
 
+    public Double getManagerTotal() {
+        return managerTotal;
+    }
+
+    public void setManagerTotal(Double managerTotal) {
+        this.managerTotal = managerTotal;
+    }
+
     public String getGroupInputs() {
         return groupInputs;
     }
@@ -234,11 +277,11 @@ public class EvaluateDetail implements java.io.Serializable {
         this.groupInputs = groupInputs;
     }
 
-    public int getGroupScore() {
+    public Double getGroupScore() {
         return groupScore;
     }
 
-    public void setGroupScore(int groupScore) {
+    public void setGroupScore(Double groupScore) {
         this.groupScore = groupScore;
     }
 
@@ -250,22 +293,6 @@ public class EvaluateDetail implements java.io.Serializable {
         this.groupDate = groupDate;
     }
 
-    public Double getSelfTotal() {
-        return selfTotal;
-    }
-
-    public void setSelfTotal(Double selfTotal) {
-        this.selfTotal = selfTotal;
-    }
-
-    public Double getManagerTotal() {
-        return managerTotal;
-    }
-
-    public void setManagerTotal(Double managerTotal) {
-        this.managerTotal = managerTotal;
-    }
-
     public Double getGroupTotal() {
         return groupTotal;
     }
@@ -274,11 +301,20 @@ public class EvaluateDetail implements java.io.Serializable {
         this.groupTotal = groupTotal;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getRemarks() {
+        return remarks;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
+
+    public int getSortId() {
+        return sortId;
+    }
+
+    public void setSortId(int sortId) {
+        this.sortId = sortId;
+    }
+
 }

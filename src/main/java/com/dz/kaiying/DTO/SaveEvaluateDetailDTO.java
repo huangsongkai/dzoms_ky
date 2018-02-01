@@ -10,8 +10,17 @@ public class SaveEvaluateDetailDTO implements java.io.Serializable {
 	 *保存绩效考核详细内容
 	 */
 	private String inputs;
-	private Integer score;
+	private Double score;
 	private String complete;
+	private String remarks;
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 
 	public String getComplete() {
 		return complete;
@@ -29,11 +38,11 @@ public class SaveEvaluateDetailDTO implements java.io.Serializable {
 		this.inputs = inputs;
 	}
 
-	public Integer getScore() {
+	public Double getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(Double score) {
 		this.score = score;
 	}
 }

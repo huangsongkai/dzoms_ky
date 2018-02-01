@@ -1,6 +1,8 @@
 package com.dz.kaiying.controller;
 
-import com.dz.kaiying.DTO.*;
+import com.dz.kaiying.DTO.SaveEvaluateDTO;
+import com.dz.kaiying.DTO.SaveUserJobDutyDTO;
+import com.dz.kaiying.QueryRegectDTO;
 import com.dz.kaiying.model.JobDuty;
 import com.dz.kaiying.service.ActivitiUtilService;
 import com.dz.kaiying.service.JobDutiesService;
@@ -82,7 +84,7 @@ public class JobDutyController {
      * 用户的工作职责
      * @return
      */
-    @RequestMapping(value = "/userJob/{id}", method = RequestMethod.GET)
+        @RequestMapping(value = "/userJob/{id}", method = RequestMethod.GET)
     @ResponseBody
 
     public Result queryUserJob(@PathVariable int id){
@@ -153,6 +155,17 @@ public class JobDutyController {
         User user = (User) session.getAttribute("user");
         return jobDutiesService.listHistory(user.getUid() ,request);
     }
+    /**
+     * 考评历史信息
+     * historyxinxi
+     */
+    @RequestMapping(value = "/history/{year}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result historyYear(@PathVariable Integer year,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        return jobDutiesService.listHistory(user.getUid() ,request, year);
+    }
 
     /**
      * 考评历史纤细信息
@@ -171,7 +184,7 @@ public class JobDutyController {
      */
     @RequestMapping(value = "/managerRegect", method = RequestMethod.POST)
     @ResponseBody
-    public Result managerEvaluateRegect(@RequestBody RegectDTO regectDTO, HttpServletRequest request) throws Exception {
+    public Result managerEvaluateRegect(@RequestBody QueryRegectDTO regectDTO, HttpServletRequest request) throws Exception {
         return jobDutiesService.managerEvaluateRegect(regectDTO,"manager");
     }
 
@@ -181,7 +194,7 @@ public class JobDutyController {
      */
     @RequestMapping(value = "/groupRegect", method = RequestMethod.POST)
     @ResponseBody
-    public Result groupEvaluateRegect(@RequestBody RegectDTO regectDTO,  HttpServletRequest request) throws Exception {
+    public Result groupEvaluateRegect(@RequestBody QueryRegectDTO regectDTO,  HttpServletRequest request) throws Exception {
         return jobDutiesService.managerEvaluateRegect(regectDTO,"group");
     }
     /**
@@ -190,7 +203,7 @@ public class JobDutyController {
      */
     @RequestMapping(value = "/regect", method = RequestMethod.POST)
     @ResponseBody
-    public Result Regect(@RequestBody RegectDTO regectDTO,  HttpServletRequest request) throws Exception {
+    public Result Regect(@RequestBody QueryRegectDTO regectDTO,  HttpServletRequest request) throws Exception {
         return jobDutiesService.managerEvaluateRegect(regectDTO," ");
     }
 

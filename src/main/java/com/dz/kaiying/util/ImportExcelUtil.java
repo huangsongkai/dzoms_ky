@@ -97,7 +97,7 @@ public class ImportExcelUtil {
      */
     public Object getCellValue(Cell cell) {
         if (cell == null) {
-            return null;
+            return "";
         }
         Object value = null;
         DecimalFormat df = new DecimalFormat("0");  //格式化number String字符

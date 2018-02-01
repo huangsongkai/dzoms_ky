@@ -2,6 +2,12 @@
 	width:95%;
 	margin:0 auto;
 }
+@media screen and (max-width: 1600px) {
+    .container,#container{
+       width: 1600px;
+       overflow-x: scroll;
+    }
+}
 #header{
 	background-color: #ddd;
 	width: 100%;
@@ -11,22 +17,16 @@
 	border-radius: 3px;
 	margin-bottom: 15px;
 }
-/*#assignResponsibility{*/
-	/*width: 95%;*/
-	/*margin:0 auto;*/
-/*}*/
-
 #taskDetails{
 	border:1px solid #ddd;
 }
 .processInfos{
 	width:80%;
-	overflow: hidden;
 	margin:0 auto;
 }
 .processInfo{
 	width:520px;
-	height:200px;
+	min-height:200px;
 	float:left;
 }
 .processImg{
@@ -35,6 +35,7 @@
 	overflow-x:scroll;
 	margin-bottom: 10px;
 }
+
 #seatcontainer{
 	width: 80%;
 	margin:0 auto;
@@ -53,18 +54,39 @@
 #accident .ant-table-thead > tr > th,#accident .ant-table-tbody > tr > td {
 	padding:16px 2px;
 }
-#accident .ant-table-thead > tr> th:first-child{
-	/*border-right:1px solid #ddd;*/
-	text-align: center;
-}
-#accident .ant-table-tbody > tr> td:first-child  {
-	/*border-right:1px solid #ddd;*/
-	text-align: center;
-}
 /*后填样式*/
 #accident a{
 	color: #585C5E;
 }
 #accident a:hover{
 	color: #108EEA;
+}
+
+/*1月4日添加*/
+span.ant-switch-small {
+    height: 18px;
+    min-width: 28px;
+    line-height: 17px;
+}
+span.ant-switch-small.ant-switch-checked:after {
+    left: 100%;
+    margin-left: -12.5px;
+    margin-top: 2px;
+}
+span.ant-switch-small:after {
+    width: 12px;
+    height: 12px;
+    top: 0;
+    left: 0.5px;
+    margin-top: 2px;
+}
+input.ant-input-number-input[disabled]{
+	color:rgba(0, 0, 0, 0.7)
+}
+/*#proManagement{
+	width: 2000px;
+	overflow-x: scroll;
+}*/
+div.ant-modal-body div.ant-row{
+	display: inline-block;
 }

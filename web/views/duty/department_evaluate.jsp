@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>部门考评</title>
-    <link rel="stylesheet" href="/DZOMS/ky/css/kpStyle.css"/>
+    <link rel="stylesheet" href="/DZOMS/ky/css/style.css"/>
 </head>
 <body>
 <div class="container">
