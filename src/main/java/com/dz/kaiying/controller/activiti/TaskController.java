@@ -8,6 +8,7 @@ import com.dz.kaiying.util.RequestHelper;
 import com.dz.kaiying.util.Result;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.TaskFormData;
@@ -39,6 +40,8 @@ public class TaskController {
     private FormService formService;
     @Resource
     private HistoryService historyService;
+    @Resource
+    RuntimeService runtimeService;
 
     private Result result = new Result();
 

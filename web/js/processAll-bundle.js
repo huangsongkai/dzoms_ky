@@ -814,9 +814,6 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                     )
                 );
             });
-
-            console.log(rows);
-
             return rows;
         }
     }, {

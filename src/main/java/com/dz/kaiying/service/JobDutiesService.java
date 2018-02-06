@@ -9,6 +9,7 @@ import com.dz.module.user.User;
 import com.dz.module.user.UserDao;
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,8 @@ public class JobDutiesService extends BaseService{
     RepositoryService repositoryService;
     @Resource
     ActivitiTest activitiTest;
+    @Resource
+    RuntimeService runtimeService;
 
     private Result result = new Result();
 
@@ -163,6 +166,8 @@ public class JobDutiesService extends BaseService{
             List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + userId+" ORDER BY sortId");
             for (UserJobDuties userJobDuties: userJobDutiesList) {
                 QueryEvaluateDTO queryEvaluateDTO = new QueryEvaluateDTO();
+                List<JobDuty> jobDutyList = jobDutyDao.find(" from JobDuty where id = " + userJobDuties.getJobDutiesId());
+                BeanUtils.copyProperties(queryEvaluateDTO, jobDutyList.get(0));  //前边是空值 后边是有值得  进行对象copy
                 if (evaluateName != null && evaluateName != ""){
                     List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+evaluateName+"' and personId ="+personId+ "and jobDutyId = "+userJobDuties.getJobDutiesId()+" ORDER BY sortId");
                     EvaluateDetail evaluateDetail = evaluateDetailList.get(0);
@@ -186,14 +191,16 @@ public class JobDutiesService extends BaseService{
                     reason.setBumen(evaluateDetailList.get(0).getRegect_manager());
                     reason.setKpgroup(evaluateDetailList.get(0).getRegect_group());
                     queryEvaluateDTO.setReason(reason);
+                    queryEvaluateDTO.setRemarks(evaluateDetail.getRemarks());
+                    queryEvaluateDTO.setEvaluateName(evaluateDetailList.get(0).getEvaluateName());
+                }else{
+                    SaveEvaluateDetailDTO saveEvaluateDetailDTO = new SaveEvaluateDetailDTO();
+                    saveEvaluateDetailDTO.setComplete(jobDutyList.get(0).getComplete());
+                    queryEvaluateDTO.setPersonal(saveEvaluateDetailDTO);
+                    queryEvaluateDTO.setEvaluateName(user.getUname()+dateFormater.format(new Date())+"绩效考核");
                 }
-                List<JobDuty> jobDutyList = jobDutyDao.find(" from JobDuty where id = " + userJobDuties.getJobDutiesId());
-                BeanUtils.copyProperties(queryEvaluateDTO, jobDutyList.get(0));  //前边是空值 后边是有值得  进行对象copy
                 //queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
-                SaveEvaluateDetailDTO saveEvaluateDetailDTO = new SaveEvaluateDetailDTO();
-                saveEvaluateDetailDTO.setComplete(jobDutyList.get(0).getComplete());
-                queryEvaluateDTO.setPersonal(saveEvaluateDetailDTO);
-                queryEvaluateDTO.setEvaluateName(user.getUname()+dateFormater.format(new Date())+"绩效考核");
+
                 queryEvaluateDTOList.add(queryEvaluateDTO);
             }
             result.setSuccess("查询成功", queryEvaluateDTOList);
@@ -206,6 +213,7 @@ public class JobDutiesService extends BaseService{
     public Result saveMyEvaluate(SaveEvaluateDTO saveEvaluateDTO, Integer userId, Integer taskId) throws InvocationTargetException, IllegalAccessException {
             for (Map.Entry<Integer, SaveEvaluateDetailDTO> entry : saveEvaluateDTO.getSelfEvaluate().entrySet()) {
                 Integer jobDutyId = entry.getKey();
+                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail  where evaluateName = '"+saveEvaluateDTO.getEvaluateName()+"' and personId ="+userId+ "and jobDutyId = "+jobDutyId+" ORDER BY sortId");
                 SaveEvaluateDetailDTO saveEvaluateDetailDTO = entry.getValue();
                 EvaluateDetail evaluateDetail = new EvaluateDetail();
                 evaluateDetail.setPersonId(userId);
@@ -221,7 +229,20 @@ public class JobDutiesService extends BaseService{
                 List jobDutyList = jobDutyDao.find("from JobDuty where id =" + jobDutyId);
                 JobDuty jobDuty  = (JobDuty) jobDutyList.get(0);
                 BeanUtils.copyProperties(evaluateDetail, jobDuty);  //前边是空值 后边是有值得  进行对象copy
-                evaluateDetailDao.save(evaluateDetail);
+                if(evaluateDetailList.size() != 0){
+                    BeanUtils.copyProperties(evaluateDetail, jobDuty);
+                    EvaluateDetail evaluateDetail1 = evaluateDetailList.get(0);
+                    evaluateDetail1.setEvaluateName(saveEvaluateDTO.getEvaluateName());
+                    evaluateDetail1.setSelfInputs(saveEvaluateDetailDTO.getInputs());
+                    evaluateDetail1.setRemarks(saveEvaluateDetailDTO.getRemarks());
+                    evaluateDetail1.setJobDutyId(jobDutyId);
+                    evaluateDetail1.setSelfTotal(saveEvaluateDTO.getTotal());
+                    evaluateDetail1.setSelfScore(saveEvaluateDetailDTO.getScore());
+                    evaluateDetailDao.update(evaluateDetail1);
+                }else{
+                    evaluateDetailDao.save(evaluateDetail);
+                }
+
             }
 
         //工作流
@@ -240,7 +261,7 @@ public class JobDutiesService extends BaseService{
         }else if("计财部".equals(department)){
             valsMap.put("userName2","陈东慧");//动态办理人
         }else if("综合办公室".equals(department)){
-            valsMap.put("userName2","邹研");//动态办理人
+            valsMap.put("userName2","刘波");//动态办理人
         }else if("信息部".equals(department)){
             valsMap.put("userName2","李志强");//动态办理人
         }else if("运营管理部".equals(department)){
@@ -406,6 +427,7 @@ public class JobDutiesService extends BaseService{
         valsMap.put("考核小组打分", saveEvaluateDTO.getTotal()+"");
         String userName1 = (String) taskService.getVariable(taskId + "", "userName1");
         valsMap.put("userName4",userName1);//动态办理人
+        taskService.setVariable( taskId+"", "state", " ");
         activitiService.complete(taskId+"", valsMap, evaluateName);
         result.setSuccess("保存成功",null);
         return result;

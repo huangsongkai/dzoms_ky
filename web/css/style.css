@@ -3,10 +3,10 @@
 	margin:0 auto;
 }
 @media screen and (max-width: 1600px) {
-    .container,#container{
-       width: 1600px;
-       overflow-x: scroll;
-    }
+	.container,#container{
+		width: 1600px;
+		overflow-x: scroll;
+	}
 }
 #header{
 	background-color: #ddd;
@@ -21,7 +21,7 @@
 	border:1px solid #ddd;
 }
 .processInfos{
-	width:80%;
+	width:90%;
 	margin:0 auto;
 }
 .processInfo{
@@ -52,7 +52,7 @@
 }
 
 #accident .ant-table-thead > tr > th,#accident .ant-table-tbody > tr > td {
-	padding:16px 2px;
+	padding:10px 4px;
 }
 /*后填样式*/
 #accident a{
@@ -64,21 +64,21 @@
 
 /*1月4日添加*/
 span.ant-switch-small {
-    height: 18px;
-    min-width: 28px;
-    line-height: 17px;
+	height: 18px;
+	min-width: 28px;
+	line-height: 17px;
 }
 span.ant-switch-small.ant-switch-checked:after {
-    left: 100%;
-    margin-left: -12.5px;
-    margin-top: 2px;
+	left: 100%;
+	margin-left: -12.5px;
+	margin-top: 2px;
 }
 span.ant-switch-small:after {
-    width: 12px;
-    height: 12px;
-    top: 0;
-    left: 0.5px;
-    margin-top: 2px;
+	width: 12px;
+	height: 12px;
+	top: 0;
+	left: 0.5px;
+	margin-top: 2px;
 }
 input.ant-input-number-input[disabled]{
 	color:rgba(0, 0, 0, 0.7)
@@ -89,4 +89,9 @@ input.ant-input-number-input[disabled]{
 }*/
 div.ant-modal-body div.ant-row{
 	display: inline-block;
+}
+
+/*2018-1-30*/
+.ant-table table {
+	line-height: 16px;
 }

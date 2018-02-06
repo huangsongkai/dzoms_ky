@@ -680,20 +680,18 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
         contentType: 'application/json',
         success: function (data) {
           if (data.status > 0) {
-            //console.log(data.data);
-            for (var i = 0; i < data.data.length; i++) {
-              data.data[i]["key"] = data.data[i].id;
-            }
-            // console.log(data.data) 
-            data.data.map(function (row) {
+            var newData = data.data;
+            newData.map(function (row) {
+              row["key"] = row.id;
               for (var col in row) {
                 if (row[col] == null) {
-                  row[col] = '';
+                  row[col] = "";
                 }
               }
             });
+            // console.log(data.data) 
             self.setState({
-              recData: data.data
+              recData: newData
             });
           } else {
             recData: "";

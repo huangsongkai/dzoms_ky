@@ -251,6 +251,8 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       if (!value) {
         value = 0;
       }
+      value = parseFloat(value).toFixed(2);
+      // console.log(value)
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: "", score: "" };
       this.keyPairs[index].score = value;
@@ -258,6 +260,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       for (var i in this.keyPairs) {
         sum += parseFloat(this.keyPairs[i].score);
       }
+      sum = sum.toFixed(2);
       this.setState({
         totalZiping: sum
       });
@@ -353,8 +356,9 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
       result["evaluateName"] = this.state.evaluateName;
       var total = 100;
       for (var i in result.selfEvaluate) {
-        total += result.selfEvaluate[i].score;
+        total += parseFloat(result.selfEvaluate[i].score);
       }
+      total = total.toFixed(2);
       result["total"] = total;
       // console.log(result);
       var self = this;
@@ -1448,6 +1452,8 @@ var Bumenkp = function (_Performance) {
                 }
               }
             }
+            zipingSum = zipingSum.toFixed(2);
+            bumenSum = bumenSum.toFixed(2);
             this.setState({
               recData: data,
               evaluateName: evaluateName,
@@ -1470,12 +1476,14 @@ var Bumenkp = function (_Performance) {
       if (!value) {
         value = 0;
       }
+      value = parseFloat(value).toFixed(2);
       index = this.state.recData[index].id;
       this.keyPairs[index].score = value;
       var sum = 100;
       for (var i in this.keyPairs) {
-        sum += this.keyPairs[i].score;
+        sum += parseFloat(this.keyPairs[i].score);
       }
+      sum = sum.toFixed(2);
       this.setState({
         totalBumen: sum
       });
@@ -1633,8 +1641,9 @@ var Bumenkp = function (_Performance) {
       result["evaluateName"] = this.state.evaluateName;
       var total = 100;
       for (var i in result.departmentEvaluate) {
-        total += result.departmentEvaluate[i].score;
+        total += parseFloat(result.departmentEvaluate[i].score);
       }
+      total = total.toFixed(2);
       result["total"] = total;
       // console.log(result); 
       //发给后台的数据
@@ -2296,7 +2305,7 @@ var Managementkp = function (_Performance) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       var trs = document.querySelectorAll('tbody tr');
-      console.log(this.state.scoreList);
+      // console.log(this.state.scoreList)
       for (var i = 0; i < trs.length; i++) {
         if (this.state.scoreList[i] > 0) {
           trs[i].style.backgroundColor = "#95CFF4";
@@ -2344,7 +2353,7 @@ var Managementkp = function (_Performance) {
                 } else {
                   list.push(data[i].bumen.score);
                 }
-                console.log(list);
+                // console.log(list)
               }
               for (var i in data) {
                 if (!this.keyPairs[data[i].id]) {
@@ -2357,6 +2366,9 @@ var Managementkp = function (_Performance) {
                   }
                 }
               }
+              zipingSum = zipingSum.toFixed(2);
+              bumenSum = bumenSum.toFixed(2);
+              kpgroupSum = kpgroupSum.toFixed(2);
               self.setState({
                 recData: data,
                 evaluateName: evaluateName,
@@ -2383,6 +2395,7 @@ var Managementkp = function (_Performance) {
       if (!value) {
         value = 0;
       }
+      value = parseFloat(value).toFixed(2);
       index = this.state.recData[index].id;
       if (!this.keyPairs[index]) {
         this.keyPairs[index] = { inputs: "", score: "" };
@@ -2392,6 +2405,7 @@ var Managementkp = function (_Performance) {
       for (var i in this.keyPairs) {
         sum += parseFloat(this.keyPairs[i].score);
       }
+      sum = sum.toFixed(2);
       this.setState({
         totalkpgroup: sum
       });
@@ -2553,8 +2567,9 @@ var Managementkp = function (_Performance) {
       result["evaluateName"] = this.state.evaluateName;
       var total = 100;
       for (var i in result.managerEvaluate) {
-        total += result.managerEvaluate[i].score;
+        total += parseFloat(result.managerEvaluate[i].score);
       }
+      total = total.toFixed(2);
       result["total"] = total;
       //发给后台的数据
       var self = this;
@@ -3588,7 +3603,7 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react3.default.createElement(_table2.default, { key: this.key++, scroll: { x: 1200 }, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, scroll: { y: 1000 }, bordered: true, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
       );
     }
   }]);
