@@ -199,7 +199,6 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
                 this.keyPairs[data[i].id] = { inputs: "", score: 0, remarks: "" };
                 this.keyPairs[data[i].id].inputs = data[i].personal.complete;
                 if (data[i].personal.score != null) {
-                  // console.log("aaaa")
                   // console.log(data[i].personal.score)
                   this.keyPairs[data[i].id].inputs = data[i].personal.complete;
                   this.keyPairs[data[i].id].score = data[i].personal.score;
@@ -212,6 +211,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
             for (var i in this.keyPairs) {
               sum += parseFloat(this.keyPairs[i].score);
             }
+            sum = sum.toFixed(2);
             this.setState({
               recData: data,
               evaluateName: evaluateName,
@@ -422,12 +422,12 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
 
       var recData = this.state.recData;
       var filterData = new _Filters2.default().filter(this.state.recData);
-      var remarks = [];
-      for (var i in recData) {
-        if (recData[i].remarks) {
-          remarks.push(recData[i].remarks);
-        }
-      }
+      // var remarks=[]
+      // for(var i in recData){
+      //    if(recData[i].remarks){
+      //       remarks.push(recData[i].remarks); 
+      //    }
+      // }
       var columns = [{
         title: '项目',
         dataIndex: 'proName',
@@ -497,7 +497,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
         dataIndex: 'remarks',
         width: 180,
         render: function render(text, record, index) {
-          return _react3.default.createElement(TextArea, { defaultValue: remarks[index] || "个人备注：", autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
+          return _react3.default.createElement(TextArea, { defaultValue: recData[index].remarks, autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
         }
       }, {
         title: '评分标准',
@@ -575,7 +575,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
           { style: { margin: '10px 0' } },
           _react3.default.createElement(
             'span',
-            { style: { float: 'right' } },
+            { style: { float: 'right', fontSize: 16, color: 'red' } },
             '\u81EA\u8BC4\u603B\u5206\uFF1A',
             this.state.totalZiping ? this.state.totalZiping : 100
           )
@@ -1445,13 +1445,15 @@ var Bumenkp = function (_Performance) {
               if (!this.keyPairs[data[i].id]) {
                 this.keyPairs[data[i].id] = { inputs: "", score: 0, remarks: "" };
                 // this.keyPairs[data[i].id].score = data[i].childProValue
+                this.keyPairs[data[i].id].remarks = data[i].remarks;
                 if (data[i].bumen.score != null) {
+                  // console.log(data[i].bumen.score);
                   this.keyPairs[data[i].id].inputs = data[i].bumen.complete;
                   this.keyPairs[data[i].id].score = data[i].bumen.score;
-                  this.keyPairs[data[i].id].remarks = data[i].remarks;
                 }
               }
             }
+            // console.log(this.keyPairs)
             zipingSum = zipingSum.toFixed(2);
             bumenSum = bumenSum.toFixed(2);
             this.setState({
@@ -1681,17 +1683,16 @@ var Bumenkp = function (_Performance) {
       };
       var recScorezp = this.state.recScorezp;
       var recData = this.state.recData;
-      var remarks = [];
-      for (var i in recData) {
-        if (recData[i].remarks) {
-          if (recData[i].bumen.score != null) {
-            //判断一下如果有bumen这个属性，就代表是退回状态，这时只需带着remarks即可 否则要拼接
-            remarks.push(recData[i].remarks);
-          } else {
-            remarks.push(recData[i].remarks + "\n部门备注：");
-          }
-        }
-      }
+      // var remarks=[]
+      // for(var i in recData){
+      //    if(recData[i].remarks){
+      //    	 if(recData[i].bumen.score!=null){ //判断一下如果有bumen这个属性，就代表是退回状态，这时只需带着remarks即可 否则要拼接
+      //    	 	remarks.push(recData[i].remarks); 
+      //    	 }else{
+      //    	 	remarks.push(recData[i].remarks+"\n部门备注："); 
+      //    	 }
+      //    }
+      // }
       var filterData = new _Filters2.default().filter(this.state.recData);
       var columns = [{
         title: '项目',
@@ -1762,7 +1763,7 @@ var Bumenkp = function (_Performance) {
         dataIndex: 'remarks',
         width: 180,
         render: function render(text, record, index) {
-          return _react2.default.createElement(TextArea, { defaultValue: remarks[index], autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
+          return _react2.default.createElement(TextArea, { defaultValue: recData[index].remarks, autosize: { minRows: 4, maxRows: 10 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
         }
       }, {
         title: '评分标准',
@@ -1842,13 +1843,13 @@ var Bumenkp = function (_Performance) {
           { style: { margin: '10px 0' } },
           _react2.default.createElement(
             'span',
-            { style: { float: 'right' } },
+            { style: { float: 'right', fontSize: 16, color: 'red' } },
             '\u90E8\u95E8\u603B\u5206\uFF1A',
             this.state.totalBumen ? this.state.totalBumen : 0
           ),
           _react2.default.createElement(
             'span',
-            { style: { float: 'right' } },
+            { style: { float: 'right', fontSize: 16, color: 'red' } },
             '\u81EA\u8BC4\u603B\u5206\uFF1A',
             this.state.totalZiping ? this.state.totalZiping : 0,
             ' \xA0\xA0'
@@ -2307,12 +2308,14 @@ var Managementkp = function (_Performance) {
       var trs = document.querySelectorAll('tbody tr');
       // console.log(this.state.scoreList)
       for (var i = 0; i < trs.length; i++) {
-        if (this.state.scoreList[i] > 0) {
-          trs[i].style.backgroundColor = "#95CFF4";
-        } else if (this.state.scoreList[i] == 0) {
-          trs[i].style.backgroundColor = "#fff";
-        } else {
-          trs[i].style.backgroundColor = "#F5B8C8";
+        if (this.state.scoreList[i] != null) {
+          if (this.state.scoreList[i] > 0) {
+            trs[i].style.backgroundColor = "#95CFF4"; //蓝色
+          } else if (this.state.scoreList[i] == 0) {
+            trs[i].style.backgroundColor = "#fff";
+          } else {
+            trs[i].style.backgroundColor = "#F5B8C8"; //红色
+          }
         }
       }
     }
@@ -2353,16 +2356,14 @@ var Managementkp = function (_Performance) {
                 } else {
                   list.push(data[i].bumen.score);
                 }
-                // console.log(list)
               }
               for (var i in data) {
                 if (!this.keyPairs[data[i].id]) {
                   this.keyPairs[data[i].id] = { inputs: "", score: 0, remarks: "" };
-                  // this.keyPairs[data[i].id].score = data[i].childProValue
+                  this.keyPairs[data[i].id].remarks = data[i].remarks;
                   if (data[i].kpgroup.score != null) {
                     this.keyPairs[data[i].id].inputs = data[i].kpgroup.complete;
                     this.keyPairs[data[i].id].score = data[i].kpgroup.score;
-                    this.keyPairs[data[i].id].remarks = data[i].remarks;
                   }
                 }
               }
@@ -2704,7 +2705,7 @@ var Managementkp = function (_Performance) {
         dataIndex: 'remarks',
         width: 180,
         render: function render(text, record, index) {
-          return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: _this3.props.department == "historykp" ? recData[index].remarks : remarks[index], autosize: { minRows: 4, maxRows: 10 }, disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onRemarkChange.bind(_this3, index) });
+          return _react2.default.createElement(TextArea, { style: { color: "#757171" }, defaultValue: recData[index].remarks, autosize: { minRows: 4, maxRows: 10 }, disabled: _this3.props.department == "historykp" ? true : false, onChange: _this3.onRemarkChange.bind(_this3, index) });
         }
       }, {
         title: '评分标准',
@@ -2784,20 +2785,20 @@ var Managementkp = function (_Performance) {
           { style: { margin: '10px 0' } },
           _react2.default.createElement(
             'span',
-            { style: { float: 'right' } },
+            { style: { float: 'right', fontSize: 16, color: 'red' } },
             '\u8003\u8BC4\u7EC4\u603B\u5206\uFF1A',
             this.state.totalkpgroup ? this.state.totalkpgroup : 100
           ),
           _react2.default.createElement(
             'span',
-            { style: { float: 'right' } },
+            { style: { float: 'right', fontSize: 16, color: 'red' } },
             '\u90E8\u95E8\u603B\u5206\uFF1A',
             this.state.totalBumen ? this.state.totalBumen : 100,
             ' \xA0\xA0'
           ),
           _react2.default.createElement(
             'span',
-            { style: { float: 'right' } },
+            { style: { float: 'right', fontSize: 16, color: 'red' } },
             '\u81EA\u8BC4\u603B\u5206\uFF1A',
             this.state.totalZiping ? this.state.totalZiping : 100,
             ' \xA0\xA0'

@@ -1,13 +1,20 @@
 package com.dz.kaiying.controller;
 
+import com.dz.kaiying.DTO.DriverKpDTO;
+import com.dz.kaiying.DTO.DriverKpToExcelDTO;
 import com.dz.kaiying.model.DriverKpParams;
 import com.dz.kaiying.model.DriverKpParamsDTO;
 import com.dz.kaiying.service.DriverKpService;
+import com.dz.kaiying.util.ExportExcelUtil;
 import com.dz.kaiying.util.Result;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by song on 2017/7/5.
@@ -18,6 +25,20 @@ public class DriverKpController extends BaseController{
 
     @Resource
     DriverKpService driverKpService;
+
+
+    @RequestMapping(value = "/downloadExcel/{year}", method = RequestMethod.GET)
+    public void excl(HttpServletResponse response,@PathVariable String year)throws Exception{//HttpServletRequest request, HttpServletResponse response){
+        List<DriverKpDTO> driverKps=driverKpService.getDtosByYear(year);//Time("","");
+        List<DriverKpToExcelDTO> dkExcelDTOList= new ArrayList<DriverKpToExcelDTO>();
+        for (DriverKpDTO dkDTO:driverKps) {
+            DriverKpToExcelDTO excel=new DriverKpToExcelDTO();
+            BeanUtils.copyProperties(dkDTO,excel);
+            dkExcelDTOList.add(excel);
+        }
+        ExportExcelUtil eeu=new ExportExcelUtil();
+        eeu.getExcel(dkExcelDTOList,response,year);
+    }
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index () throws Exception {
