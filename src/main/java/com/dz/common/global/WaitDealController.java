@@ -35,36 +35,36 @@ import com.opensymphony.xwork2.ActionContext;
 public class WaitDealController extends BaseAction {
 	private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 	private MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(this.resourcePatternResolver);
-	
-	protected String resolveBasePackage(String basePackage) {	
+
+	protected String resolveBasePackage(String basePackage) {
 		return ClassUtils.convertClassNameToResourcePath(DataTrackFilter.getCtx().getEnvironment().resolveRequiredPlaceholders(basePackage));
 	}
-	
+
 	public List<String> findCandidateComponents(String basePackage) {
 		List<String> waitList = new ArrayList<String>();
 		try {
 			String packageSearchPath = "classpath*:" +resolveBasePackage(basePackage) + "/" + "**/*.class";
 			Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
 			for (Resource resource : resources) {
-				if (resource.isReadable()) {					
+				if (resource.isReadable()) {
 					try {
-						
+
 						MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource);
 						ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
-								
+
 						Class<?> clazz = Class.forName(sbd.getBeanClassName());
 						WaitDeal waitDeal  = clazz.getAnnotation(WaitDeal.class);
-						
+
 						if(waitDeal != null){
 							waitList.add(waitDeal.name());
 						}
-						
+
 					}
 					catch (Throwable ex) {
 						throw new BeanDefinitionStoreException(
 								"Failed to read candidate component class: " + resource, ex);
 					}
-				}	
+				}
 			}
 		}
 		catch (IOException ex) {
@@ -72,15 +72,15 @@ public class WaitDealController extends BaseAction {
 		}
 		return waitList;
 	}
-	
+
 	private static List<String> waitBeanList = null;
-	
+
 	private String waitType;
 	public void getWaitDeal() throws IOException{
 		Map<String, List<ToDo>> map = getWaitDealMap();
-		
+
 		JSONObject json = JSONObject.fromObject(map.get(waitType));
-		
+
 		ServletActionContext.getResponse().setContentType("application/json");
 		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
 		PrintWriter pw = ServletActionContext.getResponse().getWriter();
@@ -88,10 +88,10 @@ public class WaitDealController extends BaseAction {
 		pw.flush();
 		pw.close();
 	}
-	
+
 	public void getWaitDealCount() throws IOException{
 		Map<String, List<ToDo>> map = getWaitDealMap();
-			
+
 		ServletActionContext.getResponse().setContentType("application/json");
 		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
 		PrintWriter pw = ServletActionContext.getResponse().getWriter();
@@ -129,15 +129,15 @@ public class WaitDealController extends BaseAction {
 		if(map!=null&&BooleanUtils.isFalse(needRefresh)){
 			return map;
 		}
-		
+
 		if(waitBeanList == null){
 			waitBeanList = findCandidateComponents("com.dz.module");
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		List<Role> roles = (List<Role>) ActionContext.getContext().getSession().get("roles");
 		map = new TreeMap<String,List<ToDo>>();
-		
+
 		for(Role role:roles){
 			for(String beanName:waitBeanList){
 				WaitToDo waitToDo = (WaitToDo) DataTrackFilter.getCtx().getBean(beanName);

@@ -4,6 +4,7 @@ import com.dz.common.other.Timer;
 import com.dz.module.driver.DriverService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -16,6 +17,12 @@ import java.util.Map;
 import java.util.TimerTask;
 
 public class DataTrackFilter implements Filter{
+
+//	private static ApplicationContext ctx;
+//
+//	public static ApplicationContext getCtx() {
+//		return ctx;
+//	}
 
 	public void doFilter(ServletRequest trequest, ServletResponse tresponse,
 						 FilterChain nextFilter) throws IOException, ServletException {
@@ -63,6 +70,8 @@ public class DataTrackFilter implements Filter{
 			}
 		}
 
+//		ctx = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
+
 		nextFilter.doFilter(request, response);
 	}
 
@@ -79,7 +88,7 @@ public class DataTrackFilter implements Filter{
 
 		new Timer().startTcpServer();
 
-
+//		DataTrackFilter.ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
 //		final ApplicationContext ctx = SpringContextListener.getApplicationContext();
 
 		java.util.Timer timer = new java.util.Timer();
@@ -88,6 +97,7 @@ public class DataTrackFilter implements Filter{
 			public void run() {
 				ApplicationContext ctx = SpringContextListener.getApplicationContext();
 //				ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
+//				DriverService driverService = DataTrackFilter.ctx.getBean(DriverService.class);
 				DriverService driverService = ctx.getBean(DriverService.class);
 				driverService.sendMessageToQualification();
 				driverService.sendMessageToDriverLicense();

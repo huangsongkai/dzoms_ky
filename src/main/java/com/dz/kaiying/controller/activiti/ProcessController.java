@@ -8,8 +8,10 @@ import com.dz.kaiying.util.Result;
 import com.dz.module.user.User;
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,8 @@ public class ProcessController {
     private ResultWrapper resultWrapper;
     @Resource
     HibernateDao<EvaluateDetail, Integer> evaluateDetailDao;
+    @Resource
+    TaskService taskService;
 
     @RequestMapping(value="/deploy/{fileName}", method= RequestMethod.GET)
     @ResponseBody
@@ -92,6 +96,14 @@ public class ProcessController {
                     System.out.println("不包含");
                 }
             }
+        }
+        List<Task> tasks = taskService.createTaskQuery()
+                .taskAssignee(userName).orderByTaskName()
+                .processVariableValueEquals("state", "1")
+                .orderByDueDate().asc()
+                .list();
+        if(tasks.size() != 0){
+            return "activity/task_list";
         }
         String processInstanceId = activitiService.startForm(userName, processKey, request.getParameterMap(), request);
         return "activity/task_list";

@@ -724,7 +724,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                         ),
                         _react3.default.createElement(
                             _col2.default,
-                            { span: '8', style: { textAlign: 'left' } },
+                            { span: '18', style: { textAlign: 'left' } },
                             _react3.default.createElement(
                                 'span',
                                 null,
@@ -746,7 +746,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                         ),
                         _react3.default.createElement(
                             _col2.default,
-                            { span: '8', style: { textAlign: 'left' } },
+                            { span: '18', style: { textAlign: 'left' } },
                             _react3.default.createElement(
                                 'span',
                                 null,
@@ -768,7 +768,7 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                         ),
                         _react3.default.createElement(
                             _col2.default,
-                            { span: '8', style: { textAlign: 'left' } },
+                            { span: '18', style: { textAlign: 'left' } },
                             _react3.default.createElement(
                                 'span',
                                 null,
@@ -790,6 +790,12 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                 lineHeight: "28px"
             };
             var rows = processVarInfo.map(function (row) {
+                var scroreStyle = {};
+                if (row.variable.name == "自评分数" || row.variable.name == "考核小组打分" || row.variable.name == "部门评分") {
+                    scroreStyle = { color: "red" };
+                } else {
+                    scroreStyle = {};
+                }
                 return _react3.default.createElement(
                     'div',
                     { style: conStyle },
@@ -805,18 +811,15 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
                     ),
                     _react3.default.createElement(
                         _col2.default,
-                        { span: '8', style: { textAlign: 'left' } },
+                        { span: '18', style: { textAlign: 'left' } },
                         _react3.default.createElement(
                             'span',
-                            null,
+                            { style: scroreStyle },
                             row.variable.value
                         )
                     )
                 );
             });
-
-            console.log(rows);
-
             return rows;
         }
     }, {
@@ -850,9 +853,6 @@ var TaskCollapse = _wrapComponent('TaskCollapse')(function (_Component) {
             if (this.props.processImgData != "") {
                 processInstanceId = this.props.processImgData[0].processInstanceId;
             }
-            //console.log(processInstanceId);
-            // src={"/DZOMS/ky/runtime/process-instances/"+processInstanceId+"/diagram"} 
-            // src={'/images/img1.png'}
             return _react3.default.createElement(
                 'div',
                 null,
@@ -1003,7 +1003,7 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
                             alert("操作失败");
                         }
                     });
-                    console.log(window.processInstanceId);
+                    // console.log(window.processInstanceId);
                     $.ajax({
                         type: "GET",
                         url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
@@ -1014,16 +1014,12 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
                                 var expNull = null;
                                 var taskDataList = {};
                                 var startFormData = [];
-
                                 for (var i = 0; i < result.data.length; i++) {
                                     if (result.data[i].taskId === expNull) {
                                         startFormData.push(result.data[i]);
                                     }
                                 }
-                                console.log("-------------------");
-                                console.log(startFormData);
                                 self.setState({
-                                    // recResult:taskArray,
                                     processVarInfo: startFormData
                                 });
                             }

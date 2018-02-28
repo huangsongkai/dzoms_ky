@@ -1793,6 +1793,7 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
     _this.state = {
       data: [],
       loading: true,
+      year: "",
       isPagination: { pageSize: 10 }
     };
     return _this;
@@ -1807,9 +1808,11 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
   }, {
     key: 'handleChange',
     value: function handleChange(dateString) {
+      // console.log(dateString)
       var self = this;
       self.setState({
-        loading: true
+        loading: true,
+        year: dateString
       });
       $.get("/DZOMS/ky/driverKp/dtoList/" + dateString, function (data) {
         var records = data.data;
@@ -1854,6 +1857,7 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
   }, {
     key: 'render',
     value: function render() {
+      var exportUrl = "/DZOMS/ky/driverKp/downloadExcel/" + this.state.year || 2017;
       return React.createElement(
         'div',
         null,
@@ -1932,7 +1936,11 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
             React.createElement(
               _button2.default,
               { type: 'primary' },
-              '\u5BFC\u51FA'
+              React.createElement(
+                'a',
+                { href: exportUrl },
+                '\u5BFC\u51FA'
+              )
             )
           )
         ),

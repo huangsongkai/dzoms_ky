@@ -111,8 +111,8 @@ public class ActivitiService  extends TaskBaseResource{
         String userName = user.getUname();
         //获取开始表单
         variableMap.put("userName1", userName);
+        variableMap.put("state", "1");
         ProcessInstance processInstance = formService.submitStartFormData(processDefinition.getId(), variableMap);
-
         //runtimeService.setVariable(processDefinition.getId(), "userName", userName);//在runtime的时候插入一个全局变量
         return processInstance.getId();
     }
@@ -318,6 +318,7 @@ public class ActivitiService  extends TaskBaseResource{
         biba.getData();
         System.out.println(biba.getData());
         List<Task> taskList = taskService.createTaskQuery().taskCandidateOrAssigned(requestParams.get("assignee")).list();
+
         System.out.println(taskList.size());
         List<TaskDto> taskDtoList = new ArrayList<TaskDto>();
         for(Task task : taskList){
