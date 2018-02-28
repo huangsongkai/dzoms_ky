@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.dz.common.test.SpringContextListener;
 import com.dz.module.vehicle.VehicleApprovalService;
 import net.sf.json.JSONObject;
 
@@ -37,7 +38,7 @@ public class WaitDealController extends BaseAction {
 	private MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(this.resourcePatternResolver);
 
 	protected String resolveBasePackage(String basePackage) {
-		return ClassUtils.convertClassNameToResourcePath(DataTrackFilter.getCtx().getEnvironment().resolveRequiredPlaceholders(basePackage));
+		return ClassUtils.convertClassNameToResourcePath(SpringContextListener.getApplicationContext().getEnvironment().resolveRequiredPlaceholders(basePackage));
 	}
 
 	public List<String> findCandidateComponents(String basePackage) {
@@ -140,7 +141,7 @@ public class WaitDealController extends BaseAction {
 
 		for(Role role:roles){
 			for(String beanName:waitBeanList){
-				WaitToDo waitToDo = (WaitToDo) DataTrackFilter.getCtx().getBean(beanName);
+				WaitToDo waitToDo = (WaitToDo) SpringContextListener.getApplicationContext().getBean(beanName);
 				Map<String,List<ToDo>> tmp = waitToDo.waitToDo(role);
 				for(String key:tmp.keySet()){
 					if(map.containsKey(key)){
