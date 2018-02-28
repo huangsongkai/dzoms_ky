@@ -10,14 +10,6 @@ public class QualificationMessageLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    /**
-     * `id` int(11) NOT NULL AUTO_INCREMENT,
-     `id_num` varchar(30) DEFAULT NULL COMMENT '身份证号',
-     `phone_num` varchar(30) DEFAULT NULL,
-     `send_time` datetime DEFAULT NULL,
-     `context` varchar(255) DEFAULT NULL,
-     `return_val` varchar(50) DEFAULT NULL,
-     */
     @Column(length = 30)
     private String idNum;
     @Column(length = 30)

@@ -80,18 +80,20 @@ public class DataTrackFilter implements Filter{
 		new Timer().startTcpServer();
 
 
-		final ApplicationContext ctx = SpringContextListener.getApplicationContext();
+//		final ApplicationContext ctx = SpringContextListener.getApplicationContext();
 
 		java.util.Timer timer = new java.util.Timer();
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
+				ApplicationContext ctx = SpringContextListener.getApplicationContext();
 //				ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
 				DriverService driverService = ctx.getBean(DriverService.class);
 				driverService.sendMessageToQualification();
+				driverService.sendMessageToDriverLicense();
 			}
 		};
-		timer.schedule(task,1000,86400000);
+		timer.schedule(task,240000,86400000);
 	}
 	private String decodeStringArray(String[] ss){
 		if(ss.length == 0)

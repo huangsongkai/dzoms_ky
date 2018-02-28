@@ -7,6 +7,9 @@ import com.dz.common.other.ObjectAccess;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
@@ -18,8 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -268,15 +273,37 @@ public class DriverService {
 	@Value("#{configProperties['messagePassword']}")
 	private String messagePassword;
 
+	@Value("#{configProperties['qualificationAlertDays']}")
+	private String qualificationAlertDays;
+
 	/**
 	 * 发送消息给资格证即将到期的在车驾驶员
 	 */
 	public void sendMessageToQualification(){
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH,1);
-		Calendar _3daysBefore = Calendar.getInstance();
-		calendar.add(Calendar.DATE,-3);
+		ObjectMapper mapper = new ObjectMapper();
+		JavaType listType = TypeFactory.defaultInstance().constructCollectionType(List.class,Integer.TYPE);
+		List<Integer> days ;
+		try {
+			days = mapper.readValue(qualificationAlertDays,listType);
+		} catch (IOException e) {
+			System.err.println("配置文件MyConfiguare.properties的资格证提醒日期项qualificationAlertDays内容不正确，" +
+					"其格式应为[天数1,天数2,……],如[30,15,7]会在即将到期前的30,15,7分别提醒。");
+			e.printStackTrace();
+			days = Collections.emptyList();
+		}
 
+		Calendar _3daysBefore = Calendar.getInstance();
+		_3daysBefore.add(Calendar.DATE,-3);
+
+		for (int i : days) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE,i);
+
+			sendMessageForQualification(calendar, _3daysBefore);
+		}
+	}
+
+	private void sendMessageForQualification(Calendar afterDate, Calendar _3daysBefore) {
 		Session s = null;
 		Transaction tx = null;
 		try {
@@ -284,9 +311,11 @@ public class DriverService {
 			tx = s.beginTransaction();
 
 			Query query = s.createQuery("from Driver d where d.qualificationValidDate <:dt and " +
+					"d.qualificationValidDate >:dtOffset and " +
 					"not exists (select 1 from QualificationMessageLog ql " +
 					"where ql.idNum=d.idNum and ql.sendTime>:bfd)");
-			query.setDate("dt",calendar.getTime());
+			query.setDate("dt", afterDate.getTime());
+			query.setDate("dtOffset",new Date(afterDate.getTime().getTime()-3*24*3600*1000l));
 			query.setDate("bfd",_3daysBefore.getTime());
 			List<Driver> sendList = query.list();
 
@@ -301,7 +330,7 @@ public class DriverService {
 				String content = String.format("您的资格证即将到期！到期日期：%tF,剩余%d天。",
 						driver.getQualificationValidDate(),
 						(driver.getQualificationValidDate().getTime()-new Date().getTime())/86400000+1);
-				String resultStr = client.fakeSendMessage(phoneNum,content,"","","");
+				String resultStr = client.sendMessage(phoneNum,content,"","","");
 
 				QualificationMessageLog log = new QualificationMessageLog();
 				log.setIdNum(driver.getIdNum());
@@ -314,13 +343,8 @@ public class DriverService {
 			}
 
 			tx.commit();
-		}catch (HibernateException ex){
+		}catch (HibernateException | UnsupportedEncodingException ex){
 			ex.printStackTrace();
-			if(tx!=null){
-				tx.rollback();
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
 			if(tx!=null){
 				tx.rollback();
 			}
@@ -329,11 +353,105 @@ public class DriverService {
 		}
 	}
 
+
+	@Value("#{configProperties['driverLicenseAlertDays']}")
+	private String driverLicenseAlertDays;
+	/**
+	 * 发消息到驾驶证即将到期的在车驾驶员   固定6年
+	 */
+	public void sendMessageToDriverLicense(){
+		ObjectMapper mapper = new ObjectMapper();
+		JavaType listType = TypeFactory.defaultInstance().constructCollectionType(List.class,Integer.TYPE);
+		List<Integer> days ;
+		try {
+			days = mapper.readValue(driverLicenseAlertDays,listType);
+		} catch (IOException e) {
+			System.err.println("配置文件MyConfiguare.properties的驾驶证提醒日期项driverLicenseAlertDays内容不正确，" +
+					"其格式应为[天数1,天数2,……],如[30,15,7]会在即将到期前的30,15,7分别提醒。");
+			e.printStackTrace();
+			days = Collections.emptyList();
+		}
+
+		Calendar _3daysBefore = Calendar.getInstance();
+		_3daysBefore.add(Calendar.DATE,-3);
+
+		for (int i : days) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE,i);
+			calendar.add(Calendar.YEAR,-6);
+
+			sendMessageForDriverLicense(calendar, _3daysBefore);
+		}
+	}
+
+	private void sendMessageForDriverLicense(Calendar afterDate, Calendar _3daysBefore) {
+		Session s = null;
+		Transaction tx = null;
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			Query query = s.createQuery("from Driver d where d.drivingLicenseDate <:dt and " +
+					"d.drivingLicenseDate >:dtOffset and " +
+					"not exists (select 1 from QualificationMessageLog ql " +
+					"where ql.idNum=d.idNum and ql.sendTime>:bfd)");
+			query.setDate("dt", afterDate.getTime());
+			query.setDate("dtOffset",new Date(afterDate.getTime().getTime()-3*24*3600*1000l));
+			query.setDate("bfd",_3daysBefore.getTime());
+			List<Driver> sendList = query.list();
+
+			System.out.println(messageSequenceNum);
+			System.out.println(messagePassword);
+
+			MessageClient client = new MessageClient(messageSequenceNum,messagePassword);
+
+			for (Driver driver : sendList) {
+				String phoneNum = driver.getPhoneNum1();
+
+				Calendar driverLicense = Calendar.getInstance();
+				driverLicense.setTime(driver.getDrivingLicenseDate());
+				driverLicense.add(Calendar.YEAR,6);
+
+				String content = String.format("您的驾驶证即将到期！到期日期：%tF,剩余%d天。",
+						driverLicense.getTime(),
+						(driverLicense.getTime().getTime()-new Date().getTime())/86400000+1);
+				String resultStr = client.sendMessage(phoneNum,content,"","","");
+
+				QualificationMessageLog log = new QualificationMessageLog();
+				log.setIdNum(driver.getIdNum());
+				log.setPhoneNum(phoneNum);
+				log.setSendTime(new Date());
+				log.setContext(content);
+				log.setReturnVal(resultStr);
+
+				s.save(log);
+			}
+
+			tx.commit();
+		}catch (HibernateException | UnsupportedEncodingException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		} finally {
+			HibernateSessionFactory.closeSession();
+		}
+	}
+
+
 	public void setMessagePassword(String messagePassword) {
 		this.messagePassword = messagePassword;
 	}
 
 	public void setMessageSequenceNum(String messageSequenceNum) {
 		this.messageSequenceNum = messageSequenceNum;
+	}
+
+	public void setDriverLicenseAlertDays(String driverLicenseAlertDays) {
+		this.driverLicenseAlertDays = driverLicenseAlertDays;
+	}
+
+	public void setQualificationAlertDays(String qualificationAlertDays) {
+		this.qualificationAlertDays = qualificationAlertDays;
 	}
 }
