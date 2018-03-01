@@ -86,6 +86,8 @@ Triplet<String, String, Object> conditon_checked = Triplet.with("isChecked", "="
 Triplet<String, String, Object> conditon_not_dangri = Triplet.with("checkClass", "not like",(Object)"%未按规定日期参加例会%");
 Triplet<String, String, Object> conditon_not_spacial = Triplet.with("checkClass", "not like",(Object)"%特殊情况%");
 Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select idNum from Driver where dept in ('一部','二部','三部') ) and 1=", (Object)1);
+
+int total_plan=0,total_should=0,total_dangri=0,total_shidao=0,total_buhuihou=0,total_leave=0,total_chidao=0;
  %>
 			<s:if test="%{meeting.meetingTimeL1!=null}">
 				<tr>
@@ -98,7 +100,9 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					</td>
 					<td>
 						<%
-						int planNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept1); %>
+						int planNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept1);
+						%>
+						<% total_plan+=planNum; %>
 						<%=planNum %>
 					</td>
 					<td>
@@ -108,6 +112,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						int specialNum = md.selectMeetingCheckCount(meeting.getId(), condition_dept1,conditon_spacial); 
 						int shouldNum = planNum - leaveNum - specialNum;
 						%>
+						<% total_should += shouldNum; %>
 						<%= shouldNum %>
 					</td>
 
@@ -125,6 +130,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						
 						int dangriNum = dangriList.size();
 						%>
+						<% total_dangri += dangriNum; %>
 						<%= dangriNum %>
 					</td>
 					<td>
@@ -148,6 +154,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					int shidaoNum = shidaoList.size();
 						
 					%>
+						<% total_shidao+=shidaoNum; %>
 					 <%= shidaoNum%>
 					</td>
 					<td>
@@ -160,9 +167,10 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 
 					<td>
 					<% 
-					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept1,conditon_checked, conditon_not_spacial); 
+					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept1,conditon_checked, conditon_not_spacial,conditon_not_manaul_leave);
 						
 					%>
+						<% total_buhuihou += buhuihouNum; %>
 					 <%= buhuihouNum%>
 					</td>
 					<td>
@@ -173,6 +181,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						<%}%>
 					</td>
 					<td>
+						<% total_leave+=leaveNum; %>
 					<%=leaveNum %>
 					</td>
 					<td>
@@ -188,6 +197,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						}
 					});
 					 %>
+						<% total_chidao+=chidaoList.size();%>
 					 <%= chidaoList.size()%>
 					</td>
 				</tr>
@@ -204,6 +214,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					<td>
 						<%
 						int planNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept2); %>
+						<% total_plan+=planNum; %>
 						<%=planNum %>
 					</td>
 					<td>
@@ -214,6 +225,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						int specialNum = md.selectMeetingCheckCount(meeting.getId(), condition_dept2,conditon_spacial); 
 						int shouldNum = planNum - leaveNum - specialNum;
 						%>
+						<% total_should += shouldNum; %>
 						<%= shouldNum %>
 					</td>
 					<td>
@@ -230,6 +242,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						
 						int dangriNum = dangriList.size();
 						%>
+						<% total_dangri += dangriNum; %>
 						<%= dangriNum %>
 					</td>
 					<td>
@@ -253,6 +266,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					int shidaoNum = shidaoList.size();
 						
 					%>
+						<% total_shidao+=shidaoNum; %>
 					 <%= shidaoNum%>
 					</td>
 					<td>
@@ -265,9 +279,10 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					<td>
 					<% 
 					@SuppressWarnings({"unchecked" })
-					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept2,conditon_checked, conditon_not_spacial); 
+					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept2,conditon_checked, conditon_not_spacial,conditon_not_manaul_leave);
 						
 					%>
+						<% total_buhuihou += buhuihouNum; %>
 					 <%= buhuihouNum%>
 					</td>
 					<td>
@@ -278,6 +293,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						<%}%>
 					</td>
 					<td>
+						<% total_leave+=leaveNum; %>
 					<%=leaveNum %>
 					</td>
 					<td>
@@ -292,6 +308,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						}
 					});
 					 %>
+						<% total_chidao+=chidaoList.size();%>
 					 <%= chidaoList.size()%>
 					</td>
 				</tr>
@@ -309,6 +326,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					<td>
 						<%
 						int planNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept3); %>
+						<% total_plan+=planNum; %>
 						<%=planNum %>
 					</td>
 					<td>
@@ -318,6 +336,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						int specialNum = md.selectMeetingCheckCount(meeting.getId(), condition_dept3,conditon_spacial); 
 						int shouldNum = planNum - leaveNum - specialNum;
 						%>
+						<% total_should += shouldNum; %>
 						<%= shouldNum %>
 					</td>
 					<td>
@@ -333,6 +352,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						
 						int dangriNum = dangriList.size();
 						%>
+						<% total_dangri += dangriNum; %>
 						<%= dangriNum %>
 					</td>
 					<td>
@@ -356,6 +376,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					int shidaoNum = shidaoList.size();
 						
 					%>
+						<% total_shidao+=shidaoNum; %>
 					 <%= shidaoNum%>
 					</td>
 					<td>
@@ -367,9 +388,10 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 					</td>
 					<td>
 					<% 
-					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept3,conditon_checked, conditon_not_spacial); 
+					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_dept3,conditon_checked, conditon_not_spacial,conditon_not_manaul_leave);
 						
 					%>
+						<% total_buhuihou += buhuihouNum; %>
 					 <%= buhuihouNum%>
 					</td>
 					<td>
@@ -380,6 +402,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						<%}%>
 					</td>
 					<td>
+						<% total_leave+=leaveNum; %>
 					<%=leaveNum %>
 					</td>
 					<td>
@@ -394,6 +417,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						}
 					});
 					 %>
+						<% total_chidao+=chidaoList.size();%>
 					 <%= chidaoList.size()%>
 					</td>
 				</tr>
@@ -409,94 +433,49 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						out.print(vms.seleVehicleCount(vehicle));%>
 					</td>
 					<td>
-						<%
-						int planNum = md.selectMeetingCheckCount(meeting.getId(),dept_need); %>
-						<%=planNum %>
+						<%=total_plan %>
 					</td>
 					<td>
-						<%int leaveNum = 0;//md.selectLeaveNumber(meeting.getId(),null);
-							int manualLeave = md.selectMeetingCheckCount(meeting.getId(),dept_need,conditon_manaul_leave);
-							leaveNum += manualLeave;
-						int specialNum = md.selectMeetingCheckCount(meeting.getId(),dept_need,conditon_spacial);
-						int shouldNum = planNum - leaveNum - specialNum;
-						%>
-						<%= shouldNum %>
+						<%= total_should %>
 					</td>
 					<td>
-						<%
-						List<MeetingCheck> dangriList = md.selectMeetingCheck(meeting.getId(),dept_need,conditon_checked,conditon_not_dangri,conditon_not_spacial,conditon_not_manaul_leave);
-						
-						dangriList = (List<MeetingCheck>)CollectionUtils.select(dangriList, new Predicate(){
-							public boolean evaluate(Object object){
-								MeetingCheck meetingCheck = (MeetingCheck) object;
-								return meetingCheck.isDangri();
-							}
-						});
-						
-						int dangriNum = dangriList.size();
-						%>
-						<%= dangriNum %>
+						<%= total_dangri %>
 					</td>
 					<td>
-						<%if(shouldNum==0){%>
+						<%if(total_should==0){%>
 							<%= new java.text.DecimalFormat("0.00%").format(1.0)%>
 						<%}else{%>
-							<%= new java.text.DecimalFormat("0.00%").format((double)dangriNum/(double)shouldNum)%>
+							<%= new java.text.DecimalFormat("0.00%").format((double)total_dangri/(double)total_should)%>
 						<%}%>
 					</td>
 					<td>
-					<% 
-					List<MeetingCheck> shidaoList = md.selectMeetingCheck(meeting.getId(),condition_in_car,conditon_checked, conditon_not_dangri,conditon_not_spacial,conditon_not_manaul_leave);
-					
-					shidaoList = (List<MeetingCheck>)CollectionUtils.select(shidaoList, new Predicate(){
-						public boolean evaluate(Object object){
-							MeetingCheck meetingCheck = (MeetingCheck) object;
-							return !meetingCheck.isBuhui();
-						}
-					});
-					
-					int shidaoNum = shidaoList.size();
-						
-					%>
-					 <%= shidaoNum%>
+					 <%= total_shidao%>
 					</td>
 					<td>
-						<%if(shouldNum==0){%>
+						<%if(total_should==0){%>
 							<%= new java.text.DecimalFormat("0.00%").format(1.0)%>
 						<%}else{%>
-							<%= new java.text.DecimalFormat("0.00%").format((double)shidaoNum/(double)shouldNum)%>
+							<%= new java.text.DecimalFormat("0.00%").format((double)total_shidao/(double)total_should)%>
 						<%}%>
 					</td>
 					<td>
-					<% 
-					int buhuihouNum = md.selectMeetingCheckCount(meeting.getId(),condition_in_car,conditon_checked, conditon_not_spacial);
-						
-					%>
-					 <%= buhuihouNum%>
+					 <%= total_buhuihou%>
 					</td>
 					<td>
-						<%if(shouldNum==0){%>
+						<%if(total_should==0){%>
 							<%= new java.text.DecimalFormat("0.00%").format(1.0)%>
 						<%}else{%>
-							<%= new java.text.DecimalFormat("0.00%").format((double)buhuihouNum/(double)shouldNum)%>
+							<%= new java.text.DecimalFormat("0.00%").format((double)total_buhuihou/(double)total_should)%>
 						<%}%>
 					</td>
 					<td>
-					<%=leaveNum %>
+					<%=total_leave %>
 					</td>
 					<td>
-					<%=shouldNum-buhuihouNum %>
+					<%=total_should-total_buhuihou %>
 					</td>
 					<td>
-					<% 
-					List<MeetingCheck> chidaoList = (List<MeetingCheck>)CollectionUtils.select(shidaoList, new Predicate(){
-						public boolean evaluate(Object object){
-							MeetingCheck meetingCheck = (MeetingCheck) object;
-							return meetingCheck.isChidao();
-						}
-					});
-					 %>
-					 <%= chidaoList.size()%>
+					 <%= total_chidao%>
 					</td>
 				</tr>
 		</table>
@@ -705,7 +684,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						<label>录入人 </label> 
 					</div> 
 					<div class="field">
-						<s:textfield cssClass="input" type="text" readonly="readonly" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',meeting.registrant).uname}"></s:textfield>
+						<s:textfield cssClass="input" type="text" readonly="true" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',meeting.registrant).uname}"></s:textfield>
 					</div> 
 				</div> 
 				<div class="form-group">
@@ -713,7 +692,7 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 						<label>录入时间 </label> 
 					</div> 
 					<div class="field">
-						<s:textfield cssClass="input" readonly="readonly" name="meeting.registTime" />
+						<s:textfield cssClass="input" readonly="true" name="meeting.registTime" />
 					</div> 
 				</div>
 		<br>
@@ -749,20 +728,47 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 	<div>
 		<script>
 			function search(){
-				var condition = " and meetingId=<s:property value="%{meeting.id}"/> ";
-				if($("#licenseNum").val().trim().length>0){
-					condition+= " and idNum in (select idNum from Driver where carframeNum in (select carframeNum from Vehicle where licenseNum like '%"+$("#licenseNum").val().trim()+"%'  ) ) ";
-				}
-				
-				if($("#name").val().trim().length>0){
-					condition+= " and idNum in (select idNum from Driver where name like '%"+$("#name").val().trim()+"%' ) ";
-				}
-				
-				condition += $("#dept").val();
-				condition += $("#isChecked").val();
-				condition += $("#checkMethod").val();
-				
-				$("input[name='condition']").val(condition);
+                var dept = $("#dept").val();
+                var licenseNum = $("#licenseNum").val();
+                var licenseCondition = " ";
+
+                if(licenseNum.trim().length>0){
+                    licenseCondition = " and v.licenseNum like '%"+licenseNum.trim()+"%' ";
+                }
+
+                var name = $("#name").val();
+                if(name.trim().length>0){
+                    licenseCondition += " and d.name like '%"+name.trim()+"%' ";
+                }
+
+                licenseCondition+=$("#isChecked").val()||'';
+                licenseCondition += $("#checkMethod").val()||'';
+
+                var condition = "from MeetingCheck mc,Driver d,Vehicle v " +
+                    "where mc.meetingId=${meeting.id} and mc.idNum=d.idNum and d.carframeNum=v.carframeNum " +
+                    dept+licenseCondition+
+                    "order by v.dept,v.licenseNum";
+                $('[name="condition"]').val(condition);
+
+                <%--var condition = " and meetingId=<s:property value="%{meeting.id}"/> ";--%>
+				<%--if($("#licenseNum").val().trim().length>0){--%>
+					<%--condition+= " and idNum in (select idNum from Driver where carframeNum in (select carframeNum from Vehicle where licenseNum like '%"+$("#licenseNum").val().trim()+"%'  ) ) ";--%>
+				<%--}--%>
+				<%----%>
+				<%--if($("#name").val().trim().length>0){--%>
+					<%--condition+= " and idNum in (select idNum from Driver where name like '%"+$("#name").val().trim()+"%' ) ";--%>
+				<%--}--%>
+				<%----%>
+				<%--condition += $("#dept").val();--%>
+				<%--condition += $("#isChecked").val();--%>
+				<%--condition += $("#checkMethod").val();--%>
+
+				<%--condition += " order by " +--%>
+					<%--"(select v.dept,v.licenseNum " +--%>
+					<%--"from Vehicle v,Driver d where d.idNum=idNum and d.carframeNum=v.carframeNum " +--%>
+					<%--")";--%>
+				<%----%>
+				<%--$("input[name='condition']").val(condition);--%>
 				
 				$("#search_form").submit();
 			}
@@ -788,10 +794,11 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 				
 			});
 		</script>
-		<form method="post" class="form-inline" id="search_form" action="/DZOMS/common/selectToList" target="defframe">
+		<form method="post" class="form-inline" id="search_form" action="/DZOMS/common/selectToList2" target="defframe">
 		<input type="hidden" name="url" value="/driver/meeting/meeting_anaylse_result.jsp" />
-		<input type="hidden" name="className" value="com.dz.module.driver.meeting.MeetingCheck"/>
+		<%--<input type="hidden" name="className" value="com.dz.module.driver.meeting.MeetingCheck"/>--%>
 		<input type="hidden" name="condition" />
+			<input type="hidden" name="column" value="mc"/>
 		   <div class="line">
 		   		<div class="panel  margin-small" >
 		          	<div class="panel-head">
@@ -806,10 +813,10 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 		                            <td style="border-top: 0px;">归属部门</td>
 		                            <td style="border-top: 0px;">
 		                            <select id="dept" class="input">
-		                            	<option value=" " selected="selected">全部</option>
-		                            	<option value=" and idNum in (select idNum from Driver where dept='一部') ">一部</option>
-		                            	<option value=" and idNum in (select idNum from Driver where dept='二部') ">二部</option>
-		                            	<option value=" and idNum in (select idNum from Driver where dept='三部') ">三部</option>
+										<option value=" " selected="selected">全部</option>
+										<option value=" and v.dept='一部' " >一部</option>
+										<option value=" and v.dept='二部' " >二部</option>
+										<option value=" and v.dept='三部' " >三部</option>
 		                            </select>
 		                            </td>
 		                            
@@ -827,8 +834,8 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 		                            <td style="border-top: 0px;">
 		                            <select id="isChecked" class="input">
 		                            	<option value=" " selected="selected">全部</option>
-		                            	<option value=" and isChecked=true ">是</option>
-		                            	<option value=" and (isChecked is null or isChecked=false) ">否</option>
+		                            	<option value=" and mc.isChecked=true ">是</option>
+		                            	<option value=" and (mc.isChecked is null or mc.isChecked=false) ">否</option>
 		                            </select>
 		                            </td>
 		                            
@@ -836,8 +843,8 @@ Triplet<String, String, Object> dept_need = Triplet.with("idNum", "in (select id
 		                            <td style="border-top: 0px;">
 		                            <select id="checkMethod" class="input">
 		                            	<option value=" " selected="selected">全部</option>
-		                            	<option value=" and checkMethod like '%指纹%' ">指纹</option>
-		                            	<option value=" and checkMethod like '%手动%' ">手动</option>
+		                            	<option value=" and mc.checkMethod like '%指纹%' ">指纹</option>
+		                            	<option value=" and mc.checkMethod like '%手动%' ">手动</option>
 		                            </select>
 		                            </td>
 		                            <td><input type="button" value="查询" onclick="search();"/></td>

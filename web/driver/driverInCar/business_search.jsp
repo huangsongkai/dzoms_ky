@@ -24,7 +24,8 @@
 <script src="/DZOMS/res/js/pintuer.js"></script>
 <script src="/DZOMS/res/js/respond.js"></script>
 <script src="/DZOMS/res/js/admin.js"></script>
-
+	<link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css"/>
+	<script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js"></script>
 <script type="text/javascript" src="/DZOMS/res/js/JsonList.js" ></script>
 <script type="text/javascript" src="/DZOMS/res/js/TableList.js" ></script>
 	<jsp:include page="/common/msg_info.jsp"></jsp:include>

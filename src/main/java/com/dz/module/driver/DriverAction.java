@@ -742,23 +742,23 @@ public class DriverAction extends BaseAction{
 		//v = vehicleService.selectById(v);
 		Vehicle v = ObjectAccess.getObject(Vehicle.class, d.getBusinessApplyCarframeNum());
 
-		String rawIdnum = null;
-		switch (d.getBusinessApplyDriverClass()){
-			case "主驾":
-				rawIdnum = v.getFirstDriver();
-				break;
-			case "副驾":
-				rawIdnum = v.getSecondDriver();
-				break;
-			case "三驾":
-				rawIdnum = v.getThirdDriver();
-		}
-		if(StringUtils.isNotEmpty(rawIdnum)){
-			Driver rd = ObjectAccess.getObject(Driver.class,rawIdnum);
-			request.setAttribute("msgStr",
-					String.format("%s驾驶员%s,%s未下车，请先进行下车操作",v.getLicenseNum(),rd.getName(),rd.getIdNum()));
-			return SUCCESS;
-		}
+//		String rawIdnum = null;
+//		switch (d.getBusinessApplyDriverClass()){
+//			case "主驾":
+//				rawIdnum = v.getFirstDriver();
+//				break;
+//			case "副驾":
+//				rawIdnum = v.getSecondDriver();
+//				break;
+//			case "三驾":
+//				rawIdnum = v.getThirdDriver();
+//		}
+//		if(StringUtils.isNotEmpty(rawIdnum)){
+//			Driver rd = ObjectAccess.getObject(Driver.class,rawIdnum);
+//			request.setAttribute("msgStr",
+//					String.format("%s驾驶员%s,%s未下车，请先进行下车操作",v.getLicenseNum(),rd.getName(),rd.getIdNum()));
+//			return SUCCESS;
+//		}
 
 		Session s = null;
 		Transaction tx = null;
@@ -847,6 +847,87 @@ public class DriverAction extends BaseAction{
 		//record = new Driverincar(d.getCarframeNum(),d.getIdNum(),"上车",d.getBusinessReciveTime());
 		//driverService.addDriverInCarRecord(record);
 		return SUCCESS;
+	}
+
+	public void validateBussinessApply() throws IOException{
+		JSONObject jobj = new JSONObject();
+
+		Driver d = ObjectAccess.getObject(Driver.class,driver.getIdNum());
+		Vehicle v = ObjectAccess.getObject(Vehicle.class, d.getBusinessApplyCarframeNum());
+
+		String rawIdnum = null;
+		switch (d.getBusinessApplyDriverClass()){
+			case "主驾":
+				rawIdnum = v.getFirstDriver();
+				break;
+			case "副驾":
+				rawIdnum = v.getSecondDriver();
+				break;
+			case "三驾":
+				rawIdnum = v.getThirdDriver();
+		}
+		if(StringUtils.isNotEmpty(rawIdnum)){
+			Driver rd = ObjectAccess.getObject(Driver.class,rawIdnum);
+			jobj.put("msg",
+					String.format("%s驾驶员%s,%s未下车，请先进行下车操作",v.getLicenseNum(),rd.getName(),rd.getIdNum()));
+			jobj.put("state",false);
+		}else{
+			jobj.put("state",true);
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+
+		out.print(jobj.toString());
+		out.flush();
+		out.close();
+	}
+
+	public void cancelBusinessApply() throws IOException{
+		JSONObject jobj = new JSONObject();
+
+		Session s = null;
+		Transaction tx = null;
+
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
+			Vehicle v = (Vehicle) s.get(Vehicle.class, d.getBusinessApplyCarframeNum());
+
+			d.setBusinessApplyCarframeNum(null);
+			d.setBusinessApplyTime(null);
+			d.setBusinessApplyRegistrant(null);
+			d.setBusinessApplyRegistTime(null);
+
+			d.setBusinessApplyState(0);
+			s.saveOrUpdate(d);
+
+			Driverincar record = ObjectAccess.executeSingle(String.format("from Driverincar where carframeNum='%s' and idNumber='%s' and operation='证照申请' and finished=false", v.getCarframeNum(),d.getIdNum()),s);
+			s.delete(record);
+
+			jobj.put("state",true);
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+			jobj.put("msg", ex.getMessage());
+			jobj.put("state",false);
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+
+		out.print(jobj.toString());
+		out.flush();
+		out.close();
 	}
 
 	public String addBusinessApplyCancel(){
@@ -974,9 +1055,9 @@ public class DriverAction extends BaseAction{
 		ObjectAccess.saveOrUpdate(l);
 		ObjectAccess.saveOrUpdate(d);
 
-		ServletActionContext.getResponse().setContentType("text/plain");
-		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
-		PrintWriter out = ServletActionContext.getResponse().getWriter();
+		response.setContentType("text/plain");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
 
 		out.print("success");
 		out.flush();

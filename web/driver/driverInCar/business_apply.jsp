@@ -181,7 +181,7 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
 	    	<div class="line">
 	    	   <div class="xm2">
 			    	   	<div class="padding">
-					    	<!--<s:if test="%{@com.dz.common.other.FileAccessUtil@exist('data/driver/'+#driver.idNum+'/photo.jpg')=true}">
+					    	<!--<s:if test="%{@com.dz.common.other.FileAccessUtil@exist('data/driver/'+#driver.idNum+'/photo.jpg')==true}">
 					    	    <img src="/DZOMS/data/driver/<s:property value="driver.idNum"/>/photo.jpg" class="radius img-responsive" style="width: 150px;height: 150px;">
 					    	</s:if>
 					    	<s:else>
@@ -411,7 +411,7 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
                     </label>
                 </div>
                 <div class="field" >
-                    <s:textfield cssClass="input datepick"  name="driver.businessApplyTime" readonly="readonly"></s:textfield>
+                    <s:textfield cssClass="input datepick"  name="driver.businessApplyTime" readonly="true"></s:textfield>
                 </div>
             </div>
             <br/>
@@ -515,7 +515,24 @@ $(function(){
 	/*add_but_bind('.submitbutton',function(){
 		driverAdd.submit();
 	});*/
-	button_bind(".submitbutton","确定提交?","$('#submit-button').click();");
+
+	function validateWhenSubmit() {
+//	    var idNum = $('[name="driver.idNum"]').val();
+//	    $.post("/DZOMS/driver/driverInCar/validateBussinessApply",{
+//	        "driver.idNum":idNum
+//        },function (data) {
+//            var validated = data && data["state"];
+//            if(!validated){
+//                alert(data["msg"] || "验证失败！");
+//            }else {
+//                $('#submit-button').click();
+//            }
+//        });
+
+        $('#submit-button').click();
+    }
+
+	button_bind(".submitbutton","确定提交?","validateWhenSubmit()");
 	
 </script>
 
