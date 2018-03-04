@@ -73,6 +73,9 @@ public class DriverAction extends BaseAction{
 			return "selectToUrl";
 		}
 
+		driver.setName(StringUtils.trim(driver.getName()));
+		driver.setIdNum(StringUtils.upperCase(driver.getIdNum()));
+
 		driver.setStatus(0);
 		driver.setApplyTime(new Date());
 		driver.setDrivingLicenseDate(new Date());
@@ -852,27 +855,38 @@ public class DriverAction extends BaseAction{
 	public void validateBussinessApply() throws IOException{
 		JSONObject jobj = new JSONObject();
 
-		Driver d = ObjectAccess.getObject(Driver.class,driver.getIdNum());
-		Vehicle v = ObjectAccess.getObject(Vehicle.class, d.getBusinessApplyCarframeNum());
+		Session s = null;
+		Transaction tx = null;
 
-		String rawIdnum = null;
-		switch (d.getBusinessApplyDriverClass()){
-			case "主驾":
-				rawIdnum = v.getFirstDriver();
-				break;
-			case "副驾":
-				rawIdnum = v.getSecondDriver();
-				break;
-			case "三驾":
-				rawIdnum = v.getThirdDriver();
-		}
-		if(StringUtils.isNotEmpty(rawIdnum)){
-			Driver rd = ObjectAccess.getObject(Driver.class,rawIdnum);
-			jobj.put("msg",
-					String.format("%s驾驶员%s,%s未下车，请先进行下车操作",v.getLicenseNum(),rd.getName(),rd.getIdNum()));
+		try {
+			s = HibernateSessionFactory.getSession();
+			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
+			Vehicle v = (Vehicle) s.get(Vehicle.class, d.getBusinessApplyCarframeNum());
+
+			String rawIdnum = null;
+			switch (d.getBusinessApplyDriverClass()){
+				case "主驾":
+					rawIdnum = v.getFirstDriver();
+					break;
+				case "副驾":
+					rawIdnum = v.getSecondDriver();
+					break;
+				case "三驾":
+					rawIdnum = v.getThirdDriver();
+			}
+			if(StringUtils.isNotEmpty(rawIdnum)){
+				Driver rd = (Driver) s.get(Driver.class,rawIdnum);
+				jobj.put("msg", String.format("%s驾驶员%s,%s未下车，请先进行下车操作",v.getLicenseNum(),rd.getName(),rd.getIdNum()));
+				jobj.put("state",false);
+			}else{
+				jobj.put("state",true);
+			}
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			jobj.put("msg", ex.getMessage());
 			jobj.put("state",false);
-		}else{
-			jobj.put("state",true);
+		}finally {
+			HibernateSessionFactory.closeSession();
 		}
 
 		response.setContentType("application/json");
@@ -884,6 +898,10 @@ public class DriverAction extends BaseAction{
 		out.close();
 	}
 
+	/**
+	 * 撤回证照申请
+	 * @throws IOException
+	 */
 	public void cancelBusinessApply() throws IOException{
 		JSONObject jobj = new JSONObject();
 
@@ -931,85 +949,158 @@ public class DriverAction extends BaseAction{
 	}
 
 	public String addBusinessApplyCancel(){
-		Driver d = driverService.selectById(driver.getIdNum());
-		d.setBusinessApplyCancelTime(driver.getBusinessApplyCancelTime());
-		d.setBusinessApplyCancelRegistrant(driver.getBusinessApplyCancelRegistrant());
-		d.setBusinessApplyCancelRegistTime(driver.getBusinessApplyCancelRegistTime());
-		d.setBusinessApplyCancelState(1);
+		Session s = null;
+		Transaction tx = null;
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
+			d.setBusinessApplyCancelTime(driver.getBusinessApplyCancelTime());
+			d.setBusinessApplyCancelRegistrant(driver.getBusinessApplyCancelRegistrant());
+			d.setBusinessApplyCancelRegistTime(driver.getBusinessApplyCancelRegistTime());
+			d.setBusinessApplyCancelState(1);
 
-		ObjectAccess.saveOrUpdate(d);
+			s.update(d);
 
-		Driverincar record = new Driverincar(d.getCarframeNum(),d.getIdNum(),"证照注销",d.getBusinessApplyCancelTime());
-		record.setFinished(false);
-		record.setDriverClass(d.getDriverClass());
-		driverService.addDriverInCarRecord(record);
+			Driverincar record = new Driverincar(d.getCarframeNum(), d.getIdNum(), "证照注销", d.getBusinessApplyCancelTime());
+			record.setFinished(false);
+			record.setDriverClass(d.getDriverClass());
+			s.save(record);
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
 		return SUCCESS;
 	}
 
 	public String addBusinessReciveCancel(){
-		Driver d = driverService.selectById(driver.getIdNum());
+		Session s = null;
+		Transaction tx = null;
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
 
-		Vehicle v = new Vehicle();
-		v.setCarframeNum(driver.getCarframeNum());
-		v = vehicleService.selectById(v);
+			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
+			Vehicle v = (Vehicle) s.get(Vehicle.class,driver.getCarframeNum());
 
-		if(d.getBusinessApplyState()!=2||!StringUtils.equals(d.getBusinessApplyDriverClass(), d.getDriverClass())||!StringUtils.equalsIgnoreCase(d.getBusinessApplyCarframeNum(), d.getCarframeNum())){
-			//申请与注销不是同一件事
+			if(d.getBusinessApplyState()!=2||!StringUtils.equals(d.getBusinessApplyDriverClass(), d.getDriverClass())||!StringUtils.equalsIgnoreCase(d.getBusinessApplyCarframeNum(), d.getCarframeNum())){
+				//申请与注销不是同一件事
 
-		}else{
-			d.setBusinessApplyTime(null);
-			d.setBusinessApplyRegistrant(null);
-			d.setBusinessApplyRegistTime(null);
+			}else{
+				d.setBusinessApplyTime(null);
+				d.setBusinessApplyRegistrant(null);
+				d.setBusinessApplyRegistTime(null);
 
-			d.setBusinessReciveTime(null);
-			d.setBusinessReciveRegistrant(null);
-			d.setBusinessReciveRegistTime(null);
+				d.setBusinessReciveTime(null);
+				d.setBusinessReciveRegistrant(null);
+				d.setBusinessReciveRegistTime(null);
 
-			d.setBusinessApplyState(0);
-			d.setBusinessApplyDriverClass(null);
-			d.setBusinessApplyCarframeNum(null);
+				d.setBusinessApplyState(0);
+				d.setBusinessApplyDriverClass(null);
+				d.setBusinessApplyCarframeNum(null);
 
-			/**
-			 * 清除指纹编号
-			 */
-			d.setFingerprintNum(null);
+				/**
+				 * 清除指纹编号
+				 */
+				d.setFingerprintNum(null);
+			}
+
+			if(d.getDriverClass().equals("主驾")){
+				v.setFirstDriver(null);
+			}else if(d.getDriverClass().equals("副驾")){
+				v.setSecondDriver(null);
+			}else if(d.getDriverClass().equals("三驾")){
+				v.setThirdDriver(null);
+			}else if(d.getDriverClass().equals("临驾")){
+				v.setTempDriver(null);
+			}
+
+			s.saveOrUpdate(v);
+
+			ObjectAccess.executeSingle(String.format("update Driverincar set finished=true where carframeNum='%s' and idNumber='%s' and (operation='证照注销' or operation='下车' ) and finished=false",
+					v.getCarframeNum(),d.getIdNum()),s);
+
+			d.setIsInCar(false);
+
+			d.setRestTime(null);
+			d.setCarframeNum(null);
+			d.setDriverClass(null);
+			d.setBusinessApplyCancelState(0);
+
+			d.setBusinessApplyCancelTime(null);
+			d.setBusinessApplyCancelRegistrant(null);
+			d.setBusinessApplyCancelRegistTime(null);
+
+			d.setDept(null);
+			d.setStatus(4);
+
+			s.saveOrUpdate(d);
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+		}finally {
+			HibernateSessionFactory.closeSession();
 		}
-
-		if(d.getDriverClass().equals("主驾")){
-			v.setFirstDriver(null);
-		}else if(d.getDriverClass().equals("副驾")){
-			v.setSecondDriver(null);
-		}else if(d.getDriverClass().equals("三驾")){
-			v.setThirdDriver(null);
-		}else if(d.getDriverClass().equals("临驾")){
-			v.setTempDriver(null);
-		}
-
-		ObjectAccess.saveOrUpdate(v);
-
-		ObjectAccess.execute(String.format("update Driverincar set finished=true where carframeNum='%s' and idNumber='%s' and (operation='证照注销' or operation='下车' ) and finished=false",
-				v.getCarframeNum(),d.getIdNum()));
-//		Driverincar record = new Driverincar(d.getCarframeNum(),d.getIdNum(),"下车",driver.getBusinessReciveCancelRegistTime());
-//		driverService.addDriverInCarRecord(record);
-
-		d.setIsInCar(false);
-
-		d.setRestTime(null);
-		d.setCarframeNum(null);
-		d.setDriverClass(null);
-		d.setBusinessApplyCancelState(0);
-
-		d.setBusinessApplyCancelTime(null);
-		d.setBusinessApplyCancelRegistrant(null);
-		d.setBusinessApplyCancelRegistTime(null);
-
-		d.setDept(null);
-		d.setStatus(4);
-
-		ObjectAccess.saveOrUpdate(d);
-
 		return SUCCESS;
 	}
+
+	/**
+	 * 撤回证照注销的申请
+	 * @throws IOException
+	 */
+	public void cancelBusinessCancelApply() throws IOException{
+		JSONObject jobj = new JSONObject();
+
+		Session s = null;
+		Transaction tx = null;
+
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
+			Vehicle v = ObjectAccess.getObject(Vehicle.class, d.getBusinessApplyCarframeNum());
+
+			d.setBusinessApplyCancelTime(null);
+			d.setBusinessApplyCancelRegistrant(null);
+			d.setBusinessApplyCancelRegistTime(null);
+			d.setBusinessApplyCancelState(0);
+			s.saveOrUpdate(d);
+
+			Driverincar record = ObjectAccess.executeSingle(String.format("from Driverincar where carframeNum='%s' and idNumber='%s' and (operation='证照注销' or operation='下车' ) and finished=false", v.getCarframeNum(),d.getIdNum()),s);
+			if(record!=null)
+				s.delete(record);
+
+			jobj.put("state",true);
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+			jobj.put("msg", ex.getMessage());
+			jobj.put("state",false);
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+
+		out.print(jobj.toString());
+		out.flush();
+		out.close();
+	}
+
 
 	private String operation;
 	private Boolean finished;

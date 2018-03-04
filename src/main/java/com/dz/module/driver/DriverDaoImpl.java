@@ -976,9 +976,18 @@ public int selectDriverLeaveByConditionCount(Date beginDate,Date endDate,Vehicle
 		if(endDate!=null){
 			sql+="and opeTime<:endDate ";
 		}
-		
-		if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
-			sql+="and carframeNum like :carframeNum ";
+
+		if(vehicle!=null){
+			String vehicleCondition="select carframeNum from Vehicle where 1=1 ";
+			if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
+				vehicleCondition+="and carframeNum like :carframeNum ";
+			}
+
+			if(!StringUtils.isEmpty(vehicle.getDept())){
+				vehicleCondition+="and dept = :dept ";
+			}
+
+			sql += String.format("and carframeNum in (%s) ", vehicleCondition);
 		}
 		
 		if(!StringUtils.isEmpty(driver.getIdNum())){
@@ -988,13 +997,18 @@ public int selectDriverLeaveByConditionCount(Date beginDate,Date endDate,Vehicle
 		if(!StringUtils.isEmpty(operation)){
 			sql+="and operation like :operation ";
 		}
-		
+
 		Query query = session.createQuery(sql);
 		
 		query.setBoolean("finished", finished);
-		
-		if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
-			query.setString("carframeNum", "%"+vehicle.getCarframeNum()+"%");
+
+		if(vehicle!=null){
+			if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
+				query.setString("carframeNum", "%"+vehicle.getCarframeNum()+"%");
+			}
+			if(!StringUtils.isEmpty(vehicle.getDept())){
+				query.setString("dept", vehicle.getDept());
+			}
 		}
 		
 		if(!StringUtils.isEmpty(driver.getIdNum())){
@@ -1027,33 +1041,46 @@ public List<Driverleave> selectDriverLeaveByCondition(Page page,Date beginDate,D
 	Session session = null;
 	try {
 		session = HibernateSessionFactory.getSession();
-		String sql = "from Driverleave where finished=:finished ";
+		String sql = "select dl from Driverleave dl,Vehicle v where dl.carframeNum=v.carframeNum and finished=:finished ";
 		
 		if(beginDate!=null){
-			sql+="and opeTime>:beginDate ";
+			sql+="and dl.opeTime>:beginDate ";
 		}
 		if(endDate!=null){
-			sql+="and opeTime<:endDate ";
+			sql+="and dl.opeTime<:endDate ";
 		}
-		
-		if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
-			sql+="and carframeNum like :carframeNum ";
+
+		if(vehicle!=null){
+			if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
+				sql+="and v.carframeNum like :carframeNum ";
+			}
+
+			if(!StringUtils.isEmpty(vehicle.getDept())){
+				sql+="and v.dept = :dept ";
+			}
 		}
-		
+
 		if(!StringUtils.isEmpty(driver.getIdNum())){
-			sql+="and idNumber like :idNum ";
+			sql+="and dl.idNumber like :idNum ";
 		}
 		
 		if(!StringUtils.isEmpty(operation)){
-			sql+="and operation like :operation ";
+			sql+="and dl.operation like :operation ";
 		}
-		
+
+		sql+="order by (CASE v.dept WHEN '一部' THEN 1 WHEN '二部' THEN 2 WHEN '三部' THEN 3 ELSE 4 END),v.license_num ";
+
 		Query query = session.createQuery(sql);
 		
 		query.setBoolean("finished", finished);
-		
-		if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
-			query.setString("carframeNum", "%"+vehicle.getCarframeNum()+"%");
+
+		if(vehicle!=null){
+			if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
+				query.setString("carframeNum", "%"+vehicle.getCarframeNum()+"%");
+			}
+			if(!StringUtils.isEmpty(vehicle.getDept())){
+				query.setString("dept", vehicle.getDept());
+			}
 		}
 		
 		if(!StringUtils.isEmpty(driver.getIdNum())){

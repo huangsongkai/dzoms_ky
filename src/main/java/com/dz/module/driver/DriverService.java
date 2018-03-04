@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -129,6 +130,9 @@ public class DriverService {
 		if (driver == null) {
 			return false;
 		}
+
+		driver.setName(StringUtils.trim(driver.getName()));
+		driver.setIdNum(StringUtils.upperCase(driver.getIdNum()));
 
 		Driver d = driverDao.selectById(driver.getIdNum());
 		if(d==null){//该司机不存在

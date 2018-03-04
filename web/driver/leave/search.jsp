@@ -48,9 +48,6 @@ $(document).ready(function(){
 		}
 	});
 });
-
-
-
 </script>
 <script src="/DZOMS/res/js/jquery.datetimepicker.js"></script>
 	
@@ -81,7 +78,17 @@ $(document).ready(function(){
                     
                     <td class="tableleft" style="border-top: 0px;">结束日期</td>
                     <td style="border-top: 0px;"><input type="text" id="endDate" class="datepick input" name="endDate"/></td>
-                    
+
+					<td class="tableleft" style="border-top: 0px;">部门</td>
+					<td style="border-top: 0px;">
+						<select name="vehicle.dept" class="input">
+							<option value="">全部</option>
+							<option value="一部">一部</option>
+							<option value="二部">二部</option>
+							<option value="三部">三部</option>
+						</select>
+					</td>
+
 					<td class="tableleft" style="border-top: 0px;">车牌号</td>
 					<td style="border-top: 0px;"><input type="text"  value="黑A"   name="vehicle.licenseNum" class="input"/></td>
 					
@@ -96,8 +103,8 @@ $(document).ready(function(){
 					<td class="tableleft" style="border-top: 0px;">类别</td>
 					<td style="border-top: 0px;">
 						<select name="operation" class="input">
-							<option value=""  selected="selected">全部</option>
-							<option value="待岗">待岗</option>
+							<option value=""  >全部</option>
+							<option value="待岗" selected="selected">待岗</option>
 							<option value="上岗">上岗</option>
 						</select>
 					</td>

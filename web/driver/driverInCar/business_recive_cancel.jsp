@@ -99,7 +99,7 @@ $("[name='driver.name']").bigAutocomplete({
             	<div class="line">
 	<div class="xm2">
 		<div class="padding">
-					    	<!--<s:if test="%{@com.dz.common.other.FileAccessUtil@exist('data/driver/'+#driver.idNum+'/photo.jpg')=true}">
+					    	<!--<s:if test="%{@com.dz.common.other.FileAccessUtil@exist('data/driver/'+#driver.idNum+'/photo.jpg')==true}">
 					    	    <img src="/DZOMS/data/driver/<s:property value="driver.idNum"/>/photo.jpg" class="radius img-responsive" style="width: 150px;height: 150px;">
 					    	</s:if>
 					    	<s:else>
@@ -186,7 +186,7 @@ $("[name='driver.name']").bigAutocomplete({
                         </label>
                     </div>
                     <div class="field">
-                        <s:textfield cssClass="input"  name="driver.businessApplyCancelTime" readonly="readonly" value="%{#driver.businessApplyCancelTime}"></s:textfield>
+                        <s:textfield cssClass="input"  name="driver.businessApplyCancelTime" readonly="true" value="%{#driver.businessApplyCancelTime}"></s:textfield>
                     </div>
                 </div>
                 <div class="form-group">
@@ -196,7 +196,7 @@ $("[name='driver.name']").bigAutocomplete({
                         </label>
                     </div>
                     <div class="field">
-                        <s:textfield cssClass="input"  name="driver.applyTime" readonly="readonly" value="%{#driver.applyTime}"></s:textfield>
+                        <s:textfield cssClass="input"  name="driver.applyTime" readonly="true" value="%{#driver.applyTime}"></s:textfield>
                     </div>
                 </div>
                 <br/>
@@ -207,11 +207,10 @@ $("[name='driver.name']").bigAutocomplete({
                         </label>
                     </div>
                     <div class="field">
-                        <s:textfield cssClass="input"  name="driver.driverClass" value="%{#driver.driverClass}" readonly="readonly" ></s:textfield>
+                        <s:textfield cssClass="input"  name="driver.driverClass" value="%{#driver.driverClass}" readonly="true" ></s:textfield>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="label padding" >
                         <label>
                             作息时间
                         </label>
@@ -254,6 +253,7 @@ $("[name='driver.name']").bigAutocomplete({
                 </div>
                 <div class="field">
                     <input type="button" class="button bg-green submitbutton margin-big-left" value="提交">
+                    <input type="button" class="button bg-green rollbackbutton margin-big-left" value="撤回申请">
                 </div>
             </div>
 	</div>
@@ -265,6 +265,23 @@ $("[name='driver.name']").bigAutocomplete({
     add_but_bind('.submitbutton',function(){
     	driverBusinessApply.submit();
     });
+
+    function callbackApply() {
+        var idNum = '<s:property value="%{#driver.idNum}"/>';
+        $.post("/DZOMS/driver/driverInCar/cancelBusinessCancelApply",{
+            "driver.idNum": idNum
+        },function (data) {
+            var success = data && data["state"];
+            if (!success) {
+                alert(data["msg"] || "撤回失败！");
+            } else {
+                alert("申请已撤回！");
+                window.location.href="/DZOMS/driver/driverInCar/business_recive_cancel.jsp";
+            }
+        });
+    }
+
+    button_bind(".rollbackbutton","确认撤销该申请？","callbackApply()");
     </script>
 </div>
 </body>
