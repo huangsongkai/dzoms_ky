@@ -135,7 +135,7 @@ function addNewAnaylse(){
    </div>
 <form method="post" class="form-inline" id="search_form" action="/DZOMS/common/selectToList" target="result_form" onsubmit="beforeSubmit()">
 		<input type="hidden" name="url" value="/vehicle/electric/anaylse_search_result.jsp" />
-		<input type="hidden" name="className" value="com.dz.module.vehicle.electric.ElectricAnaylse"/>
+		<input type="hidden" name="className" value="com.dz.module.electric.ElectricAnaylse"/>
 		<input type="hidden" name="condition" />
    <div class="line">
    		<div class="form-group">

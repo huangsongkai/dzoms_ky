@@ -279,6 +279,7 @@ Page pg = (Page)request.getAttribute("page");
         <s:hidden name="beginDate" />
         <s:hidden name="endDate" />
         <s:hidden name="vehicle.licenseNum"/>
+        <s:hidden name="vehicle.dept"/>
         <s:hidden name="driver.idNum"/>
         <s:hidden name="finished"/>
         <s:hidden name="operation"/>

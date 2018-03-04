@@ -34,7 +34,7 @@
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
-		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/ky_dzomsdb?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/ky_dzomsdb?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false"></property>
 		<property name="user" value="root"></property>
 		<property name="password" value="123456"></property>
 		<property name="maxPoolSize" value="100"></property>

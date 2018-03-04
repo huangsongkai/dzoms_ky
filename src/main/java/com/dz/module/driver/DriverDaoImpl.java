@@ -983,6 +983,10 @@ public int selectDriverLeaveByConditionCount(Date beginDate,Date endDate,Vehicle
 				vehicleCondition+="and carframeNum like :carframeNum ";
 			}
 
+			if(!StringUtils.isEmpty(vehicle.getLicenseNum())){
+				vehicleCondition+="and licenseNum like :licenseNum ";
+			}
+
 			if(!StringUtils.isEmpty(vehicle.getDept())){
 				vehicleCondition+="and dept = :dept ";
 			}
@@ -1005,6 +1009,9 @@ public int selectDriverLeaveByConditionCount(Date beginDate,Date endDate,Vehicle
 		if(vehicle!=null){
 			if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
 				query.setString("carframeNum", "%"+vehicle.getCarframeNum()+"%");
+			}
+			if(!StringUtils.isEmpty(vehicle.getLicenseNum())){
+				query.setString("licenseNum","%"+vehicle.getLicenseNum()+"%");
 			}
 			if(!StringUtils.isEmpty(vehicle.getDept())){
 				query.setString("dept", vehicle.getDept());
@@ -1055,6 +1062,10 @@ public List<Driverleave> selectDriverLeaveByCondition(Page page,Date beginDate,D
 				sql+="and v.carframeNum like :carframeNum ";
 			}
 
+			if(!StringUtils.isEmpty(vehicle.getLicenseNum())){
+				sql+="and v.licenseNum like :licenseNum ";
+			}
+
 			if(!StringUtils.isEmpty(vehicle.getDept())){
 				sql+="and v.dept = :dept ";
 			}
@@ -1068,7 +1079,7 @@ public List<Driverleave> selectDriverLeaveByCondition(Page page,Date beginDate,D
 			sql+="and dl.operation like :operation ";
 		}
 
-		sql+="order by (CASE v.dept WHEN '一部' THEN 1 WHEN '二部' THEN 2 WHEN '三部' THEN 3 ELSE 4 END),v.license_num ";
+		sql+="order by (CASE v.dept WHEN '一部' THEN 1 WHEN '二部' THEN 2 WHEN '三部' THEN 3 ELSE 4 END),v.licenseNum ";
 
 		Query query = session.createQuery(sql);
 		
@@ -1077,6 +1088,9 @@ public List<Driverleave> selectDriverLeaveByCondition(Page page,Date beginDate,D
 		if(vehicle!=null){
 			if(!StringUtils.isEmpty(vehicle.getCarframeNum())){
 				query.setString("carframeNum", "%"+vehicle.getCarframeNum()+"%");
+			}
+			if(!StringUtils.isEmpty(vehicle.getLicenseNum())){
+				query.setString("licenseNum","%"+vehicle.getLicenseNum()+"%");
 			}
 			if(!StringUtils.isEmpty(vehicle.getDept())){
 				query.setString("dept", vehicle.getDept());
