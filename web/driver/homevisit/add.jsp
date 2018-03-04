@@ -27,7 +27,8 @@
 <script type="text/javascript" src="/DZOMS/res/js/JsonList.js" ></script>
 <script type="text/javascript" src="/DZOMS/res/js/TableList.js" ></script>
 <script src="/DZOMS/res/js/itemtool.js"></script>
-
+	<link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
+	<script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
 <script>
         var i =0;
         function addfilename(){
@@ -57,69 +58,59 @@
         }
         
         $(document).ready(function(){
-			var $licenseNumSelection = $('select[name="licenseNum"]');
+			var $licenseNumSelection = $('input[name="licenseNum"]');
 			var $driverSelection = $('select[name="homeVisit.idNum"]');
-        	
-        	$licenseNumSelection.html("");
-        	$.post("/DZOMS/vehicle/vehicleSearch",{"vehicle.state":1},function(data){
-        		$licenseNumSelection.append("<option></option>");
-        		for(var i=0;i<data.length;i++){
-        			var option = '<option value="'+data[i]["carframeNum"]+'">'+data[i]["licenseNum"]+'</option>';
-        			$licenseNumSelection.append(option);
-        		}
-        	});
-        	
-        	
-        	$licenseNumSelection.change(function(){
-        		var $selected_option = $licenseNumSelection.find("option:selected");
-        		var carframeNum = $selected_option.val();
-        		$("[name='homeVisit.carframeNum']").val(carframeNum);
-        		$driverSelection.empty();
-        		$.post("/DZOMS/common/getObject",{"className":"com.dz.module.vehicle.Vehicle","id":carframeNum,"isString":true},function(data){
-        			var vehicle = data;//$.parseJSON(data);
-        			
-        			
-        			/*var driverId = vehicle["driverId"];
-        			$.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":driverId,"isString":true},function(data2){
-        				var driver = data2;//$.parseJSON(data2);
-        				
-        				var option = '<option value="'+driver["idNum"]+'" phoneNum1="'+driver["phoneNum1"]+'">'+driver["name"]+'</option>';
-        				$driverSelection.append(option);
-					});*/
-					$driverSelection.append("<option></option>");
-					
-					var firstDriver = vehicle["firstDriver"];
-					var secondDriver = vehicle["secondDriver"];
-					var tempDriver = vehicle["tempDriver"];
-					
-					if(firstDriver!=undefined)
-					$.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":firstDriver,"isString":true},function(data2){
-        				var driver = data2;//$.parseJSON(data2);
-        				try{
-        					var option = '<option value="'+driver["idNum"]+'" >'+driver["name"]+'</option>';
-        					$driverSelection.append(option);
-        				}catch(e){}
-					});
-					if(secondDriver!=undefined)
-					$.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":secondDriver,"isString":true},function(data2){
-        				var driver = data2;//$.parseJSON(data2);
-        				try{
-        				var option = '<option value="'+driver["idNum"]+'">'+driver["name"]+'</option>';
-        				$driverSelection.append(option);
-        				}catch(e){}
-					});
-					if(tempDriver!=undefined)
-					$.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":tempDriver,"isString":true},function(data2){
-        				var driver = data2;//$.parseJSON(data2);
-        				try{
-        				var option = '<option value="'+driver["idNum"]+'">'+driver["name"]+'</option>';
-        				$driverSelection.append(option);
-        				}catch(e){}
-					});
-					
-        		});
-        		
-        	});
+
+            $("#carNum").bigAutocomplete({
+                url:"/DZOMS/select/VehicleBylicenseNum",
+                condition:" state=1 ",
+                doubleClick:true,
+                doubleClickDefault:'黑A',
+                callback:function(){
+                    $.post("/DZOMS/common/doit",{"condition":"from Vehicle where licenseNum='"+$("#carNum").val()+"' "},function(data){
+                        if (data!=undefined &&data["affect"]!=undefined ) {
+                            var vehicle = data["affect"];
+//                        $("#department").val(vehicle["dept"]);
+                            $("#carframe_num").val(vehicle["carframeNum"]);
+
+//                        setDriverList(vehicle["carframeNum"]);
+
+                            var $driverSelection = $('select[name="homeVisit.idNum"]');
+                            $driverSelection.html("");
+                            $driverSelection.append("<option></option>");
+
+                            var firstDriver = vehicle["firstDriver"];
+                            var secondDriver = vehicle["secondDriver"];
+                            var tempDriver = vehicle["tempDriver"];
+
+                            if(firstDriver!=undefined)
+                                $.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":firstDriver,"isString":true},function(data2){
+                                    var driver = data2;//$.parseJSON(data2);
+                                    try{
+                                        var option = '<option value="'+driver["idNum"]+'" >'+driver["name"]+'</option>';
+                                        $driverSelection.append(option);
+                                    }catch(e){}
+                                });
+                            if(secondDriver!=undefined)
+                                $.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":secondDriver,"isString":true},function(data2){
+                                    var driver = data2;//$.parseJSON(data2);
+                                    try{
+                                        var option = '<option value="'+driver["idNum"]+'">'+driver["name"]+'</option>';
+                                        $driverSelection.append(option);
+                                    }catch(e){}
+                                });
+                            if(tempDriver!=undefined)
+                                $.post("/DZOMS/common/getObject",{"className":"com.dz.module.driver.Driver","id":tempDriver,"isString":true},function(data2){
+                                    var driver = data2;//$.parseJSON(data2);
+                                    try{
+                                        var option = '<option value="'+driver["idNum"]+'">'+driver["name"]+'</option>';
+                                        $driverSelection.append(option);
+                                    }catch(e){}
+                                });
+                        }
+                    });
+                }
+            });
         	
         	$driverSelection.change(function(){
         		var $selected_option = $driverSelection.find("option:selected");
@@ -147,7 +138,10 @@
 							width: 300px;
 						}
 					</style>
-	
+	<script>
+
+
+	</script>
 </head>
 <body>
 <div class="margin-big-bottom">
@@ -156,12 +150,11 @@
                 <li>驾驶员</li>
                 <li>家访</li>
                 <li>添加家访</li>
-              
         </ul>
         </div>
 </div>
 <form class="form-inline form-tips" name="addPraise" action="/DZOMS/driver/homevisit/addHomeVisit" method="post" enctype="multipart/form-data">
-	<input type="hidden" name="homeVisit.carframeNum" />
+	<input id="carframe_num" type="hidden" name="homeVisit.carframeNum" />
 	<input type="hidden" name="url" value="search.jsp"/>
             <div class="panel ">
 							<div class="panel-head">
@@ -177,8 +170,7 @@
 										<input class="datepick input setTimeToday" type="text" name="homeVisit.time">
 									</div>
 								</div>
-								
-								
+
 								<br>
 
 								<div class="form-group margin-small">
@@ -186,7 +178,8 @@
 										<label>车牌号</label>
 									</div>
 									<div class="field">
-										<select class="input" name="licenseNum"></select>
+										<input id="carNum" class="input" name="licenseNum" value="黑A">
+										<%--<select class="input" name="licenseNum"></select>--%>
 									</div>
 								</div>
 								<div class="form-group margin-small">

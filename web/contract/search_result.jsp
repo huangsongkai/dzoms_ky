@@ -191,16 +191,18 @@
                 <s:if test="%{#request.list!=null}">
 
                     <s:iterator value="%{#request.list}" var="v">
+                        <s:set name="driver" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver', #v.idNum)}"></s:set>
+                        <s:set name="vp" value="%{@com.dz.common.other.ObjectAccess@execute('from VehicleApproval where checkType=1 and contractId='+#v.id)}"></s:set>
                         <tr>
                             <td><input type="radio" name="cbx" value="<s:property value="%{#v.id}" />" ></td>
                             <td class="contractId	  selected_able"><s:property value="%{#v.contractId}" />          </td>
                             <td class="licenseNum	  selected_able"><s:property value='%{@com.dz.common.other.ObjectAccess@getObject("com.dz.module.vehicle.Vehicle",#v.carframeNum).licenseNum}'/></td>
                             <td class="idName  		  selected_able">
-                                <s:property value='%{@com.dz.common.other.ObjectAccess@getObject("com.dz.module.driver.Driver", #v.idNum).name}'/>
+                                <s:property value='%{#driver.name}'/>
                             </td>
                             <td class="idNumber 	  selected_able"><s:property value="%{#v.idNum}" />     </td>
                             <td class="phoneNum 	  selected_able">
-                                <s:property value='%{@com.dz.common.other.ObjectAccess@getObject("com.dz.module.driver.Driver", #v.idNum).phoneNum1}'/>
+                                <s:property value='%{#driver.phoneNum1}'/>
                             </td>
                             <td class="beginDate	  selected_able"><s:property value="%{#v.contractBeginDate}" />     </td>
                             <td class="endDate		  selected_able"><s:property value="%{#v.contractEndDate}" />           </td>
@@ -212,7 +214,18 @@
                             <td class="deposit		  selected_able"><s:property value="%{#v.deposit}" /> </td>
                             <td class="contractFrom	  selected_able"><s:property value="%{#v.contractType}" />     </td>
                             <td class="state		  selected_able"><s:property value="%{#v.state==1?'是':'否'}" />  </td>
-                            <td class="abandonReason  selected_able"><s:property value="%{#v.abandonReason}" />       </td>        </tr>
+                            <td class="abandonReason  selected_able">
+                                [
+                                <s:if test="#vp.handleMatter">
+                                    转包
+                                </s:if>
+                                <s:else>
+                                    废业
+                                </s:else>
+                                ]
+                                <s:property value="%{#v.abandonReason}" />
+                            </td>
+                        </tr>
                     </s:iterator>
                 </s:if>
             </table>

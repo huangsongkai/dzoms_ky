@@ -45,7 +45,6 @@ $(document).ready(function(){
 	$("#carNum").bigAutocomplete({
 		url:"/DZOMS/select/vehicleByLicenseNum",
 		callback:function(){
-			
 			$("#complain_search").submit();
 		}
 	});
