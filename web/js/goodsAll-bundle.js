@@ -26,11 +26,11 @@ var _select = __webpack_require__(46);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -38,7 +38,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -167,7 +167,7 @@ var UtilSelect = _wrapComponent('UtilSelect')(function (_React$Component) {
 }(_react3.default.Component));
 
 exports.default = UtilSelect;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -181,9 +181,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
@@ -193,11 +193,11 @@ var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -205,7 +205,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -215,11 +215,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -376,7 +376,7 @@ var GoodsIssueHisInfo = _wrapComponent('GoodsIssueHisInfo')(function (_React$Com
 
 if (document.getElementById("goodsIssueHisInfo")) _reactDom2.default.render(_react3.default.createElement(GoodsIssueHisInfo, pageUrls), document.getElementById("goodsIssueHisInfo"));
 exports.default = GoodsIssueHisInfo;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -390,21 +390,21 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _css2 = __webpack_require__(29);
+var _css2 = __webpack_require__(27);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
 var _css3 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -420,17 +420,17 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css6 = __webpack_require__(31);
+var _css6 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -438,7 +438,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -450,11 +450,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1014,7 +1014,7 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
 var WrappedApp = _form2.default.create()(AppModal);
 if (document.getElementById("goodsManagement")) _reactDom2.default.render(_react3.default.createElement(GoodsManagement, pageUrls), document.getElementById("goodsManagement"));
 exports.default = GoodsManagement;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -1028,15 +1028,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
 var _css2 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1058,17 +1058,17 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css6 = __webpack_require__(31);
+var _css6 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1076,7 +1076,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1086,11 +1086,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1283,7 +1283,7 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
 
 if (document.getElementById("officeIssue")) _reactDom2.default.render(_react3.default.createElement(Goods, pageUrls), document.getElementById("officeIssue"));
 exports.default = Goods;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -1297,15 +1297,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
 var _css2 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1321,23 +1321,29 @@ var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(40);
+var _css5 = __webpack_require__(27);
+
+var _input = __webpack_require__(35);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _css6 = __webpack_require__(40);
 
 var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css6 = __webpack_require__(31);
+var _css7 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1345,7 +1351,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1355,11 +1361,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1400,6 +1406,7 @@ function _wrapComponent(id) {
 var FormItem = _form2.default.Item;
 var MonthPicker = _datePicker2.default.MonthPicker,
     RangePicker = _datePicker2.default.RangePicker;
+var TextArea = _input2.default.TextArea;
 
 var dateFormat = 'YYYY/MM/DD';
 var monthFormat = 'YYYY/MM';
@@ -1418,6 +1425,7 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
     _this.key = 0;
     _this.itemId = "";
     _this.num = "";
+    _this.result = { itemId: "", num: "", remark: "" };
     return _this;
   }
 
@@ -1452,10 +1460,28 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
   }, {
     key: 'action',
     value: function action(index) {
-      console.log(this.itemId);
-      console.log(this.num);
-      if (this.num > 0) {
-        window.location.href = this.props.jumpUrl + "?itemId=" + this.itemId + "&num=" + this.num;
+      if (this.result.num > 0) {
+        $.ajax({
+          //url:"/goodsList",
+          url: this.props.goodsInfoUrl,
+          type: "post",
+          dataType: 'json',
+          data: JSON.stringify(this.result),
+          contentType: 'application/json',
+          success: function (data) {
+            if (data.data.status > 0) {
+              // window.location.href=this.props.jumpUrl
+            } else {
+              _modal2.default.error({
+                title: '错误信息',
+                content: '入库失败'
+              });
+            }
+          }.bind(self),
+          error: function error() {
+            alert("请求失败");
+          }
+        });
       } else {
         _modal2.default.error({
           title: '错误信息',
@@ -1467,10 +1493,24 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
     key: 'onScoreChange',
     value: function onScoreChange(index, value) {
       //console.log(this.state.recData);
-      console.log(index, value);
-      var itemId = this.state.recData[index].itemId;
-      this.itemId = itemId;
-      this.num = value;
+      // console.log(index,value)
+      // var itemId=this.state.recData[index].itemId;
+      // this.itemId=itemId;
+      // this.num=value;
+      this.result.itemId = this.state.recData[index].itemId;
+      this.result.num = value;
+    }
+  }, {
+    key: 'onRemarkChange',
+    value: function onRemarkChange(index, value) {
+      var remark;
+      if (typeof value == 'string' && value.constructor == String) {
+        remark = value;
+      } else {
+        remark = value.target.value;
+      }
+      // console.log(index,remark) //传输数据方式待确认 拼接？ajax？
+      this.result.remark = remark;
     }
   }, {
     key: 'render',
@@ -1530,19 +1570,26 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
           return _react3.default.createElement(_inputNumber2.default, { min: 1, max: 10, defaultValue: 0, onChange: _this2.onScoreChange.bind(_this2, index) });
         }
       }, {
-        title: '采购',
+        title: '备注',
+        dataIndex: 'remark',
+        key: 'remark',
+        render: function render(text, record, index) {
+          return _react3.default.createElement(TextArea, { autosize: { minRows: 1 }, onChange: _this2.onRemarkChange.bind(_this2, index) });
+        }
+      }, {
+        title: '入库',
         render: function render(text, record, index) {
           return _react3.default.createElement(
             _button2.default,
             { onClick: _this2.action.bind(_this2, index) },
-            '\u91C7\u8D2D'
+            '\u5165\u5E93'
           );
         }
       }];
       return _react3.default.createElement(
         'div',
         null,
-        _react3.default.createElement(_table2.default, { key: this.key++, pagination: false, columns: columns, dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { bordered: true, key: this.key++, pagination: false, columns: columns, dataSource: this.state.recData })
       );
     }
   }]);
@@ -1552,7 +1599,7 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
 
 if (document.getElementById("officePurchase")) _reactDom2.default.render(_react3.default.createElement(OfficePurchase, pageUrls), document.getElementById("officePurchase"));
 exports.default = OfficePurchase;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -1578,15 +1625,15 @@ var _select = __webpack_require__(46);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _css3 = __webpack_require__(33);
+var _css3 = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
 var _css4 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1602,23 +1649,23 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css7 = __webpack_require__(29);
+var _css7 = __webpack_require__(27);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css8 = __webpack_require__(31);
+var _css8 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1626,7 +1673,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1638,11 +1685,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1752,7 +1799,7 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
     }, {
         key: 'showAddModal',
         value: function showAddModal(index, value) {
-            console.log(index, value);
+            // console.log(index,value);
             var itemId = this.state.recData[index].itemId;
             this.itemId = itemId;
             this.setState({
@@ -1933,8 +1980,8 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
                 }
             }];
             var formItemLayout = {
-                labelCol: { span: 4 },
-                wrapperCol: { span: 12 }
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 }
             };
             var getFieldDecorator = this.props.form.getFieldDecorator;
 
@@ -1945,7 +1992,7 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
                 _react3.default.createElement(
                     _modal2.default,
                     {
-                        style: { width: '800px', height: '800px' },
+                        style: { width: '100%' },
                         visible: this.state.visible,
                         title: '\u53D1\u653E\u4FE1\u606F',
                         onCancel: this.handleCancel.bind(this),
@@ -2097,7 +2144,7 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
 var WrappedYunyingbuIssue = _form2.default.create()(YunyingbuIssue);
 if (document.getElementById("yunyingbuIssue")) _reactDom2.default.render(_react3.default.createElement(WrappedYunyingbuIssue, pageUrls), document.getElementById("yunyingbuIssue"));
 exports.default = YunyingbuIssue;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -2111,15 +2158,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
 var _css2 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -2131,21 +2178,21 @@ var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
 var _css4 = __webpack_require__(110);
 
-var _icon = __webpack_require__(35);
+var _icon = __webpack_require__(36);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _css5 = __webpack_require__(29);
-
-var _input = __webpack_require__(37);
-
-var _input2 = _interopRequireDefault(_input);
-
-var _css6 = __webpack_require__(42);
+var _css5 = __webpack_require__(42);
 
 var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
+
+var _css6 = __webpack_require__(27);
+
+var _input = __webpack_require__(35);
+
+var _input2 = _interopRequireDefault(_input);
 
 var _css7 = __webpack_require__(40);
 
@@ -2153,17 +2200,17 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css8 = __webpack_require__(31);
+var _css8 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2171,7 +2218,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2183,11 +2230,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -2231,6 +2278,7 @@ function _wrapComponent(id) {
 var FormItem = _form2.default.Item;
 var MonthPicker = _datePicker2.default.MonthPicker,
     RangePicker = _datePicker2.default.RangePicker;
+var TextArea = _input2.default.TextArea;
 
 var dateFormat = 'YYYY/MM/DD';
 var monthFormat = 'YYYY/MM';
@@ -2401,6 +2449,17 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
       this.itemId = itemId;
       this.num = value;
     }
+  }, {
+    key: 'onRemarkChange',
+    value: function onRemarkChange(index, value) {
+      var remark;
+      if (typeof value == 'string' && value.constructor == String) {
+        remark = value;
+      } else {
+        remark = value.target.value;
+      }
+      console.log(index, remark); //传输数据方式待确认 拼接？ajax？
+    }
     //可编辑框 onchange
 
   }, {
@@ -2477,12 +2536,19 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
           return _react3.default.createElement(_inputNumber2.default, { min: 1, max: 10, defaultValue: 0, onChange: _this3.onScoreChange.bind(_this3, index) });
         }
       }, {
+        title: '备注',
+        dataIndex: 'remark',
+        key: 'remark',
+        render: function render(text, record, index) {
+          return _react3.default.createElement(TextArea, { autosize: { minRows: 1 }, onChange: _this3.onRemarkChange.bind(_this3, index) });
+        }
+      }, {
         title: '采购',
         render: function render(text, record, index) {
           return _react3.default.createElement(
             _button2.default,
             { onClick: _this3.action.bind(_this3, index) },
-            '\u91C7\u8D2D'
+            '\u5165\u5E93'
           );
         }
       }];
@@ -2500,11 +2566,11 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
 var WrappedYunyingbuPurchase = _form2.default.create()(YunyingbuPurchase);
 if (document.getElementById("yunyingbuPurchase")) _reactDom2.default.render(_react3.default.createElement(WrappedYunyingbuPurchase, pageUrls), document.getElementById("yunyingbuPurchase"));
 exports.default = YunyingbuPurchase;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 570:
+/***/ 572:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2519,4 +2585,4 @@ __webpack_require__(458);
 
 /***/ })
 
-},[570]);
+},[572]);

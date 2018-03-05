@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -576,4 +577,207 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("查询成功",listHistoryDTO);
         return result;
     }
+
+    public Result monthStatistics() {
+        DecimalFormat df   = new DecimalFormat("######0.00");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        List<JobStatisticsMonthDTO> jobStatisticsMonthDTOList = new ArrayList<>();
+        List<User> userList = userDao.find(" from  User");
+        String sql = "";
+        for (User user: userList) {
+            String remarks = "";
+            String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01 00:00:00' AND '"+sdf.format(new Date())+"-28 00:00:00'";
+            sql="from EvaluateDetail  where evaluateName is not null and personId ="+user.getUid()+" and groupDate is not null   ";//
+            List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
+            if (evaluateDetailList.size() != 0 ){
+                String evaluateName = evaluateDetailList.get(0).getEvaluateName();
+                List<Object>  lsxgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)   from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%临时性工做%'"+dataSql+"");//临时性工作统计
+                List<Object>  rcgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%日常工作%'"+dataSql+" ");//日常工作统计
+                List<Object>  xwgf= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%行为规范%'  "+dataSql);//行为规范工作统计
+                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+dataSql);//合计分数
+                for (EvaluateDetail evaluateDetail : evaluateDetailList) {
+                    remarks += evaluateDetail.getRemarks()+",";
+                }
+                JobStatisticsMonthDTO jobStatisticsMonthDTO = new JobStatisticsMonthDTO();
+                jobStatisticsMonthDTO.setRemarks(remarks);
+                jobStatisticsMonthDTO.setName(user.getUname());
+                jobStatisticsMonthDTO.setDepartment(user.getDepartment());
+                KpScore kpScore = new KpScore();
+                kpScore.setTotal((Double) total.get(0)+100.00);
+                kpScore.setLsxgz((Double)lsxgz.get(0));
+                kpScore.setRcgz((Double)rcgz.get(0));
+                kpScore.setXwgf((Double)xwgf.get(0));
+                jobStatisticsMonthDTO.setKpScore(kpScore);
+                jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
+            }else{
+                if ("汤伟丽".equals(user.getUname())){
+                    List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                    for (EvaluateDetail evaluateDetail : evaluateDetailList) {
+                        remarks += evaluateDetail.getRemarks()+",";
+                    }
+                    JobStatisticsMonthDTO jobStatisticsMonthDTO = new JobStatisticsMonthDTO();
+                    jobStatisticsMonthDTO.setRemarks(remarks);
+                    jobStatisticsMonthDTO.setName(user.getUname());
+                    jobStatisticsMonthDTO.setDepartment(user.getDepartment());
+                    KpScore kpScore = new KpScore();
+                    kpScore.setTotal((Double) total.get(0)+100.00);
+                    kpScore.setLsxgz(0.0);
+                    kpScore.setRcgz(0.0);
+                    kpScore.setXwgf(0.0);
+                    jobStatisticsMonthDTO.setKpScore(kpScore);
+                    jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
+                }
+                if ("孙大勇".equals(user.getUname())){
+                    JobStatisticsMonthDTO jobStatisticsMonthDTO = new JobStatisticsMonthDTO();
+                    jobStatisticsMonthDTO.setRemarks(remarks);
+                    jobStatisticsMonthDTO.setName(user.getUname());
+                    jobStatisticsMonthDTO.setDepartment(user.getDepartment());
+                    KpScore kpScore = new KpScore();
+                    kpScore.setTotal(100.00);
+                    kpScore.setLsxgz(0.0);
+                    kpScore.setRcgz(0.0);
+                    kpScore.setXwgf(0.0);
+                    jobStatisticsMonthDTO.setKpScore(kpScore);
+                    jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
+
+                }
+                if ("王星".equals(user.getUname())){
+                    List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')"+dataSql);//运营管理部平均分
+                    List<Object>  cdh= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '陈东慧')"+dataSql);//运营管理部平均分
+                    List<Object>  lb= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '刘波')"+dataSql);//运营管理部平均分
+                    List<Object>  xb= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '夏斌')"+dataSql);//运营管理部平均分
+                    JobStatisticsMonthDTO jobStatisticsMonthDTO = new JobStatisticsMonthDTO();
+                    jobStatisticsMonthDTO.setRemarks(remarks);
+                    jobStatisticsMonthDTO.setName(user.getUname());
+                    jobStatisticsMonthDTO.setDepartment(user.getDepartment());
+                    KpScore kpScore = new KpScore();
+                    double avg = ((Double) total.get(0) + (Double) cdh.get(0) + (Double) lb.get(0) + (Double) xb.get(0)) / 4;
+                    kpScore.setTotal(avg+100.00);
+                    kpScore.setLsxgz(0.0);
+                    kpScore.setRcgz(0.0);
+                    kpScore.setXwgf(0.0);
+                    jobStatisticsMonthDTO.setKpScore(kpScore);
+                    jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
+                }
+
+            }
+
+        }
+        result.setSuccess("查询成功",jobStatisticsMonthDTOList);
+        return result;
+    }
+    public Result yearStatistics() {
+        DecimalFormat df   = new DecimalFormat("######0.00");
+        String sql = "";
+        double yunyingend = 0.0;
+        List<JobStatisticsYearDTO> JoStatisticsYearDTOList = new ArrayList<>();
+        List<User> userList = userDao.find(" from  User");
+        for (User user: userList) {
+            JobStatisticsYearDTO joStatisticsYearDTO = new JobStatisticsYearDTO();
+            joStatisticsYearDTO.setName(user.getUname());
+            joStatisticsYearDTO.setDepartment(user.getDepartment());
+            sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid();
+            List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+            Double total = 0.00;
+            for (int j = 0; j< result1.size(); j++){
+                String name= (String) result1.get(j);
+                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
+                if (evaluateDetailList.size() != 0){
+                    total+=evaluateDetailList.get(0).getGroupTotal();
+                }else{
+                    total = 0.0;
+                }
+
+
+            }
+            joStatisticsYearDTO.setAverage(total/result1.size());
+            if ("汤伟丽".equals(user.getUname())) {
+                //运营部年度平均分
+                List<User> userList1 = userDao.find(" from  User where department = '运营管理部'");
+                double total1 = 0.00;
+                for (User user1 : userList1) {
+                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user1.getUid();
+                    List<Object> result2 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+                    for (int j = 0; j < result2.size(); j++) {
+                        String name1 = (String) result2.get(j);
+                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '" + name1 + "'  and groupDate is not null ");
+                        if (evaluateDetailList.size() != 0){
+                            total1+=evaluateDetailList.get(0).getGroupTotal();
+                        }else{
+                            total1 = 0.0;
+                        }
+                        total1 = total1 / result1.size();
+                    }
+                }
+                 yunyingend = total1 / userList1.size();//运营部平均分
+                joStatisticsYearDTO.setAverage(yunyingend);
+            }
+            if ("王星".equals(user.getUname())) {
+                List<User> userList1 = userDao.find(" from  User where uname = '刘波'");
+                Double totalliu = 0.00;
+                for (User user1: userList1) {
+                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user1.getUid();
+                    List<Object> result3 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+                    for (int j = 0; j< result3.size(); j++){
+                        String name= (String) result3.get(j);
+                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
+
+                        if (evaluateDetailList.size() != 0){
+                            totalliu+=evaluateDetailList.get(0).getGroupTotal();
+                        }else{
+                            totalliu = 0.0;
+                        }
+                        totalliu = totalliu / result3.size();
+                    }
+
+
+                }
+
+                List<User> userList2 = userDao.find(" from  User where uname = '陈东慧'");
+                Double totalchen = 0.00;
+                for (User user2: userList2) {
+                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user2.getUid();
+                    List<Object> result4 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+                    for (int j = 0; j< result4.size(); j++){
+                        String name= (String) result4.get(j);
+                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
+
+                        if (evaluateDetailList.size() != 0){
+                            totalchen+=evaluateDetailList.get(0).getGroupTotal();
+                        }else{
+                            totalchen = 0.0;
+                        }
+                        totalchen = totalchen / result4.size();
+                    }
+
+                }
+
+                List<User> userList5 = userDao.find(" from  User where uname = '夏斌'");
+                Double totalxia = 0.00;
+                for (User user5: userList5) {
+                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user5.getUid();
+                    List<Object> result5 = evaluateDetailDao.find(sql); //自评分主表 拼条件
+                    for (int j = 0; j< result5.size(); j++){
+                        String name= (String) result5.get(j);
+                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
+
+                        if (evaluateDetailList.size() != 0){
+                            totalxia+=evaluateDetailList.get(0).getGroupTotal();
+                        }else{
+                            totalxia = 0.0;
+                        }
+                        totalxia = totalxia / result5.size();
+                    }
+
+                }
+                double wangend = (totalliu + totalchen + totalxia + yunyingend) / 4;
+                joStatisticsYearDTO.setAverage(wangend);
+            }
+            JoStatisticsYearDTOList.add(joStatisticsYearDTO);
+
+        }
+        result.setSuccess("查询成功",JoStatisticsYearDTOList);
+        return result;
+    }
+
 }

@@ -1,6 +1,6 @@
 webpackJsonp([0],{
 
-/***/ 1005:
+/***/ 1007:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -39,13 +39,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(33);
+var _css2 = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
@@ -67,23 +67,23 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css6 = __webpack_require__(29);
+var _css6 = __webpack_require__(27);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css7 = __webpack_require__(31);
+var _css7 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -91,7 +91,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -105,11 +105,11 @@ var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -599,7 +599,7 @@ var Performance = _wrapComponent('Performance')(function (_React$Component) {
 
 if (document.getElementById("personalPerformance")) _reactDom2.default.render(_react3.default.createElement(Performance, pageUrls), document.getElementById("personalPerformance"));
 exports.default = Performance;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -635,7 +635,7 @@ module.exports = arrayTreeFilter;
 /***/ 169:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(21)();
+exports = module.exports = __webpack_require__(24)();
 // imports
 
 
@@ -650,7 +650,7 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 /***/ 188:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(21)();
+exports = module.exports = __webpack_require__(24)();
 // imports
 
 
@@ -692,11 +692,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _icon = __webpack_require__(35);
+var _icon = __webpack_require__(36);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
@@ -775,13 +775,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(545);
+var _css2 = __webpack_require__(547);
 
-var _transfer = __webpack_require__(541);
+var _transfer = __webpack_require__(543);
 
 var _transfer2 = _interopRequireDefault(_transfer);
 
@@ -797,17 +797,17 @@ var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(493);
+var _css5 = __webpack_require__(495);
 
-var _cascader = __webpack_require__(492);
+var _cascader = __webpack_require__(494);
 
 var _cascader2 = _interopRequireDefault(_cascader);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -815,7 +815,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1273,7 +1273,7 @@ var Assign = _wrapComponent('Assign')(function (_React$Component2) {
 
 if (document.getElementById("assignResponsibility")) _reactDom2.default.render(_react3.default.createElement(Assign, pageUrls), document.getElementById("assignResponsibility"));
 exports.default = Assign;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
@@ -1289,13 +1289,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(33);
+var _css2 = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
@@ -1317,15 +1317,15 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css6 = __webpack_require__(29);
+var _css6 = __webpack_require__(27);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css7 = __webpack_require__(31);
+var _css7 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -1349,11 +1349,11 @@ var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1900,7 +1900,7 @@ var Bumenkp = function (_Performance) {
 var WrappedBumenkp = _form2.default.create()(Bumenkp);
 if (document.getElementById("bumenkaoPing")) _reactDom2.default.render(_react2.default.createElement(WrappedBumenkp, _extends({}, pageUrls, { department: 'bumen' })), document.getElementById("bumenkaoPing"));
 exports.default = Bumenkp;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
 
@@ -1914,9 +1914,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
@@ -1928,7 +1928,7 @@ var _select2 = _interopRequireDefault(_select);
 
 var _css3 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1938,9 +1938,9 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css5 = __webpack_require__(31);
+var _css5 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -2173,7 +2173,7 @@ var KpHistory = function (_Performance) {
 
 if (document.getElementById("kpHistoryInfor")) _reactDom2.default.render(_react2.default.createElement(KpHistory, pageUrls), document.getElementById("kpHistoryInfor"));
 exports.default = KpHistory;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
 
@@ -2189,13 +2189,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _css = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _css2 = __webpack_require__(33);
+var _css2 = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
@@ -2211,9 +2211,9 @@ var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _css5 = __webpack_require__(29);
+var _css5 = __webpack_require__(27);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
@@ -2223,9 +2223,9 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css7 = __webpack_require__(31);
+var _css7 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -2249,11 +2249,11 @@ var _personalPerformance = __webpack_require__(107);
 
 var _personalPerformance2 = _interopRequireDefault(_personalPerformance);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -2854,7 +2854,7 @@ if (document.getElementById("managementkp")) {
   _reactDom2.default.render(_react2.default.createElement(WrappedManagementkp, _extends({}, pageUrls, { department: 'management' })), document.getElementById("managementkp"));
 }
 exports.default = Managementkp;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
 
@@ -2868,9 +2868,297 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _css = __webpack_require__(33);
+var _css = __webpack_require__(30);
 
-var _table = __webpack_require__(32);
+var _table = __webpack_require__(29);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _css2 = __webpack_require__(27);
+
+var _input = __webpack_require__(35);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _css3 = __webpack_require__(40);
+
+var _datePicker = __webpack_require__(39);
+
+var _datePicker2 = _interopRequireDefault(_datePicker);
+
+var _index = __webpack_require__(22);
+
+var _index2 = _interopRequireDefault(_index);
+
+var _index3 = __webpack_require__(20);
+
+var _index4 = _interopRequireDefault(_index3);
+
+var _react2 = __webpack_require__(0);
+
+var _react3 = _interopRequireDefault(_react2);
+
+var _index5 = __webpack_require__(21);
+
+var _index6 = _interopRequireDefault(_index5);
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _reactDom = __webpack_require__(11);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Sorter = __webpack_require__(32);
+
+var _Sorter2 = _interopRequireDefault(_Sorter);
+
+var _Filters = __webpack_require__(37);
+
+var _Filters2 = _interopRequireDefault(_Filters);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _components = {
+  MonthSummarySheet: {
+    displayName: 'MonthSummarySheet'
+  }
+};
+
+var _DReactNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: 'D:/react/newProject/components/kp/monthSummarySheet.js',
+  components: _components,
+  locals: [module],
+  imports: [_react3.default]
+});
+
+var _DReactNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: 'D:/react/newProject/components/kp/monthSummarySheet.js',
+  components: _components,
+  locals: [],
+  imports: [_react3.default, _index2.default]
+});
+
+function _wrapComponent(id) {
+  return function (Component) {
+    return _DReactNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_DReactNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+  };
+}
+
+var MonthPicker = _datePicker2.default.MonthPicker,
+    RangePicker = _datePicker2.default.RangePicker;
+var TextArea = _input2.default.TextArea;
+
+var dateFormat = 'YYYY/MM/DD';
+var monthFormat = 'YYYY/MM';
+
+var MonthSummarySheet = _wrapComponent('MonthSummarySheet')(function (_React$Component) {
+  _inherits(MonthSummarySheet, _React$Component);
+
+  function MonthSummarySheet(props) {
+    _classCallCheck(this, MonthSummarySheet);
+
+    var _this = _possibleConstructorReturn(this, (MonthSummarySheet.__proto__ || Object.getPrototypeOf(MonthSummarySheet)).call(this, props));
+
+    _this.state = {
+      recData: []
+    };
+    return _this;
+  }
+
+  _createClass(MonthSummarySheet, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var self = this;
+      $.ajax({
+        url: self.props.monthSummarySheetUrl,
+        type: "get",
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (data) {
+          if (data.status > 0) {
+            if (data) {
+              var data = data.data;
+              for (var i = 0; i < data.length; i++) {
+                data[i]["key"] = i + 1;
+                var kpScore = data[i].kpScore;
+                var plusOrMinusPoints = data[i].plusOrMinusPoints;
+                Object.assign(data[i], kpScore, plusOrMinusPoints);
+                for (var j in data[i]) {
+                  //数据类型转换，数字类型筛选的时候会报错
+                  data[i][j] = String(data[i][j]);
+                }
+              }
+              self.setState({
+                recData: data
+              });
+            } else {
+              recData: "";
+            }
+          } else {
+            return;
+          }
+        }.bind(self),
+        error: function error() {
+          alert("请求失败");
+        }
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var filterData = new _Filters2.default().filter(this.state.recData);
+      var formItemLayout = {
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 }
+      };
+      var recData = this.state.recData;
+      // console.log(filterData)
+      var columns = [{
+        title: '序号',
+        dataIndex: 'key',
+        filters: filterData.key,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.key, b.key);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.key.indexOf(value) === 0;
+        }
+      }, {
+        title: '部门',
+        dataIndex: 'department',
+        filters: filterData.department,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.department, b.department);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.department.indexOf(value) === 0;
+        }
+      }, {
+        title: '姓名',
+        dataIndex: 'name',
+        filters: filterData.name,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.name, b.name);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.name.indexOf(value) === 0;
+        }
+      }, {
+        title: '考核得分',
+        dataIndex: 'kpScore',
+        children: [{
+          title: "合计",
+          dataIndex: "total",
+          filters: filterData.total,
+          sorter: function sorter(a, b) {
+            return new _Sorter2.default().sort(a.total, b.total);
+          },
+          onFilter: function onFilter(value, record) {
+            return record.total.indexOf(value) === 0;
+          }
+        }, {
+          title: "本岗",
+          dataIndex: "bengang",
+          filters: filterData.bengang,
+          sorter: function sorter(a, b) {
+            return new _Sorter2.default().sort(a.bengang, b.bengang);
+          },
+          onFilter: function onFilter(value, record) {
+            return record.bengang.indexOf(value) === 0;
+          }
+        }, {
+          title: "配属",
+          dataIndex: "peishu",
+          filters: filterData.peishu,
+          sorter: function sorter(a, b) {
+            return new _Sorter2.default().sort(a.peishu, b.peishu);
+          },
+          onFilter: function onFilter(value, record) {
+            return record.peishu.indexOf(value) === 0;
+          }
+        }]
+      }, {
+        title: '增、扣分情况',
+        dataIndex: 'plusOrMinusPoints',
+        children: [{
+          title: "日常工作",
+          dataIndex: "rcgz",
+          filters: filterData.rcgz,
+          sorter: function sorter(a, b) {
+            return new _Sorter2.default().sort(a.rcgz, b.rcgz);
+          },
+          onFilter: function onFilter(value, record) {
+            return record.rcgz.indexOf(value) === 0;
+          }
+        }, {
+          title: "行为规范",
+          dataIndex: "xwgf",
+          filters: filterData.xwgf,
+          sorter: function sorter(a, b) {
+            return new _Sorter2.default().sort(a.xwgf, b.xwgf);
+          },
+          onFilter: function onFilter(value, record) {
+            return record.xwgf.indexOf(value) === 0;
+          }
+        }]
+      }, {
+        title: '备注',
+        dataIndex: 'remarks',
+        filters: filterData.remarks,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.remarks, b.remarks);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.remarks.indexOf(value) === 0;
+        }
+      }];
+      return _react3.default.createElement(
+        'div',
+        { style: { marginBottom: 100 } },
+        _react3.default.createElement(
+          'div',
+          { id: 'header' },
+          _react3.default.createElement(
+            'h2',
+            null,
+            '\u6708\u5EA6\u7EE9\u6548\u8003\u6838\u6C47\u603B\u8868'
+          )
+        ),
+        _react3.default.createElement(_table2.default, { bordered: true, columns: columns, dataSource: this.state.recData })
+      );
+    }
+  }]);
+
+  return MonthSummarySheet;
+}(_react3.default.Component));
+
+if (document.getElementById("monthSummarySheet")) {
+  _reactDom2.default.render(_react3.default.createElement(MonthSummarySheet, pageUrls), document.getElementById("monthSummarySheet"));
+}
+exports.default = MonthSummarySheet;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+
+/***/ }),
+
+/***/ 473:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module, $) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _css = __webpack_require__(30);
+
+var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
@@ -2882,7 +3170,7 @@ var _select2 = _interopRequireDefault(_select);
 
 var _css3 = __webpack_require__(26);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -2898,23 +3186,23 @@ var _datePicker = __webpack_require__(39);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _css6 = __webpack_require__(29);
+var _css6 = __webpack_require__(27);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _css7 = __webpack_require__(31);
+var _css7 = __webpack_require__(34);
 
-var _form = __webpack_require__(30);
+var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(24);
+var _index = __webpack_require__(22);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(22);
+var _index3 = __webpack_require__(20);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2922,7 +3210,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(23);
+var _index5 = __webpack_require__(21);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2934,11 +3222,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(34);
+var _Sorter = __webpack_require__(32);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(37);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -3615,11 +3903,230 @@ var AppTable = _wrapComponent('AppTable')(function (_React$Component2) {
 var WrappedProjectModal = _form2.default.create()(AppModal);
 if (document.getElementById("proManagement")) _reactDom2.default.render(_react3.default.createElement(AppTable, pageUrls), document.getElementById("proManagement"));
 exports.default = AppTable;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 486:
+/***/ 474:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module, $) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _css = __webpack_require__(30);
+
+var _table = __webpack_require__(29);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _css2 = __webpack_require__(27);
+
+var _input = __webpack_require__(35);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _css3 = __webpack_require__(40);
+
+var _datePicker = __webpack_require__(39);
+
+var _datePicker2 = _interopRequireDefault(_datePicker);
+
+var _index = __webpack_require__(22);
+
+var _index2 = _interopRequireDefault(_index);
+
+var _index3 = __webpack_require__(20);
+
+var _index4 = _interopRequireDefault(_index3);
+
+var _react2 = __webpack_require__(0);
+
+var _react3 = _interopRequireDefault(_react2);
+
+var _index5 = __webpack_require__(21);
+
+var _index6 = _interopRequireDefault(_index5);
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _reactDom = __webpack_require__(11);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Sorter = __webpack_require__(32);
+
+var _Sorter2 = _interopRequireDefault(_Sorter);
+
+var _Filters = __webpack_require__(37);
+
+var _Filters2 = _interopRequireDefault(_Filters);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _components = {
+  YearSummarySheet: {
+    displayName: 'YearSummarySheet'
+  }
+};
+
+var _DReactNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: 'D:/react/newProject/components/kp/yearSummarySheet.js',
+  components: _components,
+  locals: [module],
+  imports: [_react3.default]
+});
+
+var _DReactNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: 'D:/react/newProject/components/kp/yearSummarySheet.js',
+  components: _components,
+  locals: [],
+  imports: [_react3.default, _index2.default]
+});
+
+function _wrapComponent(id) {
+  return function (Component) {
+    return _DReactNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_DReactNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+  };
+}
+
+var MonthPicker = _datePicker2.default.MonthPicker,
+    RangePicker = _datePicker2.default.RangePicker;
+var TextArea = _input2.default.TextArea;
+
+var dateFormat = 'YYYY/MM/DD';
+var monthFormat = 'YYYY/MM';
+
+var YearSummarySheet = _wrapComponent('YearSummarySheet')(function (_React$Component) {
+  _inherits(YearSummarySheet, _React$Component);
+
+  function YearSummarySheet(props) {
+    _classCallCheck(this, YearSummarySheet);
+
+    var _this = _possibleConstructorReturn(this, (YearSummarySheet.__proto__ || Object.getPrototypeOf(YearSummarySheet)).call(this, props));
+
+    _this.state = {
+      recData: []
+    };
+    return _this;
+  }
+
+  _createClass(YearSummarySheet, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var self = this;
+      $.ajax({
+        url: self.props.yearSummarySheetUrl,
+        type: "get",
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (data) {
+          if (data.status > 0) {
+            if (data) {
+              var data = data.data;
+              for (var i = 0; i < data.length; i++) {
+                data[i]["key"] = i + 1;
+                for (var j in data[i]) {
+                  //数据类型转换，数字类型筛选的时候会报错
+                  data[i][j] = String(data[i][j]);
+                }
+              }
+              self.setState({
+                recData: data
+              });
+            } else {
+              recData: "";
+            }
+          } else {
+            return;
+          }
+        }.bind(self),
+        error: function error() {
+          alert("请求失败");
+        }
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var filterData = new _Filters2.default().filter(this.state.recData);
+      var formItemLayout = {
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 }
+      };
+      var recData = this.state.recData;
+      var columns = [{
+        title: '姓名',
+        dataIndex: 'name',
+        filters: filterData.name,
+        width: 150,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.name, b.name);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.name.indexOf(value) === 0;
+        }
+      }, {
+        title: '部门',
+        dataIndex: 'department',
+        filters: filterData.department,
+        width: 150,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.department, b.department);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.department.indexOf(value) === 0;
+        }
+      }, {
+        title: '平均分',
+        dataIndex: 'average',
+        filters: filterData.average,
+        width: 100,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.average, b.average);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.average.indexOf(value) === 0;
+        }
+      }];
+      return _react3.default.createElement(
+        'div',
+        { style: { marginBottom: 100 } },
+        _react3.default.createElement(
+          'div',
+          { id: 'header' },
+          _react3.default.createElement(
+            'h2',
+            null,
+            '\u6708\u5EA6\u7EE9\u6548\u8003\u6838\u6C47\u603B\u8868'
+          )
+        ),
+        _react3.default.createElement(_table2.default, { style: { width: 800, margin: '0 auto' }, bordered: true, columns: columns, dataSource: this.state.recData })
+      );
+    }
+  }]);
+
+  return YearSummarySheet;
+}(_react3.default.Component));
+
+if (document.getElementById("yearSummarySheet")) {
+  _reactDom2.default.render(_react3.default.createElement(YearSummarySheet, pageUrls), document.getElementById("yearSummarySheet"));
+}
+exports.default = YearSummarySheet;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+
+/***/ }),
+
+/***/ 488:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3641,7 +4148,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 492:
+/***/ 494:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3679,7 +4186,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _rcCascader = __webpack_require__(803);
+var _rcCascader = __webpack_require__(805);
 
 var _rcCascader2 = _interopRequireDefault(_rcCascader);
 
@@ -3699,11 +4206,11 @@ var _KeyCode = __webpack_require__(48);
 
 var _KeyCode2 = _interopRequireDefault(_KeyCode);
 
-var _input = __webpack_require__(37);
+var _input = __webpack_require__(35);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _icon = __webpack_require__(35);
+var _icon = __webpack_require__(36);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -4010,7 +4517,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 493:
+/***/ 495:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4018,13 +4525,13 @@ module.exports = exports['default'];
 
 __webpack_require__(18);
 
-__webpack_require__(988);
+__webpack_require__(990);
 
-__webpack_require__(29);
+__webpack_require__(27);
 
 /***/ }),
 
-/***/ 541:
+/***/ 543:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4070,11 +4577,11 @@ var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _list = __webpack_require__(543);
+var _list = __webpack_require__(545);
 
 var _list2 = _interopRequireDefault(_list);
 
-var _operation = __webpack_require__(544);
+var _operation = __webpack_require__(546);
 
 var _operation2 = _interopRequireDefault(_operation);
 
@@ -4436,7 +4943,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 542:
+/***/ 544:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4482,7 +4989,7 @@ var _PureRenderMixin = __webpack_require__(130);
 
 var _PureRenderMixin2 = _interopRequireDefault(_PureRenderMixin);
 
-var _reactLazyLoad = __webpack_require__(958);
+var _reactLazyLoad = __webpack_require__(960);
 
 var _reactLazyLoad2 = _interopRequireDefault(_reactLazyLoad);
 
@@ -4558,7 +5065,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 543:
+/***/ 545:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4618,11 +5125,11 @@ var _search = __webpack_require__(242);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _item = __webpack_require__(542);
+var _item = __webpack_require__(544);
 
 var _item2 = _interopRequireDefault(_item);
 
-var _triggerEvent = __webpack_require__(486);
+var _triggerEvent = __webpack_require__(488);
 
 var _triggerEvent2 = _interopRequireDefault(_triggerEvent);
 
@@ -4856,7 +5363,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 544:
+/***/ 546:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4886,11 +5393,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(23);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _icon = __webpack_require__(35);
+var _icon = __webpack_require__(36);
 
 var _icon2 = _interopRequireDefault(_icon);
 
@@ -4961,7 +5468,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 545:
+/***/ 547:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4969,17 +5476,17 @@ module.exports = exports['default'];
 
 __webpack_require__(18);
 
-__webpack_require__(1005);
+__webpack_require__(1007);
 
 __webpack_require__(230);
 
 __webpack_require__(26);
 
-__webpack_require__(29);
+__webpack_require__(27);
 
 /***/ }),
 
-/***/ 572:
+/***/ 574:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4988,13 +5495,15 @@ __webpack_require__(29);
 __webpack_require__(469);
 __webpack_require__(471);
 __webpack_require__(107);
-__webpack_require__(472);
+__webpack_require__(473);
 __webpack_require__(468);
 __webpack_require__(470);
+__webpack_require__(472);
+__webpack_require__(474);
 
 /***/ }),
 
-/***/ 637:
+/***/ 639:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(root,factory){
@@ -5028,7 +5537,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(root
 
 /***/ }),
 
-/***/ 658:
+/***/ 660:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5413,7 +5922,7 @@ module.exports = debounce;
 
 /***/ }),
 
-/***/ 663:
+/***/ 665:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5860,7 +6369,7 @@ module.exports = throttle;
 
 /***/ }),
 
-/***/ 801:
+/***/ 803:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5884,7 +6393,7 @@ var _rcTrigger = __webpack_require__(84);
 
 var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 
-var _Menus = __webpack_require__(802);
+var _Menus = __webpack_require__(804);
 
 var _Menus2 = _interopRequireDefault(_Menus);
 
@@ -5896,7 +6405,7 @@ var _arrayTreeFilter = __webpack_require__(147);
 
 var _arrayTreeFilter2 = _interopRequireDefault(_arrayTreeFilter);
 
-var _arrays = __webpack_require__(983);
+var _arrays = __webpack_require__(985);
 
 var _arrays2 = _interopRequireDefault(_arrays);
 
@@ -6249,7 +6758,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 802:
+/***/ 804:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6462,7 +6971,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 803:
+/***/ 805:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6472,7 +6981,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cascader = __webpack_require__(801);
+var _Cascader = __webpack_require__(803);
 
 var _Cascader2 = _interopRequireDefault(_Cascader);
 
@@ -6484,7 +6993,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 958:
+/***/ 960:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6506,21 +7015,21 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactDom = __webpack_require__(11);
 
-var _eventlistener = __webpack_require__(637);
+var _eventlistener = __webpack_require__(639);
 
-var _lodash = __webpack_require__(658);
+var _lodash = __webpack_require__(660);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _lodash3 = __webpack_require__(663);
+var _lodash3 = __webpack_require__(665);
 
 var _lodash4 = _interopRequireDefault(_lodash3);
 
-var _parentScroll = __webpack_require__(961);
+var _parentScroll = __webpack_require__(963);
 
 var _parentScroll2 = _interopRequireDefault(_parentScroll);
 
-var _inViewport = __webpack_require__(960);
+var _inViewport = __webpack_require__(962);
 
 var _inViewport2 = _interopRequireDefault(_inViewport);
 
@@ -6712,7 +7221,7 @@ LazyLoad.defaultProps = {
 
 /***/ }),
 
-/***/ 959:
+/***/ 961:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6737,7 +7246,7 @@ function getElementPosition(element) {
 
 /***/ }),
 
-/***/ 960:
+/***/ 962:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6748,7 +7257,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = inViewport;
 
-var _getElementPosition = __webpack_require__(959);
+var _getElementPosition = __webpack_require__(961);
 
 var _getElementPosition2 = _interopRequireDefault(_getElementPosition);
 
@@ -6789,7 +7298,7 @@ function inViewport(element, container, customOffset) {
 
 /***/ }),
 
-/***/ 961:
+/***/ 963:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6836,7 +7345,7 @@ exports.default = scrollParent;
 
 /***/ }),
 
-/***/ 983:
+/***/ 985:
 /***/ (function(module, exports) {
 
 module.exports = function shallowEqualArrays(arrA, arrB) {
@@ -6862,7 +7371,7 @@ module.exports = function shallowEqualArrays(arrA, arrB) {
 
 /***/ }),
 
-/***/ 988:
+/***/ 990:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -6889,4 +7398,4 @@ if(true) {
 
 /***/ })
 
-},[572]);
+},[574]);
