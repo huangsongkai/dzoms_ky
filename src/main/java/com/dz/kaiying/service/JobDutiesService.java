@@ -674,56 +674,57 @@ public class JobDutiesService extends BaseService{
             JobStatisticsYearDTO jobStatisticsYearDTO = new JobStatisticsYearDTO();
             jobStatisticsYearDTO.setName(user.getUname());
             jobStatisticsYearDTO.setDepartment(user.getDepartment());
-            for (int j =1; j< 12; j++){
-                String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-"+j+"-01 00:00:00' AND "+sdf.format(new Date())+"-"+j+"-28 00:00:00' ";
-                String yearDataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01-01 00:00:00' AND "+sdf.format(new Date())+"-12-30 00:00:00' ";
+            for (int j = 1; j < 12; j++) {
+                String dataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-" + j + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-" + j + "-28 00:00:00' ";
+                String yearDataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-01-01 00:00:00' AND ' " + sdf.format(new Date()) + "-12-30 00:00:00' ";
                 String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   ";
                 List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
-                String evaluateName = evaluateDetailList.get(0).getEvaluateName();
-                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+dataSql);//合计分数
-                List<Object>  yearTotal= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+yearDataSql);//年度合计分数
-                List<Object>  yearAvgTotal= evaluateDetailDao.find("select round(COALESCE(avg(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+yearDataSql);//年度平均分
-                jobStatisticsYearDTO.setTotal((Double) yearTotal.get(0)+100.00);
-                jobStatisticsYearDTO.setAverage((Double) yearAvgTotal.get(0)+100.00);
-                if (j ==1 ){
-                    jobStatisticsYearDTO.setJanuary((Double) total.get(0)+100.00);
-                }
-                if (j == 2){
-                    jobStatisticsYearDTO.setFebruary((Double) total.get(0)+100.00);
-                }
-                if (j == 3){
-                    jobStatisticsYearDTO.setMarch((Double) total.get(0)+100.00);
-                }
-                if (j == 4){
-                    jobStatisticsYearDTO.setApril((Double) total.get(0)+100.00);
-                }
-                if (j == 5){
-                    jobStatisticsYearDTO.setMay((Double) total.get(0)+100.00);
-                }
-                if (j == 6){
-                    jobStatisticsYearDTO.setJune((Double) total.get(0)+100.00);
-                }
-                if (j == 7){
-                    jobStatisticsYearDTO.setJuly((Double) total.get(0)+100.00);
-                }
-                if (j == 8){
-                    jobStatisticsYearDTO.setAugust((Double) total.get(0)+100.00);
-                }
-                if (j == 9){
-                    jobStatisticsYearDTO.setSeptember((Double) total.get(0)+100.00);
-                }
-                if (j == 10){
-                    jobStatisticsYearDTO.setOctober((Double) total.get(0)+100.00);
-                }
-                if (j == 11){
-                    jobStatisticsYearDTO.setNovember((Double) total.get(0)+100.00);
-                }
-                if (j == 12){
-                    jobStatisticsYearDTO.setDecember((Double) total.get(0)+100.00);
+                if (evaluateDetailList.size() != 0) {
+                    String evaluateName = evaluateDetailList.get(0).getEvaluateName();
+                    List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + dataSql);//合计分数
+                    List<Object> yearTotal = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度合计分数
+                    List<Object> yearAvgTotal = evaluateDetailDao.find("select round(COALESCE(avg(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度平均分
+                    jobStatisticsYearDTO.setTotal((Double) yearTotal.get(0) + 100.00);
+                    jobStatisticsYearDTO.setAverage((Double) yearAvgTotal.get(0) + 100.00);
+                    if (j == 1) {
+                        jobStatisticsYearDTO.setJanuary((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 2) {
+                        jobStatisticsYearDTO.setFebruary((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 3) {
+                        jobStatisticsYearDTO.setMarch((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 4) {
+                        jobStatisticsYearDTO.setApril((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 5) {
+                        jobStatisticsYearDTO.setMay((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 6) {
+                        jobStatisticsYearDTO.setJune((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 7) {
+                        jobStatisticsYearDTO.setJuly((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 8) {
+                        jobStatisticsYearDTO.setAugust((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 9) {
+                        jobStatisticsYearDTO.setSeptember((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 10) {
+                        jobStatisticsYearDTO.setOctober((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 11) {
+                        jobStatisticsYearDTO.setNovember((Double) total.get(0) + 100.00);
+                    }
+                    if (j == 12) {
+                        jobStatisticsYearDTO.setDecember((Double) total.get(0) + 100.00);
+                    }
                 }
             }
             jobStatisticsYearDTOList.add(jobStatisticsYearDTO);
-
         }
         result.setSuccess("查询成功",jobStatisticsYearDTOList);
         return result;
