@@ -1,10 +1,10 @@
 package com.dz.kaiying.DTO;
 
 public class JobStatisticsMonthDTO {
-    String name;
-    String department;
-    KpScore kpScore;
-    String remarks;
+    String name;//名字
+    String department;//部门
+    KpScore kpScore;//考评分数
+    String remarks;//备注
 
     public String getName() {
         return name;

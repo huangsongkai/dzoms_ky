@@ -17,12 +17,11 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
 public class ImportExcelUtil {
-    @Resource
-    HibernateDao<KyYiJue, Integer> yjDao;  //已决dao
     private final static String excel2003L = ".xls";    //2003- 版本的excel
     private final static String excel2007U = ".xlsx";   //2007+ 版本的excel
 
@@ -101,11 +100,11 @@ public class ImportExcelUtil {
      * @param cell 每个表格
      * @return 表格内容
      */
-    public Object getCellValue(Cell cell) {
+    public String getCellValue(Cell cell) {
         if (cell == null) {
             return null;
         }
-        Object value = null;
+        String value = null;
         DecimalFormat df = new DecimalFormat("0");  //格式化number String字符
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd");  //日期格式化
         DecimalFormat df2 = new DecimalFormat("0.00");  //格式化数字
@@ -121,7 +120,7 @@ public class ImportExcelUtil {
                 break;
             case Cell.CELL_TYPE_NUMERIC:
                 if ("General".equals(cell.getCellStyle().getDataFormatString())) {
-                    String s = df.format(cell.getNumericCellValue());
+                    String s = df.format(cell.getNumericCellValue()).toString();
                     if (s != null) {
                         value = s.trim();
                     } else {
@@ -130,21 +129,18 @@ public class ImportExcelUtil {
                 } else if ("m/d/yy".equals(cell.getCellStyle().getDataFormatString())) {
                     String s2 = sdf.format(cell.getDateCellValue());
                     if (s2 != null) {
-                        value = s2.trim();
+                        value = s2.trim().toString();
                     } else {
                         value = "";
                     }
                 } else {
                     String s3 = df2.format(cell.getNumericCellValue());
                     if (s3 != null) {
-                        value = s3.trim();
+                        value = s3.trim().toString();
                     } else {
                         value = "";
                     }
                 }
-                break;
-            case Cell.CELL_TYPE_BOOLEAN:
-                value = cell.getBooleanCellValue();
                 break;
             case Cell.CELL_TYPE_BLANK:
                 value = "";
@@ -186,9 +182,9 @@ public class ImportExcelUtil {
             if (sheet == null) {
                 continue;
             }
-
+            List<String> listPAH=new ArrayList<>();//赔案号对比
             //遍历当前sheet中的所有行
-            for (int j = sheet.getFirstRowNum(); j < sheet.getLastRowNum(); j++) {
+            for (int j = sheet.getFirstRowNum(); j <=sheet.getLastRowNum(); j++) {
                 String name = sheet.getSheetName();
                 row = sheet.getRow(j);
                 if (row == null || row.getFirstCellNum() == j) {//不读取第一行
@@ -196,7 +192,19 @@ public class ImportExcelUtil {
                 }
                 //遍历所有的列
                 List<Object> li = new ArrayList<Object>();
-                for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
+                String contrastPAHRow=contrastPAH(row,listPAH);
+                String[] rowsString=contrastPAHRow.split("&");
+                //System.out.println(rowsString[0]+"---"+rowsString[1]);
+                if(rowsString[1].equals("1")){
+                    continue;
+                }
+                if (row.getCell((short)0)==null||row.getCell(row.getFirstCellNum())==null||
+                        row.getCell(row.getFirstCellNum()).toString().trim()==""){//如果赔案号为空则不加入到数据库中
+                    continue;
+                }
+                listPAH.add(rowsString[0]);
+                int cols = sheet.getRow(0).getPhysicalNumberOfCells();
+                for (int y = 0; y < cols; y++) {
                     cell = row.getCell(y);
                     li.add(this.getCellValue(cell));
                 }
@@ -213,6 +221,23 @@ public class ImportExcelUtil {
         return array;
     }
 
+    /**
+     *
+     * @return
+     */
+    private String contrastPAH(Row row,List<String> listPAH){
+        String rowString="";
+        for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++) {
+            Cell cellString = row.getCell(i);
+            rowString+=getCellValue(cellString);
+        }
+        for (String PAH:listPAH) {
+            if(rowString.equals(PAH)){
+                return rowString+"&1";//有重复
+            }
+        }
+        return rowString+"&2";//无重复
+    }
     /**
      * 新写的方法
      * @param in
@@ -304,9 +329,8 @@ public class ImportExcelUtil {
                     yj.setCx(String.valueOf(lo.get(42)));
                     yj.setYwly(String.valueOf(lo.get(43)));
                     yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
-                    //yjDao.save(yj);
                    // yijue.add(yj);
-                    System.out.println(yj);
+                    //System.out.println(yijue);
                 }
             }
             if ("出险".equals(name)){

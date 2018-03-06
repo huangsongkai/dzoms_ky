@@ -221,20 +221,14 @@ public class SgService {
             throw new Exception("文件不存在！");
         }
         in = file.getInputStream();
-        List<KyAccident> lo = new ImportExcelUtil().getBankListByExcelDivideBySheet2(in, file.getOriginalFilename());
-        for (KyAccident accident:lo) {
-            bxDao.save(accident);
-            //System.out.println("打印信息2--> "+accident.toString());
-        }
-        //System.out.println(lo.size());
-        //List<List<Object>>[] sheets = new ImportExcelUtil().getBankListByExcelDivideBySheet(in, file.getOriginalFilename());
+        List<List<Object>>[] sheets = new ImportExcelUtil().getBankListByExcelDivideBySheet(in, file.getOriginalFilename());
         in.close();
 
-        //List<List<Object>> yijue = sheets[0];
-       // List<List<Object>> chuxian = sheets[1];
+        List<List<Object>> yijue = sheets[0];
+        List<List<Object>> chuxian = sheets[1];
 
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
-        /*for (int i = 0; i < chuxian.size(); i++) {
+        for (int i = 0; i < chuxian.size(); i++) {
             List<Object> lo = chuxian.get(i);
             KyAccident accident = new KyAccident();
             accident.setBarq(String.valueOf(lo.get(0))); //报案日期
@@ -273,12 +267,12 @@ public class SgService {
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
             bxDao.save(accident);
-            System.out.println("打印信息1--> ");
-        }*/
+           // System.out.println("打印信息1--> "+accident.toString());
+        }
 
-        /*for (int i = 0; i < sheets2.size(); i++) {
-            List<Object> lo = yijue.get(i);*/
-            /*KyYiJue yj = new KyYiJue();
+        for (int i = 0; i < yijue.size(); i++) {
+            List<Object> lo = yijue.get(i);
+            KyYiJue yj = new KyYiJue();
             yj.setPdh(String.valueOf(lo.get(0))); //赔单号
             yj.setXzdm(String.valueOf(lo.get(1))); //险种代码
             yj.setBdgsjg(String.valueOf(lo.get(2)));//保单归属机构
@@ -323,9 +317,10 @@ public class SgService {
             yj.setCph(String.valueOf(lo.get(41)));
             yj.setCx(String.valueOf(lo.get(42)));
             yj.setYwly(String.valueOf(lo.get(43)));
-            yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志*/
-
-       // }
+            yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
+            yjDao.save(yj);
+            System.out.println("打印信息2--> "+yj.toString());
+       }
         result.setSuccess("导出成功", null);
         return "sg/accident_list";
     }
@@ -380,7 +375,7 @@ public class SgService {
             accident.setCph(String.valueOf(lo.get(32)));//车牌号
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
-            System.out.println("打印信息1--> ");
+           // System.out.println("打印信息1--> ");
         }
 
         for (int i = 0; i < yijue.size(); i++) {
@@ -431,7 +426,7 @@ public class SgService {
             yj.setCx(String.valueOf(lo.get(42)));
             yj.setYwly(String.valueOf(lo.get(43)));
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
-            System.out.println("打印信息2--> ");
+           // System.out.println("打印信息2--> ");
         }
     }
 }

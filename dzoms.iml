@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="Spring" name="Spring">
-      <configuration />
-    </facet>
     <facet type="web" name="Web">
       <configuration>
         <descriptors>
@@ -13,59 +10,23 @@
           <root url="file://$MODULE_DIR$/web" relative="/" />
         </webroots>
         <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/resources" />
+          <root url="file://$MODULE_DIR$/src" />
           <root url="file://$MODULE_DIR$/src/main/java" />
         </sourceRoots>
       </configuration>
-      <facet type="Struts2" name="Struts 2">
-        <configuration>
-          <fileset id="s2fileset" name="My Fileset " removed="false">
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/common/download/down-load.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/charge/struts-charge.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/vehicle/newcheck/struts-check.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/common/struts-common.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/complain/struts-complain.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/struts-driver-base.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/struts-driver.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/kaiying/struts-kaiying.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/meeting/struts-meeting.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/driver/praise/struts-praise.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/charge/receipt/struts-receipt.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/struts-select.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/vehicle/struts-vehicle.xml</file>
-            <file>file://$MODULE_DIR$/src/main/resources/struts.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/contract/struts_contract.xml</file>
-            <file>file://$MODULE_DIR$/src/main/java/com/dz/module/user/struts_manage.xml</file>
-            <file>jar://$MAVEN_REPOSITORY$/org/apache/struts/struts2-core/2.3.8/struts2-core-2.3.8.jar!/struts-default.xml</file>
-          </fileset>
-          <propertiesKeys disabled="false" />
-        </configuration>
-      </facet>
-    </facet>
-    <facet type="hibernate" name="Hibernate">
-      <configuration>
-        <datasource-map>
-          <unit-entry name="hibernate.cfg.xml" value="807b5984-fda8-4c09-bdc8-6685feccbc64" />
-          <unit-entry name="sessionFactory" value="807b5984-fda8-4c09-bdc8-6685feccbc64" />
-        </datasource-map>
-        <naming-strategy-map />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/hibernate.cfg.xml" />
-      </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.42" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-web:4.3.8.RELEASE" level="project" />
