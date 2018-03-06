@@ -667,116 +667,65 @@ public class JobDutiesService extends BaseService{
         return result;
     }
     public Result yearStatistics() {
-        DecimalFormat df   = new DecimalFormat("######0.00");
-        String sql = "";
-        double yunyingend = 0.0;
-        List<JobStatisticsYearDTO> JoStatisticsYearDTOList = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        List<JobStatisticsYearDTO> jobStatisticsYearDTOList = new ArrayList<>();
         List<User> userList = userDao.find(" from  User");
-        for (User user: userList) {
-            JobStatisticsYearDTO joStatisticsYearDTO = new JobStatisticsYearDTO();
-            joStatisticsYearDTO.setName(user.getUname());
-            joStatisticsYearDTO.setDepartment(user.getDepartment());
-            sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid();
-            List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
-            Double total = 0.00;
-            for (int j = 0; j< result1.size(); j++){
-                String name= (String) result1.get(j);
-                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
-                if (evaluateDetailList.size() != 0){
-                    total+=evaluateDetailList.get(0).getGroupTotal();
-                }else{
-                    total = 0.0;
+        for (User user : userList) {
+            JobStatisticsYearDTO jobStatisticsYearDTO = new JobStatisticsYearDTO();
+            jobStatisticsYearDTO.setName(user.getUname());
+            jobStatisticsYearDTO.setDepartment(user.getDepartment());
+            for (int j =1; j< 12; j++){
+                String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-"+j+"-01 00:00:00' AND "+sdf.format(new Date())+"-"+j+"-28 00:00:00' ";
+                String yearDataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01-01 00:00:00' AND "+sdf.format(new Date())+"-12-30 00:00:00' ";
+                String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   ";
+                List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
+                String evaluateName = evaluateDetailList.get(0).getEvaluateName();
+                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+dataSql);//合计分数
+                List<Object>  yearTotal= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+yearDataSql);//年度合计分数
+                List<Object>  yearAvgTotal= evaluateDetailDao.find("select round(COALESCE(avg(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+yearDataSql);//年度平均分
+                jobStatisticsYearDTO.setTotal((Double) yearTotal.get(0)+100.00);
+                jobStatisticsYearDTO.setAverage((Double) yearAvgTotal.get(0)+100.00);
+                if (j ==1 ){
+                    jobStatisticsYearDTO.setJanuary((Double) total.get(0)+100.00);
                 }
-
-
+                if (j == 2){
+                    jobStatisticsYearDTO.setFebruary((Double) total.get(0)+100.00);
+                }
+                if (j == 3){
+                    jobStatisticsYearDTO.setMarch((Double) total.get(0)+100.00);
+                }
+                if (j == 4){
+                    jobStatisticsYearDTO.setApril((Double) total.get(0)+100.00);
+                }
+                if (j == 5){
+                    jobStatisticsYearDTO.setMay((Double) total.get(0)+100.00);
+                }
+                if (j == 6){
+                    jobStatisticsYearDTO.setJune((Double) total.get(0)+100.00);
+                }
+                if (j == 7){
+                    jobStatisticsYearDTO.setJuly((Double) total.get(0)+100.00);
+                }
+                if (j == 8){
+                    jobStatisticsYearDTO.setAugust((Double) total.get(0)+100.00);
+                }
+                if (j == 9){
+                    jobStatisticsYearDTO.setSeptember((Double) total.get(0)+100.00);
+                }
+                if (j == 10){
+                    jobStatisticsYearDTO.setOctober((Double) total.get(0)+100.00);
+                }
+                if (j == 11){
+                    jobStatisticsYearDTO.setNovember((Double) total.get(0)+100.00);
+                }
+                if (j == 12){
+                    jobStatisticsYearDTO.setDecember((Double) total.get(0)+100.00);
+                }
             }
-            joStatisticsYearDTO.setAverage(total/result1.size());
-            if ("汤伟丽".equals(user.getUname())) {
-                //运营部年度平均分
-                List<User> userList1 = userDao.find(" from  User where department = '运营管理部'");
-                double total1 = 0.00;
-                for (User user1 : userList1) {
-                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user1.getUid();
-                    List<Object> result2 = evaluateDetailDao.find(sql); //自评分主表 拼条件
-                    for (int j = 0; j < result2.size(); j++) {
-                        String name1 = (String) result2.get(j);
-                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '" + name1 + "'  and groupDate is not null ");
-                        if (evaluateDetailList.size() != 0){
-                            total1+=evaluateDetailList.get(0).getGroupTotal();
-                        }else{
-                            total1 = 0.0;
-                        }
-                        total1 = total1 / result1.size();
-                    }
-                }
-                 yunyingend = total1 / userList1.size();//运营部平均分
-                joStatisticsYearDTO.setAverage(yunyingend);
-            }
-            if ("王星".equals(user.getUname())) {
-                List<User> userList1 = userDao.find(" from  User where uname = '刘波'");
-                Double totalliu = 0.00;
-                for (User user1: userList1) {
-                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user1.getUid();
-                    List<Object> result3 = evaluateDetailDao.find(sql); //自评分主表 拼条件
-                    for (int j = 0; j< result3.size(); j++){
-                        String name= (String) result3.get(j);
-                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
-
-                        if (evaluateDetailList.size() != 0){
-                            totalliu+=evaluateDetailList.get(0).getGroupTotal();
-                        }else{
-                            totalliu = 0.0;
-                        }
-                        totalliu = totalliu / result3.size();
-                    }
-
-
-                }
-
-                List<User> userList2 = userDao.find(" from  User where uname = '陈东慧'");
-                Double totalchen = 0.00;
-                for (User user2: userList2) {
-                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user2.getUid();
-                    List<Object> result4 = evaluateDetailDao.find(sql); //自评分主表 拼条件
-                    for (int j = 0; j< result4.size(); j++){
-                        String name= (String) result4.get(j);
-                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
-
-                        if (evaluateDetailList.size() != 0){
-                            totalchen+=evaluateDetailList.get(0).getGroupTotal();
-                        }else{
-                            totalchen = 0.0;
-                        }
-                        totalchen = totalchen / result4.size();
-                    }
-
-                }
-
-                List<User> userList5 = userDao.find(" from  User where uname = '夏斌'");
-                Double totalxia = 0.00;
-                for (User user5: userList5) {
-                    sql = "select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId =" + user5.getUid();
-                    List<Object> result5 = evaluateDetailDao.find(sql); //自评分主表 拼条件
-                    for (int j = 0; j< result5.size(); j++){
-                        String name= (String) result5.get(j);
-                        List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'  and groupDate is not null ");
-
-                        if (evaluateDetailList.size() != 0){
-                            totalxia+=evaluateDetailList.get(0).getGroupTotal();
-                        }else{
-                            totalxia = 0.0;
-                        }
-                        totalxia = totalxia / result5.size();
-                    }
-
-                }
-                double wangend = (totalliu + totalchen + totalxia + yunyingend) / 4;
-                joStatisticsYearDTO.setAverage(wangend);
-            }
-            JoStatisticsYearDTOList.add(joStatisticsYearDTO);
+            jobStatisticsYearDTOList.add(jobStatisticsYearDTO);
 
         }
-        result.setSuccess("查询成功",JoStatisticsYearDTOList);
+        result.setSuccess("查询成功",jobStatisticsYearDTOList);
         return result;
     }
 
