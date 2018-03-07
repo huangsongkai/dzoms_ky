@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +33,7 @@ public class EmpExportService {
     public Map<Integer,JobStatisticsMonthDTO> empSort(){
         Result result=jobDutiesService.monthStatistics();
         List<JobStatisticsMonthDTO> JobStatisticsMonthDTOList= (List<JobStatisticsMonthDTO>) result.getData();
+        System.out.println(JobStatisticsMonthDTOList.size());
         Map<Integer,JobStatisticsMonthDTO> jsm=new HashMap<Integer,JobStatisticsMonthDTO>();
         int num=23;//顺序23人
         for (int i=0;i<JobStatisticsMonthDTOList.size();i++){
@@ -109,7 +110,7 @@ public class EmpExportService {
                     jsm.put(23,dto);
                     break;
                 default:                                      //--24++
-                    num+=1;
+                    num=i+2;
                     jsm.put(num,dto);
                     break;
             }
@@ -118,24 +119,24 @@ public class EmpExportService {
     }
 
     /**
-     *
+     *月度生成excl导出
      * @throws Exception
      */
-    public void utilExcl(HttpServletResponse response)throws Exception{
+    public void monthAssessmentExportExcl(HttpServletResponse response)throws Exception{
         Map<Integer,JobStatisticsMonthDTO> dto= empSort();
+        if (dto==null)return;
         ExportExcelUtil util = new ExportExcelUtil();
         File file = util.getExcelDemoFile("classes/ExcelDemo/月度绩效考核汇总表模板.xls");
         FileInputStream fis = new FileInputStream(file);
         Workbook workbook = new ImportExcelUtil().getWorkbook(fis, file.getName());    //获取工作薄
         Sheet sheet =  workbook.getSheet("Sheet1");
-        for (int row = 0; row < dto.size(); row++){
-            JobStatisticsMonthDTO jsmDTO=dto.get(row);
+        int row =0;
+        for (JobStatisticsMonthDTO jsmDTO:dto.values()) {
             Row rows=sheet.createRow(row+3);
-            int numCol=sheet.getRow(2).getFirstCellNum();
-            System.out.println(numCol);//获取第三行有几列
+            int numCol=sheet.getRow(2).getPhysicalNumberOfCells();
             for (int col = 0; col < numCol; col++){
                 if(col==0){
-                    rows.createCell(col).setCellValue(col+1);
+                    rows.createCell(col).setCellValue(row+1);
                 }else if(col==1){
                     rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
                 }else if(col==2){
@@ -152,6 +153,7 @@ public class EmpExportService {
                     rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
                 }
             }
+            row++;
         }
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         BufferedInputStream bis=null;
@@ -159,10 +161,7 @@ public class EmpExportService {
         workbook.write(os);
         byte[] bytes = os.toByteArray();
         InputStream is = new ByteArrayInputStream(bytes);
-        response.reset();
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        response.setHeader("Content-Disposition", new String(("attachment;filename=月度绩效考核汇总表.xls").getBytes("UTF-8"), "UTF-8"));
-        ServletOutputStream out = response.getOutputStream();
+        ServletOutputStream out = getOutputStream(response,"月度绩效考核汇总表.xls");
         bis=new BufferedInputStream(is);
         bos=new BufferedOutputStream(out);
         byte[] buff = new byte[1024];
@@ -176,6 +175,20 @@ public class EmpExportService {
         if (bos!=null) {
             bos.close();
         }
+    }
+
+    /**
+     * 获取输出流
+     * @param response
+     * @param xlsName 生成文件名
+     * @return
+     * @throws IOException
+     */
+    public ServletOutputStream getOutputStream(HttpServletResponse response,String xlsName) throws IOException {
+        response.reset();
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(xlsName, "utf-8"));//new String(("attachment;filename=月度绩效考核汇总表.xls").getBytes("UTF-8"), "UTF-8"));
+        return response.getOutputStream();
     }
 
     private String ObjSetString(JobStatisticsMonthDTO jsmDTO,int col){
