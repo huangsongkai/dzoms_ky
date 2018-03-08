@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -613,7 +614,6 @@ public class JobDutiesService extends BaseService{
                 jobStatisticsMonthDTO.setKpScore(kpScore);
                 jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
             }else{
-                if (evaluateDetailList.size() != 0 ){
                     if ("汤伟丽".equals(user.getUname())){
                         List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
                         for (EvaluateDetail evaluateDetail : evaluateDetailList) {
@@ -656,13 +656,12 @@ public class JobDutiesService extends BaseService{
                         jobStatisticsMonthDTO.setDepartment(user.getDepartment());
                         KpScore kpScore = new KpScore();
                         double avg = ((Double) total.get(0) + (Double) cdh.get(0) + (Double) lb.get(0) + (Double) xb.get(0)) / 4;
-                        kpScore.setTotal(avg+100.00);
+                        kpScore.setTotal(m1(avg)+100.00);
                         kpScore.setLsxgz(0.0);
                         kpScore.setRcgz(0.0);
                         kpScore.setXwgf(0.0);
                         jobStatisticsMonthDTO.setKpScore(kpScore);
                         jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
-                    }
 
                 }
             }
@@ -675,6 +674,8 @@ public class JobDutiesService extends BaseService{
         List<JobStatisticsYearDTO> jobStatisticsYearDTOList = new ArrayList<>();
         List<User> userList = userDao.find(" from  User");
         for (User user : userList) {
+            double yearTotal1 = 0.00;
+            double yearN=0.00;
             JobStatisticsYearDTO jobStatisticsYearDTO = new JobStatisticsYearDTO();
             jobStatisticsYearDTO.setName(user.getUname());
             jobStatisticsYearDTO.setDepartment(user.getDepartment());
@@ -688,86 +689,130 @@ public class JobDutiesService extends BaseService{
                     List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + dataSql);//合计分数
                     List<Object> yearTotal = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度合计分数
                     List<Object> yearAvgTotal = evaluateDetailDao.find("select round(COALESCE(avg(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度平均分
-                    jobStatisticsYearDTO.setTotal((Double) yearTotal.get(0) + 1200.00);
-                    jobStatisticsYearDTO.setAverage((Double) yearAvgTotal.get(0) + 100.00);
+                    if ((Double) total.get(0) == 0){
+                        yearTotal1+=0;
+                    }else{
+                        yearTotal1+=(Double) total.get(0)+100;
+                    }
                     if (j == 1) {
                         jobStatisticsYearDTO.setJanuary((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setJanuary(0.00);
+                        }else{
+                            yearN++;
                         }
+
                     }
                     if (j == 2) {
                         jobStatisticsYearDTO.setFebruary((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setFebruary(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 3) {
                         jobStatisticsYearDTO.setMarch((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setMarch(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 4) {
                         jobStatisticsYearDTO.setApril((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setApril(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 5) {
                         jobStatisticsYearDTO.setMay((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setMay(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 6) {
                         jobStatisticsYearDTO.setJune((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setJune(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 7) {
                         jobStatisticsYearDTO.setJuly((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setJuly(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 8) {
                         jobStatisticsYearDTO.setAugust((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setAugust(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 9) {
                         jobStatisticsYearDTO.setSeptember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setSeptember(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 10) {
                         jobStatisticsYearDTO.setOctober((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setOctober(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 11) {
                         jobStatisticsYearDTO.setNovember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setNovember(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                     if (j == 12) {
                         jobStatisticsYearDTO.setDecember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setDecember(0.00);
+                        }else{
+                            yearN++;
                         }
                     }
                 }
+
+            }
+            jobStatisticsYearDTO.setTotal(yearTotal1);
+            if (yearN == 0 || yearTotal1 == 0){
+                jobStatisticsYearDTO.setAverage(0.00);
+            }else{
+                jobStatisticsYearDTO.setAverage(m1(yearTotal1 / yearN));
             }
             jobStatisticsYearDTOList.add(jobStatisticsYearDTO);
         }
         result.setSuccess("查询成功",jobStatisticsYearDTOList);
         return result;
+    }
+
+    public Double m1(Double f) {
+        if (f == 0){
+            return f;
+        }
+        BigDecimal bg = new BigDecimal(f);
+        double f1 = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return f1;
     }
 
 }
