@@ -18,7 +18,11 @@ public class EmpExportController {
     EmpExportService empExportService;
 
     @RequestMapping(value = "/monthStatistics", method = RequestMethod.GET)
-    public void empExportExcl(HttpServletResponse response)throws Exception{
+    public void empExportExclMonth(HttpServletResponse response)throws Exception{
         empExportService.monthAssessmentExportExcl(response);
+    }
+    @RequestMapping(value = "/yearStatistics", method = RequestMethod.GET)
+    public void empExportExclYear(HttpServletResponse response)throws Exception{
+        empExportService.yearAssessmentExportExcl(response);
     }
 }
