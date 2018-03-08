@@ -13,6 +13,7 @@
 <script type="text/javascript">
 	var pageUrls ={
 		 monthSummarySheetUrl : "/DZOMS/ky/duty/monthStatistics" , //个人绩效请求数据
+		 exportUrl : "/DZOMS/ky/duty2/monthStatistics",
 	}
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>
