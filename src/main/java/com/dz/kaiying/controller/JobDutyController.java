@@ -269,4 +269,43 @@ public class JobDutyController {
         return "activity/process/historyTaskDetails";
     }
 
+    /**
+     * 月度统计跳转
+     *
+     */
+    @RequestMapping(value = "/TZmonthStatistics", method = RequestMethod.GET)
+    public String TZmonthStatistics (HttpServletRequest request) throws Exception {
+        return "statistics/monthSummarySheet";
+    }
+    /**
+     * 月度统计信息
+     *
+     */
+    @RequestMapping(value = "/monthStatistics", method = RequestMethod.GET)
+    @ResponseBody
+    public Result ResultmonthStatistics (HttpServletRequest request) throws Exception {
+        Result result = jobDutiesService.monthStatistics();
+        return result;
+    }
+    /**
+     * 年度统计跳转
+     *
+     */
+    @RequestMapping(value = "/TZyearStatistics", method = RequestMethod.GET)
+    public String TZyearStatistics (HttpServletRequest request) throws Exception {
+        return "statistics/yearSummarySheet";
+    }
+    /**
+     * 年度统计信息
+     *
+     */
+    @RequestMapping(value = "/yearStatistics", method = RequestMethod.GET)
+    @ResponseBody
+    public Result yearStatistics (HttpServletRequest request) throws Exception {
+        Result result = jobDutiesService.yearStatistics();
+        return result;
+    }
+
+
+
 }

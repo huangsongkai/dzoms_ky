@@ -229,45 +229,45 @@ public class SgService {
 
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
         for (int i = 0; i < chuxian.size(); i++) {
-//            List<Object> lo = chuxian.get(i);
-//            KyAccident accident = new KyAccident();
-//            accident.setBarq(String.valueOf(lo.get(0))); //报案日期
-//            accident.setJasj(String.valueOf(lo.get(1))); //结案时间
-//            accident.setTpbz(String.valueOf(lo.get(2))); //通赔标志
-//            accident.setYwly(String.valueOf(lo.get(3))); //业务来源
-//            accident.setBdh(String.valueOf(lo.get(4))); //保单号
-//            accident.setBdgsjg(String.valueOf(lo.get(5))); //保单归属机构
-//            accident.setQbrq(String.valueOf(lo.get(6))); //起保日期
-//            accident.setZbrq(String.valueOf(lo.get(7))); //终保日期
-//            accident.setCdrq(String.valueOf(lo.get(8))); //初等日期
-//            accident.setTk(String.valueOf(lo.get(9))); //条款
-//            accident.setBf(String.valueOf(lo.get(10)));//保费
-//            accident.setBah(String.valueOf(lo.get(11)));//报案号
-//            accident.setLah(String.valueOf(lo.get(12))); //立案号
-//            accident.setAjxz(String.valueOf(lo.get(13))); //案件性质
-//            accident.setCxrq(String.valueOf(lo.get(14)));//出险日期
-//            accident.setLarq(String.valueOf(lo.get(15)));//立案日期
-//            accident.setJarq(String.valueOf(lo.get(16)));//结案日期
-//            accident.setGsje(String.valueOf(lo.get(17)));//估损金额
-//            accident.setGjpk(String.valueOf(lo.get(18)));//估计赔款
-//            accident.setPfje(String.valueOf(lo.get(19)));//赔付金额
-//            accident.setBar(String.valueOf(lo.get(20))); //报案人
-//            accident.setBardh(String.valueOf(lo.get(21)));//报案人电话
-//            accident.setCky(String.valueOf(lo.get(22)));//查勘员1
-//            accident.setGsje(String.valueOf(lo.get(23)));//查勘员2
-//            accident.setClrdm(String.valueOf(lo.get(24)));//处理人代码
-//            accident.setBdjbr(String.valueOf(lo.get(25)));//保单经办人代码
-//            accident.setBdgsr(String.valueOf(lo.get(26)));//保单归属人代码
-//            accident.setCxdz(String.valueOf(lo.get(27)));//出险地址
-//            accident.setCxyy(String.valueOf(lo.get(28)));//出险原因
-//            accident.setJsr(String.valueOf(lo.get(29))); //驾驶人
-//            accident.setJsz(String.valueOf(lo.get(30)));//驾驶证
-//            accident.setCpxh(String.valueOf(lo.get(31)));//厂牌型号
-//            accident.setCph(String.valueOf(lo.get(32)));//车牌号
-//            accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
-//            accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
-//          //  bxDao.save(accident);
-//            System.out.println("打印信息1--> ");
+            List<Object> lo = chuxian.get(i);
+            KyAccident accident = new KyAccident();
+            accident.setBarq(String.valueOf(lo.get(0))); //报案日期
+            accident.setJasj(String.valueOf(lo.get(1))); //结案时间
+            accident.setTpbz(String.valueOf(lo.get(2))); //通赔标志
+            accident.setYwly(String.valueOf(lo.get(3))); //业务来源
+            accident.setBdh(String.valueOf(lo.get(4))); //保单号
+            accident.setBdgsjg(String.valueOf(lo.get(5))); //保单归属机构
+            accident.setQbrq(String.valueOf(lo.get(6))); //起保日期
+            accident.setZbrq(String.valueOf(lo.get(7))); //终保日期
+            accident.setCdrq(String.valueOf(lo.get(8))); //初等日期
+            accident.setTk(String.valueOf(lo.get(9))); //条款
+            accident.setBf(String.valueOf(lo.get(10)));//保费
+            accident.setBah(String.valueOf(lo.get(11)));//报案号
+            accident.setLah(String.valueOf(lo.get(12))); //立案号
+            accident.setAjxz(String.valueOf(lo.get(13))); //案件性质
+            accident.setCxrq(String.valueOf(lo.get(14)));//出险日期
+            accident.setLarq(String.valueOf(lo.get(15)));//立案日期
+            accident.setJarq(String.valueOf(lo.get(16)));//结案日期
+            accident.setGsje(String.valueOf(lo.get(17)));//估损金额
+            accident.setGjpk(String.valueOf(lo.get(18)));//估计赔款
+            accident.setPfje(String.valueOf(lo.get(19)));//赔付金额
+            accident.setBar(String.valueOf(lo.get(20))); //报案人
+            accident.setBardh(String.valueOf(lo.get(21)));//报案人电话
+            accident.setCky(String.valueOf(lo.get(22)));//查勘员1
+            accident.setGsje(String.valueOf(lo.get(23)));//查勘员2
+            accident.setClrdm(String.valueOf(lo.get(24)));//处理人代码
+            accident.setBdjbr(String.valueOf(lo.get(25)));//保单经办人代码
+            accident.setBdgsr(String.valueOf(lo.get(26)));//保单归属人代码
+            accident.setCxdz(String.valueOf(lo.get(27)));//出险地址
+            accident.setCxyy(String.valueOf(lo.get(28)));//出险原因
+            accident.setJsr(String.valueOf(lo.get(29))); //驾驶人
+            accident.setJsz(String.valueOf(lo.get(30)));//驾驶证
+            accident.setCpxh(String.valueOf(lo.get(31)));//厂牌型号
+            accident.setCph(String.valueOf(lo.get(32)));//车牌号
+            accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
+            accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
+            bxDao.save(accident);
+           // System.out.println("打印信息1--> "+accident.toString());
         }
 
         for (int i = 0; i < yijue.size(); i++) {
@@ -319,8 +319,8 @@ public class SgService {
             yj.setYwly(String.valueOf(lo.get(43)));
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
             yjDao.save(yj);
-            System.out.println("打印信息2--> ");
-        }
+            System.out.println("打印信息2--> "+yj.toString());
+       }
         result.setSuccess("导出成功", null);
         return "sg/accident_list";
     }
@@ -375,7 +375,7 @@ public class SgService {
             accident.setCph(String.valueOf(lo.get(32)));//车牌号
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
-            System.out.println("打印信息1--> ");
+           // System.out.println("打印信息1--> ");
         }
 
         for (int i = 0; i < yijue.size(); i++) {
@@ -426,7 +426,7 @@ public class SgService {
             yj.setCx(String.valueOf(lo.get(42)));
             yj.setYwly(String.valueOf(lo.get(43)));
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
-            System.out.println("打印信息2--> ");
+           // System.out.println("打印信息2--> ");
         }
     }
 }
