@@ -40,9 +40,9 @@ public class EmpExportService {
         empName.add("刘江龙");
         empName.add("胡越");
         empName.add("季兴仁");
-        empName.add("王臻君");
-        empName.add("尹丽波");
         empName.add("刘巍");
+        empName.add("尹丽波");
+        empName.add("王雅君");
         empName.add("杨爽");
         empName.add("李志强");
         empName.add("赵顺");
@@ -214,33 +214,7 @@ public class EmpExportService {
         FileInputStream fis = new FileInputStream(file);
         return new ImportExcelUtil().getWorkbook(fis, file.getName());
     }
-/*int creatRow=1;//int row=0;row<mapJsyDto.size();row++
-        for (JobStatisticsYearDTO dto1:mapJsyDto.values()){
-            Row rows=sheet.createRow(creatRow);
-            JobStatisticsYearDTO dto= getJobStatisticsYearDTO(mapJsyDto, empName);
-            System.out.println(empName+"---数量"+empName.size());
-            if(dto==null){
-                dto=dto1;
-            }
-            rows.createCell(0).setCellValue(dto.getName());
-            rows.createCell(1).setCellValue(dto.getDepartment());
-            rows.createCell(2).setCellValue(dto.getJanuary());
-            rows.createCell(3).setCellValue(dto.getFebruary());
-            rows.createCell(4).setCellValue(dto.getMarch());
-            rows.createCell(5).setCellValue(dto.getApril());
-            rows.createCell(6).setCellValue(dto.getMay());
-            rows.createCell(7).setCellValue(dto.getJune());
-            rows.createCell(8).setCellValue(dto.getJuly());
-            rows.createCell(9).setCellValue(dto.getAugust());
-            rows.createCell(10).setCellValue(dto.getSeptember());
-            rows.createCell(11).setCellValue(dto.getOctober());
-            rows.createCell(12).setCellValue(dto.getNovember());
-            rows.createCell(13).setCellValue(dto.getDecember());
-            rows.createCell(14).setCellValue(dto.getTotal());
-            rows.createCell(15).setCellValue(dto.getAverage());
-            creatRow++;
-            //mapJsyDto.remove(dto.getName());
-        }*/
+
     /**
      *
      * @param mapJsyDto
@@ -267,34 +241,46 @@ public class EmpExportService {
      * @throws Exception
      */
     public void monthAssessmentExportExcl(HttpServletResponse response)throws Exception{
-        Map<Integer,JobStatisticsMonthDTO> dto= empSort();
-        if (dto==null)return;
-        Workbook workbook = getSheets("classes/ExcelDemo/月度绩效考核汇总表模板.xls");//new ImportExcelUtil().getWorkbook(fis, file.getName());    //获取工作薄
+        Result result=jobDutiesService.monthStatistics();
+        List<JobStatisticsMonthDTO> listJsyDto= (List<JobStatisticsMonthDTO>) result.getData();
+        if (listJsyDto==null)return;
+        Map<String,JobStatisticsMonthDTO> mapJsyDto=new HashMap<>();
+        for (JobStatisticsMonthDTO dto:listJsyDto) {
+            String name=dto.getName();
+            mapJsyDto.put(name,dto);
+        }
+        Workbook workbook = getSheets("classes/ExcelDemo/月度绩效考核汇总表模板.xls");
         Sheet sheet =  workbook.getSheet("Sheet1");
-        int row =0;
-        for (JobStatisticsMonthDTO jsmDTO:dto.values()) {
-            Row rows=sheet.createRow(row+3);
-            int numCol=sheet.getRow(2).getPhysicalNumberOfCells();
-            for (int col = 0; col < numCol; col++){
-                if(col==0){
-                    rows.createCell(col).setCellValue(row+1);
-                }else if(col==1){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }else if(col==2){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }else if (col==3){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }else if (col==4){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }else if (col==5){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }else if (col==6){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }else if (col==7){
-                    rows.createCell(col).setCellValue(ObjSetString(jsmDTO,col));
-                }
+        List<String> empName=addSortEmp();
+        List<JobStatisticsMonthDTO> lastListdto=new ArrayList<>();
+        for (int i=0;i<empName.size();i++) {
+            JobStatisticsMonthDTO dto1=null;
+            try{
+                dto1=mapJsyDto.get(empName.get(i));
+            }catch (Exception e){
+                dto1=null;
             }
-            row++;
+            if(dto1==null){
+                continue;
+            }else {
+                lastListdto.add(dto1);
+                mapJsyDto.remove(empName.get(i),dto1);
+            }
+        }
+        for (JobStatisticsMonthDTO dto:mapJsyDto.values()){
+            lastListdto.add(dto);
+        }
+        for (int i=0;i<lastListdto.size();i++) {
+            JobStatisticsMonthDTO jsmDTO=lastListdto.get(i);
+            Row rows=sheet.createRow(i+3);
+            rows.createCell(0).setCellValue(i+1);
+            rows.createCell(1).setCellValue(jsmDTO.getDepartment()==null?"":jsmDTO.getDepartment().toString());
+            rows.createCell(2).setCellValue(jsmDTO.getName()==null?"":jsmDTO.getName().toString());
+            rows.createCell(3).setCellValue(jsmDTO.getKpScore().getTotal()==null?"":jsmDTO.getKpScore().getTotal().toString());
+            rows.createCell(4).setCellValue(jsmDTO.getKpScore().getLsxgz()==null?"":jsmDTO.getKpScore().getLsxgz().toString());
+            rows.createCell(5).setCellValue(jsmDTO.getKpScore().getRcgz()==null?"":jsmDTO.getKpScore().getRcgz().toString());
+            rows.createCell(6).setCellValue(jsmDTO.getKpScore().getXwgf()==null?"":jsmDTO.getKpScore().getXwgf().toString());
+            rows.createCell(7).setCellValue(jsmDTO.getRemarks()==null?"":jsmDTO.getRemarks().toString());
         }
         IOWriteExcel(response, workbook,"月度绩效考核汇总表.xls");
     }
@@ -343,22 +329,4 @@ public class EmpExportService {
         return response.getOutputStream();
     }
 
-    private String ObjSetString(JobStatisticsMonthDTO jsmDTO,int col){
-        if(col==1&&jsmDTO.getDepartment()!=null){
-            return jsmDTO.getDepartment().toString();
-        }else if(col==2&&jsmDTO.getName()!=null){
-            return jsmDTO.getName().toString();
-        }else if (col==3&&jsmDTO.getKpScore().getTotal()!=null){
-            return jsmDTO.getKpScore().getTotal().toString();
-        }else if (col==4&&jsmDTO.getKpScore().getLsxgz()!=null){
-            return jsmDTO.getKpScore().getLsxgz().toString();
-        }else if (col==5&&jsmDTO.getKpScore().getRcgz()!=null){
-            return jsmDTO.getKpScore().getRcgz().toString();
-        }else if (col==6&&jsmDTO.getKpScore().getXwgf()!=null){
-            return jsmDTO.getKpScore().getXwgf().toString();
-        }else if (col==7&&jsmDTO.getRemarks()!=null){
-            return jsmDTO.getRemarks().toString();
-        }
-        return "";
-    }
 }
