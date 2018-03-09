@@ -48,19 +48,6 @@
        				<result>${url}</result>
        			</action>
        			
-       			<action name="jsonTest" class="jsonTest">
-       				<result name="success" >/test/anaylse_result.jsp</result>
-       			</action>
-       			
-       			<action name="electricConfig" class="electricTest" method="getCityConfigure">
-       			</action>
-       			
-       			<action name="electricTimesLeave" class="electricTest" method="getTimeLeave">
-       			</action>
-       			
-       			<action name="electricInfo" class="electricTest" method="getInfo">
-       			</action>
-       			
        			<action name="outputExcel" class="excelOutputUtil" method="export">
        				<result name="success" type="stream">
 						<param name="contentType">application/-excel</param>
