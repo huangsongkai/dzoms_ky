@@ -114,6 +114,9 @@ public class DriverService {
 		driver.setCarframeNum(d.getCarframeNum());
 		driver.setIsInCar(d.getIsInCar());
 		driver.setDept(d.getDept());
+		driver.setDriverClass(d.getDriverClass());
+		driver.setRestTime(d.getRestTime());
+
 		driver.setHasBadRecord(d.getHasBadRecord());
 		driver.setBreakRecord(d.getBreakRecord());
 		driver.setAccidentRecord(d.getAccidentRecord());

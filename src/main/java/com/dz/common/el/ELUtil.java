@@ -18,25 +18,38 @@ public class ELUtil {
         ELUtil ELUtil = new ELUtil();
 //        ELUtil.mapper.setFunctions("my", new ExcelOutputUtil.MyELFunctionExtend());
 
-//        assertEquals("2", ELUtil.evaluate("1 + 1"));
+        assertEquals("2", ELUtil.evaluate("1 + 1"));
 //        assertEquals("5", ELUtil.evaluate("10 - 5"));
 //        System.out.println("${ 1+1 }".matches("\\$\\{(\\s|.)*?}"));
 //        System.out.println("Hello ${ 1+1 }=${10-8}?".matches("\\$\\{(\\r|\\n| |.)*?}"));
 
-        ELUtil.eval("Hello ${ 1+1 }=${10-8}?");
+        System.out.println(ELUtil.eval("Hello ${ 1+1 }=${10-8}?"));
+        System.out.println(ELUtil.eval("${abc=123}"));
+        System.out.println(ELUtil.eval("${abc}"));
+        System.out.println(ELUtil.eval("${My.geneSeq(1)}"));
+        System.out.println(ELUtil.eval("${My.geneSeq(1)} ${My.geneSeq(1)} ${My.geneSeq(1)} ${My.geneSeq(1)}"));
     }
 
     static void assertEquals(String expect,String value){
         Validate.isTrue(StringUtils.equals(expect,value));
     }
 
-    JexlEngine engine;
-    JexlContext context;
+    static String notNull(String input){
+        if (input == null) {
+            return "";
+        }
+        return input;
+    }
+
+    private JexlEngine engine;
+    private JexlContext context;
 
     public ELUtil(){
         engine = new JexlEngine();
         context = new MapContext();
-        engine.setFunctions(Collections.<String, Object>singletonMap("my", new ExcelOutputUtil.MyELFunctionExtend()));
+        context.set("My",new ExcelOutputUtil.MyELFunctionExtend());
+//        context.set("abc",123456);
+//        engine.setFunctions(Collections.<String, Object>singletonMap("my", new ExcelOutputUtil.MyELFunctionExtend()));
     }
 
     public String evaluate(String input) {
@@ -50,9 +63,23 @@ public class ELUtil {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(inputString);
 
+        StringBuffer buffer = new StringBuffer();
         while (matcher.find()){
-            System.out.println(matcher.group(1));
+            String midStr = matcher.group(0);
+            String rawStr = midStr.substring(2,midStr.length()-1);
+//            System.out.println(midStr);
+//            System.out.println(rawStr);
+
+            String value = evaluate(rawStr);
+//            System.out.println(value);
+            matcher.appendReplacement(buffer,Matcher.quoteReplacement(notNull(value)));
+//            matcher.appendReplacement(buffer,notNull((rawStr)));
         }
-        return inputString;
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    public JexlContext getContext() {
+        return context;
     }
 }

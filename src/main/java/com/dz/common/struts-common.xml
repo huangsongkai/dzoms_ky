@@ -59,6 +59,26 @@
 						/common/success_and_close.html
 					</result>
        			</action>
+
+			<action name="selectToExcel" class="objectAccess" method="toExcel">
+				<result name="success" type="chain">
+					<param name="actionName">outputExcel</param>
+					<param name="namespace">/common</param>
+				</result>
+				<result name="error">
+					/common/success_and_close.html
+				</result>
+			</action>
+
+			<action name="selectToExcel2" class="objectAccess" method="toExcelJoin">
+				<result name="success" type="chain">
+					<param name="actionName">outputExcel</param>
+					<param name="namespace">/common</param>
+				</result>
+				<result name="error">
+					/common/success_and_close.html
+				</result>
+			</action>
         </package>
         
        <!--  <package name="fileAdapt" namespace="/fileAdapt" extends="struts-default">

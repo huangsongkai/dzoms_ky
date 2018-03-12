@@ -19,7 +19,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="renderer" content="webkit">
-    <title>测试</title>
+    <title>结账</title>
     <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
     <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
 

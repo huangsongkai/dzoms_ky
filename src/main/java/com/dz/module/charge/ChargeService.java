@@ -809,36 +809,31 @@ public class ChargeService {
 //        		clear(contract.getId(),deptTime);
 //        	}
 
+
             for(CheckChargeTable cct : tables){
 //            	2017/06/06 使用对账表的结果直接作为清账结果      下面3行此次新增
                 Contract c = (Contract) session.get(Contract.class, cct.getContractId());
+
                 c.setAccount(cct.getThisMonthTotalOwe());
                 session.saveOrUpdate(c);
 
                 session.save(cct);
             }
+            Query stateQuery = session.createQuery(
+                    "update ChargePlan cp " +
+                            "set cp.isClear=true " +
+                            "where cp.contractId IN (SELECT c.id FROM Contract c WHERE cp.contractId=c.id AND c.branchFirm=:dept) " +
+                            "and (YEAR(cp.time)*12+MONTH(cp.time)+(case when DAY(cp.time)>26 then 1 else 0 end) " +
+                            "< (YEAR(:currentClearTime)*12+MONTH(:currentClearTime))+1)");
+            stateQuery.setDate("currentClearTime",deptTime);
+            stateQuery.setString("dept",dept);
 
-            String hql="select c1,c2 from Contract c1,Contract c2 where c1.contractFrom=c2.id and (c2.abandonedFinalTime is null or (YEAR(c2.abandonedFinalTime)*12+MONTH(c2.abandonedFinalTime)+(case when DAY(c2.abandonedFinalTime)>26 then 1 else 0 end) >= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime)) ))";
+            stateQuery.executeUpdate();
 
-            Query query = session.createQuery(hql);
-            query.setDate("currentClearTime", deptTime);
-
-            List<Object[]> list = query.list();
-
-            for(Object[] oarr:list){
-                Contract c = (Contract) oarr[0];
-                Contract oc = (Contract) oarr[1];
-
-                if(c.getAccount()==null)
-                    c.setAccount(BigDecimal.ZERO);
-
-                if(oc.getAccount()!=null)
-                    c.setAccount(c.getAccount().add(oc.getAccount()));
-
-                oc.setAccount(BigDecimal.ZERO);
-                session.saveOrUpdate(c);
-                session.saveOrUpdate(oc);
-            }
+            /**
+             * 迁移账户余额到转包后的合同
+             */
+            moveAccount(dept, deptTime, session);
 
             //清账后对整体的清账日期进行再计算
             boolean res = clearTimeDao.plusAMonth(dept,session);
@@ -867,6 +862,36 @@ public class ChargeService {
         }
 
         return true;
+    }
+
+    private void moveAccount(String dept, Date deptTime, Session session) {
+        String hql="select c1,c2 from Contract c1,Contract c2 where c1.contractFrom=c2.id " +
+                (dept!=null?"and c1.branchFirm=:dept ":" ") +
+                "and c2.account!=0 " +
+                "and (c2.abandonedFinalTime is null or (YEAR(c2.abandonedFinalTime)*12+MONTH(c2.abandonedFinalTime)+(case when DAY(c2.abandonedFinalTime)>26 then 1 else 0 end) >= (YEAR(:currentClearTime)*12+MONTH(:currentClearTime)) ))";
+
+        Query query = session.createQuery(hql);
+        if(dept!=null){
+            query.setString("dept",dept);
+        }
+        query.setDate("currentClearTime", deptTime);
+
+        List<Object[]> list = query.list();
+
+        for(Object[] oarr:list){
+            Contract c = (Contract) oarr[0];
+            Contract oc = (Contract) oarr[1];
+
+            if(c.getAccount()==null)
+                c.setAccount(BigDecimal.ZERO);
+
+            if(oc.getAccount()!=null)
+                c.setAccount(c.getAccount().add(oc.getAccount()));
+
+            oc.setAccount(BigDecimal.ZERO);
+            session.saveOrUpdate(c);
+            session.saveOrUpdate(oc);
+        }
     }
 
     /**
@@ -1636,7 +1661,15 @@ public class ChargeService {
         return table;
     }
 
-    public List<CheckChargeTable> getAllCheckChargeTable(Date date,String dept, String licenseNum, int status/**0,1,2,3,4 -- 欠费,正常,未交,已交,全部*/) {
+    /**
+     * 查询对账表
+     * @param date 月份
+     * @param dept 部门 可以是 一部、二部、三部、全部
+     * @param licenseNum 车牌号
+     * @param status 状态 0,1,2,3,4 -- 欠费,正常,未交,已交,全部
+     * @return
+     */
+    public List<CheckChargeTable> getAllCheckChargeTable(Date date,String dept, String licenseNum, int status) {
         if(date==null)
             date=new Date();
 

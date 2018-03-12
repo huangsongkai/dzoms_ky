@@ -91,10 +91,10 @@ function checkIt(){
 						$.post("/DZOMS/common/doit",{"condition":"from Driver where idNum ='"+driverId+"'"},function(nresult){
 							if (nresult!=undefined&&nresult["affect"]!=undefined) {
 								var ndriver = nresult["affect"];
-								if(ndriver["businessApplyCancelState"]==0){
+//								if(ndriver["businessApplyCancelState"]==0){
 									alert("该车已存在"+driverClass+" "+ndriver["name"]);
 									$("[name='driver.driverClass']").val("");
-								}
+//								}
 							}
 						});
 					}
@@ -411,7 +411,7 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
                     </label>
                 </div>
                 <div class="field" >
-                    <s:textfield cssClass="input datepick"  name="driver.businessApplyTime" readonly="true"></s:textfield>
+                    <s:textfield cssClass="input datepick"  name="driver.businessApplyTime" ></s:textfield>
                 </div>
             </div>
             <br/>
