@@ -988,7 +988,7 @@ public class DriverAction extends BaseAction{
 			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
 			Vehicle v = (Vehicle) s.get(Vehicle.class,driver.getCarframeNum());
 
-			if(d.getBusinessApplyState()!=2||!StringUtils.equals(d.getBusinessApplyDriverClass(), d.getDriverClass())||!StringUtils.equalsIgnoreCase(d.getBusinessApplyCarframeNum(), d.getCarframeNum())){
+			if(d.getBusinessApplyState()==null||d.getBusinessApplyState()!=2||!StringUtils.equals(d.getBusinessApplyDriverClass(), d.getDriverClass())||!StringUtils.equalsIgnoreCase(d.getBusinessApplyCarframeNum(), d.getCarframeNum())){
 				//申请与注销不是同一件事
 
 			}else{
