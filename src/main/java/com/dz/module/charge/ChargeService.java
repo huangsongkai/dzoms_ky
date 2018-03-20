@@ -133,6 +133,12 @@ public class ChargeService {
         this.accountNumber = accountNumber;
     }
 
+    /**
+     * 发起招行扣款请求
+     * @param records 扣款计划
+     * @param forTime 扣款月份
+     * @return 本次扣款的标识
+     */
     public Map<String,String> doDiscount(List<BankRecord> records,Date forTime){
         BigDecimal totalMoney = BigDecimal.ZERO;
         totalMoney.setScale(2);
@@ -310,6 +316,11 @@ public class ChargeService {
         return resultMap;
     }
 
+    /**
+     * 检查扣款状态
+     * @param discount 哪一笔扣款
+     * @return 当前状态 0-处理中,1-成功,2-部分成功,3-全部失败
+     */
     public int checkDiscountState(ZhaoShangDiscount discount){
         XmlPacket packet = new XmlPacket("GetAgentInfo", getLoginName());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -358,6 +369,11 @@ public class ChargeService {
         return 0;
     }
 
+    /**
+     * 刷新扣款状态并记入账目
+     * @param discount 哪一笔扣款
+     * @return 银行系统的错误号 "0" -- 成功
+     */
     public String refreshDiscount(ZhaoShangDiscount discount){
         int state = checkDiscountState(discount);
         if (state!=0){
@@ -405,29 +421,64 @@ public class ChargeService {
                                     query.setInteger("did",discount.getId());
                                     query.setString("cardNumber","%"+ACCNBR+"%");
                                     query.setMaxResults(1);
-                                    BankItem item = (BankItem) query.uniqueResult();
+
+                                    /**
+                                     * 2018/03/20 使满足多车车主为同一人时当月费用回执到同一车的情况
+                                     */
+                                    List<BankItem> items = query.list();
+
                                     BigDecimal realFee = BigDecimal.valueOf(Double.parseDouble(LGRAMT));
-                                    item.setRealFee(realFee);
-                                    item.setRealTime(new Date());
-                                    if (org.apache.commons.lang3.StringUtils.endsWithIgnoreCase("S",STSCOD)){
-                                        item.setState(4);
-                                        if (realFee.abs().doubleValue()>0){
-                                            ChargePlan cp = new ChargePlan();
-                                            cp.setContractId(item.getContract().getId());
-                                            cp.setFeeType("add_bank2");
-                                            cp.setFee(realFee);
-                                            cp.setTime(item.getForTime());
-                                            cp.setIsClear(false);
-                                            cp.setInTime(item.getRealTime());
-                                            cp.setRegister(item.getRegister());
-                                            cp.setComment(""+item.getId());
-                                            session.saveOrUpdate(cp);
+
+                                    if (realFee.abs().doubleValue()>0){
+                                        //扣款完成
+                                        boolean finded = false;
+                                        for (BankItem item : items) {
+                                            BigDecimal planFee = item.getPlanFee();
+                                            if(item.getRealFee().doubleValue()==0.0 && realFee.equals(planFee)) {
+                                                doDiscountByZhaoshang(session, item, realFee, STSCOD, ERRDSP);
+                                                finded = true;
+                                                break;
+                                            }else {
+                                                continue;
+                                            }
+                                        }
+                                        if (!finded) {
+                                            for (BankItem item : items) {
+//                                                BigDecimal planFee = item.getPlanFee();
+                                                if (item.getRealFee().doubleValue() < item.getPlanFee().doubleValue()) {
+                                                    BigDecimal stillPlan = item.getPlanFee().subtract(item.getRealFee());
+                                                    if(realFee.compareTo(stillPlan)>0){
+                                                        doDiscountByZhaoshang(session,item,stillPlan,STSCOD,ERRDSP);
+                                                        realFee = realFee.subtract(stillPlan);
+                                                    }else{
+                                                        doDiscountByZhaoshang(session, item, realFee, STSCOD, ERRDSP);
+                                                        realFee = BigDecimal.ZERO;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            if(realFee.doubleValue()>0.0){
+                                                //仍有剩余的Money 一般不可能出现 停止计费 应该是错误
+                                                return returnCode;
+                                            }
                                         }
                                     }else {
-                                        item.setState(2);
-                                        item.setComment(ERRDSP);
+                                        //扣款未完成
+                                        for (BankItem item : items) {
+                                            if(item.getRealFee().doubleValue()==0.0) {
+                                                item.setRealFee(realFee);
+                                                item.setRealTime(new Date());
+                                                if (org.apache.commons.lang3.StringUtils.endsWithIgnoreCase("S",STSCOD)){
+                                                    item.setState(4);
+                                                }else {
+                                                    item.setState(2);
+                                                    item.setComment(ERRDSP);
+                                                }
+                                                session.saveOrUpdate(item);
+                                            }
+                                        }
                                     }
-                                    session.saveOrUpdate(item);
                                 }
                             }
 
@@ -448,6 +499,30 @@ public class ChargeService {
             }
         }
         return null;
+    }
+
+    private void doDiscountByZhaoshang(Session session, BankItem item, BigDecimal realFee, String STSCOD, String ERRDSP) {
+        item.setRealFee(realFee);
+        item.setRealTime(new Date());
+        if (org.apache.commons.lang3.StringUtils.endsWithIgnoreCase("S",STSCOD)){
+            item.setState(4);
+//                                                    if (realFee.abs().doubleValue()>0){
+                ChargePlan cp = new ChargePlan();
+                cp.setContractId(item.getContract().getId());
+                cp.setFeeType("add_bank2");
+                cp.setFee(realFee);
+                cp.setTime(item.getForTime());
+                cp.setIsClear(false);
+                cp.setInTime(item.getRealTime());
+                cp.setRegister(item.getRegister());
+                cp.setComment(""+item.getId());
+                session.saveOrUpdate(cp);
+//                                                    }
+        }else {
+            item.setState(2);
+            item.setComment(ERRDSP);
+        }
+        session.saveOrUpdate(item);
     }
 
     public BankRecord getBankRecord(Date time,String carframeNum){

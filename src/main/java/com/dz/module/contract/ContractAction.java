@@ -92,6 +92,7 @@ public class ContractAction extends BaseAction {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	private String zhuanbao_contractWrite(){
 		contract.setPhotoGuarantor(" ");
 		User user  = (User) session.getAttribute("user");

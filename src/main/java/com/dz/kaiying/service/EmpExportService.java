@@ -272,7 +272,14 @@ public class EmpExportService {
                 continue;
             }else {
                 lastListdto.add(dto1);
-                mapJsyDto.remove(empName.get(i),dto1);
+                /**
+                 * 为兼容java1.8前的版本，使用下面4行替代
+                 */
+                Object key = empName.get(i);
+                if (mapJsyDto.containsKey(key) && Objects.equals(mapJsyDto.get(key), dto1)) {
+                    mapJsyDto.remove(key);
+                }
+//                mapJsyDto.remove(empName.get(i),dto1);
             }
         }
         for (JobStatisticsMonthDTO dto:mapJsyDto.values()){
