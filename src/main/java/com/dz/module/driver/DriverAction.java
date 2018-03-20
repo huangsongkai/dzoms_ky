@@ -780,6 +780,33 @@ public class DriverAction extends BaseAction{
 			d.setCarframeNum(v.getCarframeNum());
 			d.setDept(v.getDept());
 
+			String restTime = d.getRestTime();
+			if("主驾".equals(d.getDriverClass()) || "副驾".equals(d.getDriverClass())){
+				if(StringUtils.startsWith(restTime,"替")){
+					restTime = "大班";
+				}
+
+				//上主副驾时进行作息时间自动调整，其它情况不参与此项调整
+				if(StringUtils.isEmpty(v.getFirstDriver())){
+					if(StringUtils.isEmpty(v.getSecondDriver())){
+						//主副 皆空 => 上车后只有一位驾驶员
+						d.setRestTime("大班");
+					}
+					else{
+						//副驾非空
+						Driver anotherDriver = (Driver) s.get(Driver.class,v.getSecondDriver());
+						changeRestTime(restTime,d,anotherDriver);
+						s.update(anotherDriver);
+					}
+				}
+				else {
+					//主驾非空
+					Driver anotherDriver = (Driver) s.get(Driver.class,v.getFirstDriver());
+					changeRestTime(restTime,d,anotherDriver);
+					s.update(anotherDriver);
+				}
+			}
+
 			s.saveOrUpdate(d);
 			//driverService.driverUpdate(d,families);
 
@@ -850,6 +877,30 @@ public class DriverAction extends BaseAction{
 		//record = new Driverincar(d.getCarframeNum(),d.getIdNum(),"上车",d.getBusinessReciveTime());
 		//driverService.addDriverInCarRecord(record);
 		return SUCCESS;
+	}
+
+	private void changeRestTime(String restTime, Driver targetDriver, Driver anotherDriver) {
+		if(StringUtils.startsWith(restTime,"大")){
+			//根据 anotherDriver 对 targetDriver做调整
+			if(anotherDriver.getRestTime()==null || StringUtils.startsWith(anotherDriver.getRestTime(),"大")){
+				anotherDriver.setRestTime("夜班");
+				targetDriver.setRestTime("白班");
+			}
+			else {
+				targetDriver.setRestTime(oppsiteRestTime(anotherDriver.getRestTime()));
+			}
+		}else {
+			//根据 targetDriver 对 anotherDriver 做调整
+			anotherDriver.setRestTime(oppsiteRestTime(restTime));
+		}
+	}
+
+	private String oppsiteRestTime(String restTime) {
+		if(StringUtils.startsWith(restTime,"白")){
+			return "夜班";
+		}else {
+			return "白班";
+		}
 	}
 
 	public void validateBussinessApply() throws IOException{
@@ -1020,6 +1071,26 @@ public class DriverAction extends BaseAction{
 				v.setTempDriver(null);
 			}
 
+			if("主驾".equals(d.getDriverClass()) || "副驾".equals(d.getDriverClass())){
+				//上主副驾时进行作息时间自动调整，其它情况不参与此项调整
+				if(StringUtils.isEmpty(v.getFirstDriver())){
+					if(StringUtils.isEmpty(v.getSecondDriver())){
+						//主副都没人，不需要任何操作
+					}
+					else {
+						//调整副驾为大班
+						Driver anotherDriver = (Driver) s.get(Driver.class,v.getSecondDriver());
+						anotherDriver.setRestTime("大班");
+						s.update(anotherDriver);
+					}
+				}else {
+					//调整主驾为大班
+					Driver anotherDriver = (Driver) s.get(Driver.class,v.getFirstDriver());
+					anotherDriver.setRestTime("大班");
+					s.update(anotherDriver);
+				}
+			}
+
 			s.saveOrUpdate(v);
 
 			ObjectAccess.executeSingle(String.format("update Driverincar set finished=true where carframeNum='%s' and idNumber='%s' and (operation='证照注销' or operation='下车' ) and finished=false",
@@ -1067,7 +1138,7 @@ public class DriverAction extends BaseAction{
 			tx = s.beginTransaction();
 
 			Driver d = (Driver) s.get(Driver.class,driver.getIdNum());
-			Vehicle v = ObjectAccess.getObject(Vehicle.class, d.getBusinessApplyCarframeNum());
+			Vehicle v = (Vehicle) s.get(Vehicle.class, d.getBusinessApplyCarframeNum());
 
 			d.setBusinessApplyCancelTime(null);
 			d.setBusinessApplyCancelRegistrant(null);
@@ -1101,6 +1172,84 @@ public class DriverAction extends BaseAction{
 		out.close();
 	}
 
+	public void exchangeRestTime() throws IOException{
+		JSONObject jobj = new JSONObject();
+
+		Session s = null;
+		Transaction tx = null;
+
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+
+			Vehicle v = (Vehicle) s.get(Vehicle.class, vehicle.getCarframeNum());
+
+			if(StringUtils.isEmpty(v.getFirstDriver())){
+				if(StringUtils.isEmpty(v.getSecondDriver())){
+					//主副 皆空 => 不操作
+				}
+				else{
+					//副驾非空
+					Driver anotherDriver = (Driver) s.get(Driver.class,v.getSecondDriver());
+					anotherDriver.setRestTime("大班");
+					s.update(anotherDriver);
+				}
+			}
+			else {//主驾非空
+
+				if(StringUtils.isEmpty(v.getSecondDriver())){
+					//主驾非空 副空
+					Driver anotherDriver = (Driver) s.get(Driver.class,v.getFirstDriver());
+					anotherDriver.setRestTime("大班");
+					s.update(anotherDriver);
+				}
+				else {
+					//主副非空 => 调换
+					Driver first = (Driver) s.get(Driver.class,v.getFirstDriver());
+					Driver second = (Driver) s.get(Driver.class,v.getSecondDriver());
+					if(StringUtils.equals(first.getRestTime(),second.getRestTime())){
+						first.setRestTime("白班");
+						second.setRestTime("夜班");
+					}
+					else if(StringUtils.equals(first.getRestTime(),"大班")) {
+						second.setRestTime(oppsiteRestTime(second.getRestTime()));
+						first.setRestTime(oppsiteRestTime(second.getRestTime()));
+					}
+					else
+//						if(StringUtils.equals(second.getRestTime(),"大班")){
+//						first.setRestTime(oppsiteRestTime(first.getRestTime()));
+//						second.setRestTime(oppsiteRestTime(first.getRestTime()));
+//					} else
+						{
+						first.setRestTime(oppsiteRestTime(first.getRestTime()));
+						second.setRestTime(oppsiteRestTime(first.getRestTime()));
+					}
+					s.update(first);
+					s.update(second);
+				}
+			}
+
+			jobj.put("state",true);
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+			jobj.put("msg", ex.getMessage());
+			jobj.put("state",false);
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+
+		out.print(jobj.toString());
+		out.flush();
+		out.close();
+	}
 
 	private String operation;
 	private Boolean finished;

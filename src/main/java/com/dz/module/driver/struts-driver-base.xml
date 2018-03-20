@@ -69,6 +69,7 @@
         <action name="validateBussinessApply" class="driverAction" method="validateBussinessApply"></action>
         <action name="cancelBusinessApply" class="driverAction" method="cancelBusinessApply"></action>
         <action name="cancelBusinessCancelApply" class="driverAction" method="cancelBusinessCancelApply"></action>
+        <action name="exchangeRestTime" class="driverAction" method="exchangeRestTime"></action>
 
         <action name="businessApplyCancelSelect" class="driverAction" method="selectByVehicle">
             <result name="success">/driver/driverInCar/business_apply_cancel.jsp</result>
