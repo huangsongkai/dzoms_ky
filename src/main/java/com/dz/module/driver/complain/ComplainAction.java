@@ -212,44 +212,6 @@ public class ComplainAction extends BaseAction {
 	public void setConfirmReault(Boolean confirmReault) {
 		this.confirmReault = confirmReault;
 	}
-
-//	public String confirmComplain(){
-//		try{
-//			Complain oc = complainService.selectById(complain);
-//			oc.setConfirmTime(complain.getConfirmTime());
-//			if(confirmReault)
-//				oc.setState(1);
-//			else
-//				oc.setState(-1);
-//			User user = (User) session.getAttribute("user");
-//			oc.setConfirmPerson(user.getUid());
-//
-//			complainService.updateComplain(oc);
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			return ERROR;
-//		}
-//		return SUCCESS;
-//	}
-//	
-//	public String dealComplain(){
-//		try{
-//			Complain oc = complainService.selectById(complain);
-//			oc.setDealReault(complain.getDealReault());
-//			oc.setDealTime(complain.getDealTime());
-//			oc.setState(2);
-//			oc.setGrade(complain.getGrade());
-//
-//			User user = (User) session.getAttribute("user");
-//			oc.setDealPerson(user.getUid());
-//
-//			complainService.updateComplain(oc);
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			return ERROR;
-//		}
-//		return SUCCESS;
-//	}
 	
 	public String confirmComplain(){
 		try{
@@ -258,15 +220,22 @@ public class ComplainAction extends BaseAction {
 			User user = (User) session.getAttribute("user");
 			oc.setConfirmPerson(user.getUid());
 			oc.setDealContext(complain.getDealContext());
-			if(confirmReault){
-//				oc.setState(1);
+
+			/**
+			 * 2018-03-12 投诉无论是否属实，均落实到具体驾驶员
+			 */
+			{
 				oc.setComplainContext(complain.getComplainContext());
 				oc.setDealReault(complain.getDealReault());
 				oc.setDealTime(complain.getDealTime());
-				oc.setState(2);
 				oc.setGrade(complain.getGrade());
 
 				oc.setDealPerson(user.getUid());
+			}
+
+			if(confirmReault){
+//				oc.setState(1);
+				oc.setState(2);
 			}
 			else{
 				oc.setState(-1);

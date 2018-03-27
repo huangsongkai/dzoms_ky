@@ -21,7 +21,9 @@
 <link rel="stylesheet" href="/DZOMS/res/css/admin.css" />
 <link rel="stylesheet" href="/DZOMS/res/css/jquery.datetimepicker.css" />
 <script src="/DZOMS/res/js/jquery.js"></script>
-<script src="/DZOMS/res/js/pintuer.js"></script>
+	<script type="text/javascript" src="/DZOMS/res/js/jquery.json.js" ></script>
+
+	<script src="/DZOMS/res/js/pintuer.js"></script>
 <script src="/DZOMS/res/js/respond.js"></script>
 <script src="/DZOMS/res/js/admin.js"></script>
 
@@ -39,7 +41,9 @@
 							width: 300px;
 						}
 					</style>
-	
+	<script type="text/javascript" src="/DZOMS/res/js/vue.js" ></script>
+	<script src="/DZOMS/res/js/fileUpload.js"></script>
+	<script type="text/javascript" src="/DZOMS/res/layer-v3.0.3/layer/layer.js" ></script>
 </head>
 <body>
 <div class="margin-big-bottom">
@@ -108,18 +112,46 @@
 								</div>
 
 								<br>
-					            <div style="width: 600px;">
-								
-										<div class="float-left" style="width: 80px; text-align: right;">
-											<strong>家访记录</strong>
+								<div  style="width:  600px;min-height: 100px">
+									<div class="float-left" style="width: 80px; text-align: right;">
+										<strong>文件</strong>
+									</div>
+									<div class="float">
+										<div class="line" id="main_div">
+											<table class="table table-striped table-bordered table-hover">
+												<thead><tr>
+													<th class="name selected_able">名称</th>
+													<th class="yulan selected_able">查看</th>
+													<th class="download selected_able">查看</th>
+													<%--<th class="delete selected_able">删除</th>--%>
+												</tr></thead>
+												<tbody v-for="(finfo, index) in photos.data"><tr>
+													<td class="name selected_able">{{finfo.alt}}</td>
+													<td class="yulan selected_able"><a v-on:click="showPic(finfo.src)">查看</a></td>
+													<td class="download selected_able"><a v-on:click="downloadPic(finfo.alt)">下载</a></td>
+													<%--<td class="delete selected_able"><a v-on:click="delPic(finfo.alt)">删除</a></td>--%>
+												</tr></tbody>
+											</table>
+											<div style="display: none">
+												<button type="button" class="button icon-search text-blue addbtn1" style="line-height: 6px;">添加新文件</button>
+												<input id="photoSeq" class="dz-file" name="photo" data-target=".addbtn1" sessuss-function="_add();">
+											</div>
 										</div>
-									
+									</div>
+								</div>
+
+								<div></div>
+								<br>
+					            <div style="width: 600px;float: left">
+									<div class="float-left" style="width: 80px; text-align: right;">
+										<strong>家访记录</strong>
+									</div>
 									<div class="field">
 										<s:textarea cssStyle="width: 500px;" rows="5" cssClass="input" placeholder="多行文本" value="%{bean[0].record}"></s:textarea>
 									</div>
 								</div>
+								<br>
 								<div style="width: 600px;">
-								
 										<div class="float-left" style="width: 80px; text-align: right;">
 											<strong>备注</strong>
 										</div>
@@ -136,7 +168,7 @@
 										<label>家访人</label>
 									</div>
 									<div class="field">
-										<s:textfield cssClass="input" type="text" readonly="readonly" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',bean[0].register).uname}"></s:textfield>
+										<s:textfield cssClass="input" type="text" readonly="true" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',bean[0].register).uname}"></s:textfield>
 									</div>
 								</div>
 								
@@ -145,5 +177,73 @@
 						</div>		
     </form>
    <script src="/DZOMS/res/js/DateTimeHelper.js"></script>
+<script>
+    var info = new Vue({
+        el:"#main_div",
+        data:{
+            photos:{
+                title:"",
+                data:[]
+            }
+        },methods:{
+            showPic:function (src) {
+                if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG|JPEG|BMP|bmp)$/.test(src)){
+                    alert("该文件不是图片，请下载后查看！");
+                    return;
+                }
+
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['360px', '630px'],
+                    shade: 0.8,
+                    closeBtn: 0,
+                    shadeClose: true,
+                    content: src
+                });
+            },
+            downloadPic:function(alt){
+                window.open("/DZOMS/download?path=%2fdata%2fdriver%2fhomeVisit%2f${bean[0].id}%2f"+alt);
+            }
+            <%--,--%>
+            <%--delPic:function (alt) {--%>
+                <%--$.getJSON('/DZOMS/driver/complain/complainDeletePhoto?complain.id=${complain.id}&photo_name='+encodeURI(alt),function(json){--%>
+                    <%--if(json.status){--%>
+                        <%--alert('删除成功！');--%>
+                        <%--refreshPhotos();--%>
+                    <%--}else{--%>
+                        <%--alert('删除失败！');--%>
+                    <%--}--%>
+
+                <%--});--%>
+            <%--}--%>
+        }
+    });
+
+    function refreshPhotos(){
+        $.getJSON('/DZOMS/driver/homevisit/homeVisitFiles?homeVisit.id=${bean[0].id}',function(json){
+            info.photos = json;
+        });
+    }
+    refreshPhotos();
+
+    function _add(){
+        var fileName = prompt("请输入文件名称:");
+
+        if (fileName.trim().length==0) {
+            alert("请输入一个长度大于0的文件名！");
+            return false;
+        }
+
+        $.getJSON('/DZOMS/driver/homeVisit/homeVisitUploadPhoto?complain.id=${bean[0].id}&photo_name='+encodeURI(fileName)+'&photo='+$('#photoSeq').val(),function(json){
+            if(json.status){
+                alert('上传成功！');
+                refreshPhotos();
+            }else{
+                alert('上传失败！');
+            }
+        });
+    }
+</script>
 </body>
 </html>

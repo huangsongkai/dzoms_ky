@@ -305,49 +305,6 @@ public class ChargeAction extends ActionSupport{
         return SUCCESS;
     }
 
-
-//    public String tongji(){
-//        if(currentPage == 0)
-//            currentPage = 1;
-//        Page page = PageUtil.createPage(EVERYPAGE,(int)contractService.searchAllAvaliableCount(time,department),currentPage);
-//        pageLimit = page.getTotalPage();
-//        if(licenseNum != null)
-//            page = null;
-//        System.out.println(licenseNum);
-//        List<CheckChargeTable> tables = service.getAllCheckChargeTable(time,department,page);
-//        ActionContext context = ActionContext.getContext();
-//        @SuppressWarnings("unchecked")
-//        Map<String,Object> request = (Map<String,Object>)context.get("request");
-//        CollectionUtils.filter(tables, new Predicate() {
-//            @Override
-//            public boolean evaluate(Object o) {
-//                CheckChargeTable cct = (CheckChargeTable) o;
-//                if (licenseNum != null && !cct.getCarNumber().contains(licenseNum)) return false;
-//                //欠费
-//                if (status == 0) {
-//                    if (cct.getThisMonthTotalOwe().doubleValue() >= 0)
-//                        return false;
-//                    //正常
-//                } else if (status == 1) {
-//                    if (cct.getThisMonthTotalOwe().doubleValue() < 0)
-//                        return false;
-//                    //未交
-//                } else if (status == 2) {
-//                    if (cct.getBank().doubleValue() > 0)
-//                        return false;
-//                    //已交
-//                } else if (status == 3) {
-//                    if (cct.getBank().doubleValue() <= 0)
-//                        return false;
-//                }
-//                return true;
-//            }
-//        });
-//        request.put("tables", tables);
-//        jspPage="show/tongji.jsp";
-//        return SUCCESS;
-//    }
-
     public String tongji(){
         //不分页
 
@@ -537,8 +494,6 @@ public class ChargeAction extends ActionSupport{
         return JSON_RESULT;
     }
 
-
-
     public void rollbackImport() throws IOException{
         ServletActionContext.getResponse().setContentType("text/plain");
         ServletActionContext.getResponse().setCharacterEncoding("utf-8");
@@ -641,6 +596,7 @@ public class ChargeAction extends ActionSupport{
         jspPage = "show/show_get_money_records.jsp";
         return SUCCESS;
     }
+
     public String finalClear(){
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")

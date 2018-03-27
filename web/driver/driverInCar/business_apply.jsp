@@ -48,7 +48,8 @@ $(document).ready(function(){
 				$("#vehicleOwner").val(name);
 			}
 		});
-	}else{
+	}
+	else{
 		$('[name="vehicle.licenseNum"]').val("黑A");
 	}
 });
@@ -73,6 +74,15 @@ var clsMap = {
 function checkIt(){
 	var idNum = $('[name="driver.idNum"]').val();
 	var licenseNum = $("[name='vehicle.licenseNum']").val();
+    var driverClass = $("[name='driver.driverClass']").val().trim();
+
+    if(driverClass==="临驾"){
+        $("[name='driver.restTime']").val('替班');
+        $("[name='driver.restTime']").prop('readonly',true);
+    }
+    else {
+        $("[name='driver.restTime']").prop('readonly',false);
+    }
 	
 	var condition1 = "select carframeNum from Vehicle where licenseNum ='" + licenseNum + "'";
 	
@@ -80,9 +90,7 @@ function checkIt(){
 		if (data!=undefined&&data["affect"]!=undefined) {
 			var carframeNum = data["affect"];
 			$('input[name="driver.carframeNum"]').val(carframeNum);
-			
-			var driverClass = $("[name='driver.driverClass']").val().trim();
-			
+
 			var condition2 = "select "+clsMap[driverClass]+" from Vehicle where carframeNum ='" + carframeNum +"'";
 			$.post("/DZOMS/common/doit",{"condition":condition2},function(result){
 				if (result!=undefined&&result["affect"]!=undefined) {
@@ -91,10 +99,10 @@ function checkIt(){
 						$.post("/DZOMS/common/doit",{"condition":"from Driver where idNum ='"+driverId+"'"},function(nresult){
 							if (nresult!=undefined&&nresult["affect"]!=undefined) {
 								var ndriver = nresult["affect"];
-								if(ndriver["businessApplyCancelState"]==0){
+//								if(ndriver["businessApplyCancelState"]==0){
 									alert("该车已存在"+driverClass+" "+ndriver["name"]);
 									$("[name='driver.driverClass']").val("");
-								}
+//								}
 							}
 						});
 					}
@@ -411,7 +419,7 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
                     </label>
                 </div>
                 <div class="field" >
-                    <s:textfield cssClass="input datepick"  name="driver.businessApplyTime" readonly="true"></s:textfield>
+                    <s:textfield cssClass="input datepick"  name="driver.businessApplyTime" ></s:textfield>
                 </div>
             </div>
             <br/>
@@ -528,6 +536,12 @@ $(function(){
 //                $('#submit-button').click();
 //            }
 //        });
+
+        var resttime = $("[name='driver.restTime']").val();
+        if(resttime.trim().length==0){
+            alert("作息时间未选择！");
+            return false;
+        }
 
         $('#submit-button').click();
     }

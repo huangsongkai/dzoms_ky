@@ -22,11 +22,20 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @Scope("prototype")
 public class ObjectAccess extends BaseAction {
+	public String getTemplatePath() {
+		return templatePath;
+	}
+
+	public void setTemplatePath(String templatePath) {
+		this.templatePath = templatePath;
+	}
+
 	private String className;
 	private String id;
 	private Boolean isString;
@@ -446,6 +455,53 @@ public class ObjectAccess extends BaseAction {
 
 		return "selectToUrl";
 	}
+
+
+	private String templatePath;
+	
+	public String toExcelJoin(){
+		request.setAttribute("templatePath", templatePath);
+		List datalist = new ArrayList();
+		List<String> datasrc = Arrays.asList("elements");
+		
+		String hql = " ";
+		if(StringUtils.isNotEmpty(condition)){
+			hql+=condition;
+		}
+
+		Session session = HibernateSessionFactory.getSession();
+		Query query = session.createQuery("select " + column + " "+ hql);
+		List<?> l = query.list();
+		datalist.add(l);
+		
+		request.setAttribute("datasrc", datasrc);
+		request.setAttribute("datalist", datalist);
+		HibernateSessionFactory.closeSession();
+		
+		return SUCCESS;
+	}
+
+	public String toExcel(){
+		request.setAttribute("templatePath", templatePath);
+		List datalist = new ArrayList();
+		List<String> datasrc = Arrays.asList("elements");
+		
+		String hql = " 1=1 ";
+		if(StringUtils.isNotEmpty(condition)){
+			hql+=condition;
+		}
+		try {
+			List<?> l = ObjectAccess.query(Class.forName(className), hql, null, null, orderby, null);
+			datalist.add(l);
+			request.setAttribute("datasrc", datasrc);
+			request.setAttribute("datalist", datalist);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return ERROR;
+		}
+		return SUCCESS;
+	}
+
 
 	public void doit() throws IOException{
 		ServletActionContext.getResponse().setContentType("application/json");

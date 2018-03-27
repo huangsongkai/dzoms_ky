@@ -50,15 +50,15 @@
 			$('input[name="'+key+'"]').val(json[key]);
 		}
 		
-		$('[name="confirmReault"]').change(function(){
-			if($('[name="confirmReault"]').val()=='true'){
-    			$('.deal_when_true').show();
-    		}else{
-    			$('.deal_when_true').hide();
-    		}
-		});
-		
-		$('[name="confirmReault"]').change();
+//		$('[name="confirmReault"]').change(function(){
+//			if($('[name="confirmReault"]').val()=='true'){
+//    			$('.deal_when_true').show();
+//    		}else{
+//    			$('.deal_when_true').hide();
+//    		}
+//		});
+//
+//		$('[name="confirmReault"]').change();
 	});
 	
 	$(document).ready(function(){

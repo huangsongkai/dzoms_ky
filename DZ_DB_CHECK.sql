@@ -1,4 +1,5 @@
-SELECT (CASE WHEN 
+-- 检查数据库中是否存在错误数据
+SELECT (CASE WHEN
 (SELECT COUNT(*)
 FROM vehicle
 WHERE LENGTH(TRIM(carframe_num))!=LENGTH(carframe_num))>0 THEN '未通过' 
@@ -76,7 +77,8 @@ UPDATE driverincar SET id_number = UPPER(id_number);
 UPDATE meeting_check SET id_num = UPPER(id_num);
 
 
-
+-- 清除当前不在车驾驶员的指纹编号
+UPDATE driver SET fingerprint_num=NULL WHERE is_in_car=0 OR is_in_car IS NULL ;
 
 
 

@@ -37,5 +37,6 @@
         	<action name="*" class="homeVisitAction" method="{1}">
         		<result name="success">${url}</result>
         	</action>
-        </package>
+        <action name="homeVisitFiles" class="homeVisitAction" method="homeVisitFiles"></action>
+    </package>
 </struts>
