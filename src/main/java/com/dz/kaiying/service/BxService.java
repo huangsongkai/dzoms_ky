@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by huang on 2017/7/20.
@@ -157,12 +159,16 @@ public class BxService {
         in = file.getInputStream();
         listob = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
         in.close();
-
+        Map<String,List<Object>> tbdh=new HashMap<>();
+        for (List<Object> obj:listob) {
+            if(tbdh.containsKey(String.valueOf(obj.get(0)))){
+                continue;
+            }
+            tbdh.put(String.valueOf(obj.get(0)),obj);
+        }
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
-        for (int i = 0; i < listob.size(); i++) {
-            List<Object> lo = listob.get(i);
+        for (List<Object> lo:tbdh.values()) {
             KyInsurance insurance = new KyInsurance();
-            KyAccident.class.getFields();//
             insurance.setTbdh(String.valueOf(lo.get(0)));
             insurance.setBdh(String.valueOf(lo.get(1)));
             insurance.setTdh(String.valueOf(lo.get(2)));
