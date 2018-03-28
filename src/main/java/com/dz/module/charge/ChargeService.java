@@ -386,8 +386,9 @@ public class ChargeService {
             if (result != null && result.length() > 0) {
                 XmlPacket response = XmlPacket.valueOf(result);
                 if (response != null) {
-                    String returnCode = response.getReturnCode();
-                    if (returnCode.equals("0")) {
+                    String returnCode = StringUtils.strip(response.getReturnCode());
+                    System.out.println(returnCode);
+                    if (StringUtils.equalsIgnoreCase("0",returnCode)) {
                         int sectionNum = response.getSectionSize("NTAGCDTLY1");
                         Session session = null;
                         Transaction tx = null;
@@ -420,12 +421,13 @@ public class ChargeService {
                                     Query query = session.createQuery("from BankItem bi where bi.zhaoShangDiscount.id=:did and bi.cardNumber like :cardNumber");
                                     query.setInteger("did",discount.getId());
                                     query.setString("cardNumber","%"+ACCNBR+"%");
-                                    query.setMaxResults(1);
+//                                    query.setMaxResults(1);
 
                                     /**
                                      * 2018/03/20 使满足多车车主为同一人时当月费用回执到同一车的情况
                                      */
                                     List<BankItem> items = query.list();
+                                    System.out.println(items);
 
                                     BigDecimal realFee = BigDecimal.valueOf(Double.parseDouble(LGRAMT));
 
@@ -434,7 +436,7 @@ public class ChargeService {
                                         boolean finded = false;
                                         for (BankItem item : items) {
                                             BigDecimal planFee = item.getPlanFee();
-                                            if(item.getRealFee().doubleValue()==0.0 && realFee.equals(planFee)) {
+                                            if(item.getRealFee()!=null && item.getRealFee().doubleValue()==0.0 && realFee.equals(planFee)) {
                                                 doDiscountByZhaoshang(session, item, realFee, STSCOD, ERRDSP);
                                                 finded = true;
                                                 break;
@@ -445,8 +447,10 @@ public class ChargeService {
                                         if (!finded) {
                                             for (BankItem item : items) {
 //                                                BigDecimal planFee = item.getPlanFee();
-                                                if (item.getRealFee().doubleValue() < item.getPlanFee().doubleValue()) {
-                                                    BigDecimal stillPlan = item.getPlanFee().subtract(item.getRealFee());
+                                                BigDecimal itemRealFee = item.getRealFee();
+                                                itemRealFee = itemRealFee == null ? BigDecimal.ZERO :itemRealFee;
+                                                if (itemRealFee.doubleValue() < item.getPlanFee().doubleValue()) {
+                                                    BigDecimal stillPlan = item.getPlanFee().subtract(itemRealFee);
                                                     if(realFee.compareTo(stillPlan)>0){
                                                         doDiscountByZhaoshang(session,item,stillPlan,STSCOD,ERRDSP);
                                                         realFee = realFee.subtract(stillPlan);
@@ -460,14 +464,15 @@ public class ChargeService {
 
                                             if(realFee.doubleValue()>0.0){
                                                 //仍有剩余的Money 一般不可能出现 停止计费 应该是错误
+                                                System.out.println("仍有剩余的Money，停止计费！");
                                                 return returnCode;
                                             }
                                         }
                                     }else {
                                         //扣款未完成
                                         for (BankItem item : items) {
-                                            if(item.getRealFee().doubleValue()==0.0) {
-                                                item.setRealFee(realFee);
+                                            if(item.getRealFee() == null || item.getRealFee().doubleValue()==0.0) {
+                                                item.setRealFee(BigDecimal.ZERO);
                                                 item.setRealTime(new Date());
                                                 if (org.apache.commons.lang3.StringUtils.endsWithIgnoreCase("S",STSCOD)){
                                                     item.setState(4);

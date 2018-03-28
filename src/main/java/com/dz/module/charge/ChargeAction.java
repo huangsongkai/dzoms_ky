@@ -250,6 +250,9 @@ public class ChargeAction extends ActionSupport{
         json.put("status",false);
         if (discount != null) {
             String returnCode = service.refreshDiscount(discount);
+            if(returnCode==null){
+                returnCode = "9";
+            }
             switch (returnCode){
                 case "0":
                     json.put("msgStr","成功");
