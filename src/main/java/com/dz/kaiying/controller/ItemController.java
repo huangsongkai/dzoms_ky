@@ -299,11 +299,39 @@ public class ItemController {
         return itemService.submit(value);
     }
     /**
-     * 跳转办公室物品发放记录跳转
+     * 办公室发放物品保存
      */
-    @RequestMapping(value = "/TZbgslingyong", method = RequestMethod.GET)
-    public String TZbgslingyong (HttpServletRequest request) throws Exception {
-        return "item/bgs_lingyong";
+    @RequestMapping(value = "/TZbgslingyong", method = RequestMethod.POST)
+    public Result submitTZbgslingyong (@RequestBody ItemPurchaseSubmitDTO value) throws Exception {
+        return itemService.submitTZbgslingyong(value);
+    }
+    /**
+     * 跳转运营部物品发放记录
+     */
+    @RequestMapping(value = "/jumpYybHistory", method = RequestMethod.GET)
+    public String jumpYybHistory (HttpServletRequest request) throws Exception {
+        return "item/yyb_item_history";
+    }
+    /**
+     * 跳转办公室物品发放记录
+     */
+    @RequestMapping(value = "/jumpBgsHistory", method = RequestMethod.GET)
+    public String jumpBgsHistory (HttpServletRequest request) throws Exception {
+        return "item/bgs_item_history";
+    }
+    /**
+     * 办公室发放物品记录
+     */
+    @RequestMapping(value = "/officeHistory", method = RequestMethod.POST)
+    public Result officeHistory () throws Exception {
+        return itemService.officeHistory();
+    }
+    /**
+     * 运营部发放物品记录
+     */
+    @RequestMapping(value = "/history", method = RequestMethod.POST)
+    public Result history () throws Exception {
+        return itemService.history();
     }
 
 

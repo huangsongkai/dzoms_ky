@@ -33,8 +33,19 @@ public class LingYong implements java.io.Serializable {
 	@Column(name = "item_id")//
 	private Integer itemId;
 
+	@Column(name = "state")//
+	private Integer state;
+
 	@Column(name = "date")//
 	private Date date;
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 
 	public Date getDate() {
 		return date;

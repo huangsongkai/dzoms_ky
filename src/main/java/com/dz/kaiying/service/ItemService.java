@@ -454,6 +454,7 @@ public class ItemService extends BaseService{
                 lingYong.setIdNumber(value.getIdNumber());
                 lingYong.setItemId(value.getItemId());
                 lingYong.setPersonName(value.getRecipient());
+                lingYong.setState(1);
                 lingYongDao.save(lingYong);
                 result.setSuccess("领用成功",null);
             }else {
@@ -464,6 +465,41 @@ public class ItemService extends BaseService{
         }
         return result;
     }
+
+    public Result submitTZbgslingyong(ItemPurchaseSubmitDTO value) {
+        List<Storage> storageList = storageDao.find("from Storage where itemId = "+value.getItemId());
+        //扣库存
+        if (storageList.size() != 0){
+            Storage stairStorage = (Storage) storageList.get(0);
+            if (stairStorage.getItemTotalNum()>=value.getCount()){
+                stairStorage.setItemTotalNum(stairStorage.getItemTotalNum() - value.getCount());
+                storageDao.update(stairStorage);
+                //保存领用记录
+                LingYong lingYong = new LingYong();
+                lingYong.setDate(new Date());
+                lingYong.setCount(value.getCount());
+                lingYong.setItemId(value.getItemId());
+                lingYong.setPersonName(value.getRecipient());
+                lingYong.setState(2);
+                lingYongDao.save(lingYong);
+                result.setSuccess("领用成功",null);
+            }else {
+                result.setFailed("库存不足领用失败");
+            }
+        }else{
+            result.setFailed("库存不足领用失败");
+        }
+        return result;
+    }
+
+    public Result history() {
+        return null;
+    }
+
+    public Result officeHistory() {
+        return null;
+    }
+
     class Testlocal{
         private Integer itemId;
         private String itemName;
