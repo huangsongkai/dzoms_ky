@@ -1,12 +1,12 @@
 package com.dz.kaiying.service;
 
-import com.dz.kaiying.DTO.ItemReceiveDTO;
-import com.dz.kaiying.DTO.SaveZuoTaoDTO;
-import com.dz.kaiying.DTO.SaveZuoTaoDetailDTO;
+import com.dz.kaiying.DTO.*;
 import com.dz.kaiying.model.*;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.Result;
+import com.dz.module.driver.Driver;
 import com.dz.module.user.User;
+import com.dz.module.vehicle.Vehicle;
 import org.activiti.engine.*;
 import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
 * Created by song.
@@ -55,6 +52,12 @@ public class ItemService extends BaseService{
     HibernateDao<LingYong, Integer>lingYongDao;
     @Resource
     HibernateDao<ZuoTao, Integer> zuoTaoDao;
+    @Resource
+    HibernateDao<ItemPurchaseRecord, Integer> itemPurchaseRecordDao;
+    @Resource
+    HibernateDao<Vehicle, Integer> vehicleDao1;
+    @Resource
+    HibernateDao<Driver, Integer> diverDao;
 
 
 
@@ -334,5 +337,196 @@ public class ItemService extends BaseService{
         }
         result.setSuccess("库存修改成功",null);
         return result;
+    }
+
+    public Result listpurchaseNumUpdate(String state, ItemPurchaseUpadteDTO itemPurchaseUpadteDTO, HttpServletRequest request) {
+        List<Storage> storageList = storageDao.find("from Storage where state = '"+state+"' and itemId = "+itemPurchaseUpadteDTO.getItemId());
+        if (storageList.size() != 0){
+            Storage stairStorage = (Storage) storageList.get(0);
+            stairStorage.setItemTotalNum(stairStorage.getItemTotalNum()+itemPurchaseUpadteDTO.getNum());
+            stairStorage.setItemPurchasingPrice(1.1);
+            stairStorage.setState(state);
+            storageDao.update(stairStorage);
+        }else{
+            Storage stairStorage = new Storage();
+            stairStorage.setItemId(itemPurchaseUpadteDTO.getItemId());
+            stairStorage.setItemPurchasingPrice(1.1);
+            stairStorage.setState(state);
+            stairStorage.setItemTotalNum(itemPurchaseUpadteDTO.getNum());
+            storageDao.save(stairStorage);
+        }
+        //修改库存记录
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        ItemPurchaseRecord itemPurchaseRecord = new ItemPurchaseRecord();
+        itemPurchaseRecord.setItemId(itemPurchaseUpadteDTO.getItemId());
+        itemPurchaseRecord.setItemRemarks(itemPurchaseUpadteDTO.getRemark());
+        itemPurchaseRecord.setItemState(state);
+        itemPurchaseRecord.setName(user.getUname());
+        itemPurchaseRecord.setItemNum(itemPurchaseUpadteDTO.getNum());
+        itemPurchaseRecord.setDate(new Date());
+        itemPurchaseRecordDao.save(itemPurchaseRecord);
+        result.setSuccess("库存修改成功",null);
+        return result;
+    }
+
+    public Result goodsList() {
+        List<Item> itemList = itemDao.find("from Item where itemState = 1 ");
+        List<Testlocal> itemReceive = new ArrayList<>();
+        for (Item item : itemList) {
+            Testlocal itemReceiveDTO = new  Testlocal();
+            List StorageList = storageDao.find("from Storage where itemId = "+item.getId());
+            if (StorageList.size() != 0){
+                Storage storage = (Storage) StorageList.get(0);
+                itemReceiveDTO.setItemPurchasingPrice(storage.getItemPurchasingPrice()+"");
+                itemReceiveDTO.setItemRemarks(item.getItemRemarks());
+                itemReceiveDTO.setItemTotalNum(storage.getItemTotalNum()+"");
+            }else{
+                itemReceiveDTO.setItemPurchasingPrice("");
+                itemReceiveDTO.setItemRemarks("");
+                itemReceiveDTO.setItemTotalNum("");
+            }
+            itemReceiveDTO.setItemId(item.getId());
+            itemReceiveDTO.setItemUnit(item.getItemUnit());
+            itemReceiveDTO.setItemName(item.getItemName());
+            itemReceiveDTO.setItemType(item.getItemType());
+            itemReceive.add(itemReceiveDTO);
+        }
+
+        result.setSuccess("查询成功",itemReceive);
+        return result;
+    }
+
+    public Result chepaihaoA(String number) {
+        List<String> chepai =  vehicleDao1.find("select licenseNum from Vehicle where licenseNum like'%"+number+"%' ");
+        result.setSuccess("查询成功",chepai);
+        return result;
+    }
+
+    public DriversAndHistoryDTO driversAndHistory(String vehicle, Integer itemId) {
+        DriversAndHistoryDTO driversAndHistoryDTO = new DriversAndHistoryDTO();
+        List<DriversPurchase> driversPurchaseList = new ArrayList<>();
+        List<History1> historyList = new ArrayList<>();
+        //驾驶员信息
+        List<Vehicle> vehicleList =  vehicleDao1.find(" from Vehicle where licenseNum = '"+vehicle+"' ");
+        for (Vehicle vehicle1 : vehicleList) {
+            List<Driver> driverList = diverDao.find("from Driver where carframeNum = '"+vehicle1.getCarframeNum()+"'");
+            for (Driver driver : driverList) {
+                DriversPurchase drivers = new DriversPurchase();
+                drivers.setName(driver.getName());
+                drivers.setId(driver.getIdNum()+"");
+                driversPurchaseList.add(drivers);
+            }
+        }
+        //领取历史查询
+        List<LingYong> lingYongList= lingYongDao.find(" from LingYong where carId = '"+vehicle+"' and itemId = "+itemId+"");
+        for (LingYong lingYong : lingYongList) {
+            History1 history = new History1();
+            history.setDriverName(lingYong.getPersonName());
+            List<Item> itemList = itemDao.find("from Item where id = ");
+            Item item = itemList.get(0);
+            history.setItemName(item.getItemName());
+            history.setDriverName(lingYong.getPersonName());
+            history.setItemType(item.getItemType());
+            history.setNumber(lingYong.getCount()+"");
+            history.setTime(lingYong.getDate()+"");
+            historyList.add(history);
+        }
+        driversAndHistoryDTO.setDrivers(driversPurchaseList);
+        driversAndHistoryDTO.setHistory(historyList);
+        return driversAndHistoryDTO;
+
+    }
+
+    public Result submit(ItemPurchaseSubmitDTO value) {
+        List<Storage> storageList = storageDao.find("from Storage where itemId = "+value.getItemId());
+        //扣库存
+        if (storageList.size() != 0){
+            Storage stairStorage = (Storage) storageList.get(0);
+            if (stairStorage.getItemTotalNum()>=value.getCount()){
+                stairStorage.setItemTotalNum(stairStorage.getItemTotalNum() - value.getCount());
+                storageDao.update(stairStorage);
+                //保存领用记录
+                LingYong lingYong = new LingYong();
+                lingYong.setDate(new Date());
+                lingYong.setCarId(value.getNumber());
+                lingYong.setCount(value.getCount());
+                lingYong.setIdNumber(value.getIdNumber());
+                lingYong.setItemId(value.getItemId());
+                lingYong.setPersonName(value.getRecipient());
+                lingYongDao.save(lingYong);
+                result.setSuccess("领用成功",null);
+            }else {
+                result.setFailed("库存不足领用失败");
+            }
+        }else{
+            result.setFailed("库存不足领用失败");
+        }
+        return result;
+    }
+    class Testlocal{
+        private Integer itemId;
+        private String itemName;
+        private String itemUnit;
+        private String itemType;
+        private String itemTotalNum;
+        private String itemPurchasingPrice;
+        private String itemRemarks;
+
+        public Integer getItemId() {
+            return itemId;
+        }
+
+        public void setItemId(Integer itemId) {
+            this.itemId = itemId;
+        }
+
+        public String getItemName() {
+            return itemName;
+        }
+
+        public void setItemName(String itemName) {
+            this.itemName = itemName;
+        }
+
+        public String getItemUnit() {
+            return itemUnit;
+        }
+
+        public void setItemUnit(String itemUnit) {
+            this.itemUnit = itemUnit;
+        }
+
+        public String getItemType() {
+            return itemType;
+        }
+
+        public void setItemType(String itemType) {
+            this.itemType = itemType;
+        }
+
+        public String getItemTotalNum() {
+            return itemTotalNum;
+        }
+
+        public void setItemTotalNum(String itemTotalNum) {
+            this.itemTotalNum = itemTotalNum;
+        }
+
+        public String getItemPurchasingPrice() {
+            return itemPurchasingPrice;
+        }
+
+        public void setItemPurchasingPrice(String itemPurchasingPrice) {
+            this.itemPurchasingPrice = itemPurchasingPrice;
+        }
+
+        public String getItemRemarks() {
+            return itemRemarks;
+        }
+
+        public void setItemRemarks(String itemRemarks) {
+            this.itemRemarks = itemRemarks;
+        }
     }
 }

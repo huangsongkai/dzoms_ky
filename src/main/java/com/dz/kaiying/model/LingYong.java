@@ -2,6 +2,7 @@ package com.dz.kaiying.model;
 
 
 import javax.persistence.*;
+import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -32,6 +33,16 @@ public class LingYong implements java.io.Serializable {
 	@Column(name = "item_id")//
 	private Integer itemId;
 
+	@Column(name = "date")//
+	private Date date;
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
 	public Integer getId() {
 		return id;

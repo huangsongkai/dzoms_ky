@@ -9,13 +9,15 @@
     <div id="header">
         <h2>办公室物品采购</h2>
     </div>
-    <div id="officePurchase"></div>
+    <div id="yunyingbuPurchase"></div>
 </div>
 </body>
 <script type="text/javascript">
     var pageUrls ={
         goodsInfoUrl : "/DZOMS/ky/item/listpurchase/2",
-        jumpUrl:"/DZOMS/ky/item/bgsstartprocess"
+        goodsPurchaseUrl : "/DZOMS/ky/item/listpurchase/2",
+        jumpUrl:"/DZOMS/ky/item/tzyybpurchase",
+        updateStorageUrl:"/DZOMS/ky/item/yybupateStorage"
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>

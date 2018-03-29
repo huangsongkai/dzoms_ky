@@ -1,9 +1,36 @@
-webpackJsonp([3],{
+webpackJsonp([4],{
 
-/***/ 171:
+/***/ 1020:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(25)();
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(175);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(25)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(true) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept(175, function() {
+			var newContent = __webpack_require__(175);
+			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 175:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(23)();
 // imports
 
 
@@ -15,7 +42,7 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 
 /***/ }),
 
-/***/ 225:
+/***/ 233:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25,47 +52,51 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _button = __webpack_require__(20);
+var _regenerator = __webpack_require__(56);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
+
+var _inputNumber = __webpack_require__(51);
+
+var _inputNumber2 = _interopRequireDefault(_inputNumber);
+
+var _col = __webpack_require__(70);
+
+var _col2 = _interopRequireDefault(_col);
+
+var _modal = __webpack_require__(42);
+
+var _modal2 = _interopRequireDefault(_modal);
 
 var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _collapse = __webpack_require__(231);
-
-var _collapse2 = _interopRequireDefault(_collapse);
-
-var _modal = __webpack_require__(41);
-
-var _modal2 = _interopRequireDefault(_modal);
-
-var _col = __webpack_require__(109);
-
-var _col2 = _interopRequireDefault(_col);
-
-var _input = __webpack_require__(35);
-
-var _input2 = _interopRequireDefault(_input);
-
-var _select = __webpack_require__(46);
+var _select = __webpack_require__(41);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _inputNumber = __webpack_require__(50);
+var _input = __webpack_require__(28);
 
-var _inputNumber2 = _interopRequireDefault(_inputNumber);
+var _input2 = _interopRequireDefault(_input);
 
-var _radio = __webpack_require__(91);
+var _collapse = __webpack_require__(239);
+
+var _collapse2 = _interopRequireDefault(_collapse);
+
+var _radio = __webpack_require__(98);
 
 var _radio2 = _interopRequireDefault(_radio);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -73,7 +104,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -83,33 +114,35 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(24);
-
-__webpack_require__(34);
-
-__webpack_require__(232);
-
-__webpack_require__(42);
-
-__webpack_require__(110);
-
-__webpack_require__(27);
+__webpack_require__(26);
 
 __webpack_require__(52);
 
-__webpack_require__(51);
+__webpack_require__(71);
 
-__webpack_require__(112);
+__webpack_require__(43);
+
+__webpack_require__(34);
+
+__webpack_require__(44);
+
+__webpack_require__(27);
+
+__webpack_require__(240);
+
+__webpack_require__(116);
 
 var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SelectInfo = __webpack_require__(92);
+var _SelectInfo = __webpack_require__(83);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -126,15 +159,15 @@ var _components = {
     }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/taskDetails.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+    filename: '/Users/huang/work/dzoms_react/components/process/taskDetails.js',
     components: _components,
     locals: [module],
     imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/taskDetails.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+    filename: '/Users/huang/work/dzoms_react/components/process/taskDetails.js',
     components: _components,
     locals: [],
     imports: [_react3.default, _index2.default]
@@ -142,7 +175,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
     return function (Component) {
-        return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+        return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
     };
 }
 
@@ -971,102 +1004,123 @@ var TaskDetails = _wrapComponent('TaskDetails')(function (_React$Component) {
         }
     }, {
         key: 'componentDidMount',
-        value: async function componentDidMount() {
-            var self = this;
-            var key = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
-            var recResult = [];
-            //console.log(key);
-            $.ajax({
-                type: "GET",
-                url: "/DZOMS/ky/runtime/tasks/" + key,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function success(result) {
-                    //console.log(result);
-                    recResult.splice(0, 0, result);
-                    console.log(result);
-                    window.processInstanceId = result.processInstanceId;
-                    $.ajax({
-                        type: "GET",
-                        url: "/DZOMS/ky/history/historic-process-instances/" + window.processInstanceId + "?size=1000",
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function success(result) {
-                            var processHisInfo = [];
-                            processHisInfo.push(result);
-                            //console.log(processHisInfo);
-                            self.setState({
-                                processHisInfo: processHisInfo
-                            });
-                        },
-                        error: function error(result) {
-                            alert("操作失败");
-                        }
-                    });
-                    // console.log(window.processInstanceId);
-                    $.ajax({
-                        type: "GET",
-                        url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function success(result) {
-                            if (result.data) {
-                                var expNull = null;
-                                var taskDataList = {};
-                                var startFormData = [];
-                                for (var i = 0; i < result.data.length; i++) {
-                                    if (result.data[i].taskId === expNull) {
-                                        startFormData.push(result.data[i]);
-                                    }
-                                }
-                                self.setState({
-                                    processVarInfo: startFormData
-                                });
-                            }
-                        },
-                        error: function error(result) {
-                            alert("操作失败");
-                        }
-                    });
-                    $.ajax({
-                        type: "GET",
-                        url: "/DZOMS/ky/history/historic-task-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function success(result) {
-                            if (result.data) {
-                                //console.log(result);  
-                                var expNull = null;
-                                if (self.props.history) {
-                                    self.setState({
-                                        recResult: result.data
-                                    });
-                                } else {
-                                    var taskArray = [];
-                                    if (result.data.length > 1) {
-                                        taskArray = result.data.slice(0, result.data.length - 1);
-                                    }
-                                    var taskDataList = {};
-                                    self.getRuntimeData(key, taskDataList).then(function (data) {
-                                        taskArray.push(data);
-                                        self.setState({
-                                            recResult: taskArray,
-                                            processImgData: result.data
+        value: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+                var self, key, recResult;
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                self = this;
+                                key = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
+                                recResult = [];
+                                //console.log(key);
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/DZOMS/ky/runtime/tasks/" + key,
+                                    dataType: 'json',
+                                    contentType: 'application/json',
+                                    success: function success(result) {
+                                        //console.log(result);
+                                        recResult.splice(0, 0, result);
+                                        console.log(result);
+                                        window.processInstanceId = result.processInstanceId;
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/DZOMS/ky/history/historic-process-instances/" + window.processInstanceId + "?size=1000",
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            success: function success(result) {
+                                                var processHisInfo = [];
+                                                processHisInfo.push(result);
+                                                //console.log(processHisInfo);
+                                                self.setState({
+                                                    processHisInfo: processHisInfo
+                                                });
+                                            },
+                                            error: function error(result) {
+                                                alert("操作失败");
+                                            }
                                         });
-                                    });
-                                }
-                            }
-                        },
-                        error: function error(result) {
-                            alert("操作失败");
+                                        // console.log(window.processInstanceId);
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            success: function success(result) {
+                                                if (result.data) {
+                                                    var expNull = null;
+                                                    var taskDataList = {};
+                                                    var startFormData = [];
+                                                    for (var i = 0; i < result.data.length; i++) {
+                                                        if (result.data[i].taskId === expNull) {
+                                                            startFormData.push(result.data[i]);
+                                                        }
+                                                    }
+                                                    self.setState({
+                                                        processVarInfo: startFormData
+                                                    });
+                                                }
+                                            },
+                                            error: function error(result) {
+                                                alert("操作失败");
+                                            }
+                                        });
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/DZOMS/ky/history/historic-task-instances?processInstanceId=" + window.processInstanceId + "&size=1000",
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            success: function success(result) {
+                                                if (result.data) {
+                                                    //console.log(result);  
+                                                    var expNull = null;
+                                                    if (self.props.history) {
+                                                        self.setState({
+                                                            recResult: result.data
+                                                        });
+                                                    } else {
+                                                        var taskArray = [];
+                                                        if (result.data.length > 1) {
+                                                            taskArray = result.data.slice(0, result.data.length - 1);
+                                                        }
+                                                        var taskDataList = {};
+                                                        self.getRuntimeData(key, taskDataList).then(function (data) {
+                                                            taskArray.push(data);
+                                                            self.setState({
+                                                                recResult: taskArray,
+                                                                processImgData: result.data
+                                                            });
+                                                        });
+                                                    }
+                                                }
+                                            },
+                                            error: function error(result) {
+                                                alert("操作失败");
+                                            }
+                                        });
+                                    },
+                                    error: function error(result) {
+                                        alert("操作失败");
+                                    }
+                                });
+
+                            case 4:
+                            case 'end':
+                                return _context.stop();
                         }
-                    });
-                },
-                error: function error(result) {
-                    alert("操作失败");
-                }
-            });
-        }
+                    }
+                }, _callee, this);
+            }));
+
+            function componentDidMount() {
+                return _ref.apply(this, arguments);
+            }
+
+            return componentDidMount;
+        }()
     }, {
         key: 'render',
         value: function render() {
@@ -1099,11 +1153,11 @@ if (document.getElementById("taskDetails")) {
     _reactDom2.default.render(_react3.default.createElement(TaskDetails, pageUrls), document.getElementById("taskDetails"));
 }
 exports.default = TaskDetails;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 231:
+/***/ 239:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1113,7 +1167,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Collapse = __webpack_require__(496);
+var _Collapse = __webpack_require__(519);
 
 var _Collapse2 = _interopRequireDefault(_Collapse);
 
@@ -1124,19 +1178,19 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 232:
+/***/ 240:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(18);
+__webpack_require__(21);
 
-__webpack_require__(991);
+__webpack_require__(1020);
 
 /***/ }),
 
-/***/ 479:
+/***/ 494:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1146,23 +1200,27 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _regenerator = __webpack_require__(56);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
 var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _select = __webpack_require__(46);
+var _select = __webpack_require__(41);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _input = __webpack_require__(35);
+var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _collapse = __webpack_require__(231);
+var _collapse = __webpack_require__(239);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
-var _radio = __webpack_require__(91);
+var _radio = __webpack_require__(98);
 
 var _radio2 = _interopRequireDefault(_radio);
 
@@ -1170,13 +1228,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(34);
 
-__webpack_require__(52);
+__webpack_require__(44);
 
 __webpack_require__(27);
 
-__webpack_require__(232);
+__webpack_require__(240);
 
-__webpack_require__(112);
+__webpack_require__(116);
 
 var _react = __webpack_require__(0);
 
@@ -1186,15 +1244,17 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SelectInfo = __webpack_require__(92);
+var _SelectInfo = __webpack_require__(83);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
-var _taskDetails = __webpack_require__(225);
+var _taskDetails = __webpack_require__(233);
 
 var _taskDetails2 = _interopRequireDefault(_taskDetails);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1220,72 +1280,94 @@ var HistoryTaskDetails = function (_TaskDetails) {
 
     _createClass(HistoryTaskDetails, [{
         key: 'componentDidMount',
-        value: async function componentDidMount() {
-            var self = this;
-            window.processInstanceId = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
-            var recResult = [];
-            //console.log(key);
-            $.ajax({
-                type: "GET",
-                url: "/DZOMS/ky/history/historic-process-instances/" + window.processInstanceId,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function success(result) {
-                    var processHisInfo = [];
-                    processHisInfo.push(result);
-                    //console.log(processHisInfo);
-                    self.setState({
-                        processHisInfo: processHisInfo
-                    });
-                },
-                error: function error(result) {
-                    alert("操作失败");
-                }
-            });
-            $.ajax({
-                type: "GET",
-                url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function success(result) {
-                    if (result.data) {
-                        var expNull = null;
-                        var taskDataList = {};
-                        var startFormData = [];
-                        for (var i = 0; i < result.data.length; i++) {
-                            if (result.data[i].taskId === expNull) {
-                                startFormData.push(result.data[i]);
-                            }
+        value: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+                var self, recResult;
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                self = this;
+
+                                window.processInstanceId = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
+                                recResult = [];
+                                //console.log(key);
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/DZOMS/ky/history/historic-process-instances/" + window.processInstanceId,
+                                    dataType: 'json',
+                                    contentType: 'application/json',
+                                    success: function success(result) {
+                                        var processHisInfo = [];
+                                        processHisInfo.push(result);
+                                        //console.log(processHisInfo);
+                                        self.setState({
+                                            processHisInfo: processHisInfo
+                                        });
+                                    },
+                                    error: function error(result) {
+                                        alert("操作失败");
+                                    }
+                                });
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/DZOMS/ky/history/historic-variable-instances?processInstanceId=" + window.processInstanceId,
+                                    dataType: 'json',
+                                    contentType: 'application/json',
+                                    success: function success(result) {
+                                        if (result.data) {
+                                            var expNull = null;
+                                            var taskDataList = {};
+                                            var startFormData = [];
+                                            for (var i = 0; i < result.data.length; i++) {
+                                                if (result.data[i].taskId === expNull) {
+                                                    startFormData.push(result.data[i]);
+                                                }
+                                            }
+                                            self.setState({
+                                                // recResult:taskArray,
+                                                processVarInfo: startFormData
+                                            });
+                                        }
+                                    },
+                                    error: function error(result) {
+                                        alert("操作失败");
+                                    }
+                                });
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/DZOMS/ky/history/historic-task-instances?processInstanceId=" + window.processInstanceId,
+                                    dataType: 'json',
+                                    contentType: 'application/json',
+                                    success: function success(result) {
+                                        if (result.data) {
+                                            //console.log(result);  
+                                            self.setState({
+                                                recResult: result.data,
+                                                processImgData: result.data
+                                            });
+                                        }
+                                    },
+                                    error: function error(result) {
+                                        alert("操作失败");
+                                    }
+                                });
+
+                            case 6:
+                            case 'end':
+                                return _context.stop();
                         }
-                        self.setState({
-                            // recResult:taskArray,
-                            processVarInfo: startFormData
-                        });
                     }
-                },
-                error: function error(result) {
-                    alert("操作失败");
-                }
-            });
-            $.ajax({
-                type: "GET",
-                url: "/DZOMS/ky/history/historic-task-instances?processInstanceId=" + window.processInstanceId,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function success(result) {
-                    if (result.data) {
-                        //console.log(result);  
-                        self.setState({
-                            recResult: result.data,
-                            processImgData: result.data
-                        });
-                    }
-                },
-                error: function error(result) {
-                    alert("操作失败");
-                }
-            });
-        }
+                }, _callee, this);
+            }));
+
+            function componentDidMount() {
+                return _ref.apply(this, arguments);
+            }
+
+            return componentDidMount;
+        }()
     }]);
 
     return HistoryTaskDetails;
@@ -1295,11 +1377,11 @@ if (document.getElementById("historyTaskDetails")) {
     _reactDom2.default.render(_react2.default.createElement(HistoryTaskDetails, pageUrls), document.getElementById("historyTaskDetails"));
 }
 exports.default = HistoryTaskDetails;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 480:
+/***/ 495:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1313,15 +1395,15 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1329,7 +1411,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1337,17 +1419,17 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(24);
+__webpack_require__(26);
 
 var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(32);
+var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(37);
+var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1365,15 +1447,15 @@ var _components = {
   }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/processesList.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/process/processesList.js',
   components: _components,
   locals: [module],
   imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/processesList.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/process/processesList.js',
   components: _components,
   locals: [],
   imports: [_react3.default, _index2.default]
@@ -1381,7 +1463,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
   return function (Component) {
-    return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
   };
 }
 
@@ -1493,11 +1575,11 @@ var ProcessesList = _wrapComponent('ProcessesList')(function (_React$Component) 
 
 if (document.getElementById("processesList")) _reactDom2.default.render(_react3.default.createElement(ProcessesList, pageUrls), document.getElementById("processesList"));
 exports.default = ProcessesList;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 481:
+/***/ 496:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1507,23 +1589,23 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _button = __webpack_require__(22);
+
+var _button2 = _interopRequireDefault(_button);
+
+var _input = __webpack_require__(28);
+
+var _input2 = _interopRequireDefault(_input);
+
 var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _button = __webpack_require__(20);
-
-var _button2 = _interopRequireDefault(_button);
-
-var _input = __webpack_require__(35);
-
-var _input2 = _interopRequireDefault(_input);
-
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1531,17 +1613,17 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(34);
-
-__webpack_require__(24);
+__webpack_require__(26);
 
 __webpack_require__(27);
+
+__webpack_require__(34);
 
 var _reactDom = __webpack_require__(11);
 
@@ -1561,15 +1643,15 @@ var _components = {
     }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/startForm.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+    filename: '/Users/huang/work/dzoms_react/components/process/startForm.js',
     components: _components,
     locals: [module],
     imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/startForm.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+    filename: '/Users/huang/work/dzoms_react/components/process/startForm.js',
     components: _components,
     locals: [],
     imports: [_react3.default, _index2.default]
@@ -1577,7 +1659,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
     return function (Component) {
-        return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+        return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
     };
 }
 
@@ -1726,11 +1808,11 @@ if (document.getElementById("startForm")) {
     _reactDom2.default.render(_react3.default.createElement(WrappedStartForm, pageUrls), document.getElementById("startForm"));
 }
 exports.default = StartForm;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 482:
+/***/ 497:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1744,7 +1826,7 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1752,11 +1834,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1764,7 +1846,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1772,7 +1854,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(24);
+__webpack_require__(26);
 
 __webpack_require__(34);
 
@@ -1780,11 +1862,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(32);
+var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(37);
+var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1802,15 +1884,15 @@ var _components = {
   }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/taskList.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/process/taskList.js',
   components: _components,
   locals: [module],
   imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/process/taskList.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/process/taskList.js',
   components: _components,
   locals: [],
   imports: [_react3.default, _index2.default]
@@ -1818,7 +1900,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
   return function (Component) {
-    return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
   };
 }
 
@@ -1952,11 +2034,11 @@ if (document.getElementById("taskList")) {
   _reactDom2.default.render(_react3.default.createElement(TaskList, pageUrls), document.getElementById("taskList"));
 }
 exports.default = TaskList;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 496:
+/***/ 519:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1995,7 +2077,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _rcCollapse = __webpack_require__(810);
+var _rcCollapse = __webpack_require__(837);
 
 var _rcCollapse2 = _interopRequireDefault(_rcCollapse);
 
@@ -2003,7 +2085,7 @@ var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _openAnimation = __webpack_require__(228);
+var _openAnimation = __webpack_require__(236);
 
 var _openAnimation2 = _interopRequireDefault(_openAnimation);
 
@@ -2057,21 +2139,21 @@ Collapse.defaultProps = {
 
 /***/ }),
 
-/***/ 574:
+/***/ 598:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(480);
-__webpack_require__(481);
-__webpack_require__(482);
-__webpack_require__(225);
-__webpack_require__(479);
+__webpack_require__(495);
+__webpack_require__(496);
+__webpack_require__(497);
+__webpack_require__(233);
+__webpack_require__(494);
 
 /***/ }),
 
-/***/ 807:
+/***/ 834:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2079,8 +2161,8 @@ __webpack_require__(479);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Panel__ = __webpack_require__(808);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__openAnimationFactory__ = __webpack_require__(811);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Panel__ = __webpack_require__(835);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__openAnimationFactory__ = __webpack_require__(838);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_classnames__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_classnames__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2271,7 +2353,7 @@ Collapse.Panel = __WEBPACK_IMPORTED_MODULE_2__Panel__["a" /* default */];
 
 /***/ }),
 
-/***/ 808:
+/***/ 835:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2281,8 +2363,8 @@ Collapse.Panel = __WEBPACK_IMPORTED_MODULE_2__Panel__["a" /* default */];
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PanelContent__ = __webpack_require__(809);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rc_animate__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PanelContent__ = __webpack_require__(836);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rc_animate__ = __webpack_require__(65);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -2403,7 +2485,7 @@ CollapsePanel.defaultProps = {
 
 /***/ }),
 
-/***/ 809:
+/***/ 836:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2487,13 +2569,13 @@ PanelContent.propTypes = {
 
 /***/ }),
 
-/***/ 810:
+/***/ 837:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Panel", function() { return Panel; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Collapse__ = __webpack_require__(807);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Collapse__ = __webpack_require__(834);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__Collapse__["a" /* default */]);
@@ -2501,11 +2583,11 @@ var Panel = __WEBPACK_IMPORTED_MODULE_0__Collapse__["a" /* default */].Panel;
 
 /***/ }),
 
-/***/ 811:
+/***/ 838:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_css_animation__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_css_animation__ = __webpack_require__(169);
 
 
 function animate(node, show, transitionName, done) {
@@ -2542,33 +2624,6 @@ function animation(prefixCls) {
 
 /* harmony default export */ __webpack_exports__["a"] = (animation);
 
-/***/ }),
-
-/***/ 991:
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(171);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(26)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(true) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept(171, function() {
-			var newContent = __webpack_require__(171);
-			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
 /***/ })
 
-},[574]);
+},[598]);

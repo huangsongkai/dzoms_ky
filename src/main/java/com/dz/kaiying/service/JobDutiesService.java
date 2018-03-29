@@ -587,8 +587,8 @@ public class JobDutiesService extends BaseService{
         String sql = "";
         for (User user: userList) {
             String remarks = "";
-           // String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01 00:00:00' AND '"+sdf.format(new Date())+"-29 00:00:00'";
-            String dataSql = "";
+            String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01 00:00:00' AND '"+sdf.format(new Date())+"-29 00:00:00'";
+            //String dataSql = "";
             sql="from EvaluateDetail  where evaluateName is not null and personId ="+user.getUid()+" and groupDate is not null   "+ dataSql;
             List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
             if (evaluateDetailList.size() != 0 ){

@@ -1,16 +1,6 @@
-webpackJsonp([2],{
+webpackJsonp([3],{
 
-/***/ 111:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-__webpack_require__(18);
-
-/***/ }),
-
-/***/ 113:
+/***/ 117:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20,26 +10,460 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _grid = __webpack_require__(142);
+var _form = __webpack_require__(33);
 
-exports['default'] = _grid.Row;
-module.exports = exports['default'];
+var _form2 = _interopRequireDefault(_form);
+
+var _row = __webpack_require__(81);
+
+var _row2 = _interopRequireDefault(_row);
+
+var _button = __webpack_require__(22);
+
+var _button2 = _interopRequireDefault(_button);
+
+var _col = __webpack_require__(70);
+
+var _col2 = _interopRequireDefault(_col);
+
+var _datePicker = __webpack_require__(36);
+
+var _datePicker2 = _interopRequireDefault(_datePicker);
+
+var _select = __webpack_require__(41);
+
+var _select2 = _interopRequireDefault(_select);
+
+var _input = __webpack_require__(28);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+__webpack_require__(34);
+
+__webpack_require__(82);
+
+__webpack_require__(26);
+
+__webpack_require__(71);
+
+__webpack_require__(37);
+
+__webpack_require__(44);
+
+__webpack_require__(27);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _moment = __webpack_require__(1);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _FilterItem = __webpack_require__(150);
+
+var _queryString = __webpack_require__(132);
+
+var _queryString2 = _interopRequireDefault(_queryString);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var InputGroup = _input2.default.Group;
+var Option = _select2.default.Option;
+var Search = _input2.default.Search;
+var pageSize = 20;
+var RangePicker = _datePicker2.default.RangePicker;
+
+var ColProps = {
+  xs: 24,
+  sm: 12,
+  style: {
+    marginBottom: 16
+  }
+};
+var SearchBar = function SearchBar(_ref) {
+  var options = _ref.options,
+      downloadUrl = _ref.downloadUrl,
+      _ref$form = _ref.form,
+      getFieldDecorator = _ref$form.getFieldDecorator,
+      getFieldsValue = _ref$form.getFieldsValue,
+      setFieldsValue = _ref$form.setFieldsValue;
+
+  var query = _queryString2.default.parse(window.location.search) || '';
+  options = options || [{ field: 'id', alias: '身份证' }, { field: 'name', alias: '名称' }];
+  var queryField = "";
+  for (var i in options) {
+    if (typeof query[options[i].field] != "undefined") queryField = options[i].field;
+  }
+  var handleFields = function handleFields(fields) {
+    var createTime = fields.createTime,
+        field = fields.field,
+        value = fields.value;
+
+    if (createTime && createTime.length) {
+      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')];
+    }
+    return fields;
+  };
+
+  var handleSubmit = function handleSubmit() {
+    var fields = getFieldsValue();
+    fields = handleFields(fields);
+    search(fields);
+  };
+
+  var download = function download() {
+    window.open(downloadUrl + window.location.search);
+  };
+
+  var search = function search(fields) {
+    var params = getParams(fields);
+    window.location = window.location.pathname + "?" + _queryString2.default.stringify(params);
+  };
+
+  var getParams = function getParams(fields) {
+    var params = {};
+    for (var _i in query) {
+      params[_i] = query[_i];
+    }
+    for (var i in options) {
+      delete params[options[i].field];
+    }
+    if (typeof fields['field'] != 'undefined') params[fields['field']] = fields['value'];
+    delete fields['field'];
+    delete fields['value'];
+    params = _extends({}, params, { page: 1 }, fields, { pageSize: pageSize });
+    return params;
+  };
+
+  var handleReset = function handleReset() {
+    var fields = getFieldsValue();
+    console.log(fields);
+    for (var item in fields) {
+      if ({}.hasOwnProperty.call(fields, item)) {
+        if (fields[item] instanceof Array) {
+          fields[item] = [];
+        } else {
+          fields[item] = undefined;
+        }
+      }
+    }
+    setFieldsValue(fields);
+    handleSubmit();
+  };
+
+  var handleChange = function handleChange(key) {
+    return function (values) {
+      /*let fields = getFieldsValue()
+      fields[key] = values
+      fields = handleFields(fields)*/
+
+      console.log(key);
+    };
+  };
+  return _react2.default.createElement(
+    _row2.default,
+    { gutter: 24 },
+    _react2.default.createElement(
+      _col2.default,
+      _extends({}, ColProps, { xl: { span: 8 }, md: { span: 8 } }),
+      _react2.default.createElement(
+        'div',
+        { style: { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' } },
+        getFieldDecorator('field', { initialValue: queryField || options[0].field || '' })(_react2.default.createElement(
+          _select2.default,
+          { style: { width: '30%' }, size: 'large', placeholder: '\u9009\u62E9\u67E5\u8BE2\u5C5E\u6027' },
+          options.map(function (item) {
+            return _react2.default.createElement(
+              Option,
+              { key: item.field, value: item.field },
+              item.alias
+            );
+          })
+        )),
+        getFieldDecorator('value', { initialValue: query[queryField] || '' })(_react2.default.createElement(Search, { placeholder: '\u641C\u7D22', style: { width: '70%' }, size: 'large', onSearch: handleSubmit }))
+      )
+    ),
+    _react2.default.createElement(
+      _col2.default,
+      _extends({}, ColProps, { xl: { span: 6 }, md: { span: 8 }, sm: { span: 12 } }),
+      _react2.default.createElement(
+        'div',
+        { style: { justifyContent: 'space-between', flexWrap: 'wrap' } },
+        getFieldDecorator('createTime', { initialValue: query['createTime'] && query['createTime'].map(function (i) {
+            return (0, _moment2.default)(i);
+          }) || '' })(_react2.default.createElement(RangePicker, { style: { width: '100%' }, size: 'large', onChange: handleChange('createTime') }))
+      )
+    ),
+    _react2.default.createElement(
+      _col2.default,
+      { xl: { span: 4 }, md: { span: 4 } },
+      _react2.default.createElement(
+        _button2.default,
+        { size: 'large', type: 'primary', style: { marginRight: 10 }, onClick: handleSubmit },
+        '\u67E5\u8BE2'
+      ),
+      _react2.default.createElement(
+        _button2.default,
+        { size: 'large', onClick: handleReset, style: { marginRight: 10 } },
+        '\u6E05\u7A7A'
+      ),
+      _react2.default.createElement(_button2.default, { type: 'primary', shape: 'circle', icon: 'download', onClick: download })
+    )
+  );
+};
+SearchBar.propTypes = {
+  // onAdd: PropTypes.func,
+  // isMotion: PropTypes.bool,
+  // switchIsMotion: PropTypes.func,
+  // form: PropTypes.object,
+  // filter: PropTypes.object,
+  // onFilterChange: PropTypes.func,
+};
+
+exports.default = _form2.default.create()(SearchBar);
 
 /***/ }),
 
-/***/ 114:
+/***/ 132:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const strictUriEncode = __webpack_require__(229);
+const decodeComponent = __webpack_require__(193);
+
+function encoderForArrayFormat(options) {
+	switch (options.arrayFormat) {
+		case 'index':
+			return (key, value, index) => {
+				return value === null ? [
+					encode(key, options),
+					'[',
+					index,
+					']'
+				].join('') : [
+					encode(key, options),
+					'[',
+					encode(index, options),
+					']=',
+					encode(value, options)
+				].join('');
+			};
+		case 'bracket':
+			return (key, value) => {
+				return value === null ? encode(key, options) : [
+					encode(key, options),
+					'[]=',
+					encode(value, options)
+				].join('');
+			};
+		default:
+			return (key, value) => {
+				return value === null ? encode(key, options) : [
+					encode(key, options),
+					'=',
+					encode(value, options)
+				].join('');
+			};
+	}
+}
+
+function parserForArrayFormat(options) {
+	let result;
+
+	switch (options.arrayFormat) {
+		case 'index':
+			return (key, value, accumulator) => {
+				result = /\[(\d*)\]$/.exec(key);
+
+				key = key.replace(/\[\d*\]$/, '');
+
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				}
+
+				if (accumulator[key] === undefined) {
+					accumulator[key] = {};
+				}
+
+				accumulator[key][result[1]] = value;
+			};
+		case 'bracket':
+			return (key, value, accumulator) => {
+				result = /(\[\])$/.exec(key);
+				key = key.replace(/\[\]$/, '');
+
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				}
+
+				if (accumulator[key] === undefined) {
+					accumulator[key] = [value];
+					return;
+				}
+
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+		default:
+			return (key, value, accumulator) => {
+				if (accumulator[key] === undefined) {
+					accumulator[key] = value;
+					return;
+				}
+
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+	}
+}
+
+function encode(value, options) {
+	if (options.encode) {
+		return options.strict ? strictUriEncode(value) : encodeURIComponent(value);
+	}
+
+	return value;
+}
+
+function keysSorter(input) {
+	if (Array.isArray(input)) {
+		return input.sort();
+	}
+
+	if (typeof input === 'object') {
+		return keysSorter(Object.keys(input))
+			.sort((a, b) => Number(a) - Number(b))
+			.map(key => input[key]);
+	}
+
+	return input;
+}
+
+function extract(input) {
+	const queryStart = input.indexOf('?');
+	if (queryStart === -1) {
+		return '';
+	}
+	return input.slice(queryStart + 1);
+}
+
+function parse(input, options) {
+	options = Object.assign({arrayFormat: 'none'}, options);
+
+	const formatter = parserForArrayFormat(options);
+
+	// Create an object with no prototype
+	const ret = Object.create(null);
+
+	if (typeof input !== 'string') {
+		return ret;
+	}
+
+	input = input.trim().replace(/^[?#&]/, '');
+
+	if (!input) {
+		return ret;
+	}
+
+	for (const param of input.split('&')) {
+		let [key, value] = param.replace(/\+/g, ' ').split('=');
+
+		// Missing `=` should be `null`:
+		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+		value = value === undefined ? null : decodeComponent(value);
+
+		formatter(decodeComponent(key), value, ret);
+	}
+
+	return Object.keys(ret).sort().reduce((result, key) => {
+		const value = ret[key];
+		if (Boolean(value) && typeof value === 'object' && !Array.isArray(value)) {
+			// Sort object keys, not values
+			result[key] = keysSorter(value);
+		} else {
+			result[key] = value;
+		}
+
+		return result;
+	}, Object.create(null));
+}
+
+exports.extract = extract;
+exports.parse = parse;
+
+exports.stringify = (obj, options) => {
+	const defaults = {
+		encode: true,
+		strict: true,
+		arrayFormat: 'none'
+	};
+
+	options = Object.assign(defaults, options);
+
+	if (options.sort === false) {
+		options.sort = () => {};
+	}
+
+	const formatter = encoderForArrayFormat(options);
+
+	return obj ? Object.keys(obj).sort(options.sort).map(key => {
+		const value = obj[key];
+
+		if (value === undefined) {
+			return '';
+		}
+
+		if (value === null) {
+			return encode(key, options);
+		}
+
+		if (Array.isArray(value)) {
+			const result = [];
+
+			for (const value2 of value.slice()) {
+				if (value2 === undefined) {
+					continue;
+				}
+
+				result.push(formatter(key, value2, result.length));
+			}
+
+			return result.join('&');
+		}
+
+		return encode(key, options) + '=' + encode(value, options);
+	}).filter(x => x.length > 0).join('&') : '';
+};
+
+exports.parseUrl = (input, options) => {
+	return {
+		url: input.split('?')[0] || '',
+		query: parse(extract(input), options)
+	};
+};
+
+
+/***/ }),
+
+/***/ 144:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(18);
-
-__webpack_require__(140);
+__webpack_require__(21);
 
 /***/ }),
 
-/***/ 145:
+/***/ 147:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81,7 +505,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _rcSwitch = __webpack_require__(205);
+var _rcSwitch = __webpack_require__(210);
 
 var _rcSwitch2 = _interopRequireDefault(_rcSwitch);
 
@@ -131,37 +555,98 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 146:
+/***/ 148:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(18);
+__webpack_require__(21);
 
-__webpack_require__(224);
+__webpack_require__(232);
 
 /***/ }),
 
-/***/ 148:
+/***/ 150:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _FilterItem = __webpack_require__(230);
+
+var _FilterItem2 = _interopRequireDefault(_FilterItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FilterItem = function FilterItem(_ref) {
+  var _ref$label = _ref.label,
+      label = _ref$label === undefined ? '' : _ref$label,
+      children = _ref.children;
+
+  var labelArray = label.split('');
+  return _react2.default.createElement(
+    'div',
+    { className: _FilterItem2.default.filterItem },
+    labelArray.length > 0 ? _react2.default.createElement(
+      'div',
+      { className: _FilterItem2.default.labelWrap },
+      labelArray.map(function (item, index) {
+        return _react2.default.createElement(
+          'span',
+          { className: 'labelText', key: index },
+          item
+        );
+      })
+    ) : '',
+    _react2.default.createElement(
+      'div',
+      { className: _FilterItem2.default.item },
+      children
+    )
+  );
+};
+
+FilterItem.propTypes = {
+  label: _propTypes2.default.string,
+  children: _propTypes2.default.element.isRequired
+};
+
+exports.default = FilterItem;
+
+/***/ }),
+
+/***/ 151:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module, $) {
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
-var _select = __webpack_require__(46);
+var _select = __webpack_require__(41);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -169,13 +654,13 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(52);
+__webpack_require__(44);
 
 var _reactDom = __webpack_require__(11);
 
@@ -190,121 +675,223 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _components = {
-    UtilSelect: {
-        displayName: 'UtilSelect'
-    }
+  UtilSelect: {
+    displayName: 'UtilSelect'
+  }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/util/Select.js',
-    components: _components,
-    locals: [module],
-    imports: [_react3.default]
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/util/Select.js',
+  components: _components,
+  locals: [module],
+  imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/util/Select.js',
-    components: _components,
-    locals: [],
-    imports: [_react3.default, _index2.default]
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/util/Select.js',
+  components: _components,
+  locals: [],
+  imports: [_react3.default, _index2.default]
 });
 
 function _wrapComponent(id) {
-    return function (Component) {
-        return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
-    };
+  return function (Component) {
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+  };
 } /*
     组件功能：下拉选择框
   */
 
 
 var UtilSelect = _wrapComponent('UtilSelect')(function (_React$Component) {
-    _inherits(UtilSelect, _React$Component);
+  _inherits(UtilSelect, _React$Component);
 
-    function UtilSelect(props) {
-        _classCallCheck(this, UtilSelect);
+  function UtilSelect(props) {
+    _classCallCheck(this, UtilSelect);
 
-        var _this = _possibleConstructorReturn(this, (UtilSelect.__proto__ || Object.getPrototypeOf(UtilSelect)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (UtilSelect.__proto__ || Object.getPrototypeOf(UtilSelect)).call(this, props));
 
-        _this.state = {
-            employeeJobNumber: []
-        };
-        return _this;
+    _this.state = {
+      employeeJobNumber: []
+    };
+    return _this;
+  }
+
+  _createClass(UtilSelect, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var self = this;
+      $.ajax({
+        type: "get",
+        url: "/employeeJobNumber",
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function success(data) {
+          console.log(data.data);
+          var employeeJobNumber = [];
+          if (data.status > 0) {
+            data.data.map(function (obj) {
+              employeeJobNumber.push(obj.employeeId);
+            });
+            self.setState({
+              employeeJobNumber: employeeJobNumber
+            });
+          }
+        },
+        error: function error(data) {
+          alert("失败");
+        }
+      });
     }
+  }, {
+    key: 'onemployeeIdChange',
+    value: function onemployeeIdChange(value) {
+      //console.log('员工id:',value);
+    }
+  }, {
+    key: 'genselectRows',
+    value: function genselectRows() {
+      var self = this;
+      var selectRows = self.state.employeeJobNumber.map(function (item) {
+        return _react3.default.createElement(
+          Option,
+          { value: item },
+          item
+        );
+      });
+      return selectRows;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react3.default.createElement(
+        _select2.default,
+        {
+          showSearch: true,
+          style: { width: '100%' },
+          placeholder: '\u8BF7\u8F93\u5165\u5458\u5DE5\u5DE5\u53F7',
+          optionFilterProp: 'children',
+          onChange: this.onemployeeIdChange.bind(this),
+          filterOption: function filterOption(input, option) {
+            return option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+          }
+        },
+        this.genselectRows()
+      );
+    }
+  }]);
 
-    _createClass(UtilSelect, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            var self = this;
-            $.ajax({
-                type: "get",
-                url: "/employeeJobNumber",
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function success(data) {
-                    console.log(data.data);
-                    var employeeJobNumber = [];
-                    if (data.status > 0) {
-                        data.data.map(function (obj) {
-                            employeeJobNumber.push(obj.employeeId);
-                        });
-                        self.setState({
-                            employeeJobNumber: employeeJobNumber
-                        });
-                    }
-                },
-                error: function error(data) {
-                    alert("失败");
-                }
-            });
-        }
-    }, {
-        key: 'onemployeeIdChange',
-        value: function onemployeeIdChange(value) {
-            //console.log('员工id:',value);
-        }
-    }, {
-        key: 'genselectRows',
-        value: function genselectRows() {
-            var self = this;
-            var selectRows = self.state.employeeJobNumber.map(function (item) {
-                return _react3.default.createElement(
-                    Option,
-                    { value: item },
-                    item
-                );
-            });
-            return selectRows;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react3.default.createElement(
-                _select2.default,
-                {
-                    showSearch: true,
-                    style: { width: '100%' },
-                    placeholder: '\u8BF7\u8F93\u5165\u5458\u5DE5\u5DE5\u53F7',
-                    optionFilterProp: 'children',
-                    onChange: this.onemployeeIdChange.bind(this),
-                    filterOption: function filterOption(input, option) {
-                        return option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                    }
-                },
-                this.genselectRows()
-            );
-        }
-    }]);
-
-    return UtilSelect;
+  return UtilSelect;
 }(_react3.default.Component));
 
 exports.default = UtilSelect;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 204:
+/***/ 193:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var token = '%[a-f0-9]{2}';
+var singleMatcher = new RegExp(token, 'gi');
+var multiMatcher = new RegExp('(' + token + ')+', 'gi');
+
+function decodeComponents(components, split) {
+	try {
+		// Try to decode the entire string first
+		return decodeURIComponent(components.join(''));
+	} catch (err) {
+		// Do nothing
+	}
+
+	if (components.length === 1) {
+		return components;
+	}
+
+	split = split || 1;
+
+	// Split the array in 2 parts
+	var left = components.slice(0, split);
+	var right = components.slice(split);
+
+	return Array.prototype.concat.call([], decodeComponents(left), decodeComponents(right));
+}
+
+function decode(input) {
+	try {
+		return decodeURIComponent(input);
+	} catch (err) {
+		var tokens = input.match(singleMatcher);
+
+		for (var i = 1; i < tokens.length; i++) {
+			input = decodeComponents(tokens, i).join('');
+
+			tokens = input.match(singleMatcher);
+		}
+
+		return input;
+	}
+}
+
+function customDecodeURIComponent(input) {
+	// Keep track of all the replacements and prefill the map with the `BOM`
+	var replaceMap = {
+		'%FE%FF': '\uFFFD\uFFFD',
+		'%FF%FE': '\uFFFD\uFFFD'
+	};
+
+	var match = multiMatcher.exec(input);
+	while (match) {
+		try {
+			// Decode as big chunks as possible
+			replaceMap[match[0]] = decodeURIComponent(match[0]);
+		} catch (err) {
+			var result = decode(match[0]);
+
+			if (result !== match[0]) {
+				replaceMap[match[0]] = result;
+			}
+		}
+
+		match = multiMatcher.exec(input);
+	}
+
+	// Add `%C2` at the end of the map to make sure it does not replace the combinator before everything else
+	replaceMap['%C2'] = '\uFFFD';
+
+	var entries = Object.keys(replaceMap);
+
+	for (var i = 0; i < entries.length; i++) {
+		// Replace all decoded components
+		var key = entries[i];
+		input = input.replace(new RegExp(key, 'g'), replaceMap[key]);
+	}
+
+	return input;
+}
+
+module.exports = function (encodedURI) {
+	if (typeof encodedURI !== 'string') {
+		throw new TypeError('Expected `encodedURI` to be of type `string`, got `' + typeof encodedURI + '`');
+	}
+
+	try {
+		encodedURI = encodedURI.replace(/\+/g, ' ');
+
+		// Try the built in decoder first
+		return decodeURIComponent(encodedURI);
+	} catch (err) {
+		// Fallback to a more advanced decoder
+		return customDecodeURIComponent(encodedURI);
+	}
+};
+
+
+/***/ }),
+
+/***/ 209:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -313,7 +900,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_defineProperty__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_defineProperty___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_defineProperty__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_objectWithoutProperties__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_objectWithoutProperties__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_objectWithoutProperties___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_objectWithoutProperties__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_classCallCheck__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_classCallCheck___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_classCallCheck__);
@@ -490,30 +1077,40 @@ Switch.defaultProps = {
 
 /***/ }),
 
-/***/ 205:
+/***/ 210:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(204);
+module.exports = __webpack_require__(209);
 
 /***/ }),
 
-/***/ 224:
+/***/ 229:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = str => encodeURIComponent(str).replace(/[!'()*]/g, x => `%${x.charCodeAt(0).toString(16).toUpperCase()}`);
+
+
+/***/ }),
+
+/***/ 230:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(73);
+var content = __webpack_require__(76);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(26)(content, {});
+var update = __webpack_require__(25)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(true) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept(73, function() {
-			var newContent = __webpack_require__(73);
+		module.hot.accept(76, function() {
+			var newContent = __webpack_require__(76);
 			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
 			update(newContent);
 		});
@@ -524,7 +1121,34 @@ if(true) {
 
 /***/ }),
 
-/***/ 468:
+/***/ 232:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(77);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(25)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(true) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept(77, function() {
+			var newContent = __webpack_require__(77);
+			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 483:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -538,19 +1162,19 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(20);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _icon = __webpack_require__(36);
+var _icon = __webpack_require__(40);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _switch = __webpack_require__(145);
+var _switch = __webpack_require__(147);
 
 var _switch2 = _interopRequireDefault(_switch);
 
-var _datePicker = __webpack_require__(39);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -558,11 +1182,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -570,7 +1194,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -578,13 +1202,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(24);
+__webpack_require__(26);
 
-__webpack_require__(111);
+__webpack_require__(144);
 
-__webpack_require__(146);
+__webpack_require__(148);
 
-__webpack_require__(40);
+__webpack_require__(37);
 
 __webpack_require__(34);
 
@@ -592,11 +1216,11 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(32);
+var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(37);
+var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -614,15 +1238,15 @@ var _components = {
   }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/accident.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/accident.js',
   components: _components,
   locals: [module],
   imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/accident.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/accident.js',
   components: _components,
   locals: [],
   imports: [_react3.default, _index2.default]
@@ -630,7 +1254,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
   return function (Component) {
-    return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
   };
 }
 
@@ -1279,11 +1903,11 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
 
 if (document.getElementById("accident")) _reactDom2.default.render(_react3.default.createElement(Accident, pageUrls), document.getElementById("accident"));
 exports.default = Accident;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 469:
+/***/ 484:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1297,15 +1921,11 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(20);
+var _regenerator = __webpack_require__(56);
 
-var _button2 = _interopRequireDefault(_button);
+var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _icon = __webpack_require__(36);
-
-var _icon2 = _interopRequireDefault(_icon);
-
-var _datePicker = __webpack_require__(39);
+var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
@@ -1313,11 +1933,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1325,7 +1945,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1333,11 +1953,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(24);
-
-__webpack_require__(111);
-
-__webpack_require__(40);
+__webpack_require__(37);
 
 __webpack_require__(34);
 
@@ -1345,15 +1961,25 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(32);
+var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(37);
+var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
+var _SearchBar = __webpack_require__(117);
+
+var _SearchBar2 = _interopRequireDefault(_SearchBar);
+
+var _queryString = __webpack_require__(132);
+
+var _queryString2 = _interopRequireDefault(_queryString);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1367,15 +1993,15 @@ var _components = {
   }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/insuranceList.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/insuranceList.js',
   components: _components,
   locals: [module],
   imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/insuranceList.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/insuranceList.js',
   components: _components,
   locals: [],
   imports: [_react3.default, _index2.default]
@@ -1383,7 +2009,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
   return function (Component) {
-    return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
   };
 }
 
@@ -1416,31 +2042,61 @@ var InsuranceList = _wrapComponent('InsuranceList')(function (_React$Component) 
 
   _createClass(InsuranceList, [{
     key: 'componentDidMount',
-    value: async function componentDidMount() {
-      var self = this;
-      $.ajax({
-        url: self.props.insuranceListInfoUrl,
-        type: "get",
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function (data) {
-          //if(data){
-          if (data.status > 0) {
-            var data = data.data;
-            for (var i = 0; i < data.length; i++) {
-              data[i]["key"] = data[i].id;
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+        var self, params;
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                self = this;
+                params = '';
+
+                if (window.location.search) params = window.location.search.substring(1);
+
+                $.ajax({
+                  url: self.props.insuranceListInfoUrl,
+                  type: "get",
+                  data: params,
+                  dataType: 'json',
+                  contentType: 'application/json',
+                  success: function (data) {
+                    //if(data){
+                    if (data.status > 0) {
+                      var data = data.data;
+                      for (var i = 0; i < data.length; i++) {
+                        data[i]["key"] = data[i].id;
+                      }
+                      self.setState({
+                        recData: data
+                      });
+                    } else {
+                      recData: "";
+                    }
+                  }.bind(self),
+                  error: function error() {
+                    alert("请求失败");
+                  }
+                });
+
+              case 4:
+              case 'end':
+                return _context.stop();
             }
-            self.setState({
-              recData: data
-            });
-          } else {
-            recData: "";
           }
-        }.bind(self),
-        error: function error() {
-          alert("请求失败");
-        }
-      });
+        }, _callee, this);
+      }));
+
+      function componentDidMount() {
+        return _ref.apply(this, arguments);
+      }
+
+      return componentDidMount;
+    }()
+  }, {
+    key: 'onFilterChange',
+    value: function onFilterChange() {
+      console.log("filter changed");
     }
   }, {
     key: 'onTimeChange',
@@ -1451,34 +2107,9 @@ var InsuranceList = _wrapComponent('InsuranceList')(function (_React$Component) 
       });
     }
   }, {
-    key: 'search',
-    value: function search() {
-      var self = this;
-      var selectedTime = self.state.selectedTime;
-      $.get(self.props.insuranceListInfoUrl + "?selectedTime=" + selectedTime, function (data) {
-        if (data.status > 0) {
-          var data = data.data;
-          for (var i = 0; i < data.length; i++) {
-            data[i]["key"] = data[i].id;
-          }
-          self.setState({
-            recData: data
-          });
-        } else {
-          recData: "";
-        }
-      });
-    }
-  }, {
-    key: 'download',
-    value: function download() {
-      window.location.href = this.props.downloadUrl;
-    }
-  }, {
     key: 'render',
     value: function render() {
       var filterData = new _Filters2.default().filter(this.state.recData);
-      console.log(filterData);
       var columns = [{
         title: '序号',
         width: 50,
@@ -1591,22 +2222,7 @@ var InsuranceList = _wrapComponent('InsuranceList')(function (_React$Component) 
       return _react3.default.createElement(
         'div',
         null,
-        _react3.default.createElement(
-          'div',
-          { style: { float: 'right', marginBottom: '10px', position: 'relative' } },
-          _react3.default.createElement(
-            'div',
-            { style: { position: 'absolute', top: '-55px', right: '65px' }, onClick: this.download.bind(this) },
-            _react3.default.createElement(_icon2.default, { type: 'download', style: { fontSize: '18px' } }),
-            '\u4E0B\u8F7D'
-          ),
-          _react3.default.createElement(MonthPicker, { onChange: this.onTimeChange.bind(this), format: monthFormat, placeholder: '\u65E5\u671F\u9009\u62E9' }),
-          _react3.default.createElement(
-            _button2.default,
-            { onClick: this.search.bind(this) },
-            '\u641C\u7D22'
-          )
-        ),
+        _react3.default.createElement(_SearchBar2.default, { options: this.props.options || [{ field: 'id', alias: '身份证' }, { field: 'name', alias: '名称2' }], downloadUrl: this.props.downloadUrl }),
         _react3.default.createElement(_table2.default, { style: { clear: 'both' }, key: this.key++, columns: columns, dataSource: this.state.recData, scroll: { x: 1300 } })
       );
     }
@@ -1617,11 +2233,11 @@ var InsuranceList = _wrapComponent('InsuranceList')(function (_React$Component) 
 
 if (document.getElementById("insuranceList")) _reactDom2.default.render(_react3.default.createElement(InsuranceList, pageUrls), document.getElementById("insuranceList"));
 exports.default = InsuranceList;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 470:
+/***/ 485:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1631,51 +2247,51 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _button = __webpack_require__(22);
+
+var _button2 = _interopRequireDefault(_button);
+
+var _row = __webpack_require__(81);
+
+var _row2 = _interopRequireDefault(_row);
+
+var _col = __webpack_require__(70);
+
+var _col2 = _interopRequireDefault(_col);
+
+var _inputNumber = __webpack_require__(51);
+
+var _inputNumber2 = _interopRequireDefault(_inputNumber);
+
+var _modal = __webpack_require__(42);
+
+var _modal2 = _interopRequireDefault(_modal);
+
+var _datePicker = __webpack_require__(36);
+
+var _datePicker2 = _interopRequireDefault(_datePicker);
+
+var _select = __webpack_require__(41);
+
+var _select2 = _interopRequireDefault(_select);
+
+var _input = __webpack_require__(28);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _radio = __webpack_require__(98);
+
+var _radio2 = _interopRequireDefault(_radio);
+
 var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _button = __webpack_require__(20);
-
-var _button2 = _interopRequireDefault(_button);
-
-var _select = __webpack_require__(46);
-
-var _select2 = _interopRequireDefault(_select);
-
-var _row = __webpack_require__(113);
-
-var _row2 = _interopRequireDefault(_row);
-
-var _col = __webpack_require__(109);
-
-var _col2 = _interopRequireDefault(_col);
-
-var _inputNumber = __webpack_require__(50);
-
-var _inputNumber2 = _interopRequireDefault(_inputNumber);
-
-var _modal = __webpack_require__(41);
-
-var _modal2 = _interopRequireDefault(_modal);
-
-var _datePicker = __webpack_require__(39);
-
-var _datePicker2 = _interopRequireDefault(_datePicker);
-
-var _input = __webpack_require__(35);
-
-var _input2 = _interopRequireDefault(_input);
-
-var _radio = __webpack_require__(91);
-
-var _radio2 = _interopRequireDefault(_radio);
-
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1683,7 +2299,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1691,41 +2307,41 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(34);
+__webpack_require__(26);
 
-__webpack_require__(24);
+__webpack_require__(82);
+
+__webpack_require__(71);
 
 __webpack_require__(52);
 
-__webpack_require__(114);
+__webpack_require__(43);
 
-__webpack_require__(110);
+__webpack_require__(37);
 
-__webpack_require__(51);
-
-__webpack_require__(42);
-
-__webpack_require__(40);
+__webpack_require__(44);
 
 __webpack_require__(27);
 
-__webpack_require__(112);
+__webpack_require__(116);
+
+__webpack_require__(34);
 
 var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SelectInfo = __webpack_require__(92);
+var _SelectInfo = __webpack_require__(83);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
-var _carNumber = __webpack_require__(569);
+var _carNumber = __webpack_require__(592);
 
 var _carNumber2 = _interopRequireDefault(_carNumber);
 
-var _Select3 = __webpack_require__(148);
+var _Select2 = __webpack_require__(151);
 
-var _Select4 = _interopRequireDefault(_Select3);
+var _Select3 = _interopRequireDefault(_Select2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1743,15 +2359,15 @@ var _components = {
   }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/seatingIssue.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/seatingIssue.js',
   components: _components,
   locals: [module],
   imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/seatingIssue.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/seatingIssue.js',
   components: _components,
   locals: [],
   imports: [_react3.default, _index2.default]
@@ -1759,7 +2375,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
   return function (Component) {
-    return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
   };
 }
 
@@ -2097,11 +2713,11 @@ var SeatingIssue = _wrapComponent('SeatingIssue')(function (_React$Component) {
 var WrappedSeatingIssue = _form2.default.create()(SeatingIssue);
 if (document.getElementById("seatingIssue")) _reactDom2.default.render(_react3.default.createElement(WrappedSeatingIssue, pageUrls), document.getElementById("seatingIssue"));
 exports.default = SeatingIssue;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 471:
+/***/ 486:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2115,15 +2731,19 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _modal = __webpack_require__(41);
+var _regenerator = __webpack_require__(56);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _modal = __webpack_require__(42);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2131,7 +2751,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2139,21 +2759,23 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(42);
+__webpack_require__(43);
 
 var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Sorter = __webpack_require__(32);
+var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(37);
+var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2167,15 +2789,15 @@ var _components = {
   }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/seatingIssueHisInfo.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/seatingIssueHisInfo.js',
   components: _components,
   locals: [module],
   imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/song/Downloads/pigeonhole/newProject/components/insurance/seatingIssueHisInfo.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/insurance/seatingIssueHisInfo.js',
   components: _components,
   locals: [],
   imports: [_react3.default, _index2.default]
@@ -2183,7 +2805,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
   return function (Component) {
-    return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
   };
 }
 
@@ -2203,35 +2825,54 @@ var SeatingIssueHisInfo = _wrapComponent('SeatingIssueHisInfo')(function (_React
 
   _createClass(SeatingIssueHisInfo, [{
     key: 'componentDidMount',
-    value: async function componentDidMount() {
-      $.ajax({
-        url: this.props.seatingIssueHisInfoUrl,
-        type: "get",
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function (data) {
-          if (data.status > 0) {
-            // console.log("aaaa");
-            // console.log(data);
-            var data = data.data;
-            for (var i in data) {
-              data[i]["key"] = data[i].id;
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                $.ajax({
+                  url: this.props.seatingIssueHisInfoUrl,
+                  type: "get",
+                  dataType: 'json',
+                  contentType: 'application/json',
+                  success: function (data) {
+                    if (data.status > 0) {
+                      // console.log("aaaa");
+                      // console.log(data);
+                      var data = data.data;
+                      for (var i in data) {
+                        data[i]["key"] = data[i].id;
+                      }
+                      this.setState({
+                        recData: data
+                      });
+                    } else {
+                      recData: "";
+                    }
+                  }.bind(this),
+                  error: function error(data) {
+                    _modal2.default.error({
+                      title: '错误信息',
+                      content: data.message
+                    });
+                  }
+                });
+
+              case 1:
+              case 'end':
+                return _context.stop();
             }
-            this.setState({
-              recData: data
-            });
-          } else {
-            recData: "";
           }
-        }.bind(this),
-        error: function error(data) {
-          _modal2.default.error({
-            title: '错误信息',
-            content: data.message
-          });
-        }
-      });
-    }
+        }, _callee, this);
+      }));
+
+      function componentDidMount() {
+        return _ref.apply(this, arguments);
+      }
+
+      return componentDidMount;
+    }()
   }, {
     key: 'render',
     value: function render() {
@@ -2327,11 +2968,11 @@ var SeatingIssueHisInfo = _wrapComponent('SeatingIssueHisInfo')(function (_React
 
 if (document.getElementById("seatingIssueHisInfo")) _reactDom2.default.render(_react3.default.createElement(SeatingIssueHisInfo, pageUrls), document.getElementById("seatingIssueHisInfo"));
 exports.default = SeatingIssueHisInfo;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 569:
+/***/ 592:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2341,19 +2982,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _select = __webpack_require__(46);
+var _select = __webpack_require__(41);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _input = __webpack_require__(35);
+var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _index = __webpack_require__(23);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(21);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2361,7 +3002,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(22);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2369,7 +3010,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(52);
+__webpack_require__(44);
 
 __webpack_require__(27);
 
@@ -2377,7 +3018,7 @@ var _reactDom = __webpack_require__(11);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _SelectInfo = __webpack_require__(92);
+var _SelectInfo = __webpack_require__(83);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
@@ -2395,15 +3036,15 @@ var _components = {
     }
 };
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/util/carNumber.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+    filename: '/Users/huang/work/dzoms_react/components/util/carNumber.js',
     components: _components,
     locals: [module],
     imports: [_react3.default]
 });
 
-var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-    filename: '/Users/song/Downloads/pigeonhole/newProject/components/util/carNumber.js',
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+    filename: '/Users/huang/work/dzoms_react/components/util/carNumber.js',
     components: _components,
     locals: [],
     imports: [_react3.default, _index2.default]
@@ -2411,7 +3052,7 @@ var _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchError
 
 function _wrapComponent(id) {
     return function (Component) {
-        return _UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersSongDownloadsPigeonholeNewProjectNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+        return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
     };
 } /*
     组件功能：车牌号的组件
@@ -2589,27 +3230,42 @@ var CarNumber = _wrapComponent('CarNumber')(function (_React$Component) {
 }(_react3.default.Component));
 
 exports.default = CarNumber;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module), __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 572:
+/***/ 596:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(469);
-__webpack_require__(468);
-__webpack_require__(470);
-__webpack_require__(471);
+__webpack_require__(484);
+__webpack_require__(483);
+__webpack_require__(485);
+__webpack_require__(486);
 
 /***/ }),
 
-/***/ 73:
+/***/ 76:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(25)();
+exports = module.exports = __webpack_require__(23)();
+// imports
+
+
+// module
+exports.push([module.i, ".filterItem {\n  display: flex;\n  justify-content: space-between;\n\n  .labelWrap {\n    width: 64px;\n    line-height: 28px;\n    margin-right: 12px;\n    justify-content: space-between;\n    display: flex;\n    overflow: hidden;\n  }\n\n  .item {\n    flex: 1;\n  }\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ 77:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(23)();
 // imports
 
 
@@ -2621,4 +3277,4 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 
 /***/ })
 
-},[572]);
+},[596]);

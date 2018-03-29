@@ -1,5 +1,8 @@
 package com.dz.kaiying.controller;
 
+import com.dz.kaiying.DTO.DriversAndHistoryDTO;
+import com.dz.kaiying.DTO.ItemPurchaseSubmitDTO;
+import com.dz.kaiying.DTO.ItemPurchaseUpadteDTO;
 import com.dz.kaiying.DTO.SaveZuoTaoDTO;
 import com.dz.kaiying.model.Item;
 import com.dz.kaiying.model.LingYongDTO;
@@ -49,16 +52,7 @@ public class ItemController {
         return activitiUtilService.complete("", map, null);
     }
 
-    /**
-     * 采购商品查询
-     * @return
-     */
-    @RequestMapping(value = "/listpurchase/{state}", method = RequestMethod.GET)
-    @ResponseBody
-    public Result listpurchaseitem(@PathVariable String state){
-        Map map = new HashMap();
-        return itemService.listpurchaseitem(state);
-    }
+
 
     /**
      * 保存座套信息
@@ -72,16 +66,7 @@ public class ItemController {
     }
 
 
-    /**
-     * 保运营部采购修改库存信息
-     * @return
-     */
-    @RequestMapping(value = "/yybupateStorage", method = RequestMethod.POST)
-    @ResponseBody
-    public Result yybupateStorage(@RequestBody Map<Integer,String> map){
 
-        return itemService.yybupateStorage(map);
-    }
 
 //    /**
 //     * 增加库存
@@ -250,6 +235,76 @@ public class ItemController {
         return "activity/task_list";
     }
 
+
+//--------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * 采购商品查询
+     * @return
+     */
+    @RequestMapping(value = "/listpurchase/{state}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result listpurchaseitem(@PathVariable String state){
+        return itemService.listpurchaseitem(state);
+    }
+    /**
+     * 商品库存修改
+     * @return
+     */
+    @RequestMapping(value = "/listpurchase/{state}", method = RequestMethod.POST)
+    @ResponseBody
+    public Result listpurchaseNumUpdate(@PathVariable String state, @RequestBody ItemPurchaseUpadteDTO itemPurchaseUpadteDTO,  HttpServletRequest request){
+        return itemService.listpurchaseNumUpdate(state, itemPurchaseUpadteDTO, request);
+    }
+    /**
+     * 保运营部采购修改库存信息
+     * @return
+     */
+    @RequestMapping(value = "/yybupateStorage", method = RequestMethod.POST)
+    @ResponseBody
+    public Result yybupateStorage(@RequestBody Map<Integer,String> map){
+
+        return itemService.yybupateStorage(map);
+    }
+    /**
+     * 查询车牌号
+     */
+    @RequestMapping(value = "/chepaihaoA", method = RequestMethod.GET)
+    @ResponseBody
+    public Result chepaihaoA(@RequestParam String number){
+        return itemService.chepaihaoA(number);
+    }
+    /**
+     * 领用查询
+     */
+    @RequestMapping(value = "/goodsList", method = RequestMethod.GET)
+    @ResponseBody
+    public Result goodsList(){
+        return itemService.goodsList();
+    }
+    /**
+     * 物品领用()
+     */
+    @RequestMapping(value = "/driversAndHistory", method = RequestMethod.GET)
+    @ResponseBody
+    public DriversAndHistoryDTO driversAndHistory(@RequestParam String vehicle, @RequestParam Integer itemId){
+        return itemService.driversAndHistory(vehicle, itemId);
+    }
+    /**
+     * 领用保存
+     */
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @ResponseBody
+    public Result submit(@RequestBody ItemPurchaseSubmitDTO value){
+        return itemService.submit(value);
+    }
+    /**
+     * 跳转办公室物品发放记录跳转
+     */
+    @RequestMapping(value = "/TZbgslingyong", method = RequestMethod.GET)
+    public String TZbgslingyong (HttpServletRequest request) throws Exception {
+        return "item/bgs_lingyong";
+    }
 
 
 }
