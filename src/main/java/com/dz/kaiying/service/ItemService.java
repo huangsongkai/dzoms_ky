@@ -4,12 +4,14 @@ import com.dz.kaiying.DTO.*;
 import com.dz.kaiying.model.*;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.Result;
+import com.dz.kaiying.util.StringUtil;
 import com.dz.module.driver.Driver;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import org.activiti.engine.*;
 import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -492,12 +494,125 @@ public class ItemService extends BaseService{
         return result;
     }
 
-    public Result history() {
-        return null;
+    public Result history(Map<String,String> values) {
+        List<LingYong> lingyongList=null;
+        String sql= "from LingYong where state = 1 ";
+        if(!StringUtils.isEmpty(values.get("createTime"))){
+            sql+="and date BETWEEN '"+values.get("createTime")+"' and '"+values.get("endTime")+"'";
+        }
+        for (String name:values.values()) {
+            switch (name){
+                case "carNumber":addSql(name, sql);
+                    break;
+                case "idNumber":addSql(name, sql);
+                    break;
+                case "personName":addSql(name, sql);
+                    break;
+            }
+        }
+        lingyongList = lingYongDao.find(sql);
+        List<OperItemsOutDTO> listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
+        result.setSuccess("成功",listItems);
+        return result;
+    }
+    private List<OperItemsOutDTO> getOperItemsOutDTOs(String itemName,List<LingYong> ly){
+        List<OperItemsOutDTO> listItems  = new ArrayList<>();
+        if (StringUtils.isEmpty(itemName)) {
+            for (LingYong lingyong : ly) {
+                List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
+                User user = userList.get(0);
+                List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
+                OperItemsOutDTO itemsOut = new OperItemsOutDTO();
+                itemsOut.setId(lingyong.getId());
+                itemsOut.setPersonName(lingyong.getPersonName());
+                itemsOut.setItemName(itemList.get(0).getItemName());
+                itemsOut.setCount(lingyong.getCount());
+                itemsOut.setTime(lingyong.getDate());
+                itemsOut.setIdNumber(lingyong.getIdNumber());
+                itemsOut.setCarId(lingyong.getCarId());
+                listItems.add(itemsOut);
+            }
+            return listItems;
+        }
+        for (LingYong lingyong : ly) {
+            /*List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
+            User user = userList.get(0);*/
+            List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
+           if (!itemName.trim().equals(itemList.get(0).getItemName())) {
+                continue;
+            }
+            OperItemsOutDTO itemsOut = new OperItemsOutDTO();
+            itemsOut.setId(lingyong.getId());
+            itemsOut.setPersonName(lingyong.getPersonName());
+            itemsOut.setItemName(itemList.get(0).getItemName());
+            itemsOut.setCount(lingyong.getCount());
+            itemsOut.setTime(lingyong.getDate());
+            itemsOut.setIdNumber(lingyong.getIdNumber());
+            itemsOut.setCarId(lingyong.getCarId());
+            listItems.add(itemsOut);
+        }
+        return listItems;
+    }
+    private void addSql(String values, String sql) {
+        if(!StringUtils.isEmpty(values)){
+            sql+="and carNumber = '"+values+"'";
+        }
     }
 
-    public Result officeHistory() {
-        return null;
+    //办公室领用物品
+    public Result officeHistory(String personName,String starTime,String endTime,String department) {
+        List<LingYong> lingyongList=null;
+        String sql= "from LingYong where state = 2 ";
+        if(!StringUtils.isEmpty(starTime)){
+            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
+        }
+        if(department==null||department.trim()==""){
+            sql+=" and personName like '%"+personName+"%'";
+            lingyongList = lingYongDao.find(sql);
+        }else {
+            lingyongList = lingYongDao.find(sql);
+        }
+        List<ItemsOutDTO> listItems = getItemsOutDTOs(department, lingyongList);
+        result.setSuccess("成功",listItems);
+        return result;
+    }
+
+    private List<ItemsOutDTO> getItemsOutDTOs(String department, List<LingYong> lingyongList) {
+        List<ItemsOutDTO> listItems = listItems = new ArrayList<>();
+        if (department == null || department.trim() == "") {
+            for (LingYong lingyong : lingyongList) {
+                List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
+                User user = userList.get(0);
+                List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
+                ItemsOutDTO itemsOut = new ItemsOutDTO();
+                itemsOut.setId(lingyong.getId());
+                itemsOut.setCount(lingyong.getCount());
+                itemsOut.setItemName(itemList.get(0).getItemName());
+                itemsOut.setPersonName(lingyong.getPersonName());
+                itemsOut.setTime(lingyong.getDate());
+                itemsOut.setDepartment(user.getDepartment().trim());
+                listItems.add(itemsOut);
+
+            }
+            return listItems;
+        }
+        for (LingYong lingyong : lingyongList) {
+            List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
+            User user = userList.get(0);
+           /* if (!department.trim().equals(user.getDepartment())) {
+                continue;
+            }*/
+            ItemsOutDTO itemsOut = new ItemsOutDTO();
+            itemsOut.setId(lingyong.getId());
+            itemsOut.setCount(lingyong.getCount());
+            List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
+            itemsOut.setItemName(itemList.get(0).getItemName());
+            itemsOut.setPersonName(lingyong.getPersonName());
+            itemsOut.setTime(lingyong.getDate());
+            itemsOut.setDepartment(department.trim());
+            listItems.add(itemsOut);
+        }
+        return listItems;
     }
 
     class Testlocal{

@@ -10,10 +10,13 @@ import com.dz.kaiying.service.ActivitiUtilService;
 import com.dz.kaiying.service.ItemService;
 import com.dz.kaiying.util.Result;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -320,18 +323,38 @@ public class ItemController {
         return "item/bgs_item_history";
     }
     /**
-     * 办公室发放物品记录
+     * 办公室发放物品记录 办公室state=2
      */
-    @RequestMapping(value = "/officeHistory", method = RequestMethod.POST)
-    public Result officeHistory () throws Exception {
-        return itemService.officeHistory();
+    @RequestMapping(value = "/officeHistory", method = RequestMethod.GET)
+    @ResponseBody
+    public Result officeHistory (HttpServletRequest request) throws Exception {
+    String personName=request.getParameter("personName");
+    String createTime=request.getParameter("createTime");
+    String createEndTime=request.getParameter("createEndTime");
+    String department=request.getParameter("department");
+    return itemService.officeHistory(personName,createTime,createEndTime,department);
     }
     /**
-     * 运营部发放物品记录
+     * 运营部发放物品记录办公室state=1
      */
-    @RequestMapping(value = "/history", method = RequestMethod.POST)
-    public Result history () throws Exception {
-        return itemService.history();
+    @RequestMapping(value = "/history", method = RequestMethod.GET)
+    @ResponseBody
+    public Result history (HttpServletRequest request) throws Exception {
+        Map<String,String> map=new HashMap<>();
+        String carNumber=request.getParameter("carNumber");
+        isEmptyParas(map,"carId", carNumber);
+        isEmptyParas(map,"createTime", request.getParameter("createTime"));
+        isEmptyParas(map,"endTime", request.getParameter("endTime"));
+        isEmptyParas(map,"idNumber", request.getParameter("idNumber"));
+        isEmptyParas(map,"personName", request.getParameter("personName"));
+        isEmptyParas(map,"itemName", request.getParameter("itemName"));
+        return itemService.history(map);
+    }
+
+    private void isEmptyParas(Map<String, String> map,String mapName, String carNumber) {
+        if(!StringUtils.isEmpty(carNumber)){
+            map.put(mapName,carNumber);
+        }
     }
 
 
