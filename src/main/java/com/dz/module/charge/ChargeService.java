@@ -502,6 +502,9 @@ public class ChargeService {
                     return returnCode;
                 }
             }
+        }else{
+            //仍在处理中
+            return "10";
         }
         return null;
     }

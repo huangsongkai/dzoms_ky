@@ -282,6 +282,10 @@ public class ChargeAction extends ActionSupport{
                 case "9":
                     json.put("msgStr","其它错误");
                     break;
+                case "10":
+                    json.put("msgStr","扣款仍在处理中");
+                    json.put("status",true);
+                    break;
             }
         }
         out.write(json.toString());
