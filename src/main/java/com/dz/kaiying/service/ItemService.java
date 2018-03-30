@@ -4,17 +4,26 @@ import com.dz.kaiying.DTO.*;
 import com.dz.kaiying.model.*;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.Result;
+import com.dz.kaiying.util.StringUtil;
 import com.dz.module.driver.Driver;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import org.activiti.engine.*;
 import org.activiti.engine.task.Task;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -60,9 +69,9 @@ public class ItemService extends BaseService{
     @Resource
     HibernateDao<Driver, Integer> diverDao;
 
+    private static Map<Integer,ItemsOutDTO> officePort =new HashMap<>();
 
-
-
+    private static Map<Integer,OperItemsOutDTO> history =new HashMap<>();
 
 
 
@@ -450,7 +459,7 @@ public class ItemService extends BaseService{
                 //保存领用记录
                 LingYong lingYong = new LingYong();
                 lingYong.setDate(new Date());
-                lingYong.setCarId(value.getCarNumber());
+                lingYong.setCarId(value.getNumber());
                 lingYong.setCount(value.getCount());
                 lingYong.setIdNumber(value.getIdNumber());
                 lingYong.setItemId(value.getItemId());
@@ -468,18 +477,36 @@ public class ItemService extends BaseService{
     }
 
     public Result submitTZbgslingyong(ItemPurchaseSubmitDTO value) {
-        //保存领用记录
-        LingYong lingYong = new LingYong();
-        lingYong.setDate(new Date());
-        lingYong.setCount(value.getCount());
-        lingYong.setItemId(value.getItemId());
-        lingYong.setPersonName(value.getRecipient());
-        lingYong.setState0(2);
-        lingYong.setState(0);
-        lingYongDao.save(lingYong);
+        List<Storage> storageList = storageDao.find("from Storage where itemId = "+value.getItemId());
+        //扣库存
+        if (storageList.size() != 0){
+            Storage stairStorage = (Storage) storageList.get(0);
+            if (stairStorage.getItemTotalNum()>=value.getCount()){
+                stairStorage.setItemTotalNum(stairStorage.getItemTotalNum() - value.getCount());
+                storageDao.update(stairStorage);
+                //保存领用记录
+                LingYong lingYong = new LingYong();
+                lingYong.setDate(new Date());
+                lingYong.setCount(value.getCount());
+                lingYong.setItemId(value.getItemId());
+                lingYong.setPersonName(value.getRecipient());
+                lingYong.setState(2);
+                lingYongDao.save(lingYong);
+                result.setSuccess("领用成功",null);
+            }else {
+                result.setFailed("库存不足领用失败");
+            }
+        }else{
+            result.setFailed("库存不足领用失败");
+        }
         return result;
     }
 
+    /**
+     * 运营部发放物品
+     * @param values
+     * @return
+     */
     public Result history(Map<String,String> values) {
         List<LingYong> lingyongList=null;
         String sql= "from LingYong where state0 = 1 ";
@@ -498,6 +525,10 @@ public class ItemService extends BaseService{
         }
         lingyongList = lingYongDao.find(sql);
         List<OperItemsOutDTO> listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
+        history.clear();
+        for (int i=1;i<=listItems.size();i++) {    //存入缓存
+            history.put(i,listItems.get(i-1));
+        }
         result.setSuccess("成功",listItems);
         return result;
     }
@@ -513,18 +544,14 @@ public class ItemService extends BaseService{
                 itemsOut.setPersonName(lingyong.getPersonName());
                 itemsOut.setItemName(itemList.get(0).getItemName());
                 itemsOut.setCount(lingyong.getCount());
-                itemsOut.setTime(lingyong.getDate()+"");
+                itemsOut.setTime(lingyong.getDate().toString());
                 itemsOut.setIdNumber(lingyong.getIdNumber());
                 itemsOut.setCarId(lingyong.getCarId());
-                itemsOut.setState(lingyong.getState());
-                itemsOut.setApplyTime(lingyong.getApplyTime()+"");
                 listItems.add(itemsOut);
             }
             return listItems;
         }
         for (LingYong lingyong : ly) {
-            /*List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
-            User user = userList.get(0);*/
             List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
            if (!itemName.trim().equals(itemList.get(0).getItemName())) {
                 continue;
@@ -534,11 +561,9 @@ public class ItemService extends BaseService{
             itemsOut.setPersonName(lingyong.getPersonName());
             itemsOut.setItemName(itemList.get(0).getItemName());
             itemsOut.setCount(lingyong.getCount());
-            itemsOut.setTime(lingyong.getDate()+"");
+            itemsOut.setTime(lingyong.getDate().toString());
             itemsOut.setIdNumber(lingyong.getIdNumber());
             itemsOut.setCarId(lingyong.getCarId());
-            itemsOut.setState(lingyong.getState());
-            itemsOut.setApplyTime(lingyong.getApplyTime()+"");
             listItems.add(itemsOut);
         }
         return listItems;
@@ -549,26 +574,125 @@ public class ItemService extends BaseService{
         }
     }
 
+    /**
+     * 办公室发放物品下载
+     */
+    public void officeHistoryExportExcl(HttpServletResponse response)throws Exception{
+        if (officePort==null)return;   //如果为空无法下载
+        EmpExportService export=new EmpExportService();
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
+        Row row = sheet.createRow((short) 0);
+        row.createCell(0).setCellValue("编号");
+        row.createCell(0).setCellStyle(style);
+        row.createCell(1).setCellValue("领用人姓名");
+        row.createCell(1).setCellStyle(style);
+        row.createCell(2).setCellValue("部门");
+        row.createCell(2).setCellStyle(style);
+        row.createCell(3).setCellValue("物品名");
+        row.createCell(3).setCellStyle(style);
+        row.createCell(4).setCellValue("数量");
+        row.createCell(4).setCellStyle(style);
+        row.createCell(5).setCellValue("时间");
+        row.createCell(5).setCellStyle(style);
+        for (Map.Entry<Integer, ItemsOutDTO> entry : officePort.entrySet()) {
+            Row row1 = sheet.createRow(entry.getKey());
+            row1.createCell(0).setCellValue(entry.getValue().getId());
+            row1.createCell(1).setCellValue(entry.getValue().getPersonName());
+            row1.createCell(2).setCellValue(entry.getValue().getDepartment());
+            row1.createCell(3).setCellValue(entry.getValue().getItemName());
+            row1.createCell(4).setCellValue(entry.getValue().getCount());
+            row1.createCell(5).setCellValue(entry.getValue().getTime());
+        }
+        /*officePort.forEach(key,value)->{};*/
+        export.IOWriteExcel(response,wb,"办公室发放物品");
+    }
+
+    /**
+     * 运营部发放物品下载
+     * @param rep
+     */
+    public void historyExportExcl(HttpServletResponse rep)throws Exception{
+        if (history==null)return;   //如果为空无法下载
+        EmpExportService export=new EmpExportService();
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
+        Row row = sheet.createRow((short) 0);
+        row.createCell(0).setCellValue("编号");
+        row.createCell(0).setCellStyle(style);
+        row.createCell(1).setCellValue("领用人姓名");
+        row.createCell(1).setCellStyle(style);
+        row.createCell(2).setCellValue("物品名");
+        row.createCell(2).setCellStyle(style);
+        row.createCell(3).setCellValue("身份证");
+        row.createCell(3).setCellStyle(style);
+        row.createCell(4).setCellValue("车牌号");
+        row.createCell(4).setCellStyle(style);
+        row.createCell(6).setCellValue("时间");
+        row.createCell(6).setCellStyle(style);
+        row.createCell(5).setCellValue("数量");
+        row.createCell(5).setCellStyle(style);
+        for (Map.Entry<Integer, OperItemsOutDTO> entry : history.entrySet()) {
+            Row row1 = sheet.createRow(entry.getKey());
+            row1.createCell(0).setCellValue(entry.getValue().getId());
+            row1.createCell(1).setCellValue(entry.getValue().getPersonName());
+            row1.createCell(2).setCellValue(entry.getValue().getItemName());
+            row1.createCell(3).setCellValue(entry.getValue().getIdNumber());
+            row1.createCell(4).setCellValue(entry.getValue().getCarId());
+            row1.createCell(5).setCellValue(entry.getValue().getCount());
+            row1.createCell(6).setCellValue(entry.getValue().getTime());
+        }
+        export.IOWriteExcel(rep,wb,"运营部发放物品");
+
+
+    }
+
+    /**
+     * 设置Excel字体格式
+     * @param wb
+     * @return
+     */
+    private HSSFCellStyle getHssfCellStyle(HSSFWorkbook wb) {
+        HSSFFont font =  wb.createFont();
+        font.setFontHeightInPoints((short)12);            //设置字体的大小
+        font.setFontName("微软雅黑");                        //设置字体的样式，如：宋体、微软雅黑等
+        font.setItalic(false);                            //斜体true为斜体
+        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);    //对文中进行加粗
+        font.setColor(HSSFColor.BLACK.index);            //设置字体的颜色
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        style.setFont(font);
+        return style;
+    }
+
     //办公室领用物品
     public Result officeHistory(String personName,String starTime,String endTime,String department) {
         List<LingYong> lingyongList=null;
-        String sql= "from LingYong where state0 = 2 ";
-//        if(!StringUtils.isEmpty(starTime)){
-//            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
-//        }
-//        if(department==null||department.trim()==""){
-//            sql+=" and personName like '%"+personName+"%'";
-//            lingyongList = lingYongDao.find(sql);
-//        }else {
-            lingyongList = lingYongDao.find(sql);
-//        }
-        List<ItemsOutDTO> listItems = getItemsOutDTOs(department, lingyongList);
+        String sql= "from LingYong where state = 2 ";
+        if(!StringUtils.isEmpty(starTime)){
+            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
+        }
+        if(personName!=null&&personName.trim()!=""){
+            sql+=" and personName like '%"+personName+"%'";
+        }
+        lingyongList = lingYongDao.find(sql);
+        List<ItemsOutDTO> listItems =null;
+        if(lingyongList!=null){
+            listItems =getItemsOutDTOs(department, lingyongList);
+            officePort.clear();
+            for (int i=1;i<=listItems.size();i++) {    //存入缓存
+                officePort.put(i,listItems.get(i-1));
+            }
+        }
+
         result.setSuccess("成功",listItems);
         return result;
     }
 
     private List<ItemsOutDTO> getItemsOutDTOs(String department, List<LingYong> lingyongList) {
-        List<ItemsOutDTO> listItems = listItems = new ArrayList<>();
+        List<ItemsOutDTO> listItems = new ArrayList<>();
         if (department == null || department.trim() == "") {
             for (LingYong lingyong : lingyongList) {
                 List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
@@ -581,8 +705,6 @@ public class ItemService extends BaseService{
                 itemsOut.setPersonName(lingyong.getPersonName());
                 itemsOut.setTime(lingyong.getDate());
                 itemsOut.setDepartment(user.getDepartment().trim());
-                itemsOut.setState(lingyong.getState());
-                itemsOut.setApplyTime(lingyong.getApplyTime()+"");
                 listItems.add(itemsOut);
 
             }
@@ -591,9 +713,9 @@ public class ItemService extends BaseService{
         for (LingYong lingyong : lingyongList) {
             List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
             User user = userList.get(0);
-           /* if (!department.trim().equals(user.getDepartment())) {
+           if (!department.trim().equals(user.getDepartment())) {
                 continue;
-            }*/
+            }
             ItemsOutDTO itemsOut = new ItemsOutDTO();
             itemsOut.setId(lingyong.getId());
             itemsOut.setCount(lingyong.getCount());
@@ -602,35 +724,9 @@ public class ItemService extends BaseService{
             itemsOut.setPersonName(lingyong.getPersonName());
             itemsOut.setTime(lingyong.getDate());
             itemsOut.setDepartment(department.trim());
-            itemsOut.setState(lingyong.getState());
-            itemsOut.setApplyTime(lingyong.getApplyTime()+"");
             listItems.add(itemsOut);
         }
         return listItems;
-    }
-
-    public Result agree(String id) {
-        List<LingYong> lingYongList = lingYongDao.find("from LingYong where id = " + id + "");
-        List<Storage> storageList = storageDao.find("from Storage where itemId = "+lingYongList.get(0).getItemId());
-        //扣库存
-        if (storageList.size() != 0){
-            Storage stairStorage = (Storage) storageList.get(0);
-            if (stairStorage.getItemTotalNum()>=lingYongList.get(0).getCount()){
-                stairStorage.setItemTotalNum(stairStorage.getItemTotalNum() - lingYongList.get(0).getCount());
-                storageDao.update(stairStorage);
-                //保存领用记录
-                lingYongList.get(0).setState(1);
-                lingYongList.get(0).setApplyTime(new Date());
-                lingYongDao.update(lingYongList.get(0));
-
-                result.setSuccess("领用成功",null);
-            }else {
-                result.setFailed("库存不足领用失败");
-            }
-        }else{
-            result.setFailed("库存不足领用失败");
-        }
-        return result;
     }
 
     class Testlocal{
