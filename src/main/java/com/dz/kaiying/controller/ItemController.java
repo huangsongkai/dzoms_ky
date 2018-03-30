@@ -302,9 +302,10 @@ public class ItemController {
     /**
      * 办公室发放物品保存
      */
-    @RequestMapping(value = "/TZbgslingyong", method = RequestMethod.POST)
-    public Result submitTZbgslingyong (@RequestBody ItemPurchaseSubmitDTO value) throws Exception {
-        return itemService.submitTZbgslingyong(value);
+    @RequestMapping(value = "/TZbgslingyong1", method = RequestMethod.POST)
+    @ResponseBody
+    public Result submitTZbgslingyong1 (HttpServletRequest request, @RequestBody ItemPurchaseSubmitDTO value) throws Exception {
+        return itemService.submitTZbgslingyong(value, request);
     }
     /**
      * 跳转运营部物品发放记录

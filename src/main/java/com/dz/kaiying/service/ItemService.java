@@ -431,7 +431,7 @@ public class ItemService extends BaseService{
         for (LingYong lingYong : lingYongList) {
             History1 history = new History1();
             history.setDriverName(lingYong.getPersonName());
-            List<Item> itemList = itemDao.find("from Item where id = ");
+            List<Item> itemList = itemDao.find("from Item where id = "+itemId+" ");
             Item item = itemList.get(0);
             history.setItemName(item.getItemName());
             history.setDriverName(lingYong.getPersonName());
@@ -474,16 +474,20 @@ public class ItemService extends BaseService{
         return result;
     }
 
-    public Result submitTZbgslingyong(ItemPurchaseSubmitDTO value) {
+    public Result submitTZbgslingyong(ItemPurchaseSubmitDTO value, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String userName = user.getUname();
         //保存领用记录
         LingYong lingYong = new LingYong();
         lingYong.setDate(new Date());
         lingYong.setCount(value.getCount());
         lingYong.setItemId(value.getItemId());
-        lingYong.setPersonName(value.getRecipient());
+        lingYong.setPersonName(userName);
         lingYong.setState0(2);
         lingYong.setState(0);
         lingYongDao.save(lingYong);
+        result.setSuccess("领用成功",lingYong);
         return result;
     }
 
@@ -765,7 +769,7 @@ public class ItemService extends BaseService{
 
         public void setItemName(String itemName) {
             this.itemName = itemName;
-        }    
+        }
 
         public String getItemUnit() {
             return itemUnit;
