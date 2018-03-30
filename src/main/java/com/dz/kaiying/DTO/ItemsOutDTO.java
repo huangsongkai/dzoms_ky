@@ -13,8 +13,26 @@ public class ItemsOutDTO {
         private String department;
         private Integer count;
         private Date time;
+    private Integer state;
+    private String applyTime;
 
-        public void setId(int id) {
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(String applyTime) {
+        this.applyTime = applyTime;
+    }
+
+    public void setId(int id) {
             this.id = id;
         }
         public int getId() {

@@ -1,7 +1,5 @@
 package com.dz.kaiying.DTO;
 
-import java.util.Date;
-
 /**
  * Created by 24244 on 2018/3/29.
  */
@@ -13,56 +11,80 @@ public class OperItemsOutDTO {
         private String idNumber;
         private String carId;
         private Integer count;
-        private Date time;
+        private Integer state;
+        private String applyTime;
+        private String time;
 
-        public void setId(int id) {
-            this.id = id;
-        }
-        public int getId() {
-            return id;
-        }
-
-        public void setPersonName(String personName) {
-            this.personName = personName;
-        }
-        public String getPersonName() {
-            return personName;
-        }
-
-        public void setItemName(String itemName) {
-            this.itemName = itemName;
-        }
-        public String getItemName() {
-            return itemName;
-        }
-
-        public void setIdNumber(String idNumber) {
-            this.idNumber = idNumber;
-        }
-        public String getIdNumber() {
-            return idNumber;
-        }
-
-        public void setCarId(String carId) {
-            this.carId = carId;
-        }
-        public String getCarId() {
-            return carId;
-        }
-
-        public void setCount(Integer count) {
-            this.count = count;
-        }
-        public Integer getCount() {
-            return count;
-        }
-
-        public void setTime(Date time) {
-            this.time = time;
-        }
-        public Date getTime() {
-            return time;
-        }
-
+    public int getId() {
+        return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getCarId() {
+        return carId;
+    }
+
+    public void setCarId(String carId) {
+        this.carId = carId;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(String applyTime) {
+        this.applyTime = applyTime;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+}
 

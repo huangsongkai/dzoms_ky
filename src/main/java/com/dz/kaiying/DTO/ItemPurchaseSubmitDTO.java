@@ -11,6 +11,15 @@ public class ItemPurchaseSubmitDTO implements java.io.Serializable {
 		private int itemId;
 		private String number;
 		private	int num;
+		private String carNumber;
+
+	public String getCarNumber() {
+		return carNumber;
+	}
+
+	public void setCarNumber(String carNumber) {
+		this.carNumber = carNumber;
+	}
 
 	public int getNum() {
 		return num;

@@ -4,7 +4,6 @@ import com.dz.kaiying.DTO.*;
 import com.dz.kaiying.model.*;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.Result;
-import com.dz.kaiying.util.StringUtil;
 import com.dz.module.driver.Driver;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
@@ -451,7 +450,7 @@ public class ItemService extends BaseService{
                 //保存领用记录
                 LingYong lingYong = new LingYong();
                 lingYong.setDate(new Date());
-                lingYong.setCarId(value.getNumber());
+                lingYong.setCarId(value.getCarNumber());
                 lingYong.setCount(value.getCount());
                 lingYong.setIdNumber(value.getIdNumber());
                 lingYong.setItemId(value.getItemId());
@@ -469,34 +468,21 @@ public class ItemService extends BaseService{
     }
 
     public Result submitTZbgslingyong(ItemPurchaseSubmitDTO value) {
-        List<Storage> storageList = storageDao.find("from Storage where itemId = "+value.getItemId());
-        //扣库存
-        if (storageList.size() != 0){
-            Storage stairStorage = (Storage) storageList.get(0);
-            if (stairStorage.getItemTotalNum()>=value.getCount()){
-                stairStorage.setItemTotalNum(stairStorage.getItemTotalNum() - value.getCount());
-                storageDao.update(stairStorage);
-                //保存领用记录
-                LingYong lingYong = new LingYong();
-                lingYong.setDate(new Date());
-                lingYong.setCount(value.getCount());
-                lingYong.setItemId(value.getItemId());
-                lingYong.setPersonName(value.getRecipient());
-                lingYong.setState(2);
-                lingYongDao.save(lingYong);
-                result.setSuccess("领用成功",null);
-            }else {
-                result.setFailed("库存不足领用失败");
-            }
-        }else{
-            result.setFailed("库存不足领用失败");
-        }
+        //保存领用记录
+        LingYong lingYong = new LingYong();
+        lingYong.setDate(new Date());
+        lingYong.setCount(value.getCount());
+        lingYong.setItemId(value.getItemId());
+        lingYong.setPersonName(value.getRecipient());
+        lingYong.setState0(2);
+        lingYong.setState(0);
+        lingYongDao.save(lingYong);
         return result;
     }
 
     public Result history(Map<String,String> values) {
         List<LingYong> lingyongList=null;
-        String sql= "from LingYong where state = 1 ";
+        String sql= "from LingYong where state0 = 1 ";
         if(!StringUtils.isEmpty(values.get("createTime"))){
             sql+="and date BETWEEN '"+values.get("createTime")+"' and '"+values.get("endTime")+"'";
         }
@@ -527,9 +513,11 @@ public class ItemService extends BaseService{
                 itemsOut.setPersonName(lingyong.getPersonName());
                 itemsOut.setItemName(itemList.get(0).getItemName());
                 itemsOut.setCount(lingyong.getCount());
-                itemsOut.setTime(lingyong.getDate());
+                itemsOut.setTime(lingyong.getDate()+"");
                 itemsOut.setIdNumber(lingyong.getIdNumber());
                 itemsOut.setCarId(lingyong.getCarId());
+                itemsOut.setState(lingyong.getState());
+                itemsOut.setApplyTime(lingyong.getApplyTime()+"");
                 listItems.add(itemsOut);
             }
             return listItems;
@@ -546,9 +534,11 @@ public class ItemService extends BaseService{
             itemsOut.setPersonName(lingyong.getPersonName());
             itemsOut.setItemName(itemList.get(0).getItemName());
             itemsOut.setCount(lingyong.getCount());
-            itemsOut.setTime(lingyong.getDate());
+            itemsOut.setTime(lingyong.getDate()+"");
             itemsOut.setIdNumber(lingyong.getIdNumber());
             itemsOut.setCarId(lingyong.getCarId());
+            itemsOut.setState(lingyong.getState());
+            itemsOut.setApplyTime(lingyong.getApplyTime()+"");
             listItems.add(itemsOut);
         }
         return listItems;
@@ -562,16 +552,16 @@ public class ItemService extends BaseService{
     //办公室领用物品
     public Result officeHistory(String personName,String starTime,String endTime,String department) {
         List<LingYong> lingyongList=null;
-        String sql= "from LingYong where state = 2 ";
-        if(!StringUtils.isEmpty(starTime)){
-            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
-        }
-        if(department==null||department.trim()==""){
-            sql+=" and personName like '%"+personName+"%'";
+        String sql= "from LingYong where state0 = 2 ";
+//        if(!StringUtils.isEmpty(starTime)){
+//            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
+//        }
+//        if(department==null||department.trim()==""){
+//            sql+=" and personName like '%"+personName+"%'";
+//            lingyongList = lingYongDao.find(sql);
+//        }else {
             lingyongList = lingYongDao.find(sql);
-        }else {
-            lingyongList = lingYongDao.find(sql);
-        }
+//        }
         List<ItemsOutDTO> listItems = getItemsOutDTOs(department, lingyongList);
         result.setSuccess("成功",listItems);
         return result;
@@ -591,6 +581,8 @@ public class ItemService extends BaseService{
                 itemsOut.setPersonName(lingyong.getPersonName());
                 itemsOut.setTime(lingyong.getDate());
                 itemsOut.setDepartment(user.getDepartment().trim());
+                itemsOut.setState(lingyong.getState());
+                itemsOut.setApplyTime(lingyong.getApplyTime()+"");
                 listItems.add(itemsOut);
 
             }
@@ -610,9 +602,35 @@ public class ItemService extends BaseService{
             itemsOut.setPersonName(lingyong.getPersonName());
             itemsOut.setTime(lingyong.getDate());
             itemsOut.setDepartment(department.trim());
+            itemsOut.setState(lingyong.getState());
+            itemsOut.setApplyTime(lingyong.getApplyTime()+"");
             listItems.add(itemsOut);
         }
         return listItems;
+    }
+
+    public Result agree(String id) {
+        List<LingYong> lingYongList = lingYongDao.find("from LingYong where id = " + id + "");
+        List<Storage> storageList = storageDao.find("from Storage where itemId = "+lingYongList.get(0).getItemId());
+        //扣库存
+        if (storageList.size() != 0){
+            Storage stairStorage = (Storage) storageList.get(0);
+            if (stairStorage.getItemTotalNum()>=lingYongList.get(0).getCount()){
+                stairStorage.setItemTotalNum(stairStorage.getItemTotalNum() - lingYongList.get(0).getCount());
+                storageDao.update(stairStorage);
+                //保存领用记录
+                lingYongList.get(0).setState(1);
+                lingYongList.get(0).setApplyTime(new Date());
+                lingYongDao.update(lingYongList.get(0));
+
+                result.setSuccess("领用成功",null);
+            }else {
+                result.setFailed("库存不足领用失败");
+            }
+        }else{
+            result.setFailed("库存不足领用失败");
+        }
+        return result;
     }
 
     class Testlocal{

@@ -9,13 +9,15 @@
     <div id="header">
         <h2>办公室物品发放记录</h2>
     </div>
-    <div id="goodsManagement"></div>
+    <div id="officeHistory"></div>
 </div>
 </body>
 <script type="text/javascript">
     var pageUrls ={
         goodsIssueHisInfoUrl : "/DZOMS/ky/item/officeHistory",
         downloadUrl:"/download",
+        agreeUrl : "/DZOMS/ky/item/agree",
+        denyUrl : "/office/goods/deny",
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>
