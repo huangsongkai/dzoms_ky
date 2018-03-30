@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -333,6 +336,16 @@ public class ItemController {
     String department=request.getParameter("department");
     return itemService.officeHistory(personName,createTime,createEndTime,department);
     }
+
+    /**
+     * 办公室发放物品下载
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/downloadOfficeHistory", method = RequestMethod.GET)
+    public void empExportExclMonth(HttpServletResponse response)throws Exception{
+        itemService.officeHistoryExportExcl(response);
+    }
     /**
      * 运营部发放物品记录办公室state=1
      */
@@ -350,21 +363,20 @@ public class ItemController {
         return itemService.history(map);
     }
 
-    /**
-     * 办公室物品出库
-     */
-    @RequestMapping(value = "/agree", method = RequestMethod.POST)
-    @ResponseBody
-    public Result agree(@RequestBody Map<String,Object> params){
-        String id = params.get("id").toString();
-        return itemService.agree(id);
-    }
-
     private void isEmptyParas(Map<String, String> map,String mapName, String carNumber) {
         if(!StringUtils.isEmpty(carNumber)){
             map.put(mapName,carNumber);
         }
     }
 
+    /**
+     * 运营部发放物品下载
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/downloadHistory", method = RequestMethod.GET)
+    public void downloadHistory(HttpServletResponse response)throws Exception{
+        itemService.historyExportExcl(response);
+    }
 
 }

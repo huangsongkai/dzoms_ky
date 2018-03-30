@@ -12,7 +12,7 @@ public class ItemsOutDTO {
         private String itemName;
         private String department;
         private Integer count;
-        private Date time;
+        private String time;
     private Integer state;
     private String applyTime;
 
@@ -67,10 +67,10 @@ public class ItemsOutDTO {
             return count;
         }
 
-        public void setTime(Date time) {
+        public void setTime(String time) {
             this.time = time;
         }
-        public Date getTime() {
+        public String getTime() {
             return time;
         }
 

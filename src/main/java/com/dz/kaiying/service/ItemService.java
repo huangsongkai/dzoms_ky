@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -71,7 +73,7 @@ public class ItemService extends BaseService{
 
     private static Map<Integer,OperItemsOutDTO> history =new HashMap<>();
 
-
+    private SimpleDateFormat sformat=new SimpleDateFormat("yyyy-MM-dd");
 
     private Result result = new Result();
 
@@ -513,10 +515,13 @@ public class ItemService extends BaseService{
             }
         }
         lingyongList = lingYongDao.find(sql);
+
         List<OperItemsOutDTO> listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
-        history.clear();
-        for (int i=1;i<=listItems.size();i++) {    //存入缓存
-            history.put(i,listItems.get(i-1));
+        if(listItems.size()>1) {
+            history.clear();
+            for (int i = 1; i <= listItems.size(); i++) {    //存入缓存
+                history.put(i, listItems.get(i - 1));
+            }
         }
         result.setSuccess("成功",listItems);
         return result;
@@ -573,24 +578,31 @@ public class ItemService extends BaseService{
      * 办公室发放物品下载
      */
     public void officeHistoryExportExcl(HttpServletResponse response)throws Exception{
-        if (officePort==null)return;   //如果为空无法下载
+        if (officePort.size()==0)return;   //如果为空无法下载
         EmpExportService export=new EmpExportService();
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet();
         HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
         Row row = sheet.createRow((short) 0);
-        row.createCell(0).setCellValue("编号");
-        row.createCell(0).setCellStyle(style);
-        row.createCell(1).setCellValue("领用人姓名");
-        row.createCell(1).setCellStyle(style);
-        row.createCell(2).setCellValue("部门");
-        row.createCell(2).setCellStyle(style);
-        row.createCell(3).setCellValue("物品名");
-        row.createCell(3).setCellStyle(style);
-        row.createCell(4).setCellValue("数量");
-        row.createCell(4).setCellStyle(style);
-        row.createCell(5).setCellValue("时间");
-        row.createCell(5).setCellStyle(style);
+        Cell cel0=row.createCell(0);
+        cel0.setCellStyle(style);
+        cel0.setCellValue("编号");
+        Cell cel1=row.createCell(1);
+        cel1.setCellStyle(style);
+        cel1.setCellValue("领用人姓名");
+        Cell cel2=row.createCell(2);
+        cel2.setCellStyle(style);
+        cel2.setCellValue("部门");
+        Cell cel3=row.createCell(3);
+        cel3.setCellStyle(style);
+        cel3.setCellValue("物品名");
+        Cell cel4=row.createCell(4);
+        cel4.setCellStyle(style);
+        cel4.setCellValue("数量");
+        Cell cel5=row.createCell(5);
+        cel5.setCellStyle(style);
+        cel5.setCellValue("时间");
+
         for (Map.Entry<Integer, ItemsOutDTO> entry : officePort.entrySet()) {
             Row row1 = sheet.createRow(entry.getKey());
             row1.createCell(0).setCellValue(entry.getValue().getId());
@@ -601,7 +613,7 @@ public class ItemService extends BaseService{
             row1.createCell(5).setCellValue(entry.getValue().getTime());
         }
         /*officePort.forEach(key,value)->{};*/
-        export.IOWriteExcel(response,wb,"办公室发放物品");
+        export.IOWriteExcel(response,wb,"办公室发放物品.xls");
     }
 
     /**
@@ -609,26 +621,34 @@ public class ItemService extends BaseService{
      * @param rep
      */
     public void historyExportExcl(HttpServletResponse rep)throws Exception{
-        if (history==null)return;   //如果为空无法下载
+        if (history.size()==0)return;   //如果为空无法下载
         EmpExportService export=new EmpExportService();
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet();
         HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
         Row row = sheet.createRow((short) 0);
-        row.createCell(0).setCellValue("编号");
-        row.createCell(0).setCellStyle(style);
-        row.createCell(1).setCellValue("领用人姓名");
-        row.createCell(1).setCellStyle(style);
-        row.createCell(2).setCellValue("物品名");
-        row.createCell(2).setCellStyle(style);
-        row.createCell(3).setCellValue("身份证");
-        row.createCell(3).setCellStyle(style);
-        row.createCell(4).setCellValue("车牌号");
-        row.createCell(4).setCellStyle(style);
-        row.createCell(6).setCellValue("时间");
-        row.createCell(6).setCellStyle(style);
-        row.createCell(5).setCellValue("数量");
-        row.createCell(5).setCellStyle(style);
+        Cell cel0=row.createCell(0);
+          cel0.setCellStyle(style);
+          cel0.setCellValue("编号");
+        Cell cel1=row.createCell(1);
+          cel1.setCellStyle(style);
+          cel1.setCellValue("领用人姓名");
+        Cell cel2=row.createCell(2);
+          cel2.setCellStyle(style);
+          cel2.setCellValue("物品名");
+        Cell cel3=row.createCell(3);
+          cel3.setCellStyle(style);
+          cel3.setCellValue("身份证");
+        Cell cel4=row.createCell(4);
+          cel4.setCellStyle(style);
+          cel4.setCellValue("车牌号");
+        Cell cel6=row.createCell(6);
+          cel6.setCellStyle(style);
+          cel6.setCellValue("时间");
+        Cell cel5=row.createCell(5);
+          cel5.setCellStyle(style);
+          cel5.setCellValue("数量");
+
         for (Map.Entry<Integer, OperItemsOutDTO> entry : history.entrySet()) {
             Row row1 = sheet.createRow(entry.getKey());
             row1.createCell(0).setCellValue(entry.getValue().getId());
@@ -639,7 +659,7 @@ public class ItemService extends BaseService{
             row1.createCell(5).setCellValue(entry.getValue().getCount());
             row1.createCell(6).setCellValue(entry.getValue().getTime());
         }
-        export.IOWriteExcel(rep,wb,"运营部发放物品");
+        export.IOWriteExcel(rep,wb,"运营部发放物品.xls");
 
 
     }
@@ -666,16 +686,21 @@ public class ItemService extends BaseService{
     public Result officeHistory(String personName,String starTime,String endTime,String department) {
         List<LingYong> lingyongList=null;
         String sql= "from LingYong where state0 = 2 ";
-//        if(!StringUtils.isEmpty(starTime)){
-//            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
-//        }
-//        if(department==null||department.trim()==""){
-//            sql+=" and personName like '%"+personName+"%'";
-//            lingyongList = lingYongDao.find(sql);
-//        }else {
+        if((!StringUtils.isEmpty(starTime))&&(!StringUtils.isEmpty(endTime))){
+            sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
+        }
+        if(personName!=null&&personName.trim()!=""){
+            sql+=" and personName like '%"+personName+"%'";
+        }
             lingyongList = lingYongDao.find(sql);
-//        }
-        List<ItemsOutDTO> listItems = getItemsOutDTOs(department, lingyongList);
+        List<ItemsOutDTO> listItems =null;
+        if(lingyongList.size()>0) {
+            listItems = getItemsOutDTOs(department, lingyongList);
+            officePort.clear();
+            for (int i=1;i<=listItems.size();i++) {    //存入缓存
+                officePort.put(i,listItems.get(i-1));
+            }
+        }
         result.setSuccess("成功",listItems);
         return result;
     }
@@ -685,39 +710,42 @@ public class ItemService extends BaseService{
         if (department == null || department.trim() == "") {
             for (LingYong lingyong : lingyongList) {
                 List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
-                User user = userList.get(0);
-                List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
-                ItemsOutDTO itemsOut = new ItemsOutDTO();
-                itemsOut.setId(lingyong.getId());
-                itemsOut.setCount(lingyong.getCount());
-                itemsOut.setItemName(itemList.get(0).getItemName());
-                itemsOut.setPersonName(lingyong.getPersonName());
-                itemsOut.setTime(lingyong.getDate());
-                itemsOut.setDepartment(user.getDepartment().trim());
-                itemsOut.setState(lingyong.getState());
-                itemsOut.setApplyTime(lingyong.getApplyTime()+"");
-                listItems.add(itemsOut);
-
+                if(userList.size()>0){
+                    User user = userList.get(0);
+                    List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
+                    ItemsOutDTO itemsOut = new ItemsOutDTO();
+                    itemsOut.setId(lingyong.getId());
+                    itemsOut.setCount(lingyong.getCount());
+                    itemsOut.setItemName(itemList.get(0).getItemName());
+                    itemsOut.setPersonName(lingyong.getPersonName());
+                    itemsOut.setTime(sformat.format(lingyong.getDate()));
+                    itemsOut.setDepartment(user.getDepartment().trim());
+                    itemsOut.setState(lingyong.getState());
+                    itemsOut.setApplyTime(lingyong.getApplyTime()+"");
+                    listItems.add(itemsOut);
+                }
             }
             return listItems;
         }
         for (LingYong lingyong : lingyongList) {
             List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
-            User user = userList.get(0);
+            if (userList.size() > 0) {
+                User user = userList.get(0);
            /* if (!department.trim().equals(user.getDepartment())) {
                 continue;
             }*/
-            ItemsOutDTO itemsOut = new ItemsOutDTO();
-            itemsOut.setId(lingyong.getId());
-            itemsOut.setCount(lingyong.getCount());
-            List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
-            itemsOut.setItemName(itemList.get(0).getItemName());
-            itemsOut.setPersonName(lingyong.getPersonName());
-            itemsOut.setTime(lingyong.getDate());
-            itemsOut.setDepartment(department.trim());
-            itemsOut.setState(lingyong.getState());
-            itemsOut.setApplyTime(lingyong.getApplyTime()+"");
-            listItems.add(itemsOut);
+                ItemsOutDTO itemsOut = new ItemsOutDTO();
+                itemsOut.setId(lingyong.getId());
+                itemsOut.setCount(lingyong.getCount());
+                List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
+                itemsOut.setItemName(itemList.get(0).getItemName());
+                itemsOut.setPersonName(lingyong.getPersonName());
+                itemsOut.setTime(sformat.format(lingyong.getDate()));
+                itemsOut.setDepartment(department.trim());
+                itemsOut.setState(lingyong.getState());
+                itemsOut.setApplyTime(lingyong.getApplyTime() + "");
+                listItems.add(itemsOut);
+            }
         }
         return listItems;
     }

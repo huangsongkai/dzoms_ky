@@ -151,4 +151,26 @@ public class JobStatisticsYearDTO {
     public void setDepartment(String department) {
         this.department = department;
     }
+
+    @Override
+    public String toString() {
+        return "JobStatisticsYearDTO{" +
+                "name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                ", january=" + january +
+                ", february=" + february +
+                ", march=" + march +
+                ", april=" + april +
+                ", may=" + may +
+                ", june=" + june +
+                ", july=" + july +
+                ", august=" + august +
+                ", september=" + september +
+                ", october=" + october +
+                ", november=" + november +
+                ", december=" + december +
+                ", total=" + total +
+                ", average=" + average +
+                '}';
+    }
 }
