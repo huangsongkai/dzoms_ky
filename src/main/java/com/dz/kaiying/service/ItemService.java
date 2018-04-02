@@ -763,7 +763,6 @@ public class ItemService extends BaseService{
                 lingYongList.get(0).setState(1);
                 lingYongList.get(0).setApplyTime(new Date());
                 lingYongDao.update(lingYongList.get(0));
-
                 result.setSuccess("领用成功",null);
             }else {
                 result.setFailed("库存不足领用失败");

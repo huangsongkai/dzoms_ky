@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -361,6 +359,16 @@ public class ItemController {
         isEmptyParas(map,"personName", request.getParameter("personName"));
         isEmptyParas(map,"itemName", request.getParameter("itemName"));
         return itemService.history(map);
+    }
+
+    /**
+     * 办公室物品出库
+     */
+    @RequestMapping(value = "/agree", method = RequestMethod.POST)
+    @ResponseBody
+    public Result agree(@RequestBody Map<String,Object> params){
+        String id = params.get("id").toString();
+        return itemService.agree(id);
     }
 
     private void isEmptyParas(Map<String, String> map,String mapName, String carNumber) {
