@@ -505,20 +505,22 @@ public class ItemService extends BaseService{
         if(!StringUtils.isEmpty(values.get("createTime"))){
             sql+="and date BETWEEN '"+values.get("createTime")+"' and '"+values.get("endTime")+"'";
         }
-        for (String name:values.values()) {
+        for (String name:values.keySet()) {
             switch (name){
-                case "carNumber":addSql(name, sql);
+                case "carId": sql+=addSql(name,values);
                     break;
-                case "idNumber":addSql(name, sql);
+                case "idNumber": sql+=addSql(name,values);
                     break;
-                case "personName":addSql(name, sql);
+                case "personName": sql+=addSql(name,values);
                     break;
             }
         }
         lingyongList = lingYongDao.find(sql);
-
-        List<OperItemsOutDTO> listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
-        if(listItems.size()>1) {
+        List<OperItemsOutDTO> listItems=null;
+        if(lingyongList.size()>0) {
+            listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
+        }
+            if(listItems.size()>0) {
             history.clear();
             for (int i = 1; i <= listItems.size(); i++) {    //存入缓存
                 history.put(i, listItems.get(i - 1));
@@ -569,10 +571,11 @@ public class ItemService extends BaseService{
         }
         return listItems;
     }
-    private void addSql(String values, String sql) {
-        if(!StringUtils.isEmpty(values)){
-            sql+="and carNumber = '"+values+"'";
+    private String addSql(String values, Map<String,String> map) {
+        if(!StringUtils.isEmpty(map.get(values))){
+            return " and "+values+" = '"+map.get(values)+"'";
         }
+        return "";
     }
 
     /**
