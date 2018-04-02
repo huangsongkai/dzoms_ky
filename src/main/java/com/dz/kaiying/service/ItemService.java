@@ -541,7 +541,11 @@ public class ItemService extends BaseService{
                 itemsOut.setPersonName(lingyong.getPersonName());
                 itemsOut.setItemName(itemList.get(0).getItemName());
                 itemsOut.setCount(lingyong.getCount());
-                itemsOut.setTime(lingyong.getDate()+"");
+                if(lingyong.getDate() == null){
+                    itemsOut.setTime("");
+                }else{
+                    itemsOut.setTime(lingyong.getDate().toString());  
+                }
                 itemsOut.setIdNumber(lingyong.getIdNumber());
                 itemsOut.setCarId(lingyong.getCarId());
                 itemsOut.setState(lingyong.getState());
