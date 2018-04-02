@@ -370,6 +370,15 @@ public class ItemController {
         String id = params.get("id").toString();
         return itemService.agree(id);
     }
+    /**
+     * 办公室物品驳回
+     */
+    @RequestMapping(value = "/deny", method = RequestMethod.POST)
+    @ResponseBody
+    public Result deny(@RequestBody Map<String,Object> params){
+        String id = params.get("id").toString();
+        return itemService.deny(id);
+    }
 
     private void isEmptyParas(Map<String, String> map,String mapName, String carNumber) {
         if(!StringUtils.isEmpty(carNumber)){

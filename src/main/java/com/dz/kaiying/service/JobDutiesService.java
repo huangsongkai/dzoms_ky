@@ -687,8 +687,6 @@ public class JobDutiesService extends BaseService{
                 if (evaluateDetailList.size() != 0) {
                     String evaluateName = evaluateDetailList.get(0).getEvaluateName();
                     List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + dataSql);//合计分数
-                    List<Object> yearTotal = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度合计分数
-                    List<Object> yearAvgTotal = evaluateDetailDao.find("select round(COALESCE(avg(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度平均分
                     if ((Double) total.get(0) == 0){
                         yearTotal1+=0;
                     }else{
@@ -714,7 +712,7 @@ public class JobDutiesService extends BaseService{
                     if (j == 3) {
                         jobStatisticsYearDTO.setMarch((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setMarch(0.00);
+                            jobStatisticsYearDTO.setMarch(100.00);
                         }else{
                             yearN++;
                         }

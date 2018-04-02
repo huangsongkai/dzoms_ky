@@ -17,7 +17,7 @@
         goodsIssueHisInfoUrl : "/DZOMS/ky/item/officeHistory",
         downloadUrl:"/download",
         agreeUrl : "/DZOMS/ky/item/agree",
-        denyUrl : "/office/goods/deny",
+        denyUrl : "/DZOMS/ky/item/deny",
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>

@@ -1,7 +1,5 @@
 package com.dz.kaiying.DTO;
 
-import java.util.Date;
-
 /**
  * Created by 24244 on 2018/3/29.
  */
@@ -13,8 +11,17 @@ public class ItemsOutDTO {
         private String department;
         private Integer count;
         private String time;
+    private String data;
     private Integer state;
     private String applyTime;
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 
     public Integer getState() {
         return state;

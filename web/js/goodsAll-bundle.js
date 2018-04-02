@@ -1,6 +1,6 @@
 webpackJsonp([2],{
 
-/***/ 1015:
+/***/ 1016:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -866,7 +866,43 @@ if(true) {
 
 /***/ }),
 
-/***/ 476:
+/***/ 253:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var StringUtil = function () {
+  function StringUtil() {
+    _classCallCheck(this, StringUtil);
+  }
+
+  _createClass(StringUtil, null, [{
+    key: "safeGet",
+    value: function safeGet(original) {
+      var placeholder = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "-";
+
+      if (original == "null" || original == null || typeof original == "undefined") return placeholder;
+      return original;
+    }
+  }]);
+
+  return StringUtil;
+}();
+
+exports.default = StringUtil;
+
+/***/ }),
+
+/***/ 477:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1504,7 +1540,7 @@ exports.default = GoodsManagement;
 
 /***/ }),
 
-/***/ 477:
+/***/ 478:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1565,6 +1601,10 @@ var _Sorter2 = _interopRequireDefault(_Sorter);
 var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
+
+var _StringUtil = __webpack_require__(253);
+
+var _StringUtil2 = _interopRequireDefault(_StringUtil);
 
 var _SearchBar = __webpack_require__(117);
 
@@ -1638,7 +1678,7 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
             data: JSON.stringify(params),
             contentType: 'application/json',
             success: function (data) {
-              if (data.data.status > 0) {
+              if (data && data.status > 0) {
                 self.fetchData();
               } else {
                 _modal2.default.error({
@@ -1664,6 +1704,7 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
     key: 'deny',
     value: function deny(id) {
       var self = this;
+      var params = { id: id };
       confirm({
         title: '驳回确认',
         content: '确定领用此物品么？',
@@ -1676,7 +1717,7 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
             data: JSON.stringify(params),
             contentType: 'application/json',
             success: function success(data) {
-              if (data.data.status > 0) {
+              if (data && data.status > 0) {
                 self.fetchData();
               } else {
                 _modal2.default.error({
@@ -1781,6 +1822,9 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         },
         onFilter: function onFilter(value, record) {
           return record.department.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '物品名称',
@@ -1814,6 +1858,9 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         },
         onFilter: function onFilter(value, record) {
           return record.applyTime.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '操作',
@@ -1849,6 +1896,9 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         },
         onFilter: function onFilter(value, record) {
           return record.time.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }];
       return _react3.default.createElement(
@@ -1869,7 +1919,7 @@ exports.default = OfficeHistory;
 
 /***/ }),
 
-/***/ 478:
+/***/ 479:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2043,6 +2093,14 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
           itemId = _state$recData$index.itemId,
           num = _state$recData$index.num;
 
+      if (!(num && num != 0)) {
+        _modal2.default.error({
+          title: '错误',
+          content: "领用数量不能为0!",
+          onOk: function onOk() {}
+        });
+        return;
+      }
       var reqData = { num: num, itemId: itemId };
       var self = this;
       $.ajax({
@@ -2165,7 +2223,7 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
         dataIndex: 'num',
         key: 'num',
         render: function render(text, record, index) {
-          return _react3.default.createElement(_inputNumber2.default, { min: 0, max: 10, defaultValue: 0, onChange: _this2.onScoreChange.bind(_this2, index) });
+          return _react3.default.createElement(_inputNumber2.default, { min: 0, defaultValue: 0, onChange: _this2.onScoreChange.bind(_this2, index) });
         }
       }, {
         title: '操作',
@@ -2194,7 +2252,7 @@ exports.default = Goods;
 
 /***/ }),
 
-/***/ 479:
+/***/ 480:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2539,7 +2597,7 @@ exports.default = OfficePurchase;
 
 /***/ }),
 
-/***/ 480:
+/***/ 481:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2598,6 +2656,10 @@ var _Filters2 = _interopRequireDefault(_Filters);
 var _SearchBar = __webpack_require__(117);
 
 var _SearchBar2 = _interopRequireDefault(_SearchBar);
+
+var _StringUtil = __webpack_require__(253);
+
+var _StringUtil2 = _interopRequireDefault(_StringUtil);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2729,6 +2791,9 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
         },
         onFilter: function onFilter(value, record) {
           return record.itemName.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '身份证号码',
@@ -2740,6 +2805,9 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
         },
         onFilter: function onFilter(value, record) {
           return record.idNumber.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '车牌号',
@@ -2751,6 +2819,9 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
         },
         onFilter: function onFilter(value, record) {
           return record.carId.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '领取数量',
@@ -2762,6 +2833,9 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
         },
         onFilter: function onFilter(value, record) {
           return record.count.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '领用时间',
@@ -2773,6 +2847,9 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
         },
         onFilter: function onFilter(value, record) {
           return record.time.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }];
       return _react3.default.createElement(
@@ -2793,7 +2870,7 @@ exports.default = YunyingbuHistory;
 
 /***/ }),
 
-/***/ 481:
+/***/ 482:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2895,7 +2972,7 @@ var _Select2 = __webpack_require__(151);
 
 var _Select3 = _interopRequireDefault(_Select2);
 
-var _cph = __webpack_require__(593);
+var _cph = __webpack_require__(594);
 
 var _cph2 = _interopRequireDefault(_cph);
 
@@ -3361,7 +3438,7 @@ exports.default = YunyingbuIssue;
 
 /***/ }),
 
-/***/ 482:
+/***/ 483:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3829,7 +3906,7 @@ exports.default = YunyingbuPurchase;
 
 /***/ }),
 
-/***/ 508:
+/***/ 509:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3905,7 +3982,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 509:
+/***/ 510:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3947,7 +4024,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _rcSelect = __webpack_require__(438);
+var _rcSelect = __webpack_require__(439);
 
 var _classnames = __webpack_require__(9);
 
@@ -3961,7 +4038,7 @@ var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _InputElement = __webpack_require__(508);
+var _InputElement = __webpack_require__(509);
 
 var _InputElement2 = _interopRequireDefault(_InputElement);
 
@@ -4064,7 +4141,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 510:
+/***/ 511:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4072,13 +4149,13 @@ module.exports = exports['default'];
 
 __webpack_require__(22);
 
-__webpack_require__(1015);
+__webpack_require__(1016);
 
 __webpack_require__(44);
 
 /***/ }),
 
-/***/ 593:
+/***/ 594:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4096,7 +4173,7 @@ var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _autoComplete = __webpack_require__(509);
+var _autoComplete = __webpack_require__(510);
 
 var _autoComplete2 = _interopRequireDefault(_autoComplete);
 
@@ -4122,7 +4199,7 @@ __webpack_require__(44);
 
 __webpack_require__(27);
 
-__webpack_require__(510);
+__webpack_require__(511);
 
 var _reactDom = __webpack_require__(11);
 
@@ -4376,19 +4453,19 @@ exports.default = Cph;
 
 /***/ }),
 
-/***/ 595:
+/***/ 596:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(476);
-__webpack_require__(478);
-__webpack_require__(479);
 __webpack_require__(477);
-__webpack_require__(481);
-__webpack_require__(482);
+__webpack_require__(479);
 __webpack_require__(480);
+__webpack_require__(478);
+__webpack_require__(482);
+__webpack_require__(483);
+__webpack_require__(481);
 
 /***/ }),
 
@@ -4407,4 +4484,4 @@ exports.push([module.i, ".filterItem {\n  display: flex;\n  justify-content: spa
 
 /***/ })
 
-},[595]);
+},[596]);

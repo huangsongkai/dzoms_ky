@@ -42,6 +42,7 @@ public class ItemService extends BaseService{
     @Resource
     RepositoryService repositoryService;
     @Resource
+
     HistoryService historyService;
     @Resource
     ActivitiUtilService activitiUtilService;
@@ -483,7 +484,7 @@ public class ItemService extends BaseService{
         //保存领用记录
         LingYong lingYong = new LingYong();
         lingYong.setDate(new Date());
-        lingYong.setCount(value.getCount());
+        lingYong.setCount(value.getNum());
         lingYong.setItemId(value.getItemId());
         lingYong.setPersonName(userName);
         lingYong.setState0(2);
@@ -721,6 +722,7 @@ public class ItemService extends BaseService{
                     itemsOut.setTime(sformat.format(lingyong.getDate()));
                     itemsOut.setDepartment(user.getDepartment().trim());
                     itemsOut.setState(lingyong.getState());
+                    itemsOut.setData(lingyong.getDate()+"");
                     itemsOut.setApplyTime(lingyong.getApplyTime()+"");
                     listItems.add(itemsOut);
                 }
@@ -731,9 +733,9 @@ public class ItemService extends BaseService{
             List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
             if (userList.size() > 0) {
                 User user = userList.get(0);
-           /* if (!department.trim().equals(user.getDepartment())) {
+            if (!department.trim().equals(user.getDepartment())) {
                 continue;
-            }*/
+            }
                 ItemsOutDTO itemsOut = new ItemsOutDTO();
                 itemsOut.setId(lingyong.getId());
                 itemsOut.setCount(lingyong.getCount());
@@ -763,7 +765,7 @@ public class ItemService extends BaseService{
                 lingYongList.get(0).setState(1);
                 lingYongList.get(0).setApplyTime(new Date());
                 lingYongDao.update(lingYongList.get(0));
-                result.setSuccess("领用成功",null);
+                result.setSuccess("领用成功",lingYongList.get(0));
             }else {
                 result.setFailed("库存不足领用失败");
             }
@@ -771,6 +773,14 @@ public class ItemService extends BaseService{
             result.setFailed("库存不足领用失败");
         }
         return result;
+    }
+
+    public Result deny(String id) {
+        List<LingYong> lingYongList = lingYongDao.find("from LingYong where id = " + id + "");
+        lingYongDao.delete(lingYongList.get(0));
+        result.setSuccess("驳回成功",null);
+        return result;
+
     }
 
     class Testlocal{

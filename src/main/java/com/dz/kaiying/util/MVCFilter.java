@@ -17,8 +17,7 @@ public class MVCFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
         //跳过后面的过滤器，直接请求servlet
-        servletRequest.getRequestDispatcher(httpServletRequest.getServletPath()
-                + httpServletRequest.getPathInfo()).forward(servletRequest, servletResponse);
+        servletRequest.getRequestDispatcher(httpServletRequest.getServletPath()+ httpServletRequest.getPathInfo()).forward(servletRequest, servletResponse);
     }
 
     @Override
