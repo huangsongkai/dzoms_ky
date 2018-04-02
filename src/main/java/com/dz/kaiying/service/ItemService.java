@@ -553,7 +553,7 @@ public class ItemService extends BaseService{
                 if(lingyong.getApplyTime() == null){
                     itemsOut.setApplyTime("");
                 }else{
-                    itemsOut.setTime(lingyong.getApplyTime().toString());
+                    itemsOut.setApplyTime(lingyong.getApplyTime().toString());
                 }
 
                 listItems.add(itemsOut);
@@ -572,11 +572,19 @@ public class ItemService extends BaseService{
             itemsOut.setPersonName(lingyong.getPersonName());
             itemsOut.setItemName(itemList.get(0).getItemName());
             itemsOut.setCount(lingyong.getCount());
-            itemsOut.setTime(lingyong.getDate()+"");
+            if(lingyong.getDate() == null){
+                itemsOut.setTime("");
+            }else{
+                itemsOut.setTime(lingyong.getDate().toString());
+            }
             itemsOut.setIdNumber(lingyong.getIdNumber());
             itemsOut.setCarId(lingyong.getCarId());
             itemsOut.setState(lingyong.getState());
-            itemsOut.setApplyTime(lingyong.getApplyTime()+"");
+            if(lingyong.getApplyTime() == null){
+                itemsOut.setApplyTime("");
+            }else{
+                itemsOut.setApplyTime(lingyong.getApplyTime().toString());
+            }
             listItems.add(itemsOut);
         }
         return listItems;
