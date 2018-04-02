@@ -544,12 +544,18 @@ public class ItemService extends BaseService{
                 if(lingyong.getDate() == null){
                     itemsOut.setTime("");
                 }else{
-                    itemsOut.setTime(lingyong.getDate().toString());  
+
+                    itemsOut.setTime(lingyong.getDate().toString());
                 }
                 itemsOut.setIdNumber(lingyong.getIdNumber());
                 itemsOut.setCarId(lingyong.getCarId());
                 itemsOut.setState(lingyong.getState());
-                itemsOut.setApplyTime(lingyong.getApplyTime()+"");
+                if(lingyong.getApplyTime() == null){
+                    itemsOut.setApplyTime("");
+                }else{
+                    itemsOut.setTime(lingyong.getApplyTime().toString());
+                }
+
                 listItems.add(itemsOut);
             }
             return listItems;

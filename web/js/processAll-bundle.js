@@ -6,7 +6,7 @@ webpackJsonp([4],{
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(175);
+var content = __webpack_require__(176);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(26)(content, {});
@@ -15,8 +15,8 @@ if(content.locals) module.exports = content.locals;
 if(true) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept(175, function() {
-			var newContent = __webpack_require__(175);
+		module.hot.accept(176, function() {
+			var newContent = __webpack_require__(176);
 			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
 			update(newContent);
 		});
@@ -27,7 +27,7 @@ if(true) {
 
 /***/ }),
 
-/***/ 175:
+/***/ 176:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(24)();
@@ -42,7 +42,7 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 
 /***/ }),
 
-/***/ 233:
+/***/ 234:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84,7 +84,7 @@ var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _collapse = __webpack_require__(239);
+var _collapse = __webpack_require__(240);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
@@ -128,7 +128,7 @@ __webpack_require__(44);
 
 __webpack_require__(27);
 
-__webpack_require__(240);
+__webpack_require__(241);
 
 __webpack_require__(116);
 
@@ -1157,7 +1157,7 @@ exports.default = TaskDetails;
 
 /***/ }),
 
-/***/ 239:
+/***/ 240:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1178,7 +1178,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 240:
+/***/ 241:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1216,7 +1216,7 @@ var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _collapse = __webpack_require__(239);
+var _collapse = __webpack_require__(240);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
@@ -1232,7 +1232,7 @@ __webpack_require__(44);
 
 __webpack_require__(27);
 
-__webpack_require__(240);
+__webpack_require__(241);
 
 __webpack_require__(116);
 
@@ -1248,7 +1248,7 @@ var _SelectInfo = __webpack_require__(81);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
-var _taskDetails = __webpack_require__(233);
+var _taskDetails = __webpack_require__(234);
 
 var _taskDetails2 = _interopRequireDefault(_taskDetails);
 
@@ -2085,7 +2085,7 @@ var _classnames = __webpack_require__(9);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _openAnimation = __webpack_require__(236);
+var _openAnimation = __webpack_require__(237);
 
 var _openAnimation2 = _interopRequireDefault(_openAnimation);
 
@@ -2148,7 +2148,7 @@ Collapse.defaultProps = {
 __webpack_require__(496);
 __webpack_require__(497);
 __webpack_require__(498);
-__webpack_require__(233);
+__webpack_require__(234);
 __webpack_require__(495);
 
 /***/ }),
@@ -2587,7 +2587,7 @@ var Panel = __WEBPACK_IMPORTED_MODULE_0__Collapse__["a" /* default */].Panel;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_css_animation__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_css_animation__ = __webpack_require__(170);
 
 
 function animate(node, show, transitionName, done) {

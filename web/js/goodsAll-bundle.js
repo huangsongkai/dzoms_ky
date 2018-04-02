@@ -6,7 +6,7 @@ webpackJsonp([2],{
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(170);
+var content = __webpack_require__(171);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(26)(content, {});
@@ -15,8 +15,8 @@ if(content.locals) module.exports = content.locals;
 if(true) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept(170, function() {
-			var newContent = __webpack_require__(170);
+		module.hot.accept(171, function() {
+			var newContent = __webpack_require__(171);
 			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
 			update(newContent);
 		});
@@ -263,8 +263,8 @@ exports.default = _form2.default.create()(SearchBar);
 
 "use strict";
 
-const strictUriEncode = __webpack_require__(229);
-const decodeComponent = __webpack_require__(193);
+const strictUriEncode = __webpack_require__(230);
+const decodeComponent = __webpack_require__(194);
 
 function encoderForArrayFormat(options) {
 	switch (options.arrayFormat) {
@@ -508,7 +508,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _FilterItem = __webpack_require__(230);
+var _FilterItem = __webpack_require__(231);
 
 var _FilterItem2 = _interopRequireDefault(_FilterItem);
 
@@ -712,7 +712,7 @@ exports.default = UtilSelect;
 
 /***/ }),
 
-/***/ 170:
+/***/ 171:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(24)();
@@ -727,7 +727,7 @@ exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-
 
 /***/ }),
 
-/***/ 193:
+/***/ 194:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -829,7 +829,7 @@ module.exports = function (encodedURI) {
 
 /***/ }),
 
-/***/ 229:
+/***/ 230:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -839,7 +839,7 @@ module.exports = str => encodeURIComponent(str).replace(/[!'()*]/g, x => `%${x.c
 
 /***/ }),
 
-/***/ 230:
+/***/ 231:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -863,42 +863,6 @@ if(true) {
 	// When the module is disposed, remove the <style> tags
 	module.hot.dispose(function() { update(); });
 }
-
-/***/ }),
-
-/***/ 253:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var StringUtil = function () {
-  function StringUtil() {
-    _classCallCheck(this, StringUtil);
-  }
-
-  _createClass(StringUtil, null, [{
-    key: "safeGet",
-    value: function safeGet(original) {
-      var placeholder = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "-";
-
-      if (original == "null" || original == null || typeof original == "undefined") return placeholder;
-      return original;
-    }
-  }]);
-
-  return StringUtil;
-}();
-
-exports.default = StringUtil;
 
 /***/ }),
 
@@ -1602,7 +1566,7 @@ var _Filters = __webpack_require__(38);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
-var _StringUtil = __webpack_require__(253);
+var _StringUtil = __webpack_require__(152);
 
 var _StringUtil2 = _interopRequireDefault(_StringUtil);
 
@@ -1811,6 +1775,9 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         },
         onFilter: function onFilter(value, record) {
           return record.personName.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '部门',
@@ -1836,6 +1803,9 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         },
         onFilter: function onFilter(value, record) {
           return record.itemName.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '领取数量',
@@ -1847,6 +1817,9 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         },
         onFilter: function onFilter(value, record) {
           return record.count.indexOf(value) === 0;
+        },
+        render: function render(text) {
+          return _StringUtil2.default.safeGet(text);
         }
       }, {
         title: '申请时间',
@@ -2657,7 +2630,7 @@ var _SearchBar = __webpack_require__(117);
 
 var _SearchBar2 = _interopRequireDefault(_SearchBar);
 
-var _StringUtil = __webpack_require__(253);
+var _StringUtil = __webpack_require__(152);
 
 var _StringUtil2 = _interopRequireDefault(_StringUtil);
 
