@@ -147,16 +147,16 @@
     <mvc:annotation-driven />
 
     <!-- 注册RequestMappingHandlerMapping 和RequestMappingHandlerAdapter 两个bean。-->
-    <mvc:annotation-driven>
-        <mvc:message-converters>
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="objectMapper">
-                    <bean class="com.dz.kaiying.util.JsonObjectMapper"></bean>
+    <!--<mvc:annotation-driven>-->
+        <!--<mvc:message-converters>-->
+            <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+                <!--<property name="objectMapper">-->
+                    <!--<bean class="com.dz.kaiying.util.JsonObjectMapper"></bean>-->
 
-                </property>
-            </bean>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</mvc:message-converters>-->
+    <!--</mvc:annotation-driven>-->
 
     <!-- 全局异常配置 end -->
 </beans>
