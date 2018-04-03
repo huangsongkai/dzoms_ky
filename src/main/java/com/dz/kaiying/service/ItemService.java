@@ -465,7 +465,7 @@ public class ItemService extends BaseService{
                 lingYong.setIdNumber(value.getIdNumber());
                 lingYong.setItemId(value.getItemId());
                 lingYong.setPersonName(value.getRecipient());
-                lingYong.setState(1);
+                lingYong.setState0(1);
                 lingYongDao.save(lingYong);
                 result.setSuccess("领用成功",null);
             }else {
@@ -500,7 +500,7 @@ public class ItemService extends BaseService{
      * @return
      */
     public Result history(Map<String,String> values) {
-        List<LingYong> lingyongList=null;
+        List<LingYong> lingyongList = new ArrayList<>();
         String sql= "from LingYong where state0 = 1 ";
         if(!StringUtils.isEmpty(values.get("createTime"))){
             sql+="and date BETWEEN '"+values.get("createTime")+"' and '"+values.get("endTime")+"'";
@@ -516,7 +516,7 @@ public class ItemService extends BaseService{
             }
         }
         lingyongList = lingYongDao.find(sql);
-        List<OperItemsOutDTO> listItems=null;
+        List<OperItemsOutDTO> listItems = new ArrayList<>();
         if(lingyongList.size()>0) {
             listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
         }
@@ -706,7 +706,7 @@ public class ItemService extends BaseService{
 
     //办公室领用物品
     public Result officeHistory(String personName,String starTime,String endTime,String department) {
-        List<LingYong> lingyongList=null;
+        List<LingYong> lingyongList = new ArrayList<>();
         String sql= "from LingYong where state0 = 2 ";
         if((!StringUtils.isEmpty(starTime))&&(!StringUtils.isEmpty(endTime))){
             sql+="and date BETWEEN '"+starTime+"' and '"+endTime+"'";
@@ -715,8 +715,8 @@ public class ItemService extends BaseService{
             sql+=" and personName like '%"+personName+"%'";
         }
             lingyongList = lingYongDao.find(sql);
-        List<ItemsOutDTO> listItems =null;
-        if(lingyongList.size()>0) {
+        List<ItemsOutDTO> listItems = new ArrayList<>();
+        if(lingyongList.size() > 0) {
             listItems = getItemsOutDTOs(department, lingyongList);
             officePort.clear();
             for (int i=1;i<=listItems.size();i++) {    //存入缓存
