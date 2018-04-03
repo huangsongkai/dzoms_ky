@@ -518,7 +518,7 @@ public class ItemService extends BaseService{
         lingyongList = lingYongDao.find(sql);
         List<OperItemsOutDTO> listItems = new ArrayList<>();
         if(lingyongList.size()>0) {
-            listItems = getOperItemsOutDTOs(values.get("itemName"), lingyongList);
+            listItems = getOperItemsOutDTOs(values.get("itemName") == null ? "":values.get("itemName"), lingyongList);
         }
             if(listItems.size()>0) {
             history.clear();
@@ -533,14 +533,12 @@ public class ItemService extends BaseService{
         List<OperItemsOutDTO> listItems  = new ArrayList<>();
         if (StringUtils.isEmpty(itemName)) {
             for (LingYong lingyong : ly) {
-                List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
-                User user = userList.get(0);
                 List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
                 OperItemsOutDTO itemsOut = new OperItemsOutDTO();
                 itemsOut.setId(lingyong.getId());
                 itemsOut.setPersonName(lingyong.getPersonName());
-                itemsOut.setItemName(itemList.get(0).getItemName());
-                itemsOut.setCount(lingyong.getCount());
+                itemsOut.setItemName(itemList == null ? "" : itemList.get(0).getItemName());
+                itemsOut.setCount(lingyong.getCount() == null ? 0 : lingyong.getCount() );
                 if(lingyong.getDate() == null){
                     itemsOut.setTime("");
                 }else{
@@ -561,8 +559,6 @@ public class ItemService extends BaseService{
             return listItems;
         }
         for (LingYong lingyong : ly) {
-            /*List<User> userList = userDao.find("from User where uname ='" + lingyong.getPersonName() + "'");
-            User user = userList.get(0);*/
             List<Item> itemList = itemDao.find("from Item where id = " + lingyong.getItemId());
            if (!itemName.trim().equals(itemList.get(0).getItemName())) {
                 continue;
@@ -570,8 +566,8 @@ public class ItemService extends BaseService{
             OperItemsOutDTO itemsOut = new OperItemsOutDTO();
             itemsOut.setId(lingyong.getId());
             itemsOut.setPersonName(lingyong.getPersonName());
-            itemsOut.setItemName(itemList.get(0).getItemName());
-            itemsOut.setCount(lingyong.getCount());
+            itemsOut.setItemName(itemList == null ? "" : itemList.get(0).getItemName());
+            itemsOut.setCount(lingyong.getCount() == null ? 0 : lingyong.getCount());
             if(lingyong.getDate() == null){
                 itemsOut.setTime("");
             }else{
@@ -718,9 +714,11 @@ public class ItemService extends BaseService{
         List<ItemsOutDTO> listItems = new ArrayList<>();
         if(lingyongList.size() > 0) {
             listItems = getItemsOutDTOs(department, lingyongList);
-            officePort.clear();
-            for (int i=1;i<=listItems.size();i++) {    //存入缓存
-                officePort.put(i,listItems.get(i-1));
+            if(listItems.size()>0) {
+                officePort.clear();
+                for (int i = 1; i <= listItems.size(); i++) {    //存入缓存
+                    officePort.put(i, listItems.get(i - 1));
+                }
             }
         }
         result.setSuccess("成功",listItems);
