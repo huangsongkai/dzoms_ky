@@ -26,8 +26,8 @@ public class KyAccidentController {
 
     @RequestMapping(value = "/querysg", method = RequestMethod.GET)
     @ResponseBody
-    public Result querysg () throws Exception {
-        return sgService.querysg();
+    public Result querysg (HttpServletRequest request) throws Exception {
+        return sgService.querysg(request);
     }
 
 
