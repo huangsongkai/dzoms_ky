@@ -1041,7 +1041,7 @@ public class ChargeService {
         BigDecimal insurance = calculateItemIn(plans,"insurance");
         BigDecimal account = contract.getAccount();
         account = account.add(getUnClearAdd(contract.getId(),time));
-        account = account.add(getlastMontAccountLeft(contract.getId(),time));
+//        account = account.add(getlastMontAccountLeft(contract.getId(),time));
         moneys.add(oil);
         moneys.add(insurance);
         moneys.add(account);

@@ -16,6 +16,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -634,8 +635,10 @@ public class ChargeAction extends ActionSupport{
     }
 
     public String getCurrentTime(){
-        if("全部".equals(department))
+        if(StringUtils.isBlank(department) || "全部".equals(department)){
             department = "total";
+        }
+
         jsonObject = service.getCurrentTime(department);
         return JSON_RESULT;
     }

@@ -594,7 +594,13 @@ public class ContractDaoImpl implements ContractDao {
 		query.setString("id",id);
 		c = (Contract) query.uniqueResult();
 		HibernateSessionFactory.closeSession();
-		return c;
+
+		if(c!=null){
+			return c;
+		}
+
+		Date d = new Date();
+		return selectByCarId(id,d);
 	}
 
 	@Override
