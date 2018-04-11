@@ -587,8 +587,8 @@ public class JobDutiesService extends BaseService{
         String sql = "";
         for (User user: userList) {
             String remarks = "";
-           // String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01 00:00:00' AND '"+sdf.format(new Date())+"-29 00:00:00'";
-            String dataSql = "";
+            String dataSql = "   and groupDate BETWEEN '"+sdf.format(new Date())+"-01 00:00:00' AND '"+sdf.format(new Date())+"-29 00:00:00'";
+            //String dataSql = "";
             sql="from EvaluateDetail  where evaluateName is not null and personId ="+user.getUid()+" and groupDate is not null   "+ dataSql;
             List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
             if (evaluateDetailList.size() != 0 ){
@@ -687,8 +687,6 @@ public class JobDutiesService extends BaseService{
                 if (evaluateDetailList.size() != 0) {
                     String evaluateName = evaluateDetailList.get(0).getEvaluateName();
                     List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + dataSql);//合计分数
-                    List<Object> yearTotal = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度合计分数
-                    List<Object> yearAvgTotal = evaluateDetailDao.find("select round(COALESCE(avg(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + yearDataSql);//年度平均分
                     if ((Double) total.get(0) == 0){
                         yearTotal1+=0;
                     }else{
@@ -714,7 +712,7 @@ public class JobDutiesService extends BaseService{
                     if (j == 3) {
                         jobStatisticsYearDTO.setMarch((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setMarch(0.00);
+                            jobStatisticsYearDTO.setMarch(100.00);
                         }else{
                             yearN++;
                         }

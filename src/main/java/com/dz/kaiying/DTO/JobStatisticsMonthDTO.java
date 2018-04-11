@@ -37,4 +37,14 @@ public class JobStatisticsMonthDTO {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
+
+    @Override
+    public String toString() {
+        return "JobStatisticsMonthDTO{" +
+                "name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                ", kpScore=" + kpScore +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

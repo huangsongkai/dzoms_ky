@@ -9,6 +9,7 @@ import com.dz.kaiying.util.ImportExcelUtil;
 import com.dz.kaiying.util.Result;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -33,9 +34,50 @@ public class SgService {
     HibernateDao<KyYiJue, Integer> yjDao;  //已决dao
     private Result result = new Result();
 
+    /**
+     * /事故查询
+     * @return
+     */
+    public Result querysg(HttpServletRequest request) {
+        String selectedTime = request.getParameter("selectedTime");
+        String year = "";
+        String month = "";
+        String sql ="from KyAccident ";
+        int days = 30;
+        if(!StringUtils.isEmpty(selectedTime)){
+            String[] str = selectedTime.split("-");
+            year = str[0];
+            month = str[1];
+        }
+        if(year != "" && month != ""){
+            boolean runnian = (Integer.valueOf(year)%4 == 0) && (Integer.valueOf(year)%100 != 0) || (Integer.valueOf(year)%400 == 0);
+            switch(Integer.valueOf(month)){
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    days = 31;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    days = 30;
+                    break;
+                default:
+                    if(runnian)
+                        days = 29;
+                    else
+                        days = 28;
+            }
+            sql += " where jarq BETWEEN '" + selectedTime + "-1' and '" + selectedTime + "-" + days+"'";
+        }
 
-    public Result querysg() {
-        List accident = bxDao.find("from KyAccident");//事故查询
+        List<KyAccident> accident = bxDao.find(sql);//事故查询
+
         result.setSuccess("查询成功", accident);
         return result;
     }

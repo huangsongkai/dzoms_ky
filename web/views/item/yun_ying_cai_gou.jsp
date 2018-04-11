@@ -15,7 +15,8 @@
 <script type="text/javascript">
     var pageUrls ={
         goodsInfoUrl : "/DZOMS/ky/item/listpurchase/1",
-        jumpUrl:"/DZOMS/ky/item/yybstartprocess",
+        goodsPurchaseUrl : "/DZOMS/ky/item/listpurchase/2",
+        jumpUrl:"/DZOMS/ky/item/tzyybpurchase",
         updateStorageUrl:"/DZOMS/ky/item/yybupateStorage"
     }
 </script>

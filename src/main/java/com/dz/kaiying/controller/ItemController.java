@@ -1,5 +1,8 @@
 package com.dz.kaiying.controller;
 
+import com.dz.kaiying.DTO.DriversAndHistoryDTO;
+import com.dz.kaiying.DTO.ItemPurchaseSubmitDTO;
+import com.dz.kaiying.DTO.ItemPurchaseUpadteDTO;
 import com.dz.kaiying.DTO.SaveZuoTaoDTO;
 import com.dz.kaiying.model.Item;
 import com.dz.kaiying.model.LingYongDTO;
@@ -7,10 +10,12 @@ import com.dz.kaiying.service.ActivitiUtilService;
 import com.dz.kaiying.service.ItemService;
 import com.dz.kaiying.util.Result;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,16 +54,7 @@ public class ItemController {
         return activitiUtilService.complete("", map, null);
     }
 
-    /**
-     * 采购商品查询
-     * @return
-     */
-    @RequestMapping(value = "/listpurchase/{state}", method = RequestMethod.GET)
-    @ResponseBody
-    public Result listpurchaseitem(@PathVariable String state){
-        Map map = new HashMap();
-        return itemService.listpurchaseitem(state);
-    }
+
 
     /**
      * 保存座套信息
@@ -72,16 +68,7 @@ public class ItemController {
     }
 
 
-    /**
-     * 保运营部采购修改库存信息
-     * @return
-     */
-    @RequestMapping(value = "/yybupateStorage", method = RequestMethod.POST)
-    @ResponseBody
-    public Result yybupateStorage(@RequestBody Map<Integer,String> map){
 
-        return itemService.yybupateStorage(map);
-    }
 
 //    /**
 //     * 增加库存
@@ -251,5 +238,162 @@ public class ItemController {
     }
 
 
+//--------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * 采购商品查询
+     * @return
+     */
+    @RequestMapping(value = "/listpurchase/{state}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result listpurchaseitem(@PathVariable String state){
+        return itemService.listpurchaseitem(state);
+    }
+    /**
+     * 商品库存修改
+     * @return
+     */
+    @RequestMapping(value = "/listpurchase/{state}", method = RequestMethod.POST)
+    @ResponseBody
+    public Result listpurchaseNumUpdate(@PathVariable String state, @RequestBody ItemPurchaseUpadteDTO itemPurchaseUpadteDTO,  HttpServletRequest request){
+        return itemService.listpurchaseNumUpdate(state, itemPurchaseUpadteDTO, request);
+    }
+    /**
+     * 保运营部采购修改库存信息
+     * @return
+     */
+    @RequestMapping(value = "/yybupateStorage", method = RequestMethod.POST)
+    @ResponseBody
+    public Result yybupateStorage(@RequestBody Map<Integer,String> map){
+
+        return itemService.yybupateStorage(map);
+    }
+    /**
+     * 查询车牌号
+     */
+    @RequestMapping(value = "/chepaihaoA", method = RequestMethod.GET)
+    @ResponseBody
+    public Result chepaihaoA(@RequestParam String number){
+        return itemService.chepaihaoA(number);
+    }
+    /**
+     * 领用查询
+     */
+    @RequestMapping(value = "/goodsList", method = RequestMethod.GET)
+    @ResponseBody
+    public Result goodsList(){
+        return itemService.goodsList();
+    }
+    /**
+     * 物品领用()
+     */
+    @RequestMapping(value = "/driversAndHistory", method = RequestMethod.GET)
+    @ResponseBody
+    public DriversAndHistoryDTO driversAndHistory(@RequestParam String vehicle, @RequestParam Integer itemId){
+        return itemService.driversAndHistory(vehicle, itemId);
+    }
+    /**
+     * 领用保存
+     */
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @ResponseBody
+    public Result submit(@RequestBody ItemPurchaseSubmitDTO value){
+        return itemService.submit(value);
+    }
+    /**
+     * 办公室发放物品保存
+     */
+    @RequestMapping(value = "/TZbgslingyong1", method = RequestMethod.POST)
+    @ResponseBody
+    public Result submitTZbgslingyong1 (HttpServletRequest request, @RequestBody ItemPurchaseSubmitDTO value) throws Exception {
+        return itemService.submitTZbgslingyong(value, request);
+    }
+    /**
+     * 跳转运营部物品发放记录
+     */
+    @RequestMapping(value = "/jumpYybHistory", method = RequestMethod.GET)
+    public String jumpYybHistory (HttpServletRequest request) throws Exception {
+        return "item/yyb_item_history";
+    }
+    /**
+     * 跳转办公室物品发放记录
+     */
+    @RequestMapping(value = "/jumpBgsHistory", method = RequestMethod.GET)
+    public String jumpBgsHistory (HttpServletRequest request) throws Exception {
+        return "item/bgs_item_history";
+    }
+    /**
+     * 办公室发放物品记录 办公室state=2
+     */
+    @RequestMapping(value = "/officeHistory", method = RequestMethod.GET)
+    @ResponseBody
+    public Result officeHistory (HttpServletRequest request) throws Exception {
+    String personName=request.getParameter("personName");
+    String createTime=request.getParameter("createTime");
+    String createEndTime=request.getParameter("createEndTime");
+    String department=request.getParameter("department");
+    return itemService.officeHistory(personName,createTime,createEndTime,department);
+    }
+
+    /**
+     * 办公室发放物品下载
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/downloadOfficeHistory", method = RequestMethod.GET)
+    public void empExportExclMonth(HttpServletResponse response)throws Exception{
+        itemService.officeHistoryExportExcl(response);
+    }
+    /**
+     * 运营部发放物品记录办公室state=1
+     */
+    @RequestMapping(value = "/history", method = RequestMethod.GET)
+    @ResponseBody
+    public Result history (HttpServletRequest request) throws Exception {
+        Map<String,String> map=new HashMap<>();
+        String carNumber=request.getParameter("carNumber");
+        isEmptyParas(map,"carId", carNumber);
+        isEmptyParas(map,"createTime", request.getParameter("createTime"));
+        isEmptyParas(map,"endTime", request.getParameter("endTime"));
+        isEmptyParas(map,"idNumber", request.getParameter("idNumber"));
+        isEmptyParas(map,"personName", request.getParameter("personName"));
+        isEmptyParas(map,"itemName", request.getParameter("itemName"));
+        return itemService.history(map);
+    }
+
+    /**
+     * 办公室物品出库
+     */
+    @RequestMapping(value = "/agree", method = RequestMethod.POST)
+    @ResponseBody
+    public Result agree(@RequestBody Map<String,Object> params){
+        String id = params.get("id").toString();
+        return itemService.agree(id);
+    }
+    /**
+     * 办公室物品驳回
+     */
+    @RequestMapping(value = "/deny", method = RequestMethod.POST)
+    @ResponseBody
+    public Result deny(@RequestBody Map<String,Object> params){
+        String id = params.get("id").toString();
+        return itemService.deny(id);
+    }
+
+    private void isEmptyParas(Map<String, String> map,String mapName, String carNumber) {
+        if(!StringUtils.isEmpty(carNumber)){
+            map.put(mapName,carNumber);
+        }
+    }
+
+    /**
+     * 运营部发放物品下载
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/downloadHistory", method = RequestMethod.GET)
+    public void downloadHistory(HttpServletResponse response)throws Exception{
+        itemService.historyExportExcl(response);
+    }
 
 }

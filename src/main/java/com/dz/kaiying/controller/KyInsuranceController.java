@@ -38,7 +38,7 @@ public class KyInsuranceController {
         return bxService.exportExcel(request, response);
     }
 
-    //事故信息导入
+    //保险信息导入
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public String sgimportExcel (HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println(" ");

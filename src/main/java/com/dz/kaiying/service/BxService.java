@@ -159,12 +159,14 @@ public class BxService {
         in = file.getInputStream();
         listob = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
         in.close();
+        if(listob.size() == 0) return "";
         Map<String,List<Object>> tbdh=new HashMap<>();
         for (List<Object> obj:listob) {
-            if(tbdh.containsKey(String.valueOf(obj.get(0)))){
+            Object objString = obj.get(1);
+            if(tbdh.containsKey(String.valueOf(objString))){
                 continue;
             }
-            tbdh.put(String.valueOf(obj.get(0)),obj);
+            tbdh.put(String.valueOf(objString),obj);
         }
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
         for (List<Object> lo:tbdh.values()) {
