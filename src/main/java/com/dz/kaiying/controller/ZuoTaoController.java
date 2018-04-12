@@ -23,6 +23,16 @@ public class ZuoTaoController {
     @Resource
     ItemService itemService;
 
+    @RequestMapping(value = "jumpZuoTao", method = RequestMethod.GET)
+    public String jumpZuoTao(){
+        return "zuotao/zuo_tao";
+    }
+    @RequestMapping(value = "jumpZuoTaoH", method = RequestMethod.GET)
+    public String jumpZuoTaoH(){
+        return "zuotao/zuo_tao_h";
+    }
+
+
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public Result listZT(){
