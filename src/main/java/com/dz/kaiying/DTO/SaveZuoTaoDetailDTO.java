@@ -5,7 +5,7 @@ public class SaveZuoTaoDetailDTO implements java.io.Serializable {
 	private Integer dzps;
 	private Integer dzwz;
 	private Integer xzps;
-	private Integer xzwz;
+	private Integer xzwz;      
 
 	public Integer getDzps() {
 		return dzps;

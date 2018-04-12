@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 
 /**
@@ -55,7 +56,7 @@ public class ZuoTaoController {
     @RequestMapping(value = "/zuotao", method = RequestMethod.POST)
     @ResponseBody
     public Result savezuotao(@RequestBody SaveZuoTaoDTO saveZuoTaoDTO){
-
+        saveZuoTaoDTO.setCreateDate(new Date());
         return itemService.savezuotao(saveZuoTaoDTO);
     }
 
