@@ -14,7 +14,7 @@
 </body>
 <script type="text/javascript">
     var pageUrls ={
-        seatingIssueHisInfoUrl : "/seatingIssueHisInfos",
+        seatingIssueHisInfoUrl : "/seatingIssueHisInfos",  
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>
