@@ -2985,7 +2985,7 @@ var SeatingIssue = _wrapComponent('SeatingIssue')(function (_React$Component) {
     _this.cphId = ""; //车牌号ID
     _this.cphPrefix = ""; //车牌号前缀
     _this.seatType = ["xzps", "xzwz", "dzps", "dzwz"];
-    _this.seatTypeObj = {};
+    _this.seatTypeObj = { xzps: 0, xzwz: 0, dzps: 0, dzwz: 0 };
     return _this;
   }
 
@@ -3017,7 +3017,7 @@ var SeatingIssue = _wrapComponent('SeatingIssue')(function (_React$Component) {
       e.preventDefault();
       var result = {};
       this.props.form.validateFieldsAndScroll(function (err, values) {
-        if (_this2.state.errorMessage == "" && Object.keys(_this2.seatTypeObj).length !== 0) {
+        if (_this2.state.errorMessage == "") {
           //暂时不验证车牌号
           if (!err) {
             result = values;
@@ -3104,12 +3104,7 @@ var SeatingIssue = _wrapComponent('SeatingIssue')(function (_React$Component) {
       var assueType = _react3.default.createElement(
         'span',
         null,
-        _react3.default.createElement(
-          'span',
-          { style: { color: '#F04134' } },
-          '*'
-        ),
-        ' \u53D1\u653E\u7C7B\u578B'
+        '\u53D1\u653E\u7C7B\u578B'
       );
       return _react3.default.createElement(
         'div',
