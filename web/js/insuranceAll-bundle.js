@@ -3361,14 +3361,20 @@ var SeatingIssueHisInfo = _wrapComponent('SeatingIssueHisInfo')(function (_React
     key: 'componentDidMount',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+        var params;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                params = '';
+
+                if (window.location.search) params = window.location.search.substring(1);
+
                 $.ajax({
                   url: this.props.seatingIssueHisInfoUrl,
                   type: "get",
                   dataType: 'json',
+                  data: params,
                   contentType: 'application/json',
                   success: function (data) {
                     if (data.status > 0) {
@@ -3393,7 +3399,7 @@ var SeatingIssueHisInfo = _wrapComponent('SeatingIssueHisInfo')(function (_React
                   }
                 });
 
-              case 1:
+              case 3:
               case 'end':
                 return _context.stop();
             }
