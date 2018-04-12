@@ -36,6 +36,7 @@ public class ZuoTaoController {
 
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
     public Result listZT(){
        return zuoTaoService.listZT();
     }
