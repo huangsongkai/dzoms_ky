@@ -5,10 +5,15 @@ import com.dz.kaiying.service.ItemService;
 import com.dz.kaiying.service.ZuoTaoService;
 import com.dz.kaiying.util.Result;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -34,13 +39,33 @@ public class ZuoTaoController {
     }
 
 
-
+    /**
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public Result listZT(){
-       return zuoTaoService.listZT();
+    public Result listZT(HttpServletRequest request){
+        Map<String,String> map=new HashMap<>();
+        isEmptyParas(map,"createTime", request.getParameter("createTime"));
+        isEmptyParas(map,"endTime", request.getParameter("endTime"));
+        String carNumber=request.getParameter("carNumber");
+        isEmptyParas(map,"cph",carNumber );
+        isEmptyParas(map,"employeeId", request.getParameter("employeeId"));
+       return zuoTaoService.listZT(map);
+    }
+    private void isEmptyParas(Map<String, String> map,String mapName, String carNumber) {
+        if(!StringUtils.isEmpty(carNumber)){
+            map.put(mapName,carNumber);
+        }
     }
 
+    //座套信息导出
+    @RequestMapping(value = "/ZTexportExcel", method = RequestMethod.GET)
+    public Result sgexportExcel (HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return zuoTaoService.ZTExportExcel(request, response);
+    }
     /**
      * 查询车牌号
      */
