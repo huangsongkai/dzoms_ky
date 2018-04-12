@@ -1,10 +1,21 @@
 package com.dz.kaiying.DTO;
 
 
+import java.util.Date;
+
 public class SaveZuoTaoDTO implements java.io.Serializable {
 	private String cph;
 	private String employeeId;
 	private SaveZuoTaoDetailDTO issueType;
+	private Date createDate;
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 
 	public String getCph() {
 		return cph;

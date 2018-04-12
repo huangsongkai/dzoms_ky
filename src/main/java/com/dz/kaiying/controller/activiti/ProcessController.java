@@ -90,7 +90,6 @@ public class ProcessController {
                     if(evaluateDetail.getEvaluateName().indexOf(userName.trim()) != -1){
                         return "activity/task_list";
                     }else{
-
                     }
                 }else{
                     System.out.println("不包含");

@@ -3,7 +3,6 @@ package com.dz.kaiying.controller;
 import com.dz.kaiying.DTO.DriversAndHistoryDTO;
 import com.dz.kaiying.DTO.ItemPurchaseSubmitDTO;
 import com.dz.kaiying.DTO.ItemPurchaseUpadteDTO;
-import com.dz.kaiying.DTO.SaveZuoTaoDTO;
 import com.dz.kaiying.model.Item;
 import com.dz.kaiying.model.LingYongDTO;
 import com.dz.kaiying.service.ActivitiUtilService;
@@ -56,16 +55,7 @@ public class ItemController {
 
 
 
-    /**
-     * 保存座套信息
-     * @return
-     */
-    @RequestMapping(value = "/zuotao", method = RequestMethod.POST)
-    @ResponseBody
-    public Result savezuotao(@RequestBody SaveZuoTaoDTO saveZuoTaoDTO){
 
-        return itemService.savezuotao(saveZuoTaoDTO);
-    }
 
 
 
@@ -144,7 +134,7 @@ public class ItemController {
      */
     @RequestMapping(value = "/listzuotao", method = RequestMethod.GET)
     public String TZListHistory (HttpServletRequest request) throws Exception {
-        return "item/zuo_tao";
+        return "zuotao/zuo_tao";
     }
 
     /**

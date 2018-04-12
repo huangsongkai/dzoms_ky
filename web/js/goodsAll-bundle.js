@@ -1,33 +1,6 @@
-webpackJsonp([2],{
+webpackJsonp([3],{
 
-/***/ 1016:
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(171);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(26)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(true) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept(171, function() {
-			var newContent = __webpack_require__(171);
-			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-
-/***/ 117:
+/***/ 100:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41,15 +14,15 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _row = __webpack_require__(97);
+var _row = __webpack_require__(98);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _col = __webpack_require__(79);
+var _col = __webpack_require__(81);
 
 var _col2 = _interopRequireDefault(_col);
 
@@ -57,7 +30,7 @@ var _datePicker = __webpack_require__(36);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _select = __webpack_require__(41);
+var _select = __webpack_require__(38);
 
 var _select2 = _interopRequireDefault(_select);
 
@@ -69,15 +42,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 __webpack_require__(34);
 
-__webpack_require__(98);
+__webpack_require__(99);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
-__webpack_require__(80);
+__webpack_require__(82);
 
 __webpack_require__(37);
 
-__webpack_require__(44);
+__webpack_require__(40);
 
 __webpack_require__(27);
 
@@ -93,9 +66,9 @@ var _moment = __webpack_require__(1);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _FilterItem = __webpack_require__(150);
+var _FilterItem = __webpack_require__(154);
 
-var _queryString = __webpack_require__(132);
+var _queryString = __webpack_require__(133);
 
 var _queryString2 = _interopRequireDefault(_queryString);
 
@@ -258,13 +231,13 @@ exports.default = _form2.default.create()(SearchBar);
 
 /***/ }),
 
-/***/ 132:
+/***/ 133:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-const strictUriEncode = __webpack_require__(230);
-const decodeComponent = __webpack_require__(194);
+const strictUriEncode = __webpack_require__(235);
+const decodeComponent = __webpack_require__(198);
 
 function encoderForArrayFormat(options) {
 	switch (options.arrayFormat) {
@@ -480,17 +453,266 @@ exports.parseUrl = (input, options) => {
 
 /***/ }),
 
-/***/ 144:
+/***/ 145:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(22);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends2 = __webpack_require__(3);
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(5);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(11);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var InputElement = function (_React$Component) {
+    (0, _inherits3['default'])(InputElement, _React$Component);
+
+    function InputElement() {
+        (0, _classCallCheck3['default'])(this, InputElement);
+
+        var _this = (0, _possibleConstructorReturn3['default'])(this, (InputElement.__proto__ || Object.getPrototypeOf(InputElement)).apply(this, arguments));
+
+        _this.focus = function () {
+            _this.ele.focus ? _this.ele.focus() : (0, _reactDom.findDOMNode)(_this.ele).focus();
+        };
+        _this.blur = function () {
+            _this.ele.blur ? _this.ele.blur() : (0, _reactDom.findDOMNode)(_this.ele).blur();
+        };
+        _this.saveRef = function (ele) {
+            _this.ele = ele;
+            var childRef = _this.props.children.ref;
+            if (typeof childRef === 'function') {
+                childRef(ele);
+            }
+        };
+        return _this;
+    }
+
+    (0, _createClass3['default'])(InputElement, [{
+        key: 'render',
+        value: function render() {
+            return _react2['default'].cloneElement(this.props.children, (0, _extends3['default'])({}, this.props, { ref: this.saveRef }), null);
+        }
+    }]);
+    return InputElement;
+}(_react2['default'].Component);
+
+exports['default'] = InputElement;
+module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 150:
+/***/ 146:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof2 = __webpack_require__(45);
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _defineProperty2 = __webpack_require__(10);
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _extends2 = __webpack_require__(3);
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(5);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _rcSelect = __webpack_require__(213);
+
+var _classnames = __webpack_require__(9);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _select = __webpack_require__(38);
+
+var _select2 = _interopRequireDefault(_select);
+
+var _input = __webpack_require__(28);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _InputElement = __webpack_require__(145);
+
+var _InputElement2 = _interopRequireDefault(_InputElement);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function isSelectOptionOrSelectOptGroup(child) {
+    return child && child.type && (child.type.isSelectOption || child.type.isSelectOptGroup);
+}
+
+var AutoComplete = function (_React$Component) {
+    (0, _inherits3['default'])(AutoComplete, _React$Component);
+
+    function AutoComplete() {
+        (0, _classCallCheck3['default'])(this, AutoComplete);
+
+        var _this = (0, _possibleConstructorReturn3['default'])(this, (AutoComplete.__proto__ || Object.getPrototypeOf(AutoComplete)).apply(this, arguments));
+
+        _this.getInputElement = function () {
+            var children = _this.props.children;
+
+            var element = children && _react2['default'].isValidElement(children) && children.type !== _rcSelect.Option ? _react2['default'].Children.only(_this.props.children) : _react2['default'].createElement(_input2['default'], null);
+            var elementProps = (0, _extends3['default'])({}, element.props);
+            // https://github.com/ant-design/ant-design/pull/7742
+            delete elementProps.children;
+            return _react2['default'].createElement(
+                _InputElement2['default'],
+                elementProps,
+                element
+            );
+        };
+        return _this;
+    }
+
+    (0, _createClass3['default'])(AutoComplete, [{
+        key: 'render',
+        value: function render() {
+            var _classNames;
+
+            var _props = this.props,
+                size = _props.size,
+                _props$className = _props.className,
+                className = _props$className === undefined ? '' : _props$className,
+                notFoundContent = _props.notFoundContent,
+                prefixCls = _props.prefixCls,
+                optionLabelProp = _props.optionLabelProp,
+                dataSource = _props.dataSource,
+                children = _props.children;
+
+            var cls = (0, _classnames2['default'])((_classNames = {}, (0, _defineProperty3['default'])(_classNames, prefixCls + '-lg', size === 'large'), (0, _defineProperty3['default'])(_classNames, prefixCls + '-sm', size === 'small'), (0, _defineProperty3['default'])(_classNames, className, !!className), (0, _defineProperty3['default'])(_classNames, prefixCls + '-show-search', true), (0, _defineProperty3['default'])(_classNames, prefixCls + '-auto-complete', true), _classNames));
+            var options = void 0;
+            var childArray = _react2['default'].Children.toArray(children);
+            if (childArray.length && isSelectOptionOrSelectOptGroup(childArray[0])) {
+                options = children;
+            } else {
+                options = dataSource ? dataSource.map(function (item) {
+                    if (_react2['default'].isValidElement(item)) {
+                        return item;
+                    }
+                    switch (typeof item === 'undefined' ? 'undefined' : (0, _typeof3['default'])(item)) {
+                        case 'string':
+                            return _react2['default'].createElement(
+                                _rcSelect.Option,
+                                { key: item },
+                                item
+                            );
+                        case 'object':
+                            return _react2['default'].createElement(
+                                _rcSelect.Option,
+                                { key: item.value },
+                                item.text
+                            );
+                        default:
+                            throw new Error('AutoComplete[dataSource] only supports type `string[] | Object[]`.');
+                    }
+                }) : [];
+            }
+            return _react2['default'].createElement(
+                _select2['default'],
+                (0, _extends3['default'])({}, this.props, { className: cls, mode: 'combobox', optionLabelProp: optionLabelProp, getInputElement: this.getInputElement, notFoundContent: notFoundContent }),
+                options
+            );
+        }
+    }]);
+    return AutoComplete;
+}(_react2['default'].Component);
+
+exports['default'] = AutoComplete;
+
+AutoComplete.Option = _rcSelect.Option;
+AutoComplete.OptGroup = _rcSelect.OptGroup;
+AutoComplete.defaultProps = {
+    prefixCls: 'ant-select',
+    transitionName: 'slide-up',
+    optionLabelProp: 'children',
+    choiceTransitionName: 'zoom',
+    showSearch: false,
+    filterOption: false
+};
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 147:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(21);
+
+__webpack_require__(237);
+
+__webpack_require__(40);
+
+/***/ }),
+
+/***/ 148:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(21);
+
+/***/ }),
+
+/***/ 154:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +730,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _FilterItem = __webpack_require__(231);
+var _FilterItem = __webpack_require__(236);
 
 var _FilterItem2 = _interopRequireDefault(_FilterItem);
 
@@ -551,7 +773,7 @@ exports.default = FilterItem;
 
 /***/ }),
 
-/***/ 151:
+/***/ 155:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -561,15 +783,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _select = __webpack_require__(41);
+var _select = __webpack_require__(38);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -577,13 +799,13 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(44);
+__webpack_require__(40);
 
 var _reactDom = __webpack_require__(11);
 
@@ -708,26 +930,309 @@ var UtilSelect = _wrapComponent('UtilSelect')(function (_React$Component) {
 }(_react3.default.Component));
 
 exports.default = UtilSelect;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 171:
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(24)();
-// imports
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module, $) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _select = __webpack_require__(38);
+
+var _select2 = _interopRequireDefault(_select);
+
+var _input = __webpack_require__(28);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _autoComplete = __webpack_require__(146);
+
+var _autoComplete2 = _interopRequireDefault(_autoComplete);
+
+var _index = __webpack_require__(20);
+
+var _index2 = _interopRequireDefault(_index);
+
+var _index3 = __webpack_require__(18);
+
+var _index4 = _interopRequireDefault(_index3);
+
+var _react2 = __webpack_require__(0);
+
+var _react3 = _interopRequireDefault(_react2);
+
+var _index5 = __webpack_require__(19);
+
+var _index6 = _interopRequireDefault(_index5);
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+__webpack_require__(40);
+
+__webpack_require__(27);
+
+__webpack_require__(147);
+
+var _reactDom = __webpack_require__(11);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _SelectInfo = __webpack_require__(70);
+
+var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _components = {
+  Cph: {
+    displayName: 'Cph'
+  }
+};
+
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
+  filename: '/Users/huang/work/dzoms_react/components/util/cph.js',
+  components: _components,
+  locals: [module],
+  imports: [_react3.default]
+});
+
+var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
+  filename: '/Users/huang/work/dzoms_react/components/util/cph.js',
+  components: _components,
+  locals: [],
+  imports: [_react3.default, _index2.default]
+});
+
+function _wrapComponent(id) {
+  return function (Component) {
+    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
+  };
+} /*
+    组件功能：车牌号的组件
+    引用时：<CarNumber {...pageUrls} errorMessage={this.errorMessage.bind(this)}  objCph={this.objCph.bind(this)} />
+            函数：
+            objCph(objCph){
+                this.setState({objCph:objCph});
+            }
+            errorMessage(errorMessage){
+                this.setState({errorMessage:errorMessage});
+            }
+  */
 
 
-// module
-exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */\n/* stylelint-disable declaration-bang-space-before */\n/* stylelint-disable declaration-bang-space-before */\n.ant-select-auto-complete.ant-select .ant-select-selection {\n  border: 0;\n  box-shadow: none;\n}\n.ant-select-auto-complete.ant-select .ant-select-selection__rendered {\n  margin-left: 0;\n  margin-right: 0;\n  height: 100%;\n  line-height: 28px;\n}\n.ant-select-auto-complete.ant-select .ant-select-selection__placeholder {\n  margin-left: 8px;\n  margin-right: 8px;\n}\n.ant-select-auto-complete.ant-select .ant-select-selection--single {\n  height: auto;\n}\n.ant-select-auto-complete.ant-select .ant-select-search--inline {\n  position: static;\n  float: left;\n}\n.ant-select-auto-complete.ant-select-allow-clear .ant-select-selection:hover .ant-select-selection__rendered {\n  margin-right: 0 !important;\n}\n.ant-select-auto-complete.ant-select .ant-input {\n  background: transparent;\n  border-width: 1px;\n  line-height: 1.5;\n  height: 28px;\n}\n.ant-select-auto-complete.ant-select .ant-input:focus,\n.ant-select-auto-complete.ant-select .ant-input:hover {\n  border-color: #49a9ee;\n}\n.ant-select-auto-complete.ant-select-lg .ant-select-selection__rendered {\n  line-height: 32px;\n}\n.ant-select-auto-complete.ant-select-lg .ant-input {\n  padding-top: 6px;\n  padding-bottom: 6px;\n  height: 32px;\n}\n.ant-select-auto-complete.ant-select-sm .ant-select-selection__rendered {\n  line-height: 22px;\n}\n.ant-select-auto-complete.ant-select-sm .ant-input {\n  padding-top: 1px;\n  padding-bottom: 1px;\n  height: 22px;\n}\n", ""]);
+var AutoCompleteOption = _autoComplete2.default.Option;
 
-// exports
+var InputGroup = _input2.default.Group;
+var Option = _select2.default.Option;
 
+var Cph = _wrapComponent('Cph')(function (_React$Component) {
+  _inherits(Cph, _React$Component);
+
+  function Cph(props) {
+    _classCallCheck(this, Cph);
+
+    var _this = _possibleConstructorReturn(this, (Cph.__proto__ || Object.getPrototypeOf(Cph)).call(this, props));
+
+    _this.state = {
+      recData: [], //后台请求回来的车牌号数组
+      district: '黑A',
+      number: ''
+    };
+    return _this;
+  }
+
+  _createClass(Cph, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      /*var self=this;
+      $.ajax({
+            type:"get",
+            url: self.props.chepaihao,
+            data: JSON.stringify(self.cphPrefix),
+            dataType: 'json',
+            contentType : 'application/json',
+            success: function(data){ 
+                self.setState({
+                    recData:data
+                });                            
+            },
+            error: function(data){
+               alert("失败");
+            }
+      }); */
+    }
+  }, {
+    key: 'districtChange',
+    value: function districtChange(value) {
+      this.setState({ district: value });
+    }
+  }, {
+    key: 'numberChange',
+    value: function numberChange(value) {
+      /*this.setState({
+        dataSource: !value || value.indexOf('@') >= 0 ? [] : [
+          `${value}@gmail.com`,
+          `${value}@163.com`,
+          `${value}@qq.com`,
+        ],
+      });*/
+      var self = this;
+      var wholeNumber = self.state.district + value;
+      var param = { number: wholeNumber };
+      $.ajax({
+        type: "get",
+        url: self.props.chepaihao,
+        data: param,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function success(data) {
+          var data2 = data.data.map(function (i) {
+            if (i.indexOf('黑') > -1) return i.substring(2);
+            return i;
+          });
+          self.setState({
+            dataSource: data2
+          });
+        },
+        error: function error(data) {
+          alert("失败");
+        }
+      });
+      if (this.props.onChange) {
+        this.props.onChange(wholeNumber);
+      }
+    }
+  }, {
+    key: 'selectInfoErrorMessage',
+    value: function selectInfoErrorMessage(errorMessage) {
+      this.setState({
+        errorMessage: errorMessage
+      });
+      this.props.errorMessage(errorMessage);
+    }
+  }, {
+    key: 'handleChange',
+    value: function handleChange(value) {
+      this.setState({
+        dataSource: !value || value.indexOf('@') >= 0 ? [] : [value + '@gmail.com', value + '@163.com', value + '@qq.com']
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react3.default.createElement(
+        InputGroup,
+        { compact: true, style: { margin: 5, height: 40, width: 350, overflow: 'hidden' } },
+        _react3.default.createElement(
+          _select2.default,
+          { defaultValue: '\u9ED1A', onChange: this.districtChange.bind(this) },
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1A' },
+            '\u9ED1A'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1B' },
+            '\u9ED1B'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1C' },
+            '\u9ED1C'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1D' },
+            '\u9ED1D'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1E' },
+            '\u9ED1E'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1F' },
+            '\u9ED1F'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1G' },
+            '\u9ED1G'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1H' },
+            '\u9ED1H'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1J' },
+            '\u9ED1J'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1K' },
+            '\u9ED1K'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1L' },
+            '\u9ED1L'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1M' },
+            '\u9ED1M'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1N' },
+            '\u9ED1N'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1P' },
+            '\u9ED1P'
+          ),
+          _react3.default.createElement(
+            Option,
+            { value: '\u9ED1R' },
+            '\u9ED1R'
+          )
+        ),
+        _react3.default.createElement(_autoComplete2.default, {
+          dataSource: this.state.dataSource,
+          style: { width: 200 },
+          onChange: this.numberChange.bind(this)
+        })
+      );
+    }
+  }]);
+
+  return Cph;
+}(_react3.default.Component));
+
+exports.default = Cph;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 194:
+/***/ 198:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -829,7 +1334,7 @@ module.exports = function (encodedURI) {
 
 /***/ }),
 
-/***/ 230:
+/***/ 235:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -839,23 +1344,23 @@ module.exports = str => encodeURIComponent(str).replace(/[!'()*]/g, x => `%${x.c
 
 /***/ }),
 
-/***/ 231:
+/***/ 236:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(74);
+var content = __webpack_require__(75);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(26)(content, {});
+var update = __webpack_require__(24)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(true) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept(74, function() {
-			var newContent = __webpack_require__(74);
+		module.hot.accept(75, function() {
+			var newContent = __webpack_require__(75);
 			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
 			update(newContent);
 		});
@@ -866,7 +1371,34 @@ if(true) {
 
 /***/ }),
 
-/***/ 477:
+/***/ 237:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(76);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(24)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(true) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept(76, function() {
+			var newContent = __webpack_require__(76);
+			if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 482:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -884,11 +1416,11 @@ var _input = __webpack_require__(28);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -900,11 +1432,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -912,7 +1444,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -924,9 +1456,9 @@ __webpack_require__(30);
 
 __webpack_require__(27);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(37);
 
@@ -940,7 +1472,7 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -1500,11 +2032,11 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
 var WrappedApp = _form2.default.create()(AppModal);
 if (document.getElementById("goodsManagement")) _reactDom2.default.render(_react3.default.createElement(GoodsManagement, pageUrls), document.getElementById("goodsManagement"));
 exports.default = GoodsManagement;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 478:
+/***/ 483:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1518,7 +2050,7 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1526,15 +2058,15 @@ var _regenerator = __webpack_require__(56);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1542,7 +2074,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1550,9 +2082,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 var _reactDom = __webpack_require__(11);
 
@@ -1562,15 +2094,15 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
-var _StringUtil = __webpack_require__(152);
+var _StringUtil = __webpack_require__(156);
 
 var _StringUtil2 = _interopRequireDefault(_StringUtil);
 
-var _SearchBar = __webpack_require__(117);
+var _SearchBar = __webpack_require__(100);
 
 var _SearchBar2 = _interopRequireDefault(_SearchBar);
 
@@ -1888,11 +2420,11 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
 
 if (document.getElementById("officeHistory")) _reactDom2.default.render(_react3.default.createElement(OfficeHistory, pageUrls), document.getElementById("officeHistory"));
 exports.default = OfficeHistory;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 479:
+/***/ 484:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1906,7 +2438,7 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -1914,7 +2446,7 @@ var _inputNumber = __webpack_require__(51);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -1926,11 +2458,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -1938,7 +2470,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -1946,11 +2478,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
 __webpack_require__(52);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(37);
 
@@ -1964,7 +2496,7 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -2221,11 +2753,11 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
 
 if (document.getElementById("officeIssue")) _reactDom2.default.render(_react3.default.createElement(Goods, pageUrls), document.getElementById("officeIssue"));
 exports.default = Goods;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 480:
+/***/ 485:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2239,7 +2771,7 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -2247,7 +2779,7 @@ var _inputNumber = __webpack_require__(51);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -2267,11 +2799,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2279,7 +2811,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2287,11 +2819,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
 __webpack_require__(52);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(27);
 
@@ -2307,7 +2839,7 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -2566,11 +3098,11 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
 
 if (document.getElementById("officePurchase")) _reactDom2.default.render(_react3.default.createElement(OfficePurchase, pageUrls), document.getElementById("officePurchase"));
 exports.default = OfficePurchase;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 481:
+/***/ 486:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2588,15 +3120,15 @@ var _regenerator = __webpack_require__(56);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2604,7 +3136,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2612,7 +3144,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 var _reactDom = __webpack_require__(11);
 
@@ -2622,15 +3154,15 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
-var _SearchBar = __webpack_require__(117);
+var _SearchBar = __webpack_require__(100);
 
 var _SearchBar2 = _interopRequireDefault(_SearchBar);
 
-var _StringUtil = __webpack_require__(152);
+var _StringUtil = __webpack_require__(156);
 
 var _StringUtil2 = _interopRequireDefault(_StringUtil);
 
@@ -2839,11 +3371,11 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
 
 if (document.getElementById("yunyingbuHistory")) _reactDom2.default.render(_react3.default.createElement(YunyingbuHistory, pageUrls), document.getElementById("yunyingbuHistory"));
 exports.default = YunyingbuHistory;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 482:
+/***/ 487:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2857,7 +3389,7 @@ var _inputNumber = __webpack_require__(51);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _select = __webpack_require__(41);
+var _select = __webpack_require__(38);
 
 var _select2 = _interopRequireDefault(_select);
 
@@ -2865,7 +3397,7 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -2873,7 +3405,7 @@ var _regenerator = __webpack_require__(56);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -2889,11 +3421,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -2901,7 +3433,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -2911,13 +3443,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(52);
 
-__webpack_require__(44);
+__webpack_require__(40);
 
 __webpack_require__(30);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(37);
 
@@ -2933,19 +3465,19 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
-var _SelectInfo = __webpack_require__(81);
+var _SelectInfo = __webpack_require__(70);
 
 var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
 
-var _Select2 = __webpack_require__(151);
+var _Select2 = __webpack_require__(155);
 
 var _Select3 = _interopRequireDefault(_Select2);
 
-var _cph = __webpack_require__(594);
+var _cph = __webpack_require__(157);
 
 var _cph2 = _interopRequireDefault(_cph);
 
@@ -3407,11 +3939,11 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
 var WrappedYunyingbuIssue = _form2.default.create()(YunyingbuIssue);
 if (document.getElementById("yunyingbuIssue")) _reactDom2.default.render(_react3.default.createElement(WrappedYunyingbuIssue, pageUrls), document.getElementById("yunyingbuIssue"));
 exports.default = YunyingbuIssue;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 483:
+/***/ 488:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3425,7 +3957,7 @@ var _table = __webpack_require__(29);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _button = __webpack_require__(18);
+var _button = __webpack_require__(22);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -3433,11 +3965,11 @@ var _inputNumber = __webpack_require__(51);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
-var _icon = __webpack_require__(40);
+var _icon = __webpack_require__(42);
 
 var _icon2 = _interopRequireDefault(_icon);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(43);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -3453,11 +3985,11 @@ var _form = __webpack_require__(33);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _index = __webpack_require__(21);
+var _index = __webpack_require__(20);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(19);
+var _index3 = __webpack_require__(18);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -3465,7 +3997,7 @@ var _react2 = __webpack_require__(0);
 
 var _react3 = _interopRequireDefault(_react2);
 
-var _index5 = __webpack_require__(20);
+var _index5 = __webpack_require__(19);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -3473,13 +4005,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(30);
 
-__webpack_require__(23);
+__webpack_require__(25);
 
 __webpack_require__(52);
 
-__webpack_require__(144);
+__webpack_require__(148);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(27);
 
@@ -3495,7 +4027,7 @@ var _Sorter = __webpack_require__(31);
 
 var _Sorter2 = _interopRequireDefault(_Sorter);
 
-var _Filters = __webpack_require__(38);
+var _Filters = __webpack_require__(39);
 
 var _Filters2 = _interopRequireDefault(_Filters);
 
@@ -3875,577 +4407,30 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
 var WrappedYunyingbuPurchase = _form2.default.create()(YunyingbuPurchase);
 if (document.getElementById("yunyingbuPurchase")) _reactDom2.default.render(_react3.default.createElement(WrappedYunyingbuPurchase, pageUrls), document.getElementById("yunyingbuPurchase"));
 exports.default = YunyingbuPurchase;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module), __webpack_require__(16)))
 
 /***/ }),
 
-/***/ 509:
+/***/ 597:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends2 = __webpack_require__(3);
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _classCallCheck2 = __webpack_require__(4);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = __webpack_require__(7);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = __webpack_require__(6);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(5);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = __webpack_require__(11);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var InputElement = function (_React$Component) {
-    (0, _inherits3['default'])(InputElement, _React$Component);
-
-    function InputElement() {
-        (0, _classCallCheck3['default'])(this, InputElement);
-
-        var _this = (0, _possibleConstructorReturn3['default'])(this, (InputElement.__proto__ || Object.getPrototypeOf(InputElement)).apply(this, arguments));
-
-        _this.focus = function () {
-            _this.ele.focus ? _this.ele.focus() : (0, _reactDom.findDOMNode)(_this.ele).focus();
-        };
-        _this.blur = function () {
-            _this.ele.blur ? _this.ele.blur() : (0, _reactDom.findDOMNode)(_this.ele).blur();
-        };
-        _this.saveRef = function (ele) {
-            _this.ele = ele;
-            var childRef = _this.props.children.ref;
-            if (typeof childRef === 'function') {
-                childRef(ele);
-            }
-        };
-        return _this;
-    }
-
-    (0, _createClass3['default'])(InputElement, [{
-        key: 'render',
-        value: function render() {
-            return _react2['default'].cloneElement(this.props.children, (0, _extends3['default'])({}, this.props, { ref: this.saveRef }), null);
-        }
-    }]);
-    return InputElement;
-}(_react2['default'].Component);
-
-exports['default'] = InputElement;
-module.exports = exports['default'];
-
-/***/ }),
-
-/***/ 510:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof2 = __webpack_require__(46);
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _defineProperty2 = __webpack_require__(10);
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _extends2 = __webpack_require__(3);
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _classCallCheck2 = __webpack_require__(4);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = __webpack_require__(7);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = __webpack_require__(6);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(5);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _rcSelect = __webpack_require__(439);
-
-var _classnames = __webpack_require__(9);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _select = __webpack_require__(41);
-
-var _select2 = _interopRequireDefault(_select);
-
-var _input = __webpack_require__(28);
-
-var _input2 = _interopRequireDefault(_input);
-
-var _InputElement = __webpack_require__(509);
-
-var _InputElement2 = _interopRequireDefault(_InputElement);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function isSelectOptionOrSelectOptGroup(child) {
-    return child && child.type && (child.type.isSelectOption || child.type.isSelectOptGroup);
-}
-
-var AutoComplete = function (_React$Component) {
-    (0, _inherits3['default'])(AutoComplete, _React$Component);
-
-    function AutoComplete() {
-        (0, _classCallCheck3['default'])(this, AutoComplete);
-
-        var _this = (0, _possibleConstructorReturn3['default'])(this, (AutoComplete.__proto__ || Object.getPrototypeOf(AutoComplete)).apply(this, arguments));
-
-        _this.getInputElement = function () {
-            var children = _this.props.children;
-
-            var element = children && _react2['default'].isValidElement(children) && children.type !== _rcSelect.Option ? _react2['default'].Children.only(_this.props.children) : _react2['default'].createElement(_input2['default'], null);
-            var elementProps = (0, _extends3['default'])({}, element.props);
-            // https://github.com/ant-design/ant-design/pull/7742
-            delete elementProps.children;
-            return _react2['default'].createElement(
-                _InputElement2['default'],
-                elementProps,
-                element
-            );
-        };
-        return _this;
-    }
-
-    (0, _createClass3['default'])(AutoComplete, [{
-        key: 'render',
-        value: function render() {
-            var _classNames;
-
-            var _props = this.props,
-                size = _props.size,
-                _props$className = _props.className,
-                className = _props$className === undefined ? '' : _props$className,
-                notFoundContent = _props.notFoundContent,
-                prefixCls = _props.prefixCls,
-                optionLabelProp = _props.optionLabelProp,
-                dataSource = _props.dataSource,
-                children = _props.children;
-
-            var cls = (0, _classnames2['default'])((_classNames = {}, (0, _defineProperty3['default'])(_classNames, prefixCls + '-lg', size === 'large'), (0, _defineProperty3['default'])(_classNames, prefixCls + '-sm', size === 'small'), (0, _defineProperty3['default'])(_classNames, className, !!className), (0, _defineProperty3['default'])(_classNames, prefixCls + '-show-search', true), (0, _defineProperty3['default'])(_classNames, prefixCls + '-auto-complete', true), _classNames));
-            var options = void 0;
-            var childArray = _react2['default'].Children.toArray(children);
-            if (childArray.length && isSelectOptionOrSelectOptGroup(childArray[0])) {
-                options = children;
-            } else {
-                options = dataSource ? dataSource.map(function (item) {
-                    if (_react2['default'].isValidElement(item)) {
-                        return item;
-                    }
-                    switch (typeof item === 'undefined' ? 'undefined' : (0, _typeof3['default'])(item)) {
-                        case 'string':
-                            return _react2['default'].createElement(
-                                _rcSelect.Option,
-                                { key: item },
-                                item
-                            );
-                        case 'object':
-                            return _react2['default'].createElement(
-                                _rcSelect.Option,
-                                { key: item.value },
-                                item.text
-                            );
-                        default:
-                            throw new Error('AutoComplete[dataSource] only supports type `string[] | Object[]`.');
-                    }
-                }) : [];
-            }
-            return _react2['default'].createElement(
-                _select2['default'],
-                (0, _extends3['default'])({}, this.props, { className: cls, mode: 'combobox', optionLabelProp: optionLabelProp, getInputElement: this.getInputElement, notFoundContent: notFoundContent }),
-                options
-            );
-        }
-    }]);
-    return AutoComplete;
-}(_react2['default'].Component);
-
-exports['default'] = AutoComplete;
-
-AutoComplete.Option = _rcSelect.Option;
-AutoComplete.OptGroup = _rcSelect.OptGroup;
-AutoComplete.defaultProps = {
-    prefixCls: 'ant-select',
-    transitionName: 'slide-up',
-    optionLabelProp: 'children',
-    choiceTransitionName: 'zoom',
-    showSearch: false,
-    filterOption: false
-};
-module.exports = exports['default'];
-
-/***/ }),
-
-/***/ 511:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-__webpack_require__(22);
-
-__webpack_require__(1016);
-
-__webpack_require__(44);
-
-/***/ }),
-
-/***/ 594:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module, $) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _select = __webpack_require__(41);
-
-var _select2 = _interopRequireDefault(_select);
-
-var _input = __webpack_require__(28);
-
-var _input2 = _interopRequireDefault(_input);
-
-var _autoComplete = __webpack_require__(510);
-
-var _autoComplete2 = _interopRequireDefault(_autoComplete);
-
-var _index = __webpack_require__(21);
-
-var _index2 = _interopRequireDefault(_index);
-
-var _index3 = __webpack_require__(19);
-
-var _index4 = _interopRequireDefault(_index3);
-
-var _react2 = __webpack_require__(0);
-
-var _react3 = _interopRequireDefault(_react2);
-
-var _index5 = __webpack_require__(20);
-
-var _index6 = _interopRequireDefault(_index5);
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-__webpack_require__(44);
-
-__webpack_require__(27);
-
-__webpack_require__(511);
-
-var _reactDom = __webpack_require__(11);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _SelectInfo = __webpack_require__(81);
-
-var _SelectInfo2 = _interopRequireDefault(_SelectInfo);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _components = {
-  Cph: {
-    displayName: 'Cph'
-  }
-};
-
-var _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2 = (0, _index6.default)({
-  filename: '/Users/huang/work/dzoms_react/components/util/cph.js',
-  components: _components,
-  locals: [module],
-  imports: [_react3.default]
-});
-
-var _UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2 = (0, _index4.default)({
-  filename: '/Users/huang/work/dzoms_react/components/util/cph.js',
-  components: _components,
-  locals: [],
-  imports: [_react3.default, _index2.default]
-});
-
-function _wrapComponent(id) {
-  return function (Component) {
-    return _UsersHuangWorkDzoms_reactNode_modules_reactTransformHmr104ReactTransformHmrLibIndexJs2(_UsersHuangWorkDzoms_reactNode_modules_reactTransformCatchErrors102ReactTransformCatchErrorsLibIndexJs2(Component, id), id);
-  };
-} /*
-    组件功能：车牌号的组件
-    引用时：<CarNumber {...pageUrls} errorMessage={this.errorMessage.bind(this)}  objCph={this.objCph.bind(this)} />
-            函数：
-            objCph(objCph){
-                this.setState({objCph:objCph});
-            }
-            errorMessage(errorMessage){
-                this.setState({errorMessage:errorMessage});
-            }
-  */
-
-
-var AutoCompleteOption = _autoComplete2.default.Option;
-
-var InputGroup = _input2.default.Group;
-var Option = _select2.default.Option;
-
-var Cph = _wrapComponent('Cph')(function (_React$Component) {
-  _inherits(Cph, _React$Component);
-
-  function Cph(props) {
-    _classCallCheck(this, Cph);
-
-    var _this = _possibleConstructorReturn(this, (Cph.__proto__ || Object.getPrototypeOf(Cph)).call(this, props));
-
-    _this.state = {
-      recData: [], //后台请求回来的车牌号数组
-      district: '黑A',
-      number: ''
-    };
-    return _this;
-  }
-
-  _createClass(Cph, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      /*var self=this;
-      $.ajax({
-            type:"get",
-            url: self.props.chepaihao,
-            data: JSON.stringify(self.cphPrefix),
-            dataType: 'json',
-            contentType : 'application/json',
-            success: function(data){ 
-                self.setState({
-                    recData:data
-                });                            
-            },
-            error: function(data){
-               alert("失败");
-            }
-      }); */
-    }
-  }, {
-    key: 'districtChange',
-    value: function districtChange(value) {
-      this.setState({ district: value });
-    }
-  }, {
-    key: 'numberChange',
-    value: function numberChange(value) {
-      /*this.setState({
-        dataSource: !value || value.indexOf('@') >= 0 ? [] : [
-          `${value}@gmail.com`,
-          `${value}@163.com`,
-          `${value}@qq.com`,
-        ],
-      });*/
-      var self = this;
-      var wholeNumber = self.state.district + value;
-      var param = { number: wholeNumber };
-      $.ajax({
-        type: "get",
-        url: self.props.chepaihao,
-        data: param,
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function success(data) {
-          var data2 = data.data.map(function (i) {
-            if (i.indexOf('黑') > -1) return i.substring(2);
-            return i;
-          });
-          self.setState({
-            dataSource: data2
-          });
-        },
-        error: function error(data) {
-          alert("失败");
-        }
-      });
-      if (this.props.onChange) {
-        this.props.onChange(wholeNumber);
-      }
-    }
-  }, {
-    key: 'selectInfoErrorMessage',
-    value: function selectInfoErrorMessage(errorMessage) {
-      this.setState({
-        errorMessage: errorMessage
-      });
-      this.props.errorMessage(errorMessage);
-    }
-  }, {
-    key: 'handleChange',
-    value: function handleChange(value) {
-      this.setState({
-        dataSource: !value || value.indexOf('@') >= 0 ? [] : [value + '@gmail.com', value + '@163.com', value + '@qq.com']
-      });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react3.default.createElement(
-        InputGroup,
-        { compact: true, style: { margin: 5, height: 40, width: 350, overflow: 'hidden' } },
-        _react3.default.createElement(
-          _select2.default,
-          { defaultValue: '\u9ED1A', onChange: this.districtChange.bind(this) },
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1A' },
-            '\u9ED1A'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1B' },
-            '\u9ED1B'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1C' },
-            '\u9ED1C'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1D' },
-            '\u9ED1D'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1E' },
-            '\u9ED1E'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1F' },
-            '\u9ED1F'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1G' },
-            '\u9ED1G'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1H' },
-            '\u9ED1H'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1J' },
-            '\u9ED1J'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1K' },
-            '\u9ED1K'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1L' },
-            '\u9ED1L'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1M' },
-            '\u9ED1M'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1N' },
-            '\u9ED1N'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1P' },
-            '\u9ED1P'
-          ),
-          _react3.default.createElement(
-            Option,
-            { value: '\u9ED1R' },
-            '\u9ED1R'
-          )
-        ),
-        _react3.default.createElement(_autoComplete2.default, {
-          dataSource: this.state.dataSource,
-          style: { width: 200 },
-          onChange: this.numberChange.bind(this)
-        })
-      );
-    }
-  }]);
-
-  return Cph;
-}(_react3.default.Component));
-
-exports.default = Cph;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module), __webpack_require__(16)))
-
-/***/ }),
-
-/***/ 596:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-__webpack_require__(477);
-__webpack_require__(479);
-__webpack_require__(480);
-__webpack_require__(478);
 __webpack_require__(482);
+__webpack_require__(484);
+__webpack_require__(485);
 __webpack_require__(483);
-__webpack_require__(481);
+__webpack_require__(487);
+__webpack_require__(488);
+__webpack_require__(486);
 
 /***/ }),
 
-/***/ 74:
+/***/ 75:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(24)();
+exports = module.exports = __webpack_require__(23)();
 // imports
 
 
@@ -4455,6 +4440,21 @@ exports.push([module.i, ".filterItem {\n  display: flex;\n  justify-content: spa
 // exports
 
 
+/***/ }),
+
+/***/ 76:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(23)();
+// imports
+
+
+// module
+exports.push([module.i, "/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */\n/* stylelint-disable declaration-bang-space-before */\n/* stylelint-disable declaration-bang-space-before */\n.ant-select-auto-complete.ant-select .ant-select-selection {\n  border: 0;\n  box-shadow: none;\n}\n.ant-select-auto-complete.ant-select .ant-select-selection__rendered {\n  margin-left: 0;\n  margin-right: 0;\n  height: 100%;\n  line-height: 28px;\n}\n.ant-select-auto-complete.ant-select .ant-select-selection__placeholder {\n  margin-left: 8px;\n  margin-right: 8px;\n}\n.ant-select-auto-complete.ant-select .ant-select-selection--single {\n  height: auto;\n}\n.ant-select-auto-complete.ant-select .ant-select-search--inline {\n  position: static;\n  float: left;\n}\n.ant-select-auto-complete.ant-select-allow-clear .ant-select-selection:hover .ant-select-selection__rendered {\n  margin-right: 0 !important;\n}\n.ant-select-auto-complete.ant-select .ant-input {\n  background: transparent;\n  border-width: 1px;\n  line-height: 1.5;\n  height: 28px;\n}\n.ant-select-auto-complete.ant-select .ant-input:focus,\n.ant-select-auto-complete.ant-select .ant-input:hover {\n  border-color: #49a9ee;\n}\n.ant-select-auto-complete.ant-select-lg .ant-select-selection__rendered {\n  line-height: 32px;\n}\n.ant-select-auto-complete.ant-select-lg .ant-input {\n  padding-top: 6px;\n  padding-bottom: 6px;\n  height: 32px;\n}\n.ant-select-auto-complete.ant-select-sm .ant-select-selection__rendered {\n  line-height: 22px;\n}\n.ant-select-auto-complete.ant-select-sm .ant-input {\n  padding-top: 1px;\n  padding-bottom: 1px;\n  height: 22px;\n}\n", ""]);
+
+// exports
+
+
 /***/ })
 
-},[596]);
+},[597]);
