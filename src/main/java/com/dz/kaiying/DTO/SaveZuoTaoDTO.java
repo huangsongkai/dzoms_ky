@@ -7,13 +7,13 @@ public class SaveZuoTaoDTO implements java.io.Serializable {
 	private String cph;
 	private String employeeId;
 	private SaveZuoTaoDetailDTO issueType;
-	private Date createDate;
+	private String createDate;
 
-	public Date getCreateDate() {
+	public String getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
+	public void setCreateDate(String createDate) {
 		this.createDate = createDate;
 	}
 
