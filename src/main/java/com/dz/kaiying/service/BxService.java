@@ -168,8 +168,20 @@ public class BxService {
             }
             tbdh.put(String.valueOf(objString),obj);
         }
+        //查询库中数据做对比
+        List<KyInsurance> kInsurance = bxDao.find("from KyInsurance");
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
         for (List<Object> lo:tbdh.values()) {
+            boolean equal = false;
+            for (KyInsurance kyi:kInsurance) {
+                if(kyi.getBdh().equals(lo.get(1))){
+                    equal =true;
+                    break;
+                }
+            }
+            if(equal){
+                continue;
+            }
             KyInsurance insurance = new KyInsurance();
             insurance.setTbdh(String.valueOf(lo.get(0)));
             insurance.setBdh(String.valueOf(lo.get(1)));
