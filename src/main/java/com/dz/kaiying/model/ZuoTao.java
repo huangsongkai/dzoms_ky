@@ -35,13 +35,13 @@ public class ZuoTao implements java.io.Serializable {
 	private String employeeId;
 
 	@Column(name = "createTime")//换座时间
-	private Date createTime;
+	private String createTime;
 
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 
