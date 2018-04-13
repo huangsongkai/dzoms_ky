@@ -56,14 +56,14 @@ public class ZuoTaoService extends BaseService{
                 sql += "and date BETWEEN '" + map.get("createTime") + "' and '" + map.get("endTime") + "'";
             }
         }
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
+        //SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
             List<ZuoTao> zuoTaoList = zuoTaoDao.find(sql);
         List<ZuoTaoCopy> zuoTaoList1 =new ArrayList<>();
         for (ZuoTao zt:zuoTaoList) {
             ZuoTaoCopy ztc=new ZuoTaoCopy();
             ztc.setCph(zt.getCph());
             if(!StringUtils.isEmpty(zt.getCreateTime()))
-                ztc.setCreateTime(sdf.format(zt.getCreateTime()));
+                ztc.setCreateTime(zt.getCreateTime());
             else
                 ztc.setCreateTime("");
             ztc.setDzps(zt.getDzps());
