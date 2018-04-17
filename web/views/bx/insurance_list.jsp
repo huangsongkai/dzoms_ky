@@ -24,6 +24,13 @@
         insuranceListInfoUrl :"/DZOMS/ky/bx/querybx",
     }
 </script>
+<script type="text/javascript">
+    var pageUrls ={
+        insuranceListInfoUrl :"/DZOMS/ky/bx/querybx",
+        downloadUrl:"/DZOMS/ky/bx/insurance/download",
+        options:[{field:'carNum', alias:'车牌号'}, {field:'bdh', alias:'保单号'}]
+    }
+</script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>
 <script src="/DZOMS/ky/js/insuranceAll-bundle.js"></script>
 </html>

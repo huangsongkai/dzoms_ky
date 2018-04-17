@@ -148,7 +148,7 @@ public class KyAccident implements java.io.Serializable {
     private String cxjg;
 
     @Column(name = "create_date") //创建时间
-    private Date createDate;
+    private String createDate;
 
     public String getSgclbm() {
         return sgclbm;
@@ -463,11 +463,11 @@ public class KyAccident implements java.io.Serializable {
         this.cxjg = cxjg;
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 }

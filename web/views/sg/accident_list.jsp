@@ -22,6 +22,7 @@
 <script type="text/javascript">
     var pageUrls ={
         accidentListInfoUrl :"/DZOMS/ky/sg/querysg",
+        downloadUrl:"/DZOMS/ky/sg/sgExportExcel"
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>

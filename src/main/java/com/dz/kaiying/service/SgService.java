@@ -7,6 +7,11 @@ import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.ExportExcelUtil;
 import com.dz.kaiying.util.ImportExcelUtil;
 import com.dz.kaiying.util.Result;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,8 +23,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by huang on 2017/7/20.
@@ -33,16 +41,290 @@ public class SgService {
     @Resource
     HibernateDao<KyYiJue, Integer> yjDao;  //已决dao
     private Result result = new Result();
-
+    //Map<Integer,KyAccident> sgMap = new HashMap<>();
+    List<KyAccident> sgList =null;
     /**
      * /事故查询
      * @return
      */
-    public Result querysg(HttpServletRequest request) {
+    public Result querysg(HttpServletRequest request, Map<String ,String> mapSG) {
+
         String selectedTime = request.getParameter("selectedTime");
         String year = "";
         String month = "";
         String sql ="from KyAccident ";
+        if(mapSG.size()>0){
+            if(!StringUtils.isEmpty(mapSG.get("cph"))){
+                sql += "where cph = '"+mapSG.get("cph")+"'";
+                sql = getSQLConditions(mapSG.get("cxStartTime"),mapSG.get("cxEndTime"), sql," and cxrq");
+                sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," and createDate");
+            }else {  //cph为空
+                if(!StringUtils.isEmpty(mapSG.get("cxStartTime"))&&!StringUtils.isEmpty(mapSG.get("cxEndTime"))){
+                    sql += " where cxrq BETWEEN '"+mapSG.get("cxStartTime")+"' and '"+mapSG.get("cxEndTime")+"'";
+                    sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," and createDate");
+                }else {  //cph为空，出险时间为空
+                    sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," where createDate");
+                }
+            }
+        }else {
+            if (!StringUtils.isEmpty(selectedTime)) {
+                sql = getMonthTime(selectedTime, year, month, sql);//按照出险日期查询整月信息
+            }
+        }
+        List<KyAccident> accident = bxDao.find(sql);//事故查询
+        if(accident.size()>0){
+            sgList =new ArrayList<>(accident);
+            /*sgMap.clear();
+            for (int i = 1; i <= accident.size(); i++) {    //存入缓存
+                sgMap.put(i, accident.get(i - 1));
+            }*/
+        }
+        result.setSuccess("查询成功", accident);
+        return result;
+    }
+
+    /**
+     * sg列表下载
+     */
+    public void sgExportExcl(HttpServletResponse rep)throws Exception{
+        if (sgList.size()==0)return;   //如果为空无法下载
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
+        Row row = sheet.createRow((short) 0);
+        generateExcelTitle(style, row);
+        int v =1;
+        for (KyAccident ka:sgList) {
+            Field[] fields = ka.getClass().getDeclaredFields();
+            Row row1 = sheet.createRow(v);
+            for (int i = 0; i < fields.length; i++)
+            {
+                String name = fields[i].getName();
+                String type = fields[i].getGenericType().toString();
+                fields[i].setAccessible(true);
+                name = name.replaceFirst(name.substring(0, 1), name.substring(0, 1)
+                        .toUpperCase());
+                // 如果type是类类型，则前面包含"class "，后面跟类名
+                Method m = ka.getClass().getMethod("get" + name);
+                if (type.equals("class java.lang.String"))
+                {
+                    // 调用getter方法获取属性值
+                    String value = (String) m.invoke(ka);
+                    if (value != null)
+                    {
+                        row1.createCell(i).setCellValue(value);
+                        sheet.autoSizeColumn(i,true);
+                    }
+                }
+                if (type.equals("class java.lang.Integer"))
+                {
+                    // 调用getter方法获取属性值
+                    Integer value = (Integer) m.invoke(ka);
+                    if (value != null)
+                    {
+                        row1.createCell(i).setCellValue(value);
+                        sheet.autoSizeColumn(i,true);
+                    }
+                }
+                fields[i].setAccessible(false);
+                }
+            v++;
+        }
+        EmpExportService export=new EmpExportService();
+        export.IOWriteExcel(rep,wb,"事故列表.xls");
+    }
+
+    private void generateExcelTitle(HSSFCellStyle style, Row row) {
+        Cell cel0=row.createCell(0);
+        cel0.setCellStyle(style);
+        cel0.setCellValue("序号");
+
+        Cell cel1=row.createCell(1);
+        cel1.setCellStyle(style);
+        cel1.setCellValue("事故处理部门");
+
+        Cell cel2=row.createCell(2);
+        cel2.setCellStyle(style);
+        cel2.setCellValue("报案日期");
+
+        Cell cel3=row.createCell(3);
+        cel3.setCellStyle(style);
+        cel3.setCellValue("报案时间");
+
+        Cell cel4=row.createCell(4);
+        cel4.setCellStyle(style);
+        cel4.setCellValue("结案时间");
+        ;
+        Cell cel5=row.createCell(5);
+        cel5.setCellStyle(style);
+        cel5.setCellValue("通赔标志");
+
+        Cell cel6=row.createCell(6);
+        cel6.setCellStyle(style);
+        cel6.setCellValue("业务来源");
+
+        Cell cel7=row.createCell(7);
+        cel7.setCellStyle(style);
+        cel7.setCellValue("保单号");
+
+        Cell cel8=row.createCell(8);
+        cel8.setCellStyle(style);
+        cel8.setCellValue("保单归属机构");
+
+        Cell cel9=row.createCell(9);
+        cel9.setCellStyle(style);
+        cel9.setCellValue("启保日期");
+
+        Cell cel10=row.createCell(10);
+        cel10.setCellStyle(style);
+        cel10.setCellValue("终保日期");
+
+        Cell cel11=row.createCell(11);
+        cel11.setCellStyle(style);
+        cel11.setCellValue("初登日期");
+
+        Cell cel12=row.createCell(12);
+        cel12.setCellStyle(style);
+        cel12.setCellValue("条款");
+
+        Cell cel13=row.createCell(13);
+        cel13.setCellStyle(style);
+        cel13.setCellValue("保费");
+
+        Cell cel14=row.createCell(14);
+        cel14.setCellStyle(style);
+        cel14.setCellValue("报案号");
+        ;
+        Cell cel15=row.createCell(15);
+        cel15.setCellStyle(style);
+        cel15.setCellValue("立案号");
+
+        Cell cel16=row.createCell(16);
+        cel16.setCellStyle(style);
+        cel16.setCellValue("案件性质");
+
+        Cell cel17=row.createCell(17);
+        cel17.setCellStyle(style);
+        cel17.setCellValue("出险日期");
+
+        Cell cel18=row.createCell(18);
+        cel18.setCellStyle(style);
+        cel18.setCellValue("事故处理方式");
+
+        Cell cel19=row.createCell(19);
+        cel19.setCellStyle(style);
+        cel19.setCellValue("立案日期");
+
+        Cell cel20=row.createCell(20);
+        cel20.setCellStyle(style);
+        cel20.setCellValue("结案日期");
+
+        Cell cel21=row.createCell(21);
+        cel21.setCellStyle(style);
+        cel21.setCellValue("估损金额");
+
+        Cell cel22=row.createCell(22);
+        cel2.setCellStyle(style);
+        cel2.setCellValue("估计赔偿");
+
+        Cell cel23=row.createCell(23);
+        cel23.setCellStyle(style);
+        cel23.setCellValue("赔付金额");
+
+        Cell cel24=row.createCell(24);
+        cel24.setCellStyle(style);
+        cel24.setCellValue("报案人");
+        ;
+        Cell cel25=row.createCell(25);
+        cel25.setCellStyle(style);
+        cel25.setCellValue("报案人电话");
+
+        Cell cel26=row.createCell(26);
+        cel26.setCellStyle(style);
+        cel26.setCellValue("查勘员1");
+
+        Cell cel27=row.createCell(27);
+        cel27.setCellStyle(style);
+        cel27.setCellValue("勘察员2");
+
+        Cell cel28=row.createCell(28);
+        cel28.setCellStyle(style);
+        cel28.setCellValue("处理人代码");
+
+        Cell cel29=row.createCell(29);
+        cel29.setCellStyle(style);
+        cel29.setCellValue("保单经办人");
+
+        Cell cel30=row.createCell(30);
+        cel30.setCellStyle(style);
+        cel30.setCellValue("保单归属人");
+
+        Cell cel31=row.createCell(31);
+        cel31.setCellStyle(style);
+        cel31.setCellValue("出险地址");
+
+        Cell cel32=row.createCell(32);
+        cel32.setCellStyle(style);
+        cel32.setCellValue("出险原因");
+
+        Cell cel33=row.createCell(33);
+        cel33.setCellStyle(style);
+        cel33.setCellValue("驾驶人");
+
+        Cell cel34=row.createCell(34);
+        cel34.setCellStyle(style);
+        cel34.setCellValue("驾驶证");
+        ;
+        Cell cel35=row.createCell(35);
+        cel35.setCellStyle(style);
+        cel35.setCellValue("厂牌型号");
+
+        Cell cel36=row.createCell(36);
+        cel36.setCellStyle(style);
+        cel36.setCellValue("车牌号");
+
+        Cell cel37=row.createCell(37);
+        cel37.setCellStyle(style);
+        cel37.setCellValue("被保险人");
+
+        Cell cel38=row.createCell(38);
+        cel38.setCellStyle(style);
+        cel38.setCellValue("出险经过");
+
+        Cell cel39=row.createCell(39);
+        cel39.setCellStyle(style);
+        cel39.setCellValue("创建时间");
+    }
+
+    private HSSFCellStyle getHssfCellStyle(HSSFWorkbook wb) {
+        HSSFFont font =  wb.createFont();
+        font.setFontHeightInPoints((short)12);            //设置字体的大小
+        font.setFontName("微软雅黑");                        //设置字体的样式，如：宋体、微软雅黑等
+        font.setItalic(false);                            //斜体true为斜体
+        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);    //对文中进行加粗
+        font.setColor(HSSFColor.BLACK.index);            //设置字体的颜色
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        style.setFont(font);
+        return style;
+    }
+    /**
+     *
+     * @param startTime 初始时间
+     * @param endTime 最后时间
+     * @param sql
+     * @param whereOrAnd  条件
+     * @return
+     */
+    private String getSQLConditions(String startTime, String endTime, String sql, String whereOrAnd) {
+        if(!StringUtils.isEmpty(startTime)&&!StringUtils.isEmpty(endTime)){
+            sql += whereOrAnd+" BETWEEN '"+startTime+"' and '"+endTime+"'";
+        }
+        return sql;
+    }
+
+    //判断是否是闰年闰月
+    private String getMonthTime(String selectedTime, String year, String month, String sql) {
         int days = 30;
         if(!StringUtils.isEmpty(selectedTime)){
             String[] str = selectedTime.split("-");
@@ -73,13 +355,9 @@ public class SgService {
                     else
                         days = 28;
             }
-            sql += " where jarq BETWEEN '" + selectedTime + "-1' and '" + selectedTime + "-" + days+"'";
+            sql += " where cxrq BETWEEN '" + selectedTime + "-1' and '" + selectedTime + "-" + days+"'";
         }
-
-        List<KyAccident> accident = bxDao.find(sql);//事故查询
-
-        result.setSuccess("查询成功", accident);
-        return result;
+        return sql;
     }
 
     public Result exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -268,7 +546,7 @@ public class SgService {
 
         List<List<Object>> yijue = sheets[0];
         List<List<Object>> chuxian = sheets[1];
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
         for (int i = 0; i < chuxian.size(); i++) {
             List<Object> lo = chuxian.get(i);
@@ -308,6 +586,7 @@ public class SgService {
             accident.setCph(String.valueOf(lo.get(32)));//车牌号
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
+            accident.setCreateDate(sdf.format(new Date()));
             bxDao.save(accident);
            // System.out.println("打印信息1--> "+accident.toString());
         }
