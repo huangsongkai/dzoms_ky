@@ -57,13 +57,13 @@ public class SgService {
             if(!StringUtils.isEmpty(mapSG.get("cph"))){
                 sql += "where cph = '"+mapSG.get("cph")+"'";
                 sql = getSQLConditions(mapSG.get("cxStartTime"),mapSG.get("cxEndTime"), sql," and cxrq");
-                sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," and createDate");
+                sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," and createTime");
             }else {  //cph为空
                 if(!StringUtils.isEmpty(mapSG.get("cxStartTime"))&&!StringUtils.isEmpty(mapSG.get("cxEndTime"))){
                     sql += " where cxrq BETWEEN '"+mapSG.get("cxStartTime")+"' and '"+mapSG.get("cxEndTime")+"'";
-                    sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," and createDate");
+                    sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," and createTime");
                 }else {  //cph为空，出险时间为空
-                    sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," where createDate");
+                    sql = getSQLConditions(mapSG.get("startCreateDateTime"),mapSG.get("endCreateDateTime"), sql," where createTime");
                 }
             }
         }else {
@@ -582,7 +582,7 @@ public class SgService {
             accident.setCph(String.valueOf(lo.get(32)));//车牌号
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
-            accident.setCreateDate(sdf.format(new Date()));
+            accident.setCreateTime(sdf.format(new Date()));
             bxDao.save(accident);
            // System.out.println("打印信息1--> "+accident.toString());
         }

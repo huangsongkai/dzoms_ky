@@ -2168,15 +2168,15 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
         }
       }, {
         title: '上传时间',
-        dataIndex: 'create_date',
-        key: 'create_date',
+        dataIndex: 'createTime',
+        key: 'createTime',
         width: 90,
-        filters: filterData.create_date,
+        filters: filterData.createTime,
         sorter: function sorter(a, b) {
-          return new _Sorter2.default().sort(a.create_date, b.create_date);
+          return new _Sorter2.default().sort(a.createTime, b.createTime);
         },
         onFilter: function onFilter(value, record) {
-          return record.create_date.indexOf(value) === 0;
+          return record.createTime.indexOf(value) === 0;
         }
       }];
       var self = this;
