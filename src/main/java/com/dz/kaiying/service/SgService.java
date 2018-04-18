@@ -74,10 +74,6 @@ public class SgService {
         List<KyAccident> accident = bxDao.find(sql);//事故查询
         if(accident.size()>0){
             sgList =new ArrayList<>(accident);
-            /*sgMap.clear();
-            for (int i = 1; i <= accident.size(); i++) {    //存入缓存
-                sgMap.put(i, accident.get(i - 1));
-            }*/
         }
         result.setSuccess("查询成功", accident);
         return result;

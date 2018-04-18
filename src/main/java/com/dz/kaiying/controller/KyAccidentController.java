@@ -33,14 +33,16 @@ public class KyAccidentController {
         Map<String,String> map = new HashMap<>();
         String cph =request.getParameter("cph");
         isEmptyParas(map,"cph",cph);
-        String cxStartTime =request.getParameter("cxStartTime");
-        isEmptyParas(map,"cxStartTime",cxStartTime);
-        String cxEndTime =request.getParameter("cxEndTime");
-        isEmptyParas(map,"cxEndTime",cxEndTime);
-        String StartCreateDateTime =request.getParameter("startCreateDateTime");
-        isEmptyParas(map,"startCreateDateTime",StartCreateDateTime);
-        String endCreateDateTime =request.getParameter("endCreateDateTime");
-        isEmptyParas(map,"endCreateDateTime",endCreateDateTime);
+        String[] cxStartTime =request.getParameterValues("cxrq");
+        if (cxStartTime != null && cxStartTime[0] != "") {
+            isEmptyParas(map, "cxStartTime", cxStartTime[0]);
+            isEmptyParas(map, "cxEndTime", cxStartTime[1]);
+        }
+        String[] StartCreateDateTime =request.getParameterValues("createTime");
+        if (StartCreateDateTime != null && StartCreateDateTime[0] != "") {
+            isEmptyParas(map, "startCreateDateTime", StartCreateDateTime[0]);
+            isEmptyParas(map, "endCreateDateTime", StartCreateDateTime[1]);
+        }
         return sgService.querysg(request,map);
     }
     private void isEmptyParas(Map<String, String> map, String mapName, String value) {

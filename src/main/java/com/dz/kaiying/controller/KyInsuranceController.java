@@ -37,9 +37,12 @@ public class KyInsuranceController {
     public Result querybx (HttpServletRequest request) throws Exception {
         Map<String,String> map=new HashMap<>();
         String bdh = request.getParameter("bdh");
+        String[] createTimes = request.getParameterValues("createTime");
         isEmptyParas(map,"bdh", bdh);
-        isEmptyParas(map,"createTime", request.getParameter("createTime"));
-        isEmptyParas(map,"endTime", request.getParameter("endTime"));
+        if (createTimes != null && createTimes[0] != "") {
+            isEmptyParas(map, "createTime", createTimes[0]);
+            isEmptyParas(map, "endTime", createTimes[1]);
+        }
         isEmptyParas(map,"cph", request.getParameter("carNum")); //传值需要修改
         return bxService.querybx(map);
     }
