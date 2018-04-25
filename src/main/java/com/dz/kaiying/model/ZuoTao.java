@@ -2,6 +2,7 @@ package com.dz.kaiying.model;
 
 
 import javax.persistence.*;
+import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -12,7 +13,7 @@ public class ZuoTao implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id")//车牌号
+	@Column(name = "id")//
 	private Integer id;
 
 	@Column(name = "che_pai")//车牌号
@@ -30,9 +31,19 @@ public class ZuoTao implements java.io.Serializable {
 	@Column(name = "da_zuo_wu_zi")//大坐污渍
 	private String dzwz;
 
-	@Column(name = "yuan_gong_gong_hao")
+	@Column(name = "yuan_gong_gong_hao")//员工工号
 	private String employeeId;
 
+	@Column(name = "createTime")//换座时间
+	private String createTime;
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 
 	public Integer getId() {
 		return id;

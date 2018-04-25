@@ -14,9 +14,9 @@
 </body>
 <script type="text/javascript">
     var pageUrls ={
-        employeeInfoUrl : "/employeeJobNumber", //get 员工的id和name
-        chepaihao:"/chepaihaoA",  //get 车牌号
-        submitUrl:"/DZOMS/ky/item/zuotao"     //post 提交
+        //employeeInfoUrl : "/employeeJobNumber", //get 员工的id和name
+        chepaihao:"/DZOMS/ky/zt/chepaihaoA",  //get 车牌号
+        submitUrl:"/DZOMS/ky/zt/zuotao"     //post 提交
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>

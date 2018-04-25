@@ -6,8 +6,14 @@ import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.ExportExcelUtil;
 import com.dz.kaiying.util.ImportExcelUtil;
 import com.dz.kaiying.util.Result;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -33,10 +39,122 @@ public class BxService {
 
     private Result result = new Result();
 
-    public Result querybx() {
-        List insurance = bxDao.find("from KyInsurance");
+    private static Map<Integer,KyInsurance> insuranceMap =new HashMap<>();
+
+    /**
+     * 保险列表查询
+     * @param map
+     * @return
+     */
+    public Result querybx(Map<String,String> map) {
+        String sql = "from KyInsurance";
+        boolean joinSql = false;
+        for (String key:map.keySet()) {
+            if(key.equals("bdh") || key.equals("cph")) {
+                sql += " where " + key + " = '" + map.get(key) + "'";
+                joinSql =true;
+                break;
+            }
+        }
+        if(joinSql && !StringUtils.isEmpty(map.get("createTime"))){
+            sql += " and bxzq BETWEEN '"+map.get("createTime")+"' and '"+map.get("endTime")+"'";
+        }
+        if(!joinSql && !StringUtils.isEmpty(map.get("createTime"))){
+            sql += " where bxzq BETWEEN '"+map.get("createTime")+"' and '"+map.get("endTime")+"'";
+        }
+        List<KyInsurance> insurance = bxDao.find(sql);
+
+        if(insurance.size()>0) {
+            insuranceMap.clear();
+            for (int i = 1; i <= insurance.size(); i++) {    //存入缓存
+                insuranceMap.put(i, insurance.get(i - 1));
+            }
+        }
         result.setSuccess("查询成功", insurance);
         return result;
+    }
+
+    /**
+     * 保险列表下载
+     */
+    public void insuranceExportExcl(HttpServletResponse rep)throws Exception{
+        if (insuranceMap.size()==0)return;   //如果为空无法下载
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
+        Row row = sheet.createRow((short) 0);
+        Cell cel0=row.createCell(0);
+        cel0.setCellStyle(style);
+        cel0.setCellValue("序号");
+        Cell cel1=row.createCell(1);
+        cel1.setCellStyle(style);
+        cel1.setCellValue("保单号");
+        Cell cel2=row.createCell(2);
+        cel2.setCellStyle(style);
+        cel2.setCellValue("车牌号");
+        Cell cel3=row.createCell(3);
+        cel3.setCellStyle(style);
+        cel3.setCellValue("被保险人");
+        Cell cel4=row.createCell(4);
+        cel4.setCellStyle(style);
+        cel4.setCellValue("保险起期");
+        ;
+        Cell cel5=row.createCell(5);
+        cel5.setCellStyle(style);
+        cel5.setCellValue("保险止期");
+
+        Cell cel6=row.createCell(6);
+        cel6.setCellStyle(style);
+        cel6.setCellValue("总保额");
+
+        Cell cel7=row.createCell(7);
+        cel7.setCellStyle(style);
+        cel7.setCellValue("总保费");
+
+        Cell cel8=row.createCell(8);
+        cel8.setCellStyle(style);
+        cel8.setCellValue("录入时间");
+
+        for (Map.Entry<Integer, KyInsurance> entry : insuranceMap.entrySet()) {
+            Row row1 = sheet.createRow(entry.getKey());
+            row1.createCell(0).setCellValue(entry.getValue().getId());
+            sheet.autoSizeColumn(0,true);
+            row1.createCell(1).setCellValue(entry.getValue().getBdh());
+            sheet.autoSizeColumn(1,true);
+            row1.createCell(2).setCellValue(entry.getValue().getCph());
+            sheet.autoSizeColumn(2,true);
+            row1.createCell(3).setCellValue(entry.getValue().getBbxr());
+            sheet.autoSizeColumn(3,true);
+            row1.createCell(4).setCellValue(entry.getValue().getBxqq());
+            sheet.autoSizeColumn(4,true);
+            row1.createCell(5).setCellValue(entry.getValue().getBxzq());
+            sheet.autoSizeColumn(5,true);
+            row1.createCell(6).setCellValue(entry.getValue().getZbe());
+            sheet.autoSizeColumn(6,true);
+            row1.createCell(7).setCellValue(entry.getValue().getZbf());
+            sheet.autoSizeColumn(7,true);
+            row1.createCell(8).setCellValue(entry.getValue().getLrsj());
+            sheet.autoSizeColumn(8,true);
+        }
+        EmpExportService export=new EmpExportService();
+        export.IOWriteExcel(rep,wb,"保险列表.xls");
+    }
+    /**
+     * 设置Excel字体格式
+     * @param wb
+     * @return
+     */
+    private HSSFCellStyle getHssfCellStyle(HSSFWorkbook wb) {
+        HSSFFont font =  wb.createFont();
+        font.setFontHeightInPoints((short)12);            //设置字体的大小
+        font.setFontName("微软雅黑");                        //设置字体的样式，如：宋体、微软雅黑等
+        font.setItalic(false);                            //斜体true为斜体
+        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);    //对文中进行加粗
+        font.setColor(HSSFColor.BLACK.index);            //设置字体的颜色
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        style.setFont(font);
+        return style;
     }
 
     public Result exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -168,8 +286,20 @@ public class BxService {
             }
             tbdh.put(String.valueOf(objString),obj);
         }
+        //查询库中数据做对比
+        List<KyInsurance> kInsurance = bxDao.find("from KyInsurance");
         //该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
         for (List<Object> lo:tbdh.values()) {
+            boolean equal = false;
+            for (KyInsurance kyi:kInsurance) {
+                if(kyi.getBdh().equals(lo.get(1))){
+                    equal =true;
+                    break;
+                }
+            }
+            if(equal){
+                continue;
+            }
             KyInsurance insurance = new KyInsurance();
             insurance.setTbdh(String.valueOf(lo.get(0)));
             insurance.setBdh(String.valueOf(lo.get(1)));

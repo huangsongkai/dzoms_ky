@@ -4,7 +4,6 @@ package com.dz.kaiying.model;
 import javax.persistence.*;
 import java.util.Date;
 
-import static com.ibm.media.codec.audio.g723.G723Tables.s;
 import static javax.persistence.GenerationType.IDENTITY;
 
 
@@ -99,6 +98,8 @@ public class EvaluateDetail implements java.io.Serializable {
 
     @Column(name = "regect_group")
     private String regect_group;
+
+
 
 
     public String getRegect_self() {
@@ -316,5 +317,4 @@ public class EvaluateDetail implements java.io.Serializable {
     public void setSortId(int sortId) {
         this.sortId = sortId;
     }
-
 }

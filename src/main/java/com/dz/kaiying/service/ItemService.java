@@ -311,6 +311,7 @@ public class ItemService extends BaseService{
     }
 
     public Result savezuotao(SaveZuoTaoDTO saveZuoTaoDTO) {
+        //SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SaveZuoTaoDetailDTO saveZuoTaoDetailDTO = saveZuoTaoDTO.getIssueType();
         ZuoTao zuotao = new ZuoTao();
         zuotao.setCph(saveZuoTaoDTO.getCph());
@@ -319,6 +320,10 @@ public class ItemService extends BaseService{
         zuotao.setDzwz(saveZuoTaoDetailDTO.getDzwz()+"");
         zuotao.setXzps(saveZuoTaoDetailDTO.getXzps()+"");
         zuotao.setXzwz(saveZuoTaoDetailDTO.getXzwz()+"");
+        if (saveZuoTaoDTO.getCreateDate()!=null)
+            zuotao.setCreateTime(saveZuoTaoDTO.getCreateDate());
+        else
+            zuotao.setCreateTime("");
         zuoTaoDao.save(zuotao);
         result.setSuccess("保存成功",null);
         return result;
