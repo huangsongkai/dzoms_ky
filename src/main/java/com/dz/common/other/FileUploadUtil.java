@@ -44,7 +44,11 @@ public class FileUploadUtil extends HttpServlet {
 			while(it.hasNext()){
 				String filename = it.next();
 				MultipartFile mfile = multiReq.getFile(filename);
-				mfile.transferTo(new File(System.getProperty("com.dz.root")+"/tmp/",seq));
+
+				File file = new File(System.getProperty("com.dz.root")+"/tmp/",seq);
+				System.out.println(file.getAbsolutePath());
+				mfile.transferTo(file);
+				System.out.println("文件生成"+file.exists());
 				map.put(seq, mfile.getOriginalFilename());
 			}
 		}catch(Exception e){

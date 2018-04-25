@@ -164,10 +164,11 @@ function toBeforePage(){
 			</div>
 		</div>
 
-<form action="/DZOMS/common/selectToList" method="post" name="vehicleSele">
+<form action="/DZOMS/common/selectToList2" method="post" name="vehicleSele">
     <s:hidden name="condition" />
+	<s:hidden name="column" />
     <input type="hidden" name="url" value="/driver/meeting/meeting_anaylse_result.jsp" />
-		<input type="hidden" name="className" value="com.dz.module.driver.meeting.MeetingCheck"/>
+		<%--<input type="hidden" name="className" value="com.dz.module.driver.meeting.MeetingCheck"/>--%>
     <s:hidden name="currentPage" value="%{#request.page.currentPage}" id="currentPage"></s:hidden>
 </form>
 		
