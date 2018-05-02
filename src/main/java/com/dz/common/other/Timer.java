@@ -68,13 +68,18 @@ public class Timer {
 						bis.read(seqbuff);
 						String seq = new String(seqbuff,"UTF-16LE");
 						System.out.println("seq:"+seq);
-						
 						String path = FileTcpUpload.seqMap.get(seq);
+						System.out.println("filepath: "+path);
 						File file = new File(System.getProperty("com.dz.root")+path);
-						if(!file.getParentFile().exists())
-							file.getParentFile().mkdirs();
-						if(!file.exists())
-							file.createNewFile();
+						if(!file.getParentFile().exists()){
+							boolean success = file.getParentFile().mkdirs();
+							System.out.println("mkdir success:"+success);
+						}
+							
+						if(!file.exists()){
+							boolean success = file.createNewFile();
+							System.out.println("create file success:"+success);
+						}
 						
 						BufferedOutputStream os = new BufferedOutputStream(FileUtils.openOutputStream(file));
 						
@@ -90,7 +95,6 @@ public class Timer {
 						bis.close();
 						
 						FileTcpUpload.seqMap.remove(seq);
-						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

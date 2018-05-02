@@ -44,6 +44,8 @@ public class FileTcpUpload extends BaseAction{
 		while(seqMap.containsKey(seq)) seq = getRandomString(30);
 		seqMap.put(seq, path);
 
+		System.out.println("bind path to seq: "+seq+" --> "+path);
+
 		ServletActionContext.getResponse().setContentType("application/json");
 		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
 		PrintWriter out = ServletActionContext.getResponse().getWriter();
@@ -58,7 +60,11 @@ public class FileTcpUpload extends BaseAction{
 		ServletActionContext.getResponse().setContentType("application/json");
 		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
 		PrintWriter out = ServletActionContext.getResponse().getWriter();
-		out.print(file.exists());
+		boolean isexist = file.exists();
+
+		System.out.println("file "+ path +" exist: "+isexist);
+
+		out.print(isexist);
 		out.flush();
 		out.close();
 	}
