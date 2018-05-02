@@ -19,16 +19,13 @@
         <div id="insuranceList"></div>
     </div>
 </body>
+
 <script type="text/javascript">
     var pageUrls ={
-        insuranceListInfoUrl :"/DZOMS/ky/bx/querybx",
-    }
-</script>
-<script type="text/javascript">
-    var pageUrls ={
-        insuranceListInfoUrl :"/DZOMS/ky/bx/querybx",
+        insuranceListInfoUrl :"/DZOMS/ky/bx/insuranceListInfo",
         downloadUrl:"/DZOMS/ky/bx/insurance/download",
-        options:[{field:'carNum', alias:'车牌号'}, {field:'bdh', alias:'保单号'}]
+        /*options:[{field:'chepaihaoA', alias:'车牌号'}, {field:'bdh', alias:'保单号'}]*/
+        chepaihao:"/DZOMS/ky/item/chepaihaoA"
     }
 </script>
 <script src="/DZOMS/ky/js/commonV3.js"></script>
