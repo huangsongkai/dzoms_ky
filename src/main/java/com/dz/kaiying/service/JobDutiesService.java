@@ -12,6 +12,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -593,10 +594,10 @@ public class JobDutiesService extends BaseService{
             List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
             if (evaluateDetailList.size() != 0 ){
                 String evaluateName = evaluateDetailList.get(0).getEvaluateName();
-                List<Object>  lsxgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)   from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%指令性工作%'"+dataSql+"");//临时性工作统计
-                List<Object>  rcgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName not like '%行为规范%'  and childProName not like '%指令性工作%'     "+dataSql+" ");//日常工作统计
-                List<Object>  xwgf= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%行为规范%'  "+dataSql);//行为规范工作统计
-                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+dataSql);//合计分数
+                List<Object>  lsxgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)   from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null  and childProName like '%指令性工作%'"+dataSql+"");//临时性工作统计
+                List<Object>  rcgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null   and childProName not like '%行为规范%'  and childProName not like '%指令性工作%'     "+dataSql+" ");//日常工作统计
+                List<Object>  xwgf= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null   and childProName like '%行为规范%'  "+dataSql);//行为规范工作统计
+                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null  "+dataSql);//合计分数
                 for (EvaluateDetail evaluateDetail : evaluateDetailList) {
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(evaluateDetail.getRemarks())){
                         remarks += evaluateDetail.getRemarks()+",";
@@ -669,6 +670,43 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("查询成功",jobStatisticsMonthDTOList);
         return result;
     }
+
+    //判断是否是闰年闰月
+    private Integer getMonthTime(String selectedTime, String year, String month, String sql) {
+        int days = 30;
+        if(!StringUtils.isEmpty(selectedTime)){
+            String[] str = selectedTime.split("-");
+            year = str[0];
+            month = str[1];
+        }
+        if(year != "" && month != ""){
+            boolean runnian = (Integer.valueOf(year)%4 == 0) && (Integer.valueOf(year)%100 != 0) || (Integer.valueOf(year)%400 == 0);
+            switch(Integer.valueOf(month)){
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    days = 31;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    days = 30;
+                    break;
+                default:
+                    if(runnian)
+                        days = 29;
+                    else
+                        days = 28;
+            }
+        }
+        return days;
+    }
+
     public Result yearStatistics() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         List<JobStatisticsYearDTO> jobStatisticsYearDTOList = new ArrayList<>();
@@ -686,7 +724,7 @@ public class JobDutiesService extends BaseService{
                 List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
                 if (evaluateDetailList.size() != 0) {
                     String evaluateName = evaluateDetailList.get(0).getEvaluateName();
-                    List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + dataSql);//合计分数
+                    List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'  and groupDate is not null  " + dataSql);//合计分数
                     if ((Double) total.get(0) == 0){
                         yearTotal1+=0;
                     }else{
