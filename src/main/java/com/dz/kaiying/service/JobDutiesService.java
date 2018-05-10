@@ -616,7 +616,13 @@ public class JobDutiesService extends BaseService{
                 jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
             }else{
                     if ("汤伟丽".equals(user.getUname())){
-                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(sum(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        List<Object>  personNum= evaluateDetailDao.find("select distinct evaluateName from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        int personCount = 1;
+                        if(personNum.size()!=0){
+                            personCount = personNum.size();
+                        }
+                        double doubleScore = getDoublePersonScore(total, personCount);
                         for (EvaluateDetail evaluateDetail : evaluateDetailList) {
                             remarks += evaluateDetail.getRemarks()+",";
                         }
@@ -625,7 +631,7 @@ public class JobDutiesService extends BaseService{
                         jobStatisticsMonthDTO.setName(user.getUname());
                         jobStatisticsMonthDTO.setDepartment(user.getDepartment());
                         KpScore kpScore = new KpScore();
-                        kpScore.setTotal((Double) total.get(0)+100.00);
+                        kpScore.setTotal(doubleScore+100.00);
                         kpScore.setLsxgz(0.0);
                         kpScore.setRcgz(0.0);
                         kpScore.setXwgf(0.0);
@@ -647,16 +653,22 @@ public class JobDutiesService extends BaseService{
 
                     }
                     if ("王星".equals(user.getUname())){
-                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')"+dataSql);//运营管理部平均分
-                        List<Object>  cdh= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '陈东慧')"+dataSql);//运营管理部平均分
-                        List<Object>  lb= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '刘波')"+dataSql);//运营管理部平均分
-                        List<Object>  xb= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '夏斌')"+dataSql);//运营管理部平均分
+                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')"+dataSql);//运营管理部平均分
+                        List<Object>  personNum= evaluateDetailDao.find("select distinct evaluateName from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        int personCount = 1;
+                        if(personNum.size()!=0){
+                            personCount = personNum.size();
+                        }
+                        double doubleScore = getDoublePersonScore(total, personCount);  //汤伟丽得分
+                        List<Object>  cdh= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '陈东慧')"+dataSql);//运营管理部平均分
+                        List<Object>  lb= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '刘波')"+dataSql);//运营管理部平均分
+                        List<Object>  xb= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '夏滨')"+dataSql);//运营管理部平均分
                         JobStatisticsMonthDTO jobStatisticsMonthDTO = new JobStatisticsMonthDTO();
                         jobStatisticsMonthDTO.setRemarks(remarks);
                         jobStatisticsMonthDTO.setName(user.getUname());
                         jobStatisticsMonthDTO.setDepartment(user.getDepartment());
                         KpScore kpScore = new KpScore();
-                        double avg = ((Double) total.get(0) + (Double) cdh.get(0) + (Double) lb.get(0) + (Double) xb.get(0)) / 4;
+                        double avg = (doubleScore+ (Double) cdh.get(0) + (Double) lb.get(0) + (Double) xb.get(0)) / 5;
                         kpScore.setTotal(m1(avg)+100.00);
                         kpScore.setLsxgz(0.0);
                         kpScore.setRcgz(0.0);
@@ -669,6 +681,17 @@ public class JobDutiesService extends BaseService{
         }
         result.setSuccess("查询成功",jobStatisticsMonthDTOList);
         return result;
+    }
+
+    /**
+     * 转换成double数值
+     * @param total
+     * @param personCount
+     * @return double类型值
+     */
+    private double getDoublePersonScore(List<Object> total, int personCount) {
+        BigDecimal bg = new BigDecimal((Double) total.get(0)/personCount);
+        return bg.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     //判断是否是闰年闰月
@@ -725,6 +748,13 @@ public class JobDutiesService extends BaseService{
                 if (evaluateDetailList.size() != 0) {
                     String evaluateName = evaluateDetailList.get(0).getEvaluateName();
                     List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'  and groupDate is not null  " + dataSql);//合计分数
+                   /* List<Object>  personNum= evaluateDetailDao.find("select distinct evaluateName from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                    int personCount = 1;
+                    if(personNum.size()!=0){
+                        personCount = personNum.size();
+                    }
+                    double doubleScore = getDoublePersonScore(total, personCount);
+                    */
                     if ((Double) total.get(0) == 0){
                         yearTotal1+=0;
                     }else{
