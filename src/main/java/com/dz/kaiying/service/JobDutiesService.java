@@ -741,9 +741,9 @@ public class JobDutiesService extends BaseService{
             jobStatisticsYearDTO.setName(user.getUname());
             jobStatisticsYearDTO.setDepartment(user.getDepartment());
             for (int j = 1; j <= 12; j++) {
-                String dataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-" + j + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-" + j + "-28 00:00:00' ";
+                String dataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-0" + j + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-0" + j + "-28 00:00:00' ";
                 String yearDataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-01-01 00:00:00' AND ' " + sdf.format(new Date()) + "-12-30 00:00:00' ";
-                String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   "+yearDataSql;
+                String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   "+ dataSql;//yearDataSql;
                 List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
                 if (evaluateDetailList.size() != 0) {
                     String evaluateName = evaluateDetailList.get(0).getEvaluateName();
@@ -756,14 +756,15 @@ public class JobDutiesService extends BaseService{
                     double doubleScore = getDoublePersonScore(total, personCount);
                     */
                     if ((Double) total.get(0) == 0){
-                        yearTotal1+=0;
+                        yearTotal1+=100.00;
                     }else{
-                        yearTotal1+=(Double) total.get(0)+100;
+                        yearTotal1+=(Double) total.get(0)+100.00;
                     }
                     if (j == 1) {
                         jobStatisticsYearDTO.setJanuary((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setJanuary(0.00);
+                            jobStatisticsYearDTO.setJanuary(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -772,7 +773,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 2) {
                         jobStatisticsYearDTO.setFebruary((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setFebruary(0.00);
+                            jobStatisticsYearDTO.setFebruary(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -781,6 +783,7 @@ public class JobDutiesService extends BaseService{
                         jobStatisticsYearDTO.setMarch((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setMarch(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -788,7 +791,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 4) {
                         jobStatisticsYearDTO.setApril((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setApril(0.00);
+                            jobStatisticsYearDTO.setApril(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -796,7 +800,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 5) {
                         jobStatisticsYearDTO.setMay((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setMay(0.00);
+                            jobStatisticsYearDTO.setMay(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -804,7 +809,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 6) {
                         jobStatisticsYearDTO.setJune((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setJune(0.00);
+                            jobStatisticsYearDTO.setJune(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -812,7 +818,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 7) {
                         jobStatisticsYearDTO.setJuly((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setJuly(0.00);
+                            jobStatisticsYearDTO.setJuly(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -820,7 +827,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 8) {
                         jobStatisticsYearDTO.setAugust((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setAugust(0.00);
+                            jobStatisticsYearDTO.setAugust(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -828,7 +836,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 9) {
                         jobStatisticsYearDTO.setSeptember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setSeptember(0.00);
+                            jobStatisticsYearDTO.setSeptember(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -836,7 +845,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 10) {
                         jobStatisticsYearDTO.setOctober((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setOctober(0.00);
+                            jobStatisticsYearDTO.setOctober(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -844,7 +854,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 11) {
                         jobStatisticsYearDTO.setNovember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setNovember(0.00);
+                            jobStatisticsYearDTO.setNovember(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -852,7 +863,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 12) {
                         jobStatisticsYearDTO.setDecember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setDecember(0.00);
+                            jobStatisticsYearDTO.setDecember(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -860,7 +872,8 @@ public class JobDutiesService extends BaseService{
                 }
 
             }
-            jobStatisticsYearDTO.setTotal(yearTotal1);
+            DecimalFormat df = new DecimalFormat("#.00");
+            jobStatisticsYearDTO.setTotal(Double.valueOf(df.format(yearTotal1)));
             if (yearN == 0 || yearTotal1 == 0){
                 jobStatisticsYearDTO.setAverage(0.00);
             }else{
