@@ -740,9 +740,29 @@ public class JobDutiesService extends BaseService{
             JobStatisticsYearDTO jobStatisticsYearDTO = new JobStatisticsYearDTO();
             jobStatisticsYearDTO.setName(user.getUname());
             jobStatisticsYearDTO.setDepartment(user.getDepartment());
+            Date todayYear =new Date();
+            Calendar   calendar   =   new   GregorianCalendar();
+            calendar.setTime(todayYear);
+            calendar.add(calendar.YEAR, -1);
+            todayYear =calendar.getTime();
+            Date date =new Date();
+            Date nextYear =new Date();
+            Calendar   calendar2   =   new   GregorianCalendar();
+            calendar2.setTime(nextYear);
+            calendar2.add(calendar2.YEAR, 1);
+            nextYear =calendar2.getTime();
             for (int j = 1; j <= 12; j++) {
-                String dataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-0" + j + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-0" + j + "-28 00:00:00' ";
-                String yearDataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-01-01 00:00:00' AND ' " + sdf.format(new Date()) + "-12-30 00:00:00' ";
+                String dataSql ="";
+                if(j == 1){
+                   /* dataSql = "   and groupDate BETWEEN '" + sdf.format(today) + "-12-01 00:00:00' AND ' " + sdf.format(today) + "-12-28 00:00:00' ";
+                }else  if(j <= 10)  {*/
+                    dataSql = "   and groupDate BETWEEN '" + sdf.format(date) + "-0" + (j+1) + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-0" + (j+1) + "-28 00:00:00' ";
+                }else if(j < 12){
+                    dataSql = "   and groupDate BETWEEN '" + sdf.format(date) + "-" + (j+1) + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-" + (j+1) + "-28 00:00:00' ";
+                }else {
+                    dataSql = "   and groupDate BETWEEN '" + sdf.format(nextYear) + "-01-01 00:00:00' AND ' " + sdf.format(nextYear) + "-01-28 00:00:00' ";
+                }
+                //String yearDataSql = "   and groupDate BETWEEN '" + sdf.format(todayYear) + "-12-01 00:00:00' AND ' " + sdf.format(new Date()) + "-11-30 00:00:00' ";
                 String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   "+ dataSql;//yearDataSql;
                 List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
                 if (evaluateDetailList.size() != 0) {
