@@ -407,7 +407,8 @@ $(document).ready(function(){
                     </label>
                 </div>
                 <div class="field" >
-                    <s:textfield cssClass="input datepick"  name="driver.businessApplyCancelTime" readonly="readonly"></s:textfield>
+                    <input  class="input" readonly="readonly" name="driver.businessApplyCancelTime" value="<%=(new  java.text.SimpleDateFormat("yyyy/MM/dd")).format(new java.util.Date()) %>"/>
+                    <%--<s:textfield cssClass="input datepick"  name="driver.businessApplyCancelTime" ></s:textfield>--%>
                 </div>
             </div>
             <br/>
@@ -421,7 +422,8 @@ $(document).ready(function(){
                     <input class="input" type="text" disabled="disabled" value="<%=((User)session.getAttribute("user")).getUname()%>" />
                     <input type="hidden" name="driver.businessApplyCancelRegistrant" value="<%=((User)session.getAttribute("user")).getUid()%>"/>
                 </div>
-            </div>  <div class="form-group">
+            </div>
+                <div class="form-group" style="display: none;">
             <div class="label padding">
                 <label>
                     申请时间
