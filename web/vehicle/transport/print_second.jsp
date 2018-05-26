@@ -118,7 +118,7 @@ $(document).ready(function(){
 				<td width="9%"><span class="no-print">燃油种类</span></td>
 				<td width="12%"><strong><nobr><s:property value="%{#p_carMode.fuel}"/></nobr></strong></td>
 				<td width="7%"><span class="no-print">车型</span></td>
-				<td width="12%"><strong><s:property value="%{#v.carMode}"/></strong></td>
+				<td width="12%"><strong>捷达</strong></td>
 			</tr>
 			<tr style="height:8mm">
 				<td ><span class="no-print">发动机号</span></td>
