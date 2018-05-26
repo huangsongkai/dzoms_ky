@@ -12,6 +12,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -593,10 +594,10 @@ public class JobDutiesService extends BaseService{
             List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
             if (evaluateDetailList.size() != 0 ){
                 String evaluateName = evaluateDetailList.get(0).getEvaluateName();
-                List<Object>  lsxgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)   from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%指令性工作%'"+dataSql+"");//临时性工作统计
-                List<Object>  rcgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName not like '%行为规范%'  and childProName not like '%指令性工作%'     "+dataSql+" ");//日常工作统计
-                List<Object>  xwgf= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and childProName like '%行为规范%'  "+dataSql);//行为规范工作统计
-                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"'"+dataSql);//合计分数
+                List<Object>  lsxgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)   from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null  and childProName like '%指令性工作%'"+dataSql+"");//临时性工作统计
+                List<Object>  rcgz= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null   and childProName not like '%行为规范%'  and childProName not like '%指令性工作%'     "+dataSql+" ");//日常工作统计
+                List<Object>  xwgf= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2)  from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null   and childProName like '%行为规范%'  "+dataSql);//行为规范工作统计
+                List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '"+evaluateName+"' and groupDate is not null  "+dataSql);//合计分数
                 for (EvaluateDetail evaluateDetail : evaluateDetailList) {
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(evaluateDetail.getRemarks())){
                         remarks += evaluateDetail.getRemarks()+",";
@@ -615,7 +616,13 @@ public class JobDutiesService extends BaseService{
                 jobStatisticsMonthDTOList.add(jobStatisticsMonthDTO);
             }else{
                     if ("汤伟丽".equals(user.getUname())){
-                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(sum(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        List<Object>  personNum= evaluateDetailDao.find("select distinct evaluateName from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        int personCount = 1;
+                        if(personNum.size()!=0){
+                            personCount = personNum.size();
+                        }
+                        double doubleScore = getDoublePersonScore(total, personCount);
                         for (EvaluateDetail evaluateDetail : evaluateDetailList) {
                             remarks += evaluateDetail.getRemarks()+",";
                         }
@@ -624,7 +631,7 @@ public class JobDutiesService extends BaseService{
                         jobStatisticsMonthDTO.setName(user.getUname());
                         jobStatisticsMonthDTO.setDepartment(user.getDepartment());
                         KpScore kpScore = new KpScore();
-                        kpScore.setTotal((Double) total.get(0)+100.00);
+                        kpScore.setTotal(doubleScore+100.00);
                         kpScore.setLsxgz(0.0);
                         kpScore.setRcgz(0.0);
                         kpScore.setXwgf(0.0);
@@ -646,16 +653,22 @@ public class JobDutiesService extends BaseService{
 
                     }
                     if ("王星".equals(user.getUname())){
-                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')"+dataSql);//运营管理部平均分
-                        List<Object>  cdh= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '陈东慧')"+dataSql);//运营管理部平均分
-                        List<Object>  lb= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '刘波')"+dataSql);//运营管理部平均分
-                        List<Object>  xb= evaluateDetailDao.find("select round(COALESCE(AVG(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '夏斌')"+dataSql);//运营管理部平均分
+                        List<Object>  total= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')"+dataSql);//运营管理部平均分
+                        List<Object>  personNum= evaluateDetailDao.find("select distinct evaluateName from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                        int personCount = 1;
+                        if(personNum.size()!=0){
+                            personCount = personNum.size();
+                        }
+                        double doubleScore = getDoublePersonScore(total, personCount);  //汤伟丽得分
+                        List<Object>  cdh= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '陈东慧')"+dataSql);//运营管理部平均分
+                        List<Object>  lb= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '刘波')"+dataSql);//运营管理部平均分
+                        List<Object>  xb= evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where personId in (select uid from  User where uname = '夏滨')"+dataSql);//运营管理部平均分
                         JobStatisticsMonthDTO jobStatisticsMonthDTO = new JobStatisticsMonthDTO();
                         jobStatisticsMonthDTO.setRemarks(remarks);
                         jobStatisticsMonthDTO.setName(user.getUname());
                         jobStatisticsMonthDTO.setDepartment(user.getDepartment());
                         KpScore kpScore = new KpScore();
-                        double avg = ((Double) total.get(0) + (Double) cdh.get(0) + (Double) lb.get(0) + (Double) xb.get(0)) / 4;
+                        double avg = (doubleScore+ (Double) cdh.get(0) + (Double) lb.get(0) + (Double) xb.get(0)) / 5;
                         kpScore.setTotal(m1(avg)+100.00);
                         kpScore.setLsxgz(0.0);
                         kpScore.setRcgz(0.0);
@@ -669,6 +682,54 @@ public class JobDutiesService extends BaseService{
         result.setSuccess("查询成功",jobStatisticsMonthDTOList);
         return result;
     }
+
+    /**
+     * 转换成double数值
+     * @param total
+     * @param personCount
+     * @return double类型值
+     */
+    private double getDoublePersonScore(List<Object> total, int personCount) {
+        BigDecimal bg = new BigDecimal((Double) total.get(0)/personCount);
+        return bg.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    //判断是否是闰年闰月
+    private Integer getMonthTime(String selectedTime, String year, String month, String sql) {
+        int days = 30;
+        if(!StringUtils.isEmpty(selectedTime)){
+            String[] str = selectedTime.split("-");
+            year = str[0];
+            month = str[1];
+        }
+        if(year != "" && month != ""){
+            boolean runnian = (Integer.valueOf(year)%4 == 0) && (Integer.valueOf(year)%100 != 0) || (Integer.valueOf(year)%400 == 0);
+            switch(Integer.valueOf(month)){
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    days = 31;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    days = 30;
+                    break;
+                default:
+                    if(runnian)
+                        days = 29;
+                    else
+                        days = 28;
+            }
+        }
+        return days;
+    }
+
     public Result yearStatistics() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         List<JobStatisticsYearDTO> jobStatisticsYearDTOList = new ArrayList<>();
@@ -679,23 +740,51 @@ public class JobDutiesService extends BaseService{
             JobStatisticsYearDTO jobStatisticsYearDTO = new JobStatisticsYearDTO();
             jobStatisticsYearDTO.setName(user.getUname());
             jobStatisticsYearDTO.setDepartment(user.getDepartment());
+            Date todayYear =new Date();
+            Calendar   calendar   =   new   GregorianCalendar();
+            calendar.setTime(todayYear);
+            calendar.add(calendar.YEAR, -1);
+            todayYear =calendar.getTime();
+            Date date =new Date();
+            Date nextYear =new Date();
+            Calendar   calendar2   =   new   GregorianCalendar();
+            calendar2.setTime(nextYear);
+            calendar2.add(calendar2.YEAR, 1);
+            nextYear =calendar2.getTime();
             for (int j = 1; j <= 12; j++) {
-                String dataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-" + j + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-" + j + "-28 00:00:00' ";
-                String yearDataSql = "   and groupDate BETWEEN '" + sdf.format(new Date()) + "-01-01 00:00:00' AND ' " + sdf.format(new Date()) + "-12-30 00:00:00' ";
-                String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   "+yearDataSql;
+                String dataSql ="";
+                if(j == 1){
+                   /* dataSql = "   and groupDate BETWEEN '" + sdf.format(today) + "-12-01 00:00:00' AND ' " + sdf.format(today) + "-12-28 00:00:00' ";
+                }else  if(j <= 10)  {*/
+                    dataSql = "   and groupDate BETWEEN '" + sdf.format(date) + "-0" + (j+1) + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-0" + (j+1) + "-28 00:00:00' ";
+                }else if(j < 12){
+                    dataSql = "   and groupDate BETWEEN '" + sdf.format(date) + "-" + (j+1) + "-01 00:00:00' AND ' " + sdf.format(new Date()) + "-" + (j+1) + "-28 00:00:00' ";
+                }else {
+                    dataSql = "   and groupDate BETWEEN '" + sdf.format(nextYear) + "-01-01 00:00:00' AND ' " + sdf.format(nextYear) + "-01-28 00:00:00' ";
+                }
+                //String yearDataSql = "   and groupDate BETWEEN '" + sdf.format(todayYear) + "-12-01 00:00:00' AND ' " + sdf.format(new Date()) + "-11-30 00:00:00' ";
+                String sql = "from EvaluateDetail  where evaluateName is not null and personId =" + user.getUid() + " and groupDate is not null   "+ dataSql;//yearDataSql;
                 List<EvaluateDetail> evaluateDetailList = evaluateDetailDao.find(sql); //自评分主表 拼条件
                 if (evaluateDetailList.size() != 0) {
                     String evaluateName = evaluateDetailList.get(0).getEvaluateName();
-                    List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'" + dataSql);//合计分数
+                    List<Object> total = evaluateDetailDao.find("select round(COALESCE(SUM(groupScore),0),2) from EvaluateDetail where evaluateName = '" + evaluateName + "'  and groupDate is not null  " + dataSql);//合计分数
+                   /* List<Object>  personNum= evaluateDetailDao.find("select distinct evaluateName from EvaluateDetail where personId in (select uid from  User where department = '运营管理部')" +dataSql);//合计分数
+                    int personCount = 1;
+                    if(personNum.size()!=0){
+                        personCount = personNum.size();
+                    }
+                    double doubleScore = getDoublePersonScore(total, personCount);
+                    */
                     if ((Double) total.get(0) == 0){
-                        yearTotal1+=0;
+                        yearTotal1+=100.00;
                     }else{
-                        yearTotal1+=(Double) total.get(0)+100;
+                        yearTotal1+=(Double) total.get(0)+100.00;
                     }
                     if (j == 1) {
                         jobStatisticsYearDTO.setJanuary((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setJanuary(0.00);
+                            jobStatisticsYearDTO.setJanuary(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -704,7 +793,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 2) {
                         jobStatisticsYearDTO.setFebruary((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setFebruary(0.00);
+                            jobStatisticsYearDTO.setFebruary(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -713,6 +803,7 @@ public class JobDutiesService extends BaseService{
                         jobStatisticsYearDTO.setMarch((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
                             jobStatisticsYearDTO.setMarch(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -720,7 +811,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 4) {
                         jobStatisticsYearDTO.setApril((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setApril(0.00);
+                            jobStatisticsYearDTO.setApril(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -728,7 +820,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 5) {
                         jobStatisticsYearDTO.setMay((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setMay(0.00);
+                            jobStatisticsYearDTO.setMay(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -736,7 +829,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 6) {
                         jobStatisticsYearDTO.setJune((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setJune(0.00);
+                            jobStatisticsYearDTO.setJune(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -744,7 +838,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 7) {
                         jobStatisticsYearDTO.setJuly((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setJuly(0.00);
+                            jobStatisticsYearDTO.setJuly(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -752,7 +847,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 8) {
                         jobStatisticsYearDTO.setAugust((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setAugust(0.00);
+                            jobStatisticsYearDTO.setAugust(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -760,7 +856,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 9) {
                         jobStatisticsYearDTO.setSeptember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setSeptember(0.00);
+                            jobStatisticsYearDTO.setSeptember(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -768,7 +865,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 10) {
                         jobStatisticsYearDTO.setOctober((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setOctober(0.00);
+                            jobStatisticsYearDTO.setOctober(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -776,7 +874,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 11) {
                         jobStatisticsYearDTO.setNovember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setNovember(0.00);
+                            jobStatisticsYearDTO.setNovember(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -784,7 +883,8 @@ public class JobDutiesService extends BaseService{
                     if (j == 12) {
                         jobStatisticsYearDTO.setDecember((Double) total.get(0) + 100.00);
                         if ((Double) total.get(0) == 0.00){
-                            jobStatisticsYearDTO.setDecember(0.00);
+                            jobStatisticsYearDTO.setDecember(100.00);
+                            yearN++;
                         }else{
                             yearN++;
                         }
@@ -792,7 +892,8 @@ public class JobDutiesService extends BaseService{
                 }
 
             }
-            jobStatisticsYearDTO.setTotal(yearTotal1);
+            DecimalFormat df = new DecimalFormat("#.00");
+            jobStatisticsYearDTO.setTotal(Double.valueOf(df.format(yearTotal1)));
             if (yearN == 0 || yearTotal1 == 0){
                 jobStatisticsYearDTO.setAverage(0.00);
             }else{

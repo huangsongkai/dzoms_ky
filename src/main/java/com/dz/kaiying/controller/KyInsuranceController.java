@@ -32,7 +32,7 @@ public class KyInsuranceController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/querybx", method = RequestMethod.GET)
+    @RequestMapping(value = "/insuranceListInfo", method = RequestMethod.GET)
     @ResponseBody
     public Result querybx (HttpServletRequest request) throws Exception {
         Map<String,String> map=new HashMap<>();
@@ -43,7 +43,7 @@ public class KyInsuranceController {
             isEmptyParas(map, "createTime", createTimes[0]);
             isEmptyParas(map, "endTime", createTimes[1]);
         }
-        isEmptyParas(map,"cph", request.getParameter("carNum")); //传值需要修改
+        isEmptyParas(map,"cph", request.getParameter("cph")); //传值需要修改
         return bxService.querybx(map);
     }
     private void isEmptyParas(Map<String, String> map, String mapName, String carNumber) {
