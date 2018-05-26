@@ -69,6 +69,14 @@ public class Timer {
 						String seq = new String(seqbuff,"UTF-16LE");
 						System.out.println("seq:"+seq);
 						String path = FileTcpUpload.seqMap.get(seq);
+						for (int i = 0; i < 3 && path==null; i++) {
+							try {
+								Thread.sleep(300);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							path = FileTcpUpload.seqMap.get(seq);
+						}
 						System.out.println("filepath: "+path);
 						File file = new File(System.getProperty("com.dz.root")+path);
 						if(!file.getParentFile().exists()){

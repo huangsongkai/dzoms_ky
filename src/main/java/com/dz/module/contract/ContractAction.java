@@ -158,8 +158,11 @@ public class ContractAction extends BaseAction {
 			oldEndDate.add(Calendar.DATE, -1);
 			contract_old.setAbandonedFinalTime(oldEndDate.getTime());
 
-			chargeService.addAndDiv(contract_old.getId(),contract.getContractBeginDate(),hsession);
-			chargeService.setCleared(contract_old.getId(), contract.getContractBeginDate(),hsession);
+//			2018/05/25 转包前合同计费截至到新合同开始日期的前一天
+//			chargeService.addAndDiv(contract_old.getId(),contract.getContractBeginDate(),hsession);
+//			chargeService.setCleared(contract_old.getId(), contract.getContractBeginDate(),hsession);
+			chargeService.addAndDiv(contract_old.getId(),oldEndDate.getTime(),hsession);
+			chargeService.setCleared(contract_old.getId(), oldEndDate.getTime(),hsession);
 
 			hsession.update(contract_old);
 
