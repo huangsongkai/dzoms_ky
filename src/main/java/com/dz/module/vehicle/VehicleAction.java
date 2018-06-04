@@ -120,6 +120,7 @@ public class VehicleAction extends BaseAction{
 	}
 
 	private Integer pageSize;
+	private String orderby;
 	public String vehicleSele() {
 		int currentPage = 0;
 
@@ -142,7 +143,11 @@ public class VehicleAction extends BaseAction{
 			request.setAttribute("page", page);
 		}
 
-		List<Vehicle> l = ObjectAccess.query(Vehicle.class, hql, null, null, null, page);
+		if(org.apache.commons.lang3.StringUtils.isBlank(orderby)){
+			orderby = " licenseNum ";
+		}
+
+		List<Vehicle> l = ObjectAccess.query(Vehicle.class, hql, null, null, orderby, page);
 
 		request.setAttribute("vehicle", l);
 
@@ -1983,4 +1988,11 @@ public class VehicleAction extends BaseAction{
 		this.templatePath = templatePath;
 	}
 
+	public String getOrderby() {
+		return orderby;
+	}
+
+	public void setOrderby(String orderby) {
+		this.orderby = orderby;
+	}
 }

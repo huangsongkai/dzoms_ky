@@ -122,7 +122,7 @@ $(document).ready(function(){
 			</tr>
 			<tr style="height:8mm">
 				<td ><span class="no-print">发动机号</span></td>
-				<td><strong><s:property value="%{#v.moneyCountor}"/></strong></td>
+				<td><strong><s:property value="%{#v.engineNum}"/></strong></td>
 				<td ><span class="no-print">车架号</span></td>
 				<td colspan="2"><strong>&nbsp;<s:property value="%{#v.carframeNum}"/></strong></td>
 				<td><span class="no-print">营运证牌号</span></td>
