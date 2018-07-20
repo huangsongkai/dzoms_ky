@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ page import="com.dz.module.driver.accident.Accident" %>
 <%
@@ -49,14 +50,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <table class="table table-bordered table-striped table-hover">
 		<tr>
 			<th>车牌号</th>
+            <th>车架号</th>
             <th>身份证号</th>
             <%--<th></th>--%>
 			<th>时间</th>
 			<th>操作</th>
 			<th>审核记录</th>
 		</tr>
-        <% for(Accident accident:(List<Accident>)request.getAttribute("accident_list")){%>
+        <% for(Accident accident:(List<Accident>)request.getAttribute("accident_list")){
+            request.setAttribute("carId",accident.getCarId());
+        %>
+            <s:set name="v" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',#request.carId)}"></s:set>
             <tr>
+                <td><s:property value="#v.licenseNum"></s:property></td>
                 <td><%=accident.getCarId()%></td>
                 <td><%=accident.getDriverId()%></td>
                 <%--<td><%=accident.getDriverId()%></td>--%>

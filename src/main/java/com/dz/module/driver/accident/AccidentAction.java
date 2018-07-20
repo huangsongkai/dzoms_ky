@@ -3,6 +3,7 @@ package com.dz.module.driver.accident;
 import com.dz.common.convertor.BooleanUtil;
 import com.dz.common.global.TimePass;
 import com.dz.common.other.FileUploadUtil;
+import com.dz.common.other.ObjectAccess;
 import com.opensymphony.xwork2.ActionContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -88,8 +90,42 @@ public class AccidentAction{
 	
 	public String accidentSelects(){
 		@SuppressWarnings("unchecked")
+//		String sql = "from Accident where ";
+		String con;
+		switch(selectStyle){
+			case 0:
+				con = " status = 0 ";
+				break;
+			case 1:
+				con = " status = 1 ";
+				break;
+			case 2:
+				con = " status = 2 ";
+				break;
+			case 3:
+				con = " status in (0,1,2)  ";
+				break;
+			case 4:
+			default:
+				con = " 1 = 1 ";
+				break;
+		}
+
+		if(tp!=null){
+			if(tp.getStartTime() != null){
+				con += String.format("and (time is null or  time >= STR_TO_DATE('%tF','%%Y-%%m-%%d')) ",tp.getStartTime());
+			}
+			if(tp.getEndTime() != null){
+				con += String.format("and (time is null or  time <= STR_TO_DATE('%tF','%%Y-%%m-%%d')) ",tp.getEndTime());
+			}
+		}
+
+//		System.out.println(con);
+//		sql += con;
 		Map<String,Object> req = (Map<String, Object>) ActionContext.getContext().get("request");
-		req.put("accident_list", accidentService.accidentSelects(driverId, selectStyle, tp));
+		List<Accident> accidents = ObjectAccess.query(Accident.class,con);
+		req.put("accident_list",accidents);
+//		req.put("accident_list", accidentService.accidentSelects(driverId, selectStyle, tp));
 		return "selectAccidentsResult";
 	}
 

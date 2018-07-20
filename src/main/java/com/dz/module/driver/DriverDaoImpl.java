@@ -655,7 +655,12 @@ public int selectDriverInCarByConditionCount(Date beginDate,Date endDate,Vehicle
 		}
 		
 		if(!StringUtils.isEmpty(operation)){
-			sql+="and operation like :operation ";
+			if(StringUtils.equals("证照注销",operation)){
+				sql+="and ( operation like '%注销%' or  operation like '%下车%' ) ";
+			}
+			else {
+				sql+="and operation like '%申请%' ";
+			}
 		}
 		
 		if(finished!=null){
@@ -687,9 +692,9 @@ public int selectDriverInCarByConditionCount(Date beginDate,Date endDate,Vehicle
 			query.setDate("endDate", endDate);
 		}
 		
-		if(!StringUtils.isEmpty(operation)){
-			query.setString("operation", "%"+operation+"%");
-		}
+//		if(!StringUtils.isEmpty(operation)){
+//			query.setString("operation", "%"+operation+"%");
+//		}
 		
 		if(finished!=null){
 			query.setBoolean("finished", finished);
@@ -736,10 +741,19 @@ public List<Driverincar> selectDriverInCarByCondition(Page page,Date beginDate,D
 			sql+="and idNumber like :idNum ";
 		}
 		
+//		if(!StringUtils.isEmpty(operation)){
+//			sql+="and operation like :operation ";
+//		}
+//
 		if(!StringUtils.isEmpty(operation)){
-			sql+="and operation like :operation ";
+			if(StringUtils.equals("证照注销",operation)){
+				sql+="and ( operation like '%注销%' or  operation like '%下车%' ) ";
+			}
+			else {
+				sql+="and operation like '%申请%' ";
+			}
 		}
-		
+
 		if(finished!=null){
 			sql+="and finished = :finished ";
 		}
@@ -769,10 +783,10 @@ public List<Driverincar> selectDriverInCarByCondition(Page page,Date beginDate,D
 			query.setDate("endDate", endDate);
 		}
 		
-		if(!StringUtils.isEmpty(operation)){
-			query.setString("operation", "%"+operation+"%");
-		}
-		
+//		if(!StringUtils.isEmpty(operation)){
+//			query.setString("operation", "%"+operation+"%");
+//		}
+//
 		if(finished!=null){
 			query.setBoolean("finished", finished);
 			sql+="and finished = :finished ";
