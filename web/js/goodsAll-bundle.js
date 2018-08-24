@@ -1323,7 +1323,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
   }, {
     key: 'showUpdateModal',
     value: function showUpdateModal(type, id) {
-      console.log(type, id);
       var recData = this.props.recData;
       if (id.length > 1) {
         _modal2.default.error({
@@ -1340,7 +1339,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
       }
       for (var i in recData) {
         if (id[0] == recData[i].id) {
-          //console.log(i)
           var updateData = this.props.form.setFields({
             itemName: {
               value: recData[i].itemName
@@ -1454,7 +1452,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
       for (var i in id) {
         tableData["id"] = id[i];
       }
-      console.log(tableData);
       //后台处理  
       var self = this;
       $.ajax({
@@ -1500,7 +1497,6 @@ var AppModal = _wrapComponent('AppModal')(function (_React$Component) {
               });
             }
           } else {
-            console.log(data);
             if (type == "put") {
               _modal2.default.error({
                 title: '错误信息',
@@ -1648,7 +1644,6 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
         success: function (data) {
           if (data.status > 0) {
             var data = data.data;
-            console.log(data);
             for (var i = 0; i < data.length; i++) {
               data[i]["key"] = data[i].id;
               var itemState = [];
@@ -1678,7 +1673,6 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
     key: 'transferMsg',
     value: function transferMsg(recData) {
       // console.log("transferMsg");
-      console.log(recData);
       this.setState({
         recData: recData,
         selectedRowKeys: []
@@ -1691,7 +1685,6 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
       // this.setState({selectedRowKeys});
       // console.log(selectedRowKeys);
       this.setState({ selectedRowKeys: selectedRowKeys });
-      console.log(selectedRowKeys);
       return selectedRowKeys;
     }
   }, {
@@ -1700,7 +1693,6 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
       //console.log(index,seq,value)
       if (!this.keyPairs[index]) this.keyPairs[index] = { inputs: [], ziping: "" };
       if (typeof value == 'string' && value.constructor == String) this.keyPairs[index].inputs[seq] = value;else this.keyPairs[index].inputs[seq] = value.target.value;
-      console.log(this.keyPairs);
     }
   }, {
     key: 'render',
@@ -1790,7 +1782,7 @@ var GoodsManagement = _wrapComponent('GoodsManagement')(function (_React$Compone
             hasSelected ? 'Selected ' + selectedRowKeys.length + ' items' : ''
           )
         ),
-        _react3.default.createElement(_table2.default, { key: this.key++, pagination: false, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, pagination: true, rowSelection: rowSelection, columns: columns, onChange: this.onChange.bind(this), dataSource: this.state.recData })
       );
     }
   }]);
@@ -2179,7 +2171,7 @@ var OfficeHistory = _wrapComponent('OfficeHistory')(function (_React$Component) 
         'div',
         null,
         _react3.default.createElement(_SearchBar2.default, { options: this.props.options || [{ field: 'personName', alias: '姓名' }, { field: 'department', alias: '部门' }], downloadUrl: this.props.downloadUrl }),
-        _react3.default.createElement(_table2.default, { key: this.key++, pagination: false, columns: columns, dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, pagination: true, columns: columns, dataSource: this.state.recData })
       );
     }
   }]);
@@ -2211,7 +2203,7 @@ var _button = __webpack_require__(18);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(54);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -2249,7 +2241,7 @@ __webpack_require__(32);
 
 __webpack_require__(22);
 
-__webpack_require__(52);
+__webpack_require__(55);
 
 __webpack_require__(44);
 
@@ -2346,6 +2338,7 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
             var data = data.data;
             for (var i in data) {
               data[i]["key"] = data[i].itemId;
+              data[i]["num"] = 0;
             }
             console.log(data);
             self.setState({
@@ -2362,17 +2355,21 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
     }
   }, {
     key: 'action',
-    value: function action(index) {
-      var _state$recData$index = this.state.recData[index],
-          itemId = _state$recData$index.itemId,
-          num = _state$recData$index.num;
+    value: function action(record) {
+      var newData = [].concat(_toConsumableArray(this.state.recData));
+      var modifying = newData.find(function (item) {
+        return item.itemId == record.itemId;
+      });
+      var itemId = modifying.itemId,
+          num = modifying.num,
+          itemTotalNum = modifying.itemTotalNum;
 
-      if (!(num && num != 0)) {
-        _modal2.default.error({
-          title: '错误',
-          content: "领用数量不能为0!",
-          onOk: function onOk() {}
-        });
+      console.log(num);
+      if (num < 1) {
+        _modal2.default.error({ title: "库存数量填写错误", content: "领用数量不能为0！" });
+        return;
+      } else if (num > itemTotalNum) {
+        _modal2.default.error({ title: "领用数量填写错误", content: "领用数量不能大于库存数量！" });
         return;
       }
       var reqData = { num: num, itemId: itemId };
@@ -2435,11 +2432,12 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
     }
   }, {
     key: 'onScoreChange',
-    value: function onScoreChange(index, value) {
-      //console.log(this.state.recData);
-      console.log(index, value);
+    value: function onScoreChange(record, value) {
       var newData = [].concat(_toConsumableArray(this.state.recData));
-      newData[index].num = value;
+      var modifying = newData.find(function (item) {
+        return item.itemId == record.itemId;
+      });
+      modifying.num = value;
       this.setState({ recData: newData });
     }
   }, {
@@ -2497,14 +2495,14 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
         dataIndex: 'num',
         key: 'num',
         render: function render(text, record, index) {
-          return _react3.default.createElement(_inputNumber2.default, { min: 0, defaultValue: 0, onChange: _this2.onScoreChange.bind(_this2, index) });
+          return _react3.default.createElement(_inputNumber2.default, { min: 0, value: record.num, onChange: _this2.onScoreChange.bind(_this2, record) });
         }
       }, {
         title: '操作',
         render: function render(text, record, index) {
           return _react3.default.createElement(
             _button2.default,
-            { onClick: _this2.action.bind(_this2, index) },
+            { onClick: _this2.action.bind(_this2, record) },
             '\u9886\u7528'
           );
         }
@@ -2512,7 +2510,7 @@ var Goods = _wrapComponent('Goods')(function (_React$Component) {
       return _react3.default.createElement(
         'div',
         null,
-        _react3.default.createElement(_table2.default, { key: this.key++, pagination: false, columns: columns, dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, pagination: true, columns: columns, dataSource: this.state.recData })
       );
     }
   }]);
@@ -2543,10 +2541,6 @@ var _table2 = _interopRequireDefault(_table);
 var _button = __webpack_require__(18);
 
 var _button2 = _interopRequireDefault(_button);
-
-var _inputNumber = __webpack_require__(51);
-
-var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
 var _modal = __webpack_require__(43);
 
@@ -2589,8 +2583,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 __webpack_require__(32);
 
 __webpack_require__(22);
-
-__webpack_require__(52);
 
 __webpack_require__(44);
 
@@ -2833,17 +2825,13 @@ var OfficePurchase = _wrapComponent('OfficePurchase')(function (_React$Component
       }, {
         title: '采购数量',
         dataIndex: 'num',
-        key: 'num',
-        render: function render(text, record, index) {
-          return _react3.default.createElement(_inputNumber2.default, { min: 1, defaultValue: 0, onChange: _this2.onScoreChange.bind(_this2, index) });
-        }
+        key: 'num'
+        // render:(text, record, index)=>(<InputNumber min={1} value={text||1} onChange={this.onScoreChange.bind(this,index)} />) 
       }, {
         title: '备注',
         dataIndex: 'remark',
-        key: 'remark',
-        render: function render(text, record, index) {
-          return _react3.default.createElement(TextArea, { autosize: { minRows: 1 }, onChange: _this2.onRemarkChange.bind(_this2, index) });
-        }
+        key: 'remark'
+        // render:(text, record, index)=>(<TextArea  autosize={{ minRows: 1}} value={text||''} onChange={this.onRemarkChange.bind(this,index)} />) 
       }, {
         title: '入库',
         render: function render(text, record, index) {
@@ -3130,7 +3118,7 @@ var YunyingbuHistory = _wrapComponent('YunyingbuHistory')(function (_React$Compo
         'div',
         null,
         _react3.default.createElement(_SearchBar2.default, { options: this.props.options || [{ field: 'carNumber', alias: '车牌号' }, { field: 'idNumber', alias: '身份证' }, { field: 'personName', alias: '姓名' }, { field: 'itemName', alias: '物品名称' }], downloadUrl: this.props.downloadUrl }),
-        _react3.default.createElement(_table2.default, { key: this.key++, pagination: false, columns: columns, dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { key: this.key++, pagination: true, columns: columns, dataSource: this.state.recData })
       );
     }
   }]);
@@ -3154,7 +3142,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(54);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -3210,7 +3198,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(52);
+__webpack_require__(55);
 
 __webpack_require__(39);
 
@@ -3373,7 +3361,7 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
     }()
   }, {
     key: 'showAddModal',
-    value: function showAddModal(index, value) {
+    value: function showAddModal(record, value) {
       if (this.state.cph.length < 3) {
         _modal2.default.error({
           title: '错误',
@@ -3381,7 +3369,7 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
         });
         return;
       }
-      var itemId = this.state.recData[index].itemId;
+      var itemId = record.itemId;
       this.itemId = itemId;
       var self = this;
       $.get(this.props.driversAndHistory || "/driversAndHistory", { vehicle: this.state.cph, itemId: itemId }, function (data) {
@@ -3550,7 +3538,7 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
         render: function render(text, record, index) {
           return _react3.default.createElement(
             _button2.default,
-            { onClick: _this3.showAddModal.bind(_this3, index) },
+            { onClick: _this3.showAddModal.bind(_this3, record) },
             '\u9886\u7528'
           );
         }
@@ -3631,10 +3619,10 @@ var YunyingbuIssue = _wrapComponent('YunyingbuIssue')(function (_React$Component
           _react3.default.createElement(
             'div',
             null,
-            _react3.default.createElement(_cph2.default, { chepaihao: this.props.chepaihao, onChange: this.cphChange.bind(this) })
+            _react3.default.createElement(_cph2.default, { chepaihao: this.props.chepaihao, value: this.state.cph, onChange: this.cphChange.bind(this) })
           )
         ),
-        _react3.default.createElement(_table2.default, { key: 'yunyingbuIssue', size: 'default', columns: columns, pagination: false, dataSource: this.state.recData, loading: this.state.loading }),
+        _react3.default.createElement(_table2.default, { key: 'yunyingbuIssue', size: 'default', columns: columns, pagination: true, dataSource: this.state.recData, loading: this.state.loading }),
         this.state.visible && _react3.default.createElement(
           _modal2.default,
           {
@@ -3730,7 +3718,7 @@ var _button = __webpack_require__(18);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(54);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -3776,7 +3764,7 @@ __webpack_require__(32);
 
 __webpack_require__(22);
 
-__webpack_require__(52);
+__webpack_require__(55);
 
 __webpack_require__(532);
 
@@ -3979,8 +3967,8 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
             var data = data.data;
             for (var i in data) {
               data[i]["key"] = data[i].itemId;
+              data[i]["num"] = 0;
             }
-            console.log(data);
             self.setState({
               recData: data
             });
@@ -3995,14 +3983,22 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
     }
   }, {
     key: 'action',
-    value: function action(index) {
-      var _state$recData$index = this.state.recData[index],
-          itemId = _state$recData$index.itemId,
-          num = _state$recData$index.num,
-          itemRemarks = _state$recData$index.itemRemarks;
+    value: function action(record) {
+      var newData = [].concat(_toConsumableArray(this.state.recData));
+      var modifying = newData.find(function (item) {
+        return item.itemId == record.itemId;
+      });
+      var itemId = modifying.itemId,
+          num = modifying.num,
+          itemRemarks = modifying.itemRemarks,
+          itemTotalNum = modifying.itemTotalNum;
 
       var reqData = { num: num, itemRemarks: itemRemarks, itemId: itemId };
       var self = this;
+      if (num < 1) {
+        _modal2.default.error({ title: "库存数量填写错误", content: "入库数量不能为0！" });
+        return;
+      }
       $.ajax({
         //url:"/goodsList",
         url: self.props.goodsPurchaseUrl,
@@ -4049,16 +4045,17 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
     }
   }, {
     key: 'onScoreChange',
-    value: function onScoreChange(index, value) {
-      //console.log(this.state.recData);
-      // console.log(index,value)
+    value: function onScoreChange(record, value) {
       var newData = [].concat(_toConsumableArray(this.state.recData));
-      newData[index].num = value;
+      var modifying = newData.find(function (item) {
+        return item.itemId == record.itemId;
+      });
+      modifying.num = value;
       this.setState({ recData: newData });
     }
   }, {
     key: 'onRemarkChange',
-    value: function onRemarkChange(index, value) {
+    value: function onRemarkChange(record, value) {
       var remark;
       if (typeof value == 'string' && value.constructor == String) {
         remark = value;
@@ -4066,28 +4063,19 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
         remark = value.target.value;
       }
       var newData = [].concat(_toConsumableArray(this.state.recData));
-      newData[index].itemRemarks = remark;
+      var modifying = newData.find(function (item) {
+        return item.itemId == record.itemId;
+      });
+      modifying.itemRemarks = remark;
       this.setState({ recData: newData });
     }
     //可编辑框 onchange
 
   }, {
-    key: 'onCellChange',
-    value: function onCellChange(index, value) {
-      //console.log(index,value);
-      //库存改完值之后更新页面
-      var recData = this.state.recData;
-      recData[index].itemTotalNum = value;
-      this.setState({
-        recData: recData
-      });
-    }
-  }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
 
-      console.log();
       var filterData = new _Filters2.default().filter(this.state.recData);
       var columns = [{
         title: '名称',
@@ -4118,15 +4106,6 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
         sorter: function sorter(a, b) {
           return new _Sorter2.default().sort(a.itemTotalNum, b.itemTotalNum);
         }
-        /*render: (text, record, index) => (
-          <EditableCell
-            recData={this.state.recData}
-            {...pageUrls}
-            value={text}
-            index={index}
-            onChange={this.onCellChange.bind(this,index)}
-          />
-        )*/
       }, {
         title: '单价',
         dataIndex: 'itemPurchasingPrice',
@@ -4142,22 +4121,22 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
         title: '采购数量',
         dataIndex: 'num',
         key: 'num',
-        render: function render(text, record, index) {
-          return _react3.default.createElement(_inputNumber2.default, { min: 0, defaultValue: 0, onChange: _this3.onScoreChange.bind(_this3, index) });
+        render: function render(text, record) {
+          return _react3.default.createElement(_inputNumber2.default, { min: 0, value: text, onChange: _this3.onScoreChange.bind(_this3, record) });
         }
       }, {
         title: '备注',
         dataIndex: 'itemRemarks',
         key: 'itemRemarks',
-        render: function render(text, record, index) {
-          return _react3.default.createElement(TextArea, { autosize: { minRows: 1 }, defaultValue: text, onChange: _this3.onRemarkChange.bind(_this3, index) });
+        render: function render(text, record) {
+          return _react3.default.createElement(TextArea, { autosize: { minRows: 1 }, value: text, onChange: _this3.onRemarkChange.bind(_this3, record) });
         }
       }, {
         title: '采购',
-        render: function render(text, record, index) {
+        render: function render(text, record) {
           return _react3.default.createElement(
             _button2.default,
-            { onClick: _this3.action.bind(_this3, index) },
+            { onClick: _this3.action.bind(_this3, record) },
             '\u5165\u5E93'
           );
         }
@@ -4165,7 +4144,7 @@ var YunyingbuPurchase = _wrapComponent('YunyingbuPurchase')(function (_React$Com
       return _react3.default.createElement(
         'div',
         null,
-        _react3.default.createElement(_table2.default, { bordered: true, key: this.key++, columns: columns, pagination: false, dataSource: this.state.recData })
+        _react3.default.createElement(_table2.default, { bordered: true, key: this.key++, columns: columns, pagination: true, dataSource: this.state.recData })
       );
     }
   }]);

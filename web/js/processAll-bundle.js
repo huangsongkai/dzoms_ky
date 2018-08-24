@@ -60,7 +60,7 @@ var _button = __webpack_require__(18);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(54);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -116,7 +116,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 __webpack_require__(22);
 
-__webpack_require__(52);
+__webpack_require__(55);
 
 __webpack_require__(85);
 

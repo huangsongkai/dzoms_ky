@@ -7,6 +7,7 @@ import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.util.ExportExcelUtil;
 import com.dz.kaiying.util.ImportExcelUtil;
 import com.dz.kaiying.util.Result;
+import com.dz.module.vehicle.Vehicle;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -40,6 +41,8 @@ public class SgService {
 
     @Resource
     HibernateDao<KyYiJue, Integer> yjDao;  //已决dao
+    @Resource
+    HibernateDao<Vehicle, Integer> vehicleDao1;  //已决dao
     private Result result = new Result();
     //Map<Integer,KyAccident> sgMap = new HashMap<>();
     List<KyAccident> sgList =null;
@@ -72,6 +75,12 @@ public class SgService {
             }
         }
         List<KyAccident> accident = bxDao.find(sql);//事故查询
+        for (KyAccident acccident : accident) {
+            List<Vehicle> vehicle = vehicleDao1.find(" from Vehicle where licenseNum = '"+acccident.getCph().trim()+"'");
+            if (vehicle.size() != 0){
+                acccident.setDept(vehicle.get(0).getDept());
+            }
+        }
         if(accident.size()>0){
             sgList =new ArrayList<>(accident);
         }
