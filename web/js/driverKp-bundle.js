@@ -692,7 +692,7 @@ var _col = __webpack_require__(84);
 
 var _col2 = _interopRequireDefault(_col);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(54);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -734,7 +734,7 @@ __webpack_require__(71);
 
 __webpack_require__(85);
 
-__webpack_require__(52);
+__webpack_require__(55);
 
 __webpack_require__(543);
 

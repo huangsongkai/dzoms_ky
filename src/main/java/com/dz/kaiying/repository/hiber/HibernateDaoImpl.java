@@ -333,4 +333,11 @@ public class HibernateDaoImpl<T, PK extends Serializable>  implements HibernateD
     public void flush() {
         hibernateTemplate.flush();
     }
+
+
+
+
+
 }
+
+  

@@ -3,7 +3,6 @@ package com.dz.kaiying.repository.hiber;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.criterion.DetachedCriteria;
-import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.util.Collection;

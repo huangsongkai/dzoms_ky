@@ -2,7 +2,6 @@ package com.dz.kaiying.model;
 
 
 import javax.persistence.*;
-import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -146,6 +145,7 @@ public class KyAccident implements java.io.Serializable {
 
     @Column(name = "cxjg") //出险经过
     private String cxjg;
+    private String dept;
 
     @Column(name = "create_date") //创建时间
     private String createTime;
@@ -469,5 +469,13 @@ public class KyAccident implements java.io.Serializable {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
     }
 }

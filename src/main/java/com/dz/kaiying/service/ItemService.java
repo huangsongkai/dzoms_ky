@@ -31,6 +31,8 @@ import java.util.*;
 */
 @Service
 public class ItemService extends BaseService{
+    //@Resource
+    //private IItemDao iItemDao;
 
     //流程相关
     @Resource

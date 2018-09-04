@@ -1734,6 +1734,18 @@ var Accident = _wrapComponent('Accident')(function (_React$Component) {
           return record.cph.indexOf(value) === 0;
         }
       }, {
+        title: '分公司',
+        dataIndex: 'dept',
+        key: 'dept',
+        width: 75,
+        filters: filterData.dept,
+        sorter: function sorter(a, b) {
+          return new _Sorter2.default().sort(a.dept, b.dept);
+        },
+        onFilter: function onFilter(value, record) {
+          return record.dept.indexOf(value) === 0;
+        }
+      }, {
         title: '案件性质',
         dataIndex: 'ajxz',
         key: 'ajxz',
@@ -2583,7 +2595,7 @@ var _col = __webpack_require__(84);
 
 var _col2 = _interopRequireDefault(_col);
 
-var _inputNumber = __webpack_require__(51);
+var _inputNumber = __webpack_require__(54);
 
 var _inputNumber2 = _interopRequireDefault(_inputNumber);
 
@@ -2637,7 +2649,7 @@ __webpack_require__(71);
 
 __webpack_require__(85);
 
-__webpack_require__(52);
+__webpack_require__(55);
 
 __webpack_require__(44);
 
