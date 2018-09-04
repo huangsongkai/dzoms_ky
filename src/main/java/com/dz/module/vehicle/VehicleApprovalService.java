@@ -780,7 +780,16 @@ public class VehicleApprovalService {
 				}
 
 				Vehicle ve = ObjectAccess.getObject(Vehicle.class, carframeNum);
-				if(ve!=null && ve.getLicensePurseNum().matches("^黑\\w{6}")){
+				if(ve==null){
+					request.setAttribute("msgStr", "车架号错误。");
+					return false;
+				}
+				if(ve.getLicensePurseNum()==null){
+					request.setAttribute("msgStr", "牌照信息未录入，请先补充牌照信息。");
+					return false;
+				}
+
+				if(ve.getLicensePurseNum().matches("^黑\\w{6}")){
 					Vehicle ov = ObjectAccess.getObject(Vehicle.class, ve.getLicensePurseNum());
 					if(ov!=null&&ov.getState()<2){
 						request.setAttribute("msgStr", "原车尚未完成废业，请先完成废业流程。");
