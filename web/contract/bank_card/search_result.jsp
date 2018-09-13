@@ -83,7 +83,7 @@
             var path = $("[name='vehicleSele']").attr("action");
             var target = $("[name='vehicleSele']").attr("target");
 
-            var url = "/DZOMS/driver/driverToExcel";
+            var url = "/DZOMS/contract/bank_card/exportExcel";
             $("[name='vehicleSele']").attr("action", url).attr("target", "_blank").submit();
         }
 

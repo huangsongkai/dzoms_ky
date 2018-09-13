@@ -114,6 +114,14 @@
     </package>
 
     <package name="bank_card" extends="default-package" namespace="/contract/bank_card">
+        <action name="exportExcel" class="bankCardAction" method="exportExcel">
+            <param name="templatePath">/contract/bank_card/bank_card.xls</param>
+            <param name="outputName">bank_card</param>
+            <result name="success" type="chain">
+                <param name="actionName">outputExcel</param>
+                <param name="namespace">/common</param>
+            </result>
+        </action>
         <action name="bankCard*" class="bankCardAction" method="bankCard{1}">
             <result name="add_success">/contract/bank_card/search_vehicle_about_bankcard.jsp?no</result>
             <result name="show_success">/contract/bank_card/card_update.jsp</result>

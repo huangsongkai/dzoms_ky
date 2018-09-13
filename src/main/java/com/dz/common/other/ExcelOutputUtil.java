@@ -8,16 +8,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.dz.module.contract.BankCard;
+import com.dz.module.contract.BankCardOfVehicle;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
@@ -194,6 +198,9 @@ public class ExcelOutputUtil extends BaseAction {
 		public Object getObject(String classname,Serializable id){
 			return ObjectAccess.getObject(classname, id);
 		}
+		public Object queryObject(String ql){
+			return ObjectAccess.execute(ql);
+		}
 
 		private int seq=0;
 		private Map<String,List<BigDecimal>> map = new HashMap<>();
@@ -231,7 +238,6 @@ public class ExcelOutputUtil extends BaseAction {
 			return Double.parseDouble(String.format("%.2f", sum.doubleValue()));
 		}
 
-
 		private Map<String,Object> dict = new HashMap<>();
 
 		public MyELFunctionExtend mapTo(String key,Object value){
@@ -251,5 +257,98 @@ public class ExcelOutputUtil extends BaseAction {
 			JSONObject json = JSONObject.fromObject(jsonStr);
 			return json.getString(key);
 		}
+
+		private Map<String,Object> keyMap= new HashMap<>();
+		public Object setAsValue(String name,Object setValue,Object showValue){
+			keyMap.put(name,setValue);
+			return showValue;
+		}
+		public Object getAsValue(String name){
+			return keyMap.get(name);
+		}
+
+		/**
+		 * List映射功能  List<E> -->  List<T>  T = E.propertyPath
+		 * @param list  原List
+		 * @param propertyPath 属性路径，可多级  如p1  p1.x 等
+         * @return
+         */
+		public List mapGet(List list,String propertyPath){
+			List resultList = new ArrayList();
+			for (Object o:list) {
+				try {
+					Object res = PropertyUtils.getProperty(o,propertyPath);
+					resultList.add(res);
+				} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+					e.printStackTrace();
+					resultList.add(null);
+				}
+			}
+			return resultList;
+		}
+
+		/**
+		 * 提供Excel导出静态方法调用
+		 * @param className 类名
+		 * @param method 函数名
+		 * @param args 参数列表
+         * @param argTypes 参数类型 对于基础数组请自行输出测试 引用类型数组使用 [L类名;
+		 * 示例：  int[] -- [I    int[][]  --  [[I   String[]  --  [Ljava.lang.String;
+         * @return
+         */
+		public Object staticCall(String className,String method,Object[] args,String[] argTypes){
+			try {
+				Class[] classes = new Class[argTypes.length];
+				for (int i = 0; i < argTypes.length ; i++) {
+					switch (argTypes[i]){
+						case "int":
+							classes[i] = int.class;
+							break;
+						case "long":
+							classes[i] = long.class;
+							break;
+						case "short":
+							classes[i] = short.class;
+							break;
+						case "float":
+							classes[i] = float.class;
+							break;
+						case "double":
+							classes[i] = double.class;
+							break;
+						case "char":
+							classes[i] = char.class;
+							break;
+						case "byte":
+							classes[i] = byte.class;
+							break;
+						case "boolean":
+							classes[i] = boolean.class;
+							break;
+						default:
+							classes[i] = ClassUtils.getClass(argTypes[i]);
+					}
+				}
+				return MethodUtils.invokeExactStaticMethod(ClassUtils.getClass(className),method,args,classes);
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+	}
+
+	public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException {
+//		BankCardOfVehicle bov = new BankCardOfVehicle();
+//		bov.setBankCard(new BankCard());
+//		bov.getBankCard().setCardClass("asc");
+//
+//		System.out.println( PropertyUtils.getProperty(bov,"bankCard.cardClass"));
+		MyELFunctionExtend extend = new MyELFunctionExtend();
+//		System.out.println(Class.forName("[I").isInstance(new int[]{123}));
+//		System.out.println(Class.forName("[Ljava.lang.Object;"));
+		System.out.println(extend.staticCall("org.apache.commons.lang3.StringUtils","join",
+				new Object[]{Arrays.asList(1,2,3).toArray(),","},
+				new String[]{"[Ljava.lang.Object;","java.lang.String"}));
 	}
 }

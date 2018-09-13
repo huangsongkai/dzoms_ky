@@ -1,7 +1,6 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%><%@taglib
-		uri="/struts-tags" prefix="s"%><%@ page language="java"
-												import="java.util.*, com.dz.module.user.User"
-												pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ page language="java" import="java.util.*, com.dz.module.user.User" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"

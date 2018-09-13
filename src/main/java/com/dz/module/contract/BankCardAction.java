@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -334,6 +336,52 @@ public class BankCardAction extends ActionSupport implements ServletRequestAware
         request.setAttribute("list", cardList);
         request.setAttribute("page", page);
 
+        return SUCCESS;
+    }
+
+    public String exportExcel(){
+        if (bankCard == null) {
+            bankCard = new BankCard();
+        }
+
+        String hql = "from BankCard where 1=1 ";
+
+        if (!StringUtils.isEmpty(dept) && !dept.startsWith("all")) {
+            hql += String.format("and id in (select bankCard.id from BankCardOfVehicle where vehicle.dept='%s') ", dept);
+        }
+
+        if (!StringUtils.isEmpty(bankCard.getIdNumber())) {
+            hql += String.format("and idNumber like '%%%s%%' ", bankCard.getIdNumber());
+        }
+
+        if (!StringUtils.isEmpty(bankCard.getCardNumber())) {
+            hql += String.format("and cardNumber like '%%%s%%' ", bankCard.getCardNumber());
+        }
+
+        if (!StringUtils.isEmpty(bankCard.getCardClass())) {
+            hql += String.format("and cardClass like '%%%s%%' ", bankCard.getCardClass());
+        }
+
+        if (!StringUtils.isEmpty(bankCard.getCarNum())&&bankCard.getCarNum().length()>2) {
+            hql += String.format("and id in(select bankCard.id from BankCardOfVehicle where vehicle.carframeNum like '%%%s%%') ", bankCard.getCarNum());
+        }
+
+        hql += " order by " + order;
+
+        if (BooleanUtils.isFalse(rank)) {
+            hql += " desc ";
+        }
+
+        Session session = HibernateSessionFactory.getSession();
+        Query query = session.createQuery(hql);
+        List<BankCard> cardList = query.list();
+
+        HibernateSessionFactory.closeSession();
+        List datalist = Arrays.asList(cardList);
+        List<String> datasrc = Arrays.asList("cards");
+
+        request.setAttribute("datasrc", datasrc);
+        request.setAttribute("datalist", datalist);
         return SUCCESS;
     }
 
