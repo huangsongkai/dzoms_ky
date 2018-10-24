@@ -114,9 +114,9 @@ public class ChargeDaoImp implements ChargeDao {
             }
             int leftDay = 0;
             if(time.getDate() >= 27){
-                leftDay = time.getDate()-27;
+                leftDay = time.getDate()-26;
             }else{
-                leftDay = 3 + time.getDate();
+                leftDay = 4 + time.getDate();
             }
             account = account.multiply(new BigDecimal(-leftDay)).divide(new BigDecimal(30),4,BigDecimal.ROUND_HALF_EVEN);
             ChargePlan cpp = new ChargePlan();
