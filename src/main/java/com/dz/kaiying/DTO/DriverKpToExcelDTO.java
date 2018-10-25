@@ -6,10 +6,6 @@ package com.dz.kaiying.DTO;
 public class DriverKpToExcelDTO {
     String djh;//大架号
     String fgs;//分公司
-    String xm;//姓名
-    int isNew;//参与评选（是0否1）
-    int isOwner;//车主isOwner（是1否0）
-    String zfj;//主副驾
     String cph;//车牌号
     int zj, zj_score;//租金迟交
     int law, law_score;//法律诉讼
@@ -42,37 +38,6 @@ public class DriverKpToExcelDTO {
         this.fgs = fgs;
     }
 
-    public String getXm() {
-        return xm;
-    }
-
-    public void setXm(String xm) {
-        this.xm = xm;
-    }
-
-    public int getIsNew() {
-        return isNew;
-    }
-
-    public void setIsNew(int isNew) {
-        this.isNew = isNew;
-    }
-
-    public int getIsOwner() {
-        return isOwner;
-    }
-
-    public void setIsOwner(int isOwner) {
-        this.isOwner = isOwner;
-    }
-
-    public String getZfj() {
-        return zfj;
-    }
-
-    public void setZfj(String zfj) {
-        this.zfj = zfj;
-    }
 
     public String getCph() {
         return cph;
@@ -319,10 +284,6 @@ public class DriverKpToExcelDTO {
         return "DriverKpToExcelDTO{" +
                 "djh='" + djh + '\'' +
                 ", fgs='" + fgs + '\'' +
-                ", xm='" + xm + '\'' +
-                ", isNew=" + isNew +
-                ", isOwner=" + isOwner +
-                ", zfj='" + zfj + '\'' +
                 ", cph='" + cph + '\'' +
                 ", zj=" + zj +
                 ", zj_score=" + zj_score +

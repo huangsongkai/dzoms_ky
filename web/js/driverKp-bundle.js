@@ -1489,65 +1489,6 @@ var columns = [{
   },
   fixed: 'left'
 }, {
-  title: '姓名',
-  width: 80,
-  dataIndex: 'xm',
-  // filters: [
-  // { text: '黄嵩凯', value: '黄嵩凯' },
-  //   { text: '姜雪威', value: '姜雪威' }],
-  // onFilter: (value, record) => record.xm.indexOf(value) === 0,
-  sorter: function sorter(a, b) {
-    return _sorter.sort(a.xm, b.xm);
-  },
-  fixed: 'left'
-}, {
-  title: '参与评选',
-  dataIndex: 'isNew',
-  render: function render(text) {
-    return text == 0 ? React.createElement(
-      'span',
-      null,
-      '\u662F'
-    ) : React.createElement(
-      'span',
-      null,
-      '\u5426'
-    );
-  },
-  fixed: 'left',
-  sorter: function sorter(a, b) {
-    return _sorter.sort(a.isNew, b.isNew);
-  },
-  width: 80
-}, {
-  title: '车主',
-  filters: [{ text: '是', value: 1 }, { text: '否', value: 0 }],
-  filterMultiple: false,
-  onFilter: function onFilter(value, record) {
-    return record.isOwner == value;
-  },
-  dataIndex: 'isOwner',
-  render: function render(text) {
-    return text == 1 ? React.createElement(
-      'span',
-      null,
-      '\u662F'
-    ) : React.createElement(
-      'span',
-      null,
-      '\u5426'
-    );
-  },
-  fixed: 'left',
-  width: 80
-}, {
-  title: '主副驾',
-  dataIndex: 'zfj',
-  sorter: function sorter(a, b) {
-    return _sorter.sort(a.zfj, b.zfj);
-  },
-  width: 100
-}, {
   title: '车牌号',
   dataIndex: 'cph',
   // filters: [
@@ -1557,7 +1498,8 @@ var columns = [{
   sorter: function sorter(a, b) {
     return _sorter.sort(a.cph, b.cph);
   },
-  width: 100
+  width: 100,
+  fixed: 'left'
 }, {
   title: '租金迟交',
   children: [{
@@ -1773,7 +1715,7 @@ var columns = [{
     dataIndex: 'mt_score'
   }]
 }, {
-  title: '乘客表彰',
+  title: '乘客表扬',
   children: [{
     title: '次数',
     dataIndex: 'praise',
@@ -1790,7 +1732,7 @@ var columns = [{
     dataIndex: 'praise_score'
   }]
 }, {
-  title: '二维码支付',
+  title: '企业表彰',
   children: [{
     title: '次数',
     dataIndex: 'pay',
@@ -1855,7 +1797,7 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
     key: 'componentDidMount',
     value: function componentDidMount() {
       var self = this;
-      this.handleChange(years[1]);
+      this.handleChange(years[0]);
     }
   }, {
     key: 'handleChange',
@@ -1879,7 +1821,7 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
     key: 'search',
     value: function search(value) {
       var result = this.originData.filter(function (item) {
-        return item.xm.indexOf(value) > -1 || item.cph.indexOf(value) > -1;
+        return item.cph.indexOf(value) > -1;
       });
       this.setState({
         data: result
@@ -1929,7 +1871,7 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
               {
                 style: { width: '100%' },
                 placeholder: '\u9009\u62E9\u5E74\u4EFD',
-                defaultValue: years[1],
+                defaultValue: years[0],
                 onChange: this.handleChange.bind(this)
               },
               React.createElement(
@@ -1964,7 +1906,7 @@ var JiaShiYuanBaiFenTable = _wrapComponent('JiaShiYuanBaiFenTable')(function (_R
             { lg: { span: 4, offset: 0 }, xs: { span: 6, offset: 0 } },
             React.createElement(Search, {
               style: { height: 28 },
-              placeholder: '\u8F93\u5165\u4EBA\u540D\u6216\u8005\u8F66\u724C\u53F7\u641C\u7D22',
+                placeholder: '\u8F93\u5165\u4EBA\u540D\u6216\u8005\u8F66\u724C\u53F7\u641C\u7D22',
               onSearch: this.search.bind(this),
               enterButton: true
             })
