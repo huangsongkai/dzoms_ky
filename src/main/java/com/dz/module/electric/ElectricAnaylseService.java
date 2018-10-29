@@ -39,11 +39,14 @@ public class ElectricAnaylseService {
 
 	public static void main(String[] args) {
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		HibernateSessionFactory.rebuildSessionFactory(applicationContext);
 		ElectricAnaylseService service = applicationContext.getBean(ElectricAnaylseService.class);
+
+		System.out.println(service.getActList(new Date(110,10,12),new Date(111,10,12)));
 		
 		//service.createAnaylse(new Date(116,6,20), new Date());
-		System.setProperty("com.dz.root","D:\\Code\\WorkSpaces\\git\\DZOMS\\WebRoot\\");
-		service.geneXls(3);
+//		System.setProperty("com.dz.root","D:\\Code\\WorkSpaces\\git\\DZOMS\\WebRoot\\");
+//		service.geneXls(3);
 		
 	}
 	
@@ -226,4 +229,19 @@ public class ElectricAnaylseService {
 	     xlsArea.setFormulaProcessor(new FastFormulaProcessor());
 	    // xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
 	 }
+
+	public List<String> getActList(Date beginDate,Date endDate){
+		Session session = null;
+		try{
+			session = HibernateSessionFactory.getSession();
+			Query query = session.createQuery("select distinct eh.act from ElectricHistory eh where eh.date>:beginDate and eh.date<:endDate");
+			query.setDate("beginDate",beginDate);
+			query.setDate("endDate",endDate);
+			return query.list();
+		}catch(HibernateException e) {
+			throw e;
+		} finally {
+			HibernateSessionFactory.closeSession();
+		}
+	}
 }

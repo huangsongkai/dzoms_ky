@@ -12,7 +12,7 @@ import javax.servlet.ServletContextListener;
  */
 public class SpringContextListener implements ServletContextListener{
 
-    private static WebApplicationContext springContext;
+    private static WebApplicationContext springContext = null;
     // Public constructor is required by servlet spec
     public SpringContextListener() {
     }
