@@ -10,6 +10,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -629,7 +630,7 @@ public class ContractDaoImpl implements ContractDao {
 				dt.set(Calendar.DATE, 26);
 			}
 
-//			System.out.println("ContractDaoImpl.selectByCarId(),"+dt.toString());
+//			System.out.println("ContractDaoImpl.selectByCarId(),"+dt.getTime().toString());
 
 			if(dt.getTime().before(d)){
 				return c;
@@ -641,11 +642,12 @@ public class ContractDaoImpl implements ContractDao {
 
 					dt.setTime(c.getContractBeginDate());
 					if(dt.get(Calendar.DATE)>26){
-						dt.add(Calendar.MONTH, 1);
 						dt.set(Calendar.DATE, 26);
 					}else{
+						dt.add(Calendar.MONTH, -1);
 						dt.set(Calendar.DATE, 26);
 					}
+//					System.out.println(dt.getTime().toString());
 
 					if(dt.getTime().before(d))
 						return c;
@@ -973,9 +975,23 @@ public class ContractDaoImpl implements ContractDao {
 		}
 	}
 
-	public static void main(String[] args) {
-		ContractDaoImpl daoImpl = new ContractDaoImpl();
-		List<Contract> contractList = daoImpl.contractSearchAllAvilable(new Date(),"全部",null,null);
-		System.out.println(contractList);
+//	public static void main(String[] args) {
+//		ContractDaoImpl daoImpl = new ContractDaoImpl();
+//		List<Contract> contractList = daoImpl.contractSearchAllAvilable(new Date(),"全部",null,null);
+//		System.out.println(contractList);
+//	}
+
+	public static void main(String[] args){
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		HibernateSessionFactory.rebuildSessionFactory(applicationContext);
+
+		ContractDao contractDao = applicationContext.getBean(ContractDao.class);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR,2018);
+		calendar.set(Calendar.MONTH,9);
+		calendar.set(Calendar.DATE,5);
+		Contract contract = contractDao.selectByCarId("LFV2A5BS2G4755079",calendar.getTime());
+		System.out.println(contract.getId());
 	}
 }
