@@ -61,6 +61,11 @@ public class HibernateSessionFactory {
         sessionFactory = localSessionFactoryBean.getObject();
     }
 
+    public static void rebuildSessionFactory(ApplicationContext applicationContext) {
+        instance = applicationContext.getBean(HibernateSessionFactory.class);
+        sessionFactory = localSessionFactoryBean.getObject();
+    }
+
     /**
      *  Close the single hibernate session instance.
      *

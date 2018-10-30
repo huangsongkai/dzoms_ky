@@ -164,6 +164,10 @@ public class ContractAction extends BaseAction {
 			chargeService.addAndDiv(contract_old.getId(),oldEndDate.getTime(),hsession);
 			chargeService.setCleared(contract_old.getId(), oldEndDate.getTime(),hsession);
 
+			/*转包时自动迁移余额*/
+			BigDecimal account = contract_old.getAccount();
+			contract_old.setAccount(BigDecimal.ZERO);
+			contract.setAccount(account);
 			hsession.update(contract_old);
 
 			Calendar calendar = Calendar.getInstance();
@@ -302,7 +306,7 @@ public class ContractAction extends BaseAction {
 
 			System.out.println("Before Plan Making......");
 			//生成合同约定
-			if(contract.isPlanMaked()){
+			if(!contract.isPlanMaked()){
 				if(contractBeginDate.getDate()>26){
 					if(m==11){
 						y++;
@@ -329,8 +333,10 @@ public class ContractAction extends BaseAction {
 					m++;
 					hsession.saveOrUpdate(chargePlan);
 				}
-			}
 
+				contract.setPlanMaked(true);
+				hsession.update(contract);
+			}
 
 			System.out.println("Before Rent Making......");
 

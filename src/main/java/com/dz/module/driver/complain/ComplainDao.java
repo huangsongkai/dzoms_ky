@@ -8,6 +8,7 @@ import org.hibernate.HibernateException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ComplainDao{
 
@@ -88,4 +89,5 @@ public interface ComplainDao{
 	public abstract List<Complain> selectAllByStates(Complain complain, Page page,
                                                      Date beginDate, Date endDate, String dept, Short[] states, String order);
 
+	Map<String,String> getComplainItems();
 }

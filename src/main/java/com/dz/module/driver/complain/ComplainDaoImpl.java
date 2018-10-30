@@ -2,16 +2,19 @@ package com.dz.module.driver.complain;
 
 import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.Page;
+import com.dz.common.itemtool.ItemTool;
+import com.dz.common.tablelist.TableListService;
 import com.dz.module.driver.Driver;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository(value="complainDao")
 //@WaitDeal(name="complainDao")
@@ -583,5 +586,35 @@ public class ComplainDaoImpl implements ComplainDao {
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
+	}
+
+	@Override
+	public Map<String,String> getComplainItems(){
+		Session session = null;
+		try{
+			session = HibernateSessionFactory.getSession();
+			List<ItemTool> items = session.createQuery("from ItemTool where key='complain.complainObject'").list();
+			Map<String,String> map = new HashMap<>();
+			for (ItemTool item : items) {
+				String jsonStr = item.getValue();
+				JSONObject json = JSONObject.fromObject(jsonStr);
+				String id = json.getString("complainObject2");
+				String context = json.getString("complain.complainObject");
+				map.put(id,context);
+			}
+			return map;
+		}catch(HibernateException e) {
+			throw e;
+		} finally {
+			HibernateSessionFactory.closeSession();
+		}
+	}
+
+	public static void main(String[] args){
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		HibernateSessionFactory.rebuildSessionFactory(applicationContext);
+
+		ComplainDao complainDao = applicationContext.getBean(ComplainDao.class);
+		System.out.println(complainDao.getComplainItems());
 	}
 }
