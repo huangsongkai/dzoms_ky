@@ -4,7 +4,6 @@ package com.dz.kaiying.DTO;
  * Created by song on 2017/7/5.
  */
 public class DriverKpToExcelDTO {
-    String djh;//大架号
     String fgs;//分公司
     String cph;//车牌号
     int zj, zj_score;//租金迟交
@@ -22,13 +21,6 @@ public class DriverKpToExcelDTO {
     int pay, pay_score;//二维码支付
     int score2;//加分总评
 
-    public String getDjh() {
-        return djh;
-    }
-
-    public void setDjh(String djh) {
-        this.djh = djh;
-    }
 
     public String getFgs() {
         return fgs;
@@ -282,7 +274,6 @@ public class DriverKpToExcelDTO {
     @Override
     public String toString() {
         return "DriverKpToExcelDTO{" +
-                "djh='" + djh + '\'' +
                 ", fgs='" + fgs + '\'' +
                 ", cph='" + cph + '\'' +
                 ", zj=" + zj +

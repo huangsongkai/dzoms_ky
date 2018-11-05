@@ -1,4 +1,3 @@
-
 package com.dz.kaiying.service;
 
 import com.dz.kaiying.model.KyAccident;
@@ -36,6 +35,7 @@ import java.util.*;
 //todo
 @Service
 public class SgService {
+    public static final String 报案日期 = "报案日期";
     @Resource
     HibernateDao<KyAccident, Integer> bxDao;  //事故dao
 
@@ -46,6 +46,7 @@ public class SgService {
     private Result result = new Result();
     //Map<Integer,KyAccident> sgMap = new HashMap<>();
     List<KyAccident> sgList =null;
+    List<KyYiJue> yjList = null;
     /**
      * /事故查询
      * @return
@@ -55,7 +56,7 @@ public class SgService {
         String selectedTime = request.getParameter("selectedTime");
         String year = "";
         String month = "";
-        String sql ="from KyAccident ";
+        String sql ="from KyYiJue ";
         if(mapSG.size()>0){
             if(!StringUtils.isEmpty(mapSG.get("cph"))){
                 sql += "where cph = '"+mapSG.get("cph")+"'";
@@ -74,15 +75,15 @@ public class SgService {
                 sql = getMonthTime(selectedTime, year, month, sql);//按照出险日期查询整月信息
             }
         }
-        List<KyAccident> accident = bxDao.find(sql);//事故查询
-        for (KyAccident acccident : accident) {
+        List<KyYiJue> accident = yjDao.find(sql);//事故查询
+        for (KyYiJue acccident : accident) {
             List<Vehicle> vehicle = vehicleDao1.find(" from Vehicle where licenseNum = '"+acccident.getCph().trim()+"'");
             if (vehicle.size() != 0){
                 acccident.setDept(vehicle.get(0).getDept());
             }
         }
         if(accident.size()>0){
-            sgList =new ArrayList<>(accident);
+            yjList =new ArrayList<>(accident);
         }
         result.setSuccess("查询成功", accident);
         return result;
@@ -92,14 +93,14 @@ public class SgService {
      * sg列表下载
      */
     public void sgExportExcl(HttpServletResponse rep)throws Exception{
-        if (sgList.size()==0)return;   //如果为空无法下载
+        if (yjList.size()==0)return;   //如果为空无法下载
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet();
         HSSFCellStyle style = getHssfCellStyle(wb);   //设置字体格式
         Row row = sheet.createRow((short) 0);
         generateExcelTitle(style, row);
         int v =1;
-        for (KyAccident ka:sgList) {
+        for (KyYiJue ka:yjList) {
             Field[] fields = ka.getClass().getDeclaredFields();
             Row row1 = sheet.createRow(v);
             for (int i = 0; i < fields.length; i++)
@@ -132,7 +133,7 @@ public class SgService {
                     }
                 }
                 fields[i].setAccessible(false);
-                }
+            }
             v++;
         }
         EmpExportService export=new EmpExportService();
@@ -140,57 +141,222 @@ public class SgService {
     }
 
     private void generateExcelTitle(HSSFCellStyle style, Row row) {
+//        Cell cel0=row.createCell(0);
+//        cel0.setCellStyle(style);
+//        cel0.setCellValue("序号");
+//
+//        Cell cel1=row.createCell(1);
+//        cel1.setCellStyle(style);
+//        cel1.setCellValue("事故处理部门");
+//
+//        Cell cel2=row.createCell(2);
+//        cel2.setCellStyle(style);
+//        cel2.setCellValue("报案日期");
+//
+//        Cell cel3=row.createCell(3);
+//        cel3.setCellStyle(style);
+//        cel3.setCellValue("报案时间");
+//
+//        Cell cel4=row.createCell(4);
+//        cel4.setCellStyle(style);
+//        cel4.setCellValue("结案时间");
+//        ;
+//        Cell cel5=row.createCell(5);
+//        cel5.setCellStyle(style);
+//        cel5.setCellValue("通赔标志");
+//
+//        Cell cel6=row.createCell(6);
+//        cel6.setCellStyle(style);
+//        cel6.setCellValue("业务来源");
+//
+//        Cell cel7=row.createCell(7);
+//        cel7.setCellStyle(style);
+//        cel7.setCellValue("保单号");
+//
+//        Cell cel8=row.createCell(8);
+//        cel8.setCellStyle(style);
+//        cel8.setCellValue("保单归属机构");
+//
+//        Cell cel9=row.createCell(9);
+//        cel9.setCellStyle(style);
+//        cel9.setCellValue("启保日期");
+//
+//        Cell cel10=row.createCell(10);
+//        cel10.setCellStyle(style);
+//        cel10.setCellValue("终保日期");
+//
+//        Cell cel11=row.createCell(11);
+//        cel11.setCellStyle(style);
+//        cel11.setCellValue("初登日期");
+//
+//        Cell cel12=row.createCell(12);
+//        cel12.setCellStyle(style);
+//        cel12.setCellValue("条款");
+//
+//        Cell cel13=row.createCell(13);
+//        cel13.setCellStyle(style);
+//        cel13.setCellValue("保费");
+//
+//        Cell cel14=row.createCell(14);
+//        cel14.setCellStyle(style);
+//        cel14.setCellValue("报案号");
+//        ;
+//        Cell cel15=row.createCell(15);
+//        cel15.setCellStyle(style);
+//        cel15.setCellValue("立案号");
+//
+//        Cell cel16=row.createCell(16);
+//        cel16.setCellStyle(style);
+//        cel16.setCellValue("案件性质");
+//
+//        Cell cel17=row.createCell(17);
+//        cel17.setCellStyle(style);
+//        cel17.setCellValue("出险日期");
+//
+//        Cell cel18=row.createCell(18);
+//        cel18.setCellStyle(style);
+//        cel18.setCellValue("事故处理方式");
+//
+//        Cell cel19=row.createCell(19);
+//        cel19.setCellStyle(style);
+//        cel19.setCellValue("立案日期");
+//
+//        Cell cel20=row.createCell(20);
+//        cel20.setCellStyle(style);
+//        cel20.setCellValue("结案日期");
+//
+//        Cell cel21=row.createCell(21);
+//        cel21.setCellStyle(style);
+//        cel21.setCellValue("估损金额");
+//
+//        Cell cel22=row.createCell(22);
+//        cel2.setCellStyle(style);
+//        cel2.setCellValue("估计赔偿");
+//
+//        Cell cel23=row.createCell(23);
+//        cel23.setCellStyle(style);
+//        cel23.setCellValue("赔付金额");
+//
+//        Cell cel24=row.createCell(24);
+//        cel24.setCellStyle(style);
+//        cel24.setCellValue("报案人");
+//        ;
+//        Cell cel25=row.createCell(25);
+//        cel25.setCellStyle(style);
+//        cel25.setCellValue("报案人电话");
+//
+//        Cell cel26=row.createCell(26);
+//        cel26.setCellStyle(style);
+//        cel26.setCellValue("查勘员1");
+//
+//        Cell cel27=row.createCell(27);
+//        cel27.setCellStyle(style);
+//        cel27.setCellValue("勘察员2");
+//
+//        Cell cel28=row.createCell(28);
+//        cel28.setCellStyle(style);
+//        cel28.setCellValue("处理人代码");
+//
+//        Cell cel29=row.createCell(29);
+//        cel29.setCellStyle(style);
+//        cel29.setCellValue("保单经办人");
+//
+//        Cell cel30=row.createCell(30);
+//        cel30.setCellStyle(style);
+//        cel30.setCellValue("保单归属人");
+//
+//        Cell cel31=row.createCell(31);
+//        cel31.setCellStyle(style);
+//        cel31.setCellValue("出险地址");
+//
+//        Cell cel32=row.createCell(32);
+//        cel32.setCellStyle(style);
+//        cel32.setCellValue("出险原因");
+//
+//        Cell cel33=row.createCell(33);
+//        cel33.setCellStyle(style);
+//        cel33.setCellValue("驾驶人");
+//
+//        Cell cel34=row.createCell(34);
+//        cel34.setCellStyle(style);
+//        cel34.setCellValue("驾驶证");
+//        ;
+//        Cell cel35=row.createCell(35);
+//        cel35.setCellStyle(style);
+//        cel35.setCellValue("厂牌型号");
+//
+//        Cell cel36=row.createCell(36);
+//        cel36.setCellStyle(style);
+//        cel36.setCellValue("车牌号");
+//
+//        Cell cel37=row.createCell(37);
+//        cel37.setCellStyle(style);
+//        cel37.setCellValue("被保险人");
+//
+//        Cell cel38=row.createCell(38);
+//        cel38.setCellStyle(style);
+//        cel38.setCellValue("出险经过");
+//
+//        Cell cel39=row.createCell(39);
+//        cel39.setCellStyle(style);
+//        cel39.setCellValue("创建时间");
+
+
+
+
+
+
         Cell cel0=row.createCell(0);
         cel0.setCellStyle(style);
         cel0.setCellValue("序号");
 
         Cell cel1=row.createCell(1);
         cel1.setCellStyle(style);
-        cel1.setCellValue("事故处理部门");
+        cel1.setCellValue("赔偿单号");
 
         Cell cel2=row.createCell(2);
         cel2.setCellStyle(style);
-        cel2.setCellValue("报案日期");
+        cel2.setCellValue("险种代码");
 
         Cell cel3=row.createCell(3);
         cel3.setCellStyle(style);
-        cel3.setCellValue("报案时间");
+        cel3.setCellValue("保单归属机构");
 
         Cell cel4=row.createCell(4);
         cel4.setCellStyle(style);
-        cel4.setCellValue("结案时间");
-        ;
+        cel4.setCellValue("条款代码");
+
         Cell cel5=row.createCell(5);
         cel5.setCellStyle(style);
-        cel5.setCellValue("通赔标志");
+        cel5.setCellValue("计算书号");
 
         Cell cel6=row.createCell(6);
         cel6.setCellStyle(style);
-        cel6.setCellValue("业务来源");
+        cel6.setCellValue("立案号");
 
         Cell cel7=row.createCell(7);
         cel7.setCellStyle(style);
-        cel7.setCellValue("保单号");
+        cel7.setCellValue("报案号");
 
         Cell cel8=row.createCell(8);
         cel8.setCellStyle(style);
-        cel8.setCellValue("保单归属机构");
+        cel8.setCellValue("报案日期");
 
         Cell cel9=row.createCell(9);
         cel9.setCellStyle(style);
-        cel9.setCellValue("启保日期");
+        cel9.setCellValue("保单号");
 
         Cell cel10=row.createCell(10);
         cel10.setCellStyle(style);
-        cel10.setCellValue("终保日期");
+        cel10.setCellValue("起保日期");
 
         Cell cel11=row.createCell(11);
         cel11.setCellStyle(style);
-        cel11.setCellValue("初登日期");
+        cel11.setCellValue("终保日期");
 
         Cell cel12=row.createCell(12);
         cel12.setCellStyle(style);
-        cel12.setCellValue("条款");
+        cel12.setCellValue("保额");
 
         Cell cel13=row.createCell(13);
         cel13.setCellStyle(style);
@@ -198,107 +364,160 @@ public class SgService {
 
         Cell cel14=row.createCell(14);
         cel14.setCellStyle(style);
-        cel14.setCellValue("报案号");
-        ;
+        cel14.setCellValue("新车购置价");
+
         Cell cel15=row.createCell(15);
         cel15.setCellStyle(style);
-        cel15.setCellValue("立案号");
+        cel15.setCellValue("赔案类别");
 
         Cell cel16=row.createCell(16);
         cel16.setCellStyle(style);
-        cel16.setCellValue("案件性质");
+        cel16.setCellValue("赔偿类别");
 
         Cell cel17=row.createCell(17);
         cel17.setCellStyle(style);
-        cel17.setCellValue("出险日期");
+        cel17.setCellValue("出险原因");
 
         Cell cel18=row.createCell(18);
         cel18.setCellStyle(style);
-        cel18.setCellValue("事故处理方式");
+        cel18.setCellValue("事故类型");
 
         Cell cel19=row.createCell(19);
         cel19.setCellStyle(style);
-        cel19.setCellValue("立案日期");
+        cel19.setCellValue("核赔日期");
 
         Cell cel20=row.createCell(20);
         cel20.setCellStyle(style);
-        cel20.setCellValue("结案日期");
+        cel20.setCellValue("核赔人");
 
         Cell cel21=row.createCell(21);
         cel21.setCellStyle(style);
-        cel21.setCellValue("估损金额");
+        cel21.setCellValue("理算人代码");
 
         Cell cel22=row.createCell(22);
-        cel2.setCellStyle(style);
-        cel2.setCellValue("估计赔偿");
+        cel22.setCellStyle(style);
+        cel22.setCellValue("理算人");
 
         Cell cel23=row.createCell(23);
         cel23.setCellStyle(style);
-        cel23.setCellValue("赔付金额");
+        cel23.setCellValue("出险日期");
 
         Cell cel24=row.createCell(24);
         cel24.setCellStyle(style);
-        cel24.setCellValue("报案人");
-        ;
+        cel24.setCellValue("立案日期");
+
         Cell cel25=row.createCell(25);
         cel25.setCellStyle(style);
-        cel25.setCellValue("报案人电话");
+        cel25.setCellValue("结案日期");
 
         Cell cel26=row.createCell(26);
         cel26.setCellStyle(style);
-        cel26.setCellValue("查勘员1");
+        cel26.setCellValue("赔付金额");
 
         Cell cel27=row.createCell(27);
         cel27.setCellStyle(style);
-        cel27.setCellValue("勘察员2");
+        cel27.setCellValue("财务付款金额");
 
         Cell cel28=row.createCell(28);
         cel28.setCellStyle(style);
-        cel28.setCellValue("处理人代码");
+        cel28.setCellValue("被保险人");
 
         Cell cel29=row.createCell(29);
         cel29.setCellStyle(style);
-        cel29.setCellValue("保单经办人");
+        cel29.setCellValue("领款人类型");
 
         Cell cel30=row.createCell(30);
         cel30.setCellStyle(style);
-        cel30.setCellValue("保单归属人");
+        cel30.setCellValue("领款人");
 
         Cell cel31=row.createCell(31);
         cel31.setCellStyle(style);
-        cel31.setCellValue("出险地址");
+        cel31.setCellValue("领款人电话");
 
         Cell cel32=row.createCell(32);
         cel32.setCellStyle(style);
-        cel32.setCellValue("出险原因");
+        cel32.setCellValue("证件类型");
 
         Cell cel33=row.createCell(33);
         cel33.setCellStyle(style);
-        cel33.setCellValue("驾驶人");
+        cel33.setCellValue("证件号码");
 
         Cell cel34=row.createCell(34);
         cel34.setCellStyle(style);
-        cel34.setCellValue("驾驶证");
-        ;
+        cel34.setCellValue("开户行");
+
         Cell cel35=row.createCell(35);
         cel35.setCellStyle(style);
-        cel35.setCellValue("厂牌型号");
+        cel35.setCellValue("银行代码");
 
         Cell cel36=row.createCell(36);
         cel36.setCellStyle(style);
-        cel36.setCellValue("车牌号");
+        cel36.setCellValue("银行账号");
 
         Cell cel37=row.createCell(37);
         cel37.setCellStyle(style);
-        cel37.setCellValue("被保险人");
+        cel37.setCellValue("区域代码");
 
         Cell cel38=row.createCell(38);
         cel38.setCellStyle(style);
-        cel38.setCellValue("出险经过");
+        cel38.setCellValue("共私标志");
 
         Cell cel39=row.createCell(39);
         cel39.setCellStyle(style);
-        cel39.setCellValue("创建时间");
+        cel39.setCellValue("报案人");
+
+        Cell cel40=row.createCell(40);
+        cel40.setCellStyle(style);
+        cel40.setCellValue("报案人电话");
+
+        Cell cel41=row.createCell(41);
+        cel41.setCellStyle(style);
+        cel41.setCellValue("保单经办人");
+
+        Cell cel42=row.createCell(42);
+        cel42.setCellStyle(style);
+        cel42.setCellValue("出险地点");
+
+        Cell cel43=row.createCell(43);
+        cel43.setCellStyle(style);
+        cel43.setCellValue("车牌号");
+
+        Cell cel44=row.createCell(44);
+        cel44.setCellStyle(style);
+        cel44.setCellValue("车型");
+
+        Cell cel45=row.createCell(45);
+        cel45.setCellStyle(style);
+        cel45.setCellValue("业务来源");
+
+        Cell cel46=row.createCell(46);
+        cel46.setCellStyle(style);
+        cel46.setCellValue("通赔标志");
+
+        Cell cel47=row.createCell(47);
+        cel47.setCellStyle(style);
+        cel47.setCellValue("查勘员代码");
+
+        Cell cel48=row.createCell(48);
+        cel48.setCellStyle(style);
+        cel48.setCellValue("查勘员");
+
+        Cell cel49=row.createCell(49);
+        cel49.setCellStyle(style);
+        cel49.setCellValue("查勘员代码");
+
+        Cell cel50=row.createCell(50);
+        cel50.setCellStyle(style);
+        cel50.setCellValue("查勘员");
+
+        Cell cel51=row.createCell(51);
+        cel51.setCellStyle(style);
+        cel51.setCellValue("核损员代码");
+
+        Cell cel52=row.createCell(52);
+        cel52.setCellStyle(style);
+        cel52.setCellValue("核损员");
+
     }
 
     private HSSFCellStyle getHssfCellStyle(HSSFWorkbook wb) {
@@ -371,7 +590,7 @@ public class SgService {
 
         try {
             //数据库取值
-            List<KyAccident> accident = bxDao.find("from KyAccident");
+            List<KyYiJue> accident = yjDao.find("from KyYiJue") ;
 
             //导出Excel文件数据
             ExportExcelUtil util = new ExportExcelUtil();
@@ -397,7 +616,7 @@ public class SgService {
     }
 
 
-    public Workbook writeNewExcel(File file, String sheetName, List<KyAccident> lis) throws Exception {
+    public Workbook writeNewExcel(File file, String sheetName, List<KyYiJue> lis) throws Exception {
         Workbook wb = null;
         Row row = null;
         Cell cell = null;
@@ -413,98 +632,98 @@ public class SgService {
             row = sheet.createRow(lastRow + i); //创建新的ROW，用于数据插入
 
             //按项目实际需求，在该处将对象数据插入到Excel中
-            KyAccident vo = lis.get(i);
+            KyYiJue vo = lis.get(i);
             if (null == vo) {
                 break;
             }
-            //Cell赋值开始
-            cell = row.createCell(0);
-            cell.setCellValue(i);
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(1);
-            cell.setCellValue(vo.getBasj());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(2);
-            cell.setCellValue(vo.getJasj());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(3);
-            cell.setCellValue(vo.getBdh());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(4);
-            cell.setCellValue(vo.getCdrq());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(5);
-            cell.setCellValue(vo.getLah());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(6);
-            cell.setCellValue(vo.getAjxz());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(7);
-            cell.setCellValue(vo.getCxrq());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(8);
-            cell.setCellValue(vo.getSgclfs());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(9);
-            cell.setCellValue(vo.getGsje());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(10);
-            cell.setCellValue(vo.getGjpk());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(11);
-            cell.setCellValue(vo.getPfje());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(12);
-            cell.setCellValue(vo.getBar());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(13);
-            cell.setCellValue(vo.getBardh());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(14);
-            cell.setCellValue(vo.getCky());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(15);
-            cell.setCellValue(vo.getCxdz());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(16);
-            cell.setCellValue(vo.getCxyy());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(17);
-            cell.setCellValue(vo.getJsr());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(18);
-            cell.setCellValue(vo.getJsz());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(19);
-            cell.setCellValue(vo.getCpxh());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(20);
-            cell.setCellValue(vo.getCph());
-            cell.setCellStyle(cs);
-
-            cell = row.createCell(21);
-            cell.setCellValue(vo.getCxjg());
-            cell.setCellStyle(cs);
+////            Cell赋值开始
+//            cell = row.createCell(0);
+//            cell.setCellValue(i);
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(1);
+//            cell.setCellValue(vo.getBarq());
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(2);
+//            cell.setCellValue(vo.getJarq());
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(3);
+//            cell.setCellValue(vo.getBdh());
+//            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(4);
+////            cell.setCellValue(vo.getCdrq());
+////            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(5);
+//            cell.setCellValue(vo.getLah());
+//            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(6);
+////            cell.setCellValue(vo.getAjxz());
+////            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(7);
+//            cell.setCellValue(vo.getCxrq());
+//            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(8);
+////            cell.setCellValue(vo.getSgclfs());
+////            cell.setCellStyle(cs);
+////
+////            cell = row.createCell(9);
+////            cell.setCellValue(vo.getGsje());
+////            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(10);
+////            cell.setCellValue(vo.getGjpk());
+////            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(11);
+//            cell.setCellValue(vo.getPfje());
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(12);
+//            cell.setCellValue(vo.getBar());
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(13);
+//            cell.setCellValue(vo.getBardh());
+//            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(14);
+////            cell.setCellValue(vo.getCky());
+////            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(15);
+//            cell.setCellValue(vo.getCxdd());
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(16);
+//            cell.setCellValue(vo.getCxyy());
+//            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(17);
+////            cell.setCellValue(vo.getJsr());
+////            cell.setCellStyle(cs);
+////
+////            cell = row.createCell(18);
+////            cell.setCellValue(vo.getJsz());
+////            cell.setCellStyle(cs);
+////
+//            cell = row.createCell(19);
+//            cell.setCellValue(vo.getCx());
+//            cell.setCellStyle(cs);
+//
+//            cell = row.createCell(20);
+//            cell.setCellValue(vo.getCph());
+//            cell.setCellStyle(cs);
+//
+////            cell = row.createCell(21);
+////            cell.setCellValue(vo.getCxjg());
+////            cell.setCellStyle(cs);
         }
         return wb;
     }
@@ -593,7 +812,7 @@ public class SgService {
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
             accident.setCreateTime(sdf.format(new Date()));
             bxDao.save(accident);
-           // System.out.println("打印信息1--> "+accident.toString());
+            // System.out.println("打印信息1--> "+accident.toString());
         }
 
         for (int i = 0; i < yijue.size(); i++) {
@@ -646,7 +865,7 @@ public class SgService {
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
             yjDao.save(yj);
             System.out.println("打印信息2--> "+yj.toString());
-       }
+        }
         result.setSuccess("导出成功", null);
         return "sg/accident_list";
     }
@@ -701,7 +920,7 @@ public class SgService {
             accident.setCph(String.valueOf(lo.get(32)));//车牌号
             accident.setBbxr(String.valueOf(lo.get(33)));//被保险人
             accident.setCxjg(String.valueOf(lo.get(34))); //出险经过
-           // System.out.println("打印信息1--> ");
+            // System.out.println("打印信息1--> ");
         }
 
         for (int i = 0; i < yijue.size(); i++) {
@@ -752,7 +971,7 @@ public class SgService {
             yj.setCx(String.valueOf(lo.get(42)));
             yj.setYwly(String.valueOf(lo.get(43)));
             yj.setTpbz(String.valueOf(lo.get(44)));//通赔标志
-           // System.out.println("打印信息2--> ");
+            // System.out.println("打印信息2--> ");
         }
     }
 }
