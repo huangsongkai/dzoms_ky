@@ -7,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="renderer" content="webkit">
-    <title>驾驶员百分考核</title>
+    <title>车辆百分考核</title>
     <style type="text/css">
         .ant-spin-nested-loading{
             text-align: left;

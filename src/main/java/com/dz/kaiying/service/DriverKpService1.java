@@ -31,7 +31,7 @@ public class DriverKpService1 {
     HibernateTemplate hibernateTemplate;
     @Autowired
     HibernateUtil hibernateUtil;
-//    select count(1) from checkchargetable where contractId='308' and thisMonthTotalOwe > 0 and time >= '2017-01-01' and time <= '2017-12-01'
+    //    select count(1) from checkchargetable where contractId='308' and thisMonthTotalOwe > 0 and time >= '2017-01-01' and time <= '2017-12-01'
     public List<DriverKpDTO> getDtosByMonth(String ym){
         String month_first_day = TimeUtil.getFirstMonthDateByYM(ym);
         String month_last_day = TimeUtil.getLastMonthDateByYM(ym);
@@ -39,65 +39,100 @@ public class DriverKpService1 {
     }
 
 
-    public List<DriverKpDTO> getDtosByYear(String year){
+    public List<DriverKpDTO> getDtosByYear(String year,String month){
         if(year.equals("")){
             Calendar date = Calendar.getInstance();
             year = String.valueOf(date.get(Calendar.YEAR));
         }
-        String year_first_day = "'"+year + "-01-01 00:00:00"+"'";
-        String year_last_day = "'"+year + "-12-31 23:59:59"+"'";
-        System.out.println(year_first_day+"     "+year_last_day);
-        return getDtosByTime(year_first_day, year_last_day);
+        if(month.equals("")||month==null){
+            String year_first_day = "'"+year + "-01-01 00:00:00"+"'";
+            String year_last_day = "'"+year + "-12-31 23:59:59"+"'";
+            System.out.println(year_first_day+"-----"+year_last_day);
+            return getDtosByTime(year_first_day, year_last_day);
+        }else{
+            int day=0;
+            int years = Integer.parseInt(year);
+            switch (Integer.parseInt(month)) {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    day = 31;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    day = 30;
+                    break;
+                case 2:
+                    if ( ((years % 4 == 0) && !(years % 100 == 0)) || (years % 400 == 0))
+                        day = 29;
+                    else
+                        day = 28;
+                    break;
+                default:
+                    break;
+            }
+            String year_first_day = "'"+year + "-"+month+"-01 00:00:00"+"'";
+            String year_last_day = "'"+year + "-"+month+"-"+day+" 23:59:59"+"'";
+            System.out.println(year_first_day+"-----"+year_last_day);
+            return getDtosByTime(year_first_day, year_last_day);
+        }
     }
 
     public List<DriverKpDTO> getDtosByTime(String beg, String end){
+
 //        String month_first_day = beg;
         String month_first_day = beg;
         String month_last_day = end;
         //添加时间限制
-        String dtoListSql = "select v.dept fgs, d.name xm, v.license_num cph, v.carframe_num djh, d.driver_class zfj, sg, wz,ts,lh,hd, mt,praise, zj, (case when (v.driver_id = d.id_num) then 1 else 0 end) as 'isOwner',contract_begin_date,(case when (contract_begin_date > $month_first_day or  d.apply_time > $month_first_day) then 1 else 0 end) as 'isNew', cid, d.apply_time, a.sg_0, a.sg_1, a.sg_2,ts_score,hd_score, mt_score,praise_score from driver d  left join vehicle v on d.carframeNum = v.carframe_num  left join (select id as cid, carframe_num,contract_begin_date from contract a where not exists (select id from contract b where a.carframe_num = b.carframe_num and b.id > a.id)) as contract on contract.carframe_num = v.carframe_num  left Join (select count(1) lh, id_num  from meeting_check LEFT JOIN vehicle  ON meeting_check.id_num = vehicle.driver_id WHERE is_checked is null and need_check_time >= '2018-01-01 00:00:00' and need_check_time <= '2018-12-31 23:59:59' and vehicle.driver_id is not null group by vehicle.carframe_num ) l on l.id_num=d.id_num    left Join (select sum(1) sg, sum(if(accident.shiguxingzhi='轻微',1,0)) sg_0, sum(if(accident.shiguxingzhi='一般',1,0)) sg_1, sum(if(accident.shiguxingzhi='重大',1,0)) sg_2, driverId from accident where accident.checker and timet >= $month_first_day and timet <= $month_last_day  and check_time is not null GROUP BY driverId ) as a on d.id_num   = a.driverId  left Join (select count(1) wz, carframeNum from electric_history where date >= $month_first_day and date <= $month_last_day GROUP BY carframeNum ) e on e.carframeNum = v.carframe_num  left Join (select count(1) ts, sum(grade) ts_score, vehicle_id from complain where complain_time >= $month_first_day and complain_time <= $month_last_day GROUP BY vehicle_id ) c on c.vehicle_id = d.carframeNum  left Join (select count(1) hd, sum(grade) hd_score, id_num from activity_driver,activity where activity.id=activity_driver.activity_id and activity_time >= $month_first_day and activity_time <= $month_last_day GROUP BY id_num ) ac on ac.id_num = d.id_num  left Join (select count(1) mt, sum(grade) mt_score,id_num from group_praise_driver gpd,group_praise gp where gpd.group_praise_id = gp.id and praise_time >= $month_first_day and praise_time <= $month_last_day GROUP BY id_num ) g on g.id_num = d.id_num  left Join (select count(1) praise, sum(grade) praise_score, id_num from praise where praise_time >= $month_first_day and praise_time <= $month_last_day GROUP BY id_num ) p on p.id_num = d.id_num  left Join (select count(1) zj, contractId from checkchargetable where thisMonthTotalOwe > 0 and time >= $month_first_day and time <= $month_last_day group by contractId ) as ct on cid = ct.contractId  where is_in_car = 1 order by cph";
+        String dtoListSql = "select v.dept fgs, d.name xm, v.license_num cph, v.carframe_num djh, d.driver_class zfj, sg, wz,ts,lh,hd, mt,praise, zj, (case when (v.driver_id = d.id_num) then 1 else 0 end) as 'isOwner',contract_begin_date,(case when (contract_begin_date > $month_first_day or  d.apply_time > $month_first_day) then 1 else 0 end) as 'isNew', cid, d.apply_time, sg_0, sg_1, sg_2,ts_score,hd_score, mt_score,praise_score from driver d  left join vehicle v on d.carframeNum = v.carframe_num  left join (select id as cid, carframe_num,contract_begin_date from contract a where not exists (select id from contract b where a.carframe_num = b.carframe_num and b.id > a.id)) as contract on contract.carframe_num = v.carframe_num  left Join (select count(1) lh, id_num from meeting_check WHERE is_checked is null and need_check_time >= $month_first_day and need_check_time <= $month_last_day group by id_num ) l on l.id_num=d.id_num  LEFT JOIN (select  count(1) sg,sum(sg_0) sg_0,sum(sg_1) sg_1,sum(sg_2) sg_2 ,a.cph from(select bah,sum(pfje) pfje,cph,if(sum(pfje)<5000,1,0) sg_0,if (sum(pfje)>=5000 and sum(pfje)<10000,1,0) sg_1,if (sum(pfje)>=10000,1,0) sg_2 ,jarq from ky_yijue ky,vehicle veh where jarq >= $month_first_day and jarq <= $month_last_day and  (ky.cph = veh.license_num or ky.cph = veh.engine_num) group by bah)a LEFT JOIN vehicle v ON a.cph=v.license_num or a.cph = v.engine_num GROUP BY cph)as aa on aa.cph = v.license_num left Join (select count(1) wz, carframeNum from electric_history where date >= $month_first_day and date <= $month_last_day GROUP BY carframeNum ) e on e.carframeNum = v.carframe_num  left Join (select count(1) ts, sum(grade) ts_score, deal_reault from complain where complain_time >= $month_first_day and complain_time <= $month_last_day GROUP BY deal_reault ) c on c.deal_reault = d.id_num  left Join (select count(1) hd, sum(grade) hd_score, id_num from activity_driver,activity where activity.id=activity_driver.activity_id and activity_time >= $month_first_day and activity_time <= $month_last_day GROUP BY id_num ) ac on ac.id_num = d.id_num  left Join (select count(1) mt, sum(grade) mt_score,id_num from group_praise_driver gpd,group_praise gp where gpd.group_praise_id = gp.id and praise_time >= $month_first_day and praise_time <= $month_last_day GROUP BY id_num ) g on g.id_num = d.id_num  left Join (select count(1) praise, sum(grade) praise_score, id_num from praise where praise_time >= $month_first_day and praise_time <= $month_last_day GROUP BY id_num ) p on p.id_num = d.id_num  left Join (select count(1) zj, contractId from checkchargetable where thisMonthTotalOwe > 0 and time >= $month_first_day and time <= $month_last_day group by contractId ) as ct on cid = ct.contractId  where is_in_car = 1 order by cph";
         dtoListSql = dtoListSql.replace("$month_first_day", month_first_day);
         dtoListSql = dtoListSql.replace("$month_last_day", month_last_day);
-        System.out.println(dtoListSql);
-        List<Object[]> driverObjectList = hibernateUtil.queryBySql(dtoListSql);
+//        System.out.println(dtoListSql);
+        List<Object[]> driverObjectList1 = hibernateUtil.queryBySql(dtoListSql);
 
-        List<DriverKpDTO> driverKpDTOList = new ArrayList<>();
-        for(Object[] o :driverObjectList ){
+        List<DriverKpDTO> DriverKpDTOList = new ArrayList<>();
+        for(Object[] o :driverObjectList1 ){
             int score = 100;
-            DriverKpDTO driverKpDTO = new DriverKpDTO();
-            driverKpDTO.setFgs(o[0] == null ?"":((String) o[0]).trim());
-//            driverKpDTO.setXm(o[1] == null ?"":((String) o[1]).trim());
-            driverKpDTO.setCph(o[2] == null ?"":((String) o[2]).trim());
-            driverKpDTO.setDjh(o[3] == null ?"":((String) o[3]).trim());
-//            driverKpDTO.setZfj(o[4] == null ?"":((String) o[4]).trim());
-            driverKpDTO.setSg(getSafeInt(o[5]));
-            driverKpDTO.setWz(getSafeInt(o[6]));
-            driverKpDTO.setTs(getSafeInt(o[7]));
-            driverKpDTO.setLh(getSafeInt(o[8]));
-            driverKpDTO.setHd(getSafeInt(o[9]));
-            driverKpDTO.setMt(getSafeInt(o[10]));
-            driverKpDTO.setPraise(getSafeInt(o[11]));
-//            driverKpDTO.setZj((BigInteger) o[12] == null?0:((BigInteger) o[13]).intValue());
-            driverKpDTO.setZj(getSafeInt(o[12]));
-//            driverKpDTO.setIsOwner(getSafeInt(o[13]));
-//            driverKpDTO.setIsNew(getSafeInt(o[15]));
-            driverKpDTO.setSg_0(getSafeInt(o[18]));
-            driverKpDTO.setSg_1(getSafeInt(o[19]));
-            driverKpDTO.setSg_2(getSafeInt(o[20]));
-            driverKpDTO.setTs_score(getSafeInt(o[21]));
-            driverKpDTO.setHd_score(getSafeInt(o[22]));
-            driverKpDTO.setMt_score(getSafeInt(o[23]));
-            driverKpDTO.setPraise_score(getSafeInt(o[24]));
-            driverKpDTO.setPay(0);
-            driverKpDTO.setPay_score(0);
+            DriverKpDTO DriverKpDTO = new DriverKpDTO();
+            DriverKpDTO.setFgs(o[0] == null ?"":((String) o[0]).trim());
+            DriverKpDTO.setXm(o[1] == null ?"":((String) o[1]).trim());
+            DriverKpDTO.setCph(o[2] == null ?"":((String) o[2]).trim());
+            DriverKpDTO.setDjh(o[3] == null ?"":((String) o[3]).trim());
+            DriverKpDTO.setZfj(o[4] == null ?"":((String) o[4]).trim());
+            DriverKpDTO.setSg(getSafeInt(o[5]));
+            DriverKpDTO.setWz(getSafeInt(o[6]));
+            DriverKpDTO.setTs(getSafeInt(o[7]));
+            DriverKpDTO.setLh(getSafeInt(o[8]));
+            DriverKpDTO.setHd(getSafeInt(o[9]));
+            DriverKpDTO.setMt(getSafeInt(o[10]));
+            DriverKpDTO.setPraise(getSafeInt(o[11]));
+//            DriverKpDTO.setZj((BigInteger) o[12] == null?0:((BigInteger) o[13]).intValue());
+            DriverKpDTO.setZj(getSafeInt(o[12]));
+            DriverKpDTO.setIsOwner(getSafeInt(o[13]));
+            DriverKpDTO.setIsNew(getSafeInt(o[15]));
+            DriverKpDTO.setSg_0(getSafeInt(o[18]));
+            DriverKpDTO.setSg_1(getSafeInt(o[19]));
+            DriverKpDTO.setSg_2(getSafeInt(o[20]));
+            DriverKpDTO.setTs_score(getSafeInt(o[21]));
+            DriverKpDTO.setHd_score(getSafeInt(o[22]));
+            DriverKpDTO.setMt_score(getSafeInt(o[23]));
+            DriverKpDTO.setPraise_score(getSafeInt(o[24]));
+            DriverKpDTO.setPay(0);
+            DriverKpDTO.setPay_score(0);
 
-            calcScore(driverKpDTO);
-            /*score = score - driverKpDTO.getSg()-driverKpDTO.getWz()-driverKpDTO.getTs()-driverKpDTO.getLh()
-                    +driverKpDTO.getHd()+driverKpDTO.getBy()+driverKpDTO.getMt();
-            driverKpDTO.setScore(score);*/
-            driverKpDTOList.add(driverKpDTO);
+            calcScore(DriverKpDTO,beg,end);
+            /*score = score - DriverKpDTO.getSg()-DriverKpDTO.getWz()-DriverKpDTO.getTs()-DriverKpDTO.getLh()
+                    +DriverKpDTO.getHd()+DriverKpDTO.getBy()+DriverKpDTO.getMt();
+            DriverKpDTO.setScore(score);*/
+            DriverKpDTOList.add(DriverKpDTO);
         }
-        return driverKpDTOList;
+        return DriverKpDTOList;
     }
 
     int getSafeInt(Object obj){
@@ -118,7 +153,7 @@ public class DriverKpService1 {
         return 0;
     }
 
-    void calcScore(DriverKpDTO driverKpDTO){
+    void calcScore(DriverKpDTO DriverKpDTO,String beg,String end){
         String[] properties = {"zj", "insurance", };
         List<DriverKpParams> originalList = driverKpParamsDao.loadAll(DriverKpParams.class);
         DriverKpParams original;
@@ -130,56 +165,64 @@ public class DriverKpService1 {
 
         int score;
 
-//        int isOwner = driverKpDTO.getIsOwner();
+        int isOwner = DriverKpDTO.getIsOwner();
 
-//        if(isOwner == 0)
-//            score = 0;
-//        else
-//            score = driverKpDTO.getZj() * original.getZj_0();
-//        driverKpDTO.setZj_score(getSmaller(score, original.getZj_total()));
+        if(isOwner == 0)
+            score = 0;
+        else
+            score = DriverKpDTO.getZj() * original.getZj_0();
+        DriverKpDTO.setZj_score(getSmaller(score, original.getZj_total()));
 
-//        if(isOwner == 0)
-//            score = 0;
-//        else
-//            score = driverKpDTO.getInsurance() * original.getInsurance_0();
-//        driverKpDTO.setInsurance_score(getSmaller(score, original.getInsurance_total()));
+        if(isOwner == 0)
+            score = 0;
+        else
+            score = DriverKpDTO.getInsurance() * original.getInsurance_0();
+        DriverKpDTO.setInsurance_score(getSmaller(score, original.getInsurance_total()));
 
-        score = driverKpDTO.getLaw() * original.getLaw_0();
-        driverKpDTO.setLaw_score(getSmaller(score, original.getLaw_total()));
+        score = DriverKpDTO.getLaw() * original.getLaw_0();
+        DriverKpDTO.setLaw_score(getSmaller(score, original.getLaw_total()));
 
-        driverKpDTO.setTs_score(getSmaller(driverKpDTO.getTs_score(), original.getTs_total()));
+        DriverKpDTO.setTs_score(getSmaller(DriverKpDTO.getTs_score(), original.getTs_total()));
 
-        score = driverKpDTO.getSg_0()*original.getSg_0()+driverKpDTO.getSg_1()*original.getSg_1()+driverKpDTO.getSg_2()*original.getSg_2();
-        driverKpDTO.setSg_score(getSmaller(score, original.getSg_total()));
+        score = DriverKpDTO.getSg_0()*original.getSg_0()+DriverKpDTO.getSg_1()*original.getSg_1()+DriverKpDTO.getSg_2()*original.getSg_2();
+        DriverKpDTO.setSg_score(getSmaller(score, original.getSg_total()));
 
-//        if(isOwner == 0)
-//            score = 0;
-//        else
-//            score = driverKpDTO.getWz() * original.getWz_0();
-//        driverKpDTO.setWz_score(getSmaller(score, original.getWz_total()));
 
-        score = driverKpDTO.getLj() * original.getLj_0();
-        driverKpDTO.setLj_score(getSmaller(score, original.getLj_total()));
+            String sql = "select sum(grade) grade from \n" +
+                    "(select count(1)act1 ,e1.act ,sum(grade) grade \n" +
+                    "from electric_history e1 LEFT JOIN electric_grade e2 on e1.act = e2.act   \n" +
+                    "where licenseNum='"+DriverKpDTO.getCph()+"'and date>="+beg+"and date<="+end+" GROUP BY act) act";
+        List<BigDecimal> each = hibernateUtil.queryBySql(sql);
 
-        score = driverKpDTO.getLh() * original.getLh_0();
-        driverKpDTO.setLh_score(getSmaller(score, original.getLh_total()));
+        score=0;
+        if(each.get(0)!=null) {
+            score=each.get(0).intValue();
+        }
+//        score = driverKpDTO.getWz() * original.getWz_0();
+        DriverKpDTO.setWz_score(getSmaller(score, original.getWz_total()));
 
-        score = driverKpDTO.getZj_score()+driverKpDTO.getInsurance_score()+driverKpDTO.getLaw_score()+driverKpDTO.getTs_score()+
-                driverKpDTO.getSg_score()+driverKpDTO.getWz_score()+driverKpDTO.getLj_score()+driverKpDTO.getLh_score();
+        score = DriverKpDTO.getLj() * original.getLj_0();
+        DriverKpDTO.setLj_score(getSmaller(score, original.getLj_total()));
 
-        driverKpDTO.setScore(100 - score);
+        score = DriverKpDTO.getLh() * original.getLh_0();
+        DriverKpDTO.setLh_score(getSmaller(score, original.getLh_total()));
 
-        driverKpDTO.setHd_score(getSmaller(driverKpDTO.getHd_score(), original.getHd_total()));
+        score = DriverKpDTO.getZj_score()+DriverKpDTO.getInsurance_score()+DriverKpDTO.getLaw_score()+DriverKpDTO.getTs_score()+
+                DriverKpDTO.getSg_score()+DriverKpDTO.getWz_score()+DriverKpDTO.getLj_score()+DriverKpDTO.getLh_score();
 
-        driverKpDTO.setMt_score(getSmaller(driverKpDTO.getMt_score(), original.getMt_total()));
+        DriverKpDTO.setScore(100 - score);
 
-        driverKpDTO.setPraise_score(getSmaller(driverKpDTO.getPraise_score(),original.getMt_total()));
+        DriverKpDTO.setHd_score(getSmaller(DriverKpDTO.getHd_score(), original.getHd_total()));
 
-        score = driverKpDTO.getPay()*original.getPay_0();
-        driverKpDTO.setPay_score(getSmaller(score, original.getPay_total()));
+        DriverKpDTO.setMt_score(getSmaller(DriverKpDTO.getMt_score(), original.getMt_total()));
 
-        score = driverKpDTO.getHd_score()+driverKpDTO.getMt_score()+driverKpDTO.getPraise_score()+driverKpDTO.getPay_score();
-        driverKpDTO.setScore2(getSmaller(score, original.getScore2()));
+        DriverKpDTO.setPraise_score(getSmaller(DriverKpDTO.getPraise_score(),original.getMt_total()));
+
+        score = DriverKpDTO.getPay()*original.getPay_0();
+        DriverKpDTO.setPay_score(getSmaller(score, original.getPay_total()));
+
+        score = DriverKpDTO.getHd_score()+DriverKpDTO.getMt_score()+DriverKpDTO.getPraise_score()+DriverKpDTO.getPay_score();
+        DriverKpDTO.setScore2(getSmaller(score, original.getScore2()));
     }
 
     int getSmaller(int a, int b){

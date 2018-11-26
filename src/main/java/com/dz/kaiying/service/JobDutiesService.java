@@ -445,9 +445,9 @@ public class JobDutiesService extends BaseService{
         String sql ="";
         if("admin".equals(userName) || "考核组".equals(userName)){
 
-            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null ";
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null order by evaluate_name desc";
         }else{
-            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId ="+personId;
+            sql="select distinct(evaluateName) from EvaluateDetail  where evaluateName is not null and personId ="+personId+"order by evaluate_name desc";
         }
 
         List<Object> result1 = evaluateDetailDao.find(sql); //自评分主表 拼条件
@@ -457,7 +457,7 @@ public class JobDutiesService extends BaseService{
             String name= (String) result1.get(j);
             ListHistory1DTO listHistory1DTO = new ListHistory1DTO();
             listHistory1DTO.setName(name);
-            List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'");
+            List<EvaluateDetail> evaluateDetail= evaluateDetailDao.find("from EvaluateDetail where evaluateName = '"+name+"'"+"order by evaluate_name desc");
             listHistory1DTO.setId(evaluateDetail.get(0).getId());
             listHistory1DTOList.add(listHistory1DTO);
         }

@@ -50,14 +50,50 @@ public class DriverKpService {
     }
 
 
-    public List<DriverKpDTO> getDtosByYear(String year){
+    public List<DriverKpDTO> getDtosByYear(String year,String month){
         if(year.equals("")){
             Calendar date = Calendar.getInstance();
             year = String.valueOf(date.get(Calendar.YEAR));
         }
-        String year_first_day = "'"+year + "-01-01 00:00:00"+"'";
-        String year_last_day = "'"+year + "-12-31 23:59:59"+"'";
-        return getDtosByTime(year_first_day, year_last_day);
+        if(month.equals("")||month==null){
+            String year_first_day = "'"+year + "-01-01 00:00:00"+"'";
+            String year_last_day = "'"+year + "-12-31 23:59:59"+"'";
+//            System.out.println(year_first_day+"-----"+year_last_day);
+            return getDtosByTime(year_first_day, year_last_day);
+        }else{
+            int day=0;
+            int years = Integer.parseInt(year);
+            switch (Integer.parseInt(month)) {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    day = 31;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    day = 30;
+                    break;
+                case 2:
+                    if ( ((years % 4 == 0) && !(years % 100 == 0)) || (years % 400 == 0))
+                        day = 29;
+                    else
+                        day = 28;
+                    break;
+                default:
+                    break;
+            }
+            String year_first_day = "'"+year + "-"+month+"-01 00:00:00"+"'";
+            String year_last_day = "'"+year + "-"+month+"-"+day+" 23:59:59"+"'";
+//            System.out.println(year_first_day+"-----"+year_last_day);
+            return getDtosByTime(year_first_day, year_last_day);
+        }
+
     }
 
     public List<DriverKpDTO> getDtosByTime(String beg, String end)  {
@@ -72,7 +108,7 @@ public class DriverKpService {
                 "from meeting_check m LEFT JOIN driver d \n" +
                 "on m.id_num = d.id_num \n" +
                 "where m.is_checked is null\n" +
-                "and need_check_time>'2018-01-01' and need_check_time<'2018-12-31' and d.is_in_car =1\n" +
+                "and need_check_time>$month_first_day and need_check_time<$month_last_day and d.is_in_car =1\n" +
                 "GROUP BY car)llLEFT  on v.carframe_num = llLEFT.car \n" +
                 "LEFT JOIN (select  count(1) sg,sum(sg_0) sg_0,sum(sg_1) sg_1,sum(sg_2) sg_2 ,a.cph from\n" +
                 "(select bah,sum(pfje) pfje,cph,if(sum(pfje)<5000,1,0) sg_0,if (sum(pfje)>=5000 and sum(pfje)<10000,1,0) sg_1,if (sum(pfje)>=10000,1,0) sg_2 ,jarq\n" +
@@ -105,14 +141,14 @@ public class DriverKpService {
                 "order by v.carframe_num\n";
         dtoListSql = dtoListSql.replace("$month_first_day", month_first_day);
         dtoListSql = dtoListSql.replace("$month_last_day", month_last_day);
-        System.out.println(dtoListSql);
+//        System.out.println(dtoListSql);
         List<Object[]> driverObjectList = hibernateUtil.queryBySql(dtoListSql);
         List<DriverKpDTO> driverKpDTOList = new ArrayList<>();
         for(Object[] o :driverObjectList ){
             int score = 100;
             DriverKpDTO driverKpDTO = new DriverKpDTO();
             driverKpDTO.setFgs(o[0] == null ?"":((String) o[0]).trim());
-//            driverKpDTO.setXm(o[1] == null ?"":((String) o[1]).trim());
+            driverKpDTO.setXm(o[1] == null ?"":((String) o[1]).trim());
             driverKpDTO.setCph(o[1] == null ?"":((String) o[1]).trim());
             driverKpDTO.setDjh(o[2] == null ?"":((String) o[2]).trim());
 //            driverKpDTO.setZfj(o[4] == null ?"":((String) o[4]).trim());
@@ -211,7 +247,6 @@ public class DriverKpService {
         if(each.get(0)!=null) {
             score=each.get(0).intValue();
         }
-        //TODO      违章次数                  每次分数
 //        score = driverKpDTO.getWz() * original.getWz_0();
         driverKpDTO.setWz_score(getSmaller(score, original.getWz_total()));
 

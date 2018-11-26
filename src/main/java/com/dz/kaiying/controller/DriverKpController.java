@@ -2,17 +2,23 @@ package com.dz.kaiying.controller;
 
 import com.dz.kaiying.DTO.DriverKpDTO;
 import com.dz.kaiying.DTO.DriverKpToExcelDTO;
+import com.dz.kaiying.DTO.DriverKpToExcelDTO1;
 import com.dz.kaiying.model.DriverKpParams;
 import com.dz.kaiying.model.DriverKpParamsDTO;
 import com.dz.kaiying.model.Electric;
 import com.dz.kaiying.repository.hiber.HibernateDao;
 import com.dz.kaiying.service.DriverKpService;
+import com.dz.kaiying.service.DriverKpService1;
 import com.dz.kaiying.util.ExportExcelUtil;
+import com.dz.kaiying.util.ExportExcelUtil1;
 import com.dz.kaiying.util.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +35,16 @@ public class DriverKpController extends BaseController{
 
     @Resource
     DriverKpService driverKpService;
+    @Resource
+    DriverKpService1 driverKpService1;
 
     HibernateDao<Electric,Integer> wzHibernateDao;
 
     @RequestMapping(value = "/downloadExcel/{year}", method = RequestMethod.GET)
     public void excl(HttpServletResponse response,@PathVariable String year)throws Exception{//HttpServletRequest request, HttpServletResponse response){
-        List<DriverKpDTO> driverKps=driverKpService.getDtosByYear(year);//Time("","");
+        String years = year.substring(0,4);
+        String month=year.substring(years.length());
+        List<DriverKpDTO> driverKps=driverKpService.getDtosByYear(years,month);//Time("","");
         List<DriverKpToExcelDTO> dkExcelDTOList= new ArrayList<DriverKpToExcelDTO>();
         for (DriverKpDTO dkDTO:driverKps) {
             DriverKpToExcelDTO excel=new DriverKpToExcelDTO();
@@ -45,10 +55,44 @@ public class DriverKpController extends BaseController{
         eeu.getExcel(dkExcelDTOList,response,year);
     }
 
+
+
+
+    @RequestMapping(value = "/downloadExcel2/{year}", method = RequestMethod.GET)
+    public void excl2(HttpServletResponse response,@PathVariable String year)throws Exception{//HttpServletRequest request, HttpServletResponse response){
+        System.out.println(year);
+        String years = year.substring(0,4);
+        String month=year.substring(years.length());
+        List<DriverKpDTO> driverKps=driverKpService1.getDtosByYear(years,month);//Time("","");
+        List<DriverKpToExcelDTO1> dkExcelDTOList= new ArrayList<DriverKpToExcelDTO1>();
+        for (DriverKpDTO dkDTO:driverKps) {
+            DriverKpToExcelDTO1 excel=new DriverKpToExcelDTO1();
+            BeanUtils.copyProperties(dkDTO,excel);
+            dkExcelDTOList.add(excel);
+        }
+        ExportExcelUtil1 eeu=new ExportExcelUtil1();
+        eeu.getExcel(dkExcelDTOList,response,year);
+    }
+
+
+
+
+
+
+
+
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index () throws Exception {
         return "driverKp/index";
     }
+
+
+    @RequestMapping(value = "/index1", method = RequestMethod.GET)
+    public String index1 () throws Exception {
+        return "driverKp/index1";
+    }
+
     //跳转违章修改页面
     @RequestMapping(value = "getAllElectric")
     public String getAllElectric(Model model){
@@ -56,6 +100,7 @@ public class DriverKpController extends BaseController{
         model.addAttribute("electrics",electrics);
         return "driverKp/allElectirc";
     }
+
 
     @RequestMapping("add")
     public String add(){
@@ -105,8 +150,19 @@ public class DriverKpController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/dtoList/{year}", method = RequestMethod.GET)
     public Result getDtoList (@PathVariable String year) throws Exception {
-        return success("success", driverKpService.getDtosByYear(year));
+        String years = year.substring(0,4);
+        String month=year.substring(years.length());
+//        System.out.println(years+","+month);
+        return success("success", driverKpService.getDtosByYear(years,month));
     }
+    @ResponseBody
+    @RequestMapping(value = "/dtoList1/{year}", method = RequestMethod.GET)
+    public Result getDtoList1 (@PathVariable String year) throws Exception {
+        String years = year.substring(0,4);
+        String month=year.substring(years.length());
+        return success("success", driverKpService1.getDtosByYear(years,month));
+    }
+
     @ResponseBody
     @RequestMapping(value = "/dtoList", method = RequestMethod.GET)
     public Result getDtoListDefault () throws Exception {
