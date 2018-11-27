@@ -18,6 +18,7 @@ import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.BooleanUtils;
@@ -29,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -226,7 +228,7 @@ public class ContractAction extends BaseAction {
 		return SUCCESS;
 	}
 
-	public String contractWrite(){
+	public synchronized String contractWrite(){
 		if(contract==null||contract.getId()==null||contract.getId()==0){
 			request.setAttribute("msgStr", "信息不全，无法录入！");
 			return SUCCESS;
@@ -1110,25 +1112,7 @@ public class ContractAction extends BaseAction {
 	}
 
 	public String contractToExcel(){
-		Short[] states={};
-		String[] ss = request.getParameterValues("states");
-		if(ss.length==1){
-			ss = ss[0].split(",");
-		}
-		if(ss!=null){
-			@SuppressWarnings("unchecked")
-			List<Short> statelist = (List<Short>) CollectionUtils.collect(Arrays.asList(ss), new Transformer(){
-
-				@Override
-				public Object transform(Object input) {
-					String str = (String)input;
-					return Short.parseShort(str.trim());
-				}
-
-			});
-			states = new Short[statelist.size()];
-			states = statelist.toArray(states);
-		}
+		Short[] states = getContractStates();
 
 		Session session = HibernateSessionFactory.getSession();
 
@@ -1301,33 +1285,9 @@ public class ContractAction extends BaseAction {
 	}
 
 	public String contractSearch(){
-		int currentPage = 0;
-		String currentPagestr = request.getParameter("currentPage");
-		if(currentPagestr == null || "".equals(currentPagestr)){
-			currentPage = 1;
-		}else{
-			currentPage=Integer.parseInt(currentPagestr);
-		}
+		int currentPage = getCurrentPage();
 
-		Short[] states={};
-		String[] ss = request.getParameterValues("states");
-		if(ss.length==1){
-			ss = ss[0].split(",");
-		}
-		if(ss!=null){
-			@SuppressWarnings("unchecked")
-			List<Short> statelist = (List<Short>) CollectionUtils.collect(Arrays.asList(ss), new Transformer(){
-
-				@Override
-				public Object transform(Object input) {
-					String str = (String)input;
-					return Short.parseShort(str.trim());
-				}
-
-			});
-			states = new Short[statelist.size()];
-			states = statelist.toArray(states);
-		}
+		Short[] states = getContractStates();
 
 		Session session = HibernateSessionFactory.getSession();
 
@@ -1407,6 +1367,239 @@ public class ContractAction extends BaseAction {
 		//request.setAttribute("currentPage", currentPage);
 		request.setAttribute("page", page);
 		return SUCCESS;
+	}
+
+	public String searchRentFirstDivide(){
+		int currentPage = getCurrentPage();
+
+		Short[] states = getContractStates();
+
+		Session session = HibernateSessionFactory.getSession();
+
+		String select = "select new com.dz.module.contract.RentFirstAnaylse(" +
+				"c.id as contractId," +
+				"CONCAT(YEAR(c.contractBeginDate),'-',MONTH(c.contractBeginDate)) as begin_month," +
+				"CONCAT(YEAR(c.contractEndDate),'-',MONTH(c.contractEndDate)) as end_month," +
+				"c.carNum as carNum," +
+				"c.branchFirm as dept," +
+				"SUM(case when rd.money=NULL then 0.0 else rd.money end ) as total_money," +
+				"COUNT(*) as total_months," +
+				"sum(case when YEAR (CURRENT_DATE)*12+MONTH(CURRENT_DATE)>= YEAR(rd.month)*12+MONTH(rd.month) " +
+				"then 1 else 0 end)," +
+				"sum(case when YEAR (CURRENT_DATE)*12+MONTH(CURRENT_DATE)= YEAR(rd.month)*12+MONTH(rd.month) " +
+				"then rd.money else 0.0 end)," +
+				"sum(case when YEAR (CURRENT_DATE)*12+MONTH(CURRENT_DATE)>= YEAR(rd.month)*12+MONTH(rd.month) " +
+				"then rd.money else 0.0 end)" +
+				")  " +
+				" from Contract c, RentFirstDivide rd " +
+				"where c.state in (:states) and c.carframeNum = rd.carframeNum " +
+				"and YEAR (rd.month)*12+MONTH(rd.month) >= " +
+				" YEAR(c.contractBeginDate)*12+MONTH(c.contractBeginDate) " +
+				"AND (( c.state=1 and YEAR (rd.month)*12+MONTH(rd.month) < YEAR(c.abandonedFinalTime)*12+MONTH(c.abandonedFinalTime) ) or " +
+					"( c.state=0 and YEAR (rd.month)*12+MONTH(rd.month) < YEAR(c.contractEndDate)*12+MONTH(c.contractEndDate) ))" +
+				"AND rd.money <> 0 ";
+
+		String hql = "";
+
+		if (!StringUtils.isEmpty(dept)&&!dept.startsWith("all")) {
+			hql+= String.format("and c.branchFirm='%s' ", dept);
+		}
+
+		if (!StringUtils.isEmpty(idNum)) {
+			hql+= String.format("and c.idNum like '%%%s%%' ", idNum);
+		}
+
+		if (!StringUtils.isEmpty(carNum)) {
+			hql+= String.format("and c.carNum like '%%%s%%' ", carNum);
+		}
+
+		if (beginDateStart!=null) {
+			hql+= String.format("and c.contractBeginDate >= :%s ", "beginDateStart");
+		}
+
+		if (beginDateEnd!=null) {
+			hql+= String.format("and c.contractBeginDate <= :%s ", "beginDateEnd");
+		}
+
+		if (endDateStart!=null) {
+			hql+= String.format("and c.contractEndDate >= :%s ", "endDateStart");
+		}
+
+		if (endDateEnd!=null) {
+			hql+= String.format("and c.contractEndDate <= :%s ", "endDateEnd");
+		}
+
+		String groupAndOrder = " GROUP BY c.id ";
+		groupAndOrder += " order by c."+order;
+		if (BooleanUtils.isFalse(rank)){
+			groupAndOrder += " desc ";
+		}
+
+		Query query = session.createQuery(select + hql + groupAndOrder);
+		Query query2 = session.createQuery("select count(*) from Contract c where c.state in (:states) "+hql);
+
+		query.setParameterList("states", states);
+		query2.setParameterList("states", states);
+
+		if (beginDateStart!=null) {
+			query.setDate("beginDateStart", beginDateStart);
+			query2.setDate("beginDateStart", beginDateStart);
+		}
+
+		if (beginDateEnd!=null) {
+			query.setDate("beginDateEnd", beginDateEnd);
+			query2.setDate("beginDateEnd", beginDateEnd);
+		}
+
+		if (endDateStart!=null) {
+			query.setDate("endDateStart", endDateStart);
+			query2.setDate("endDateStart", endDateStart);
+		}
+
+		if (endDateEnd!=null) {
+			query.setDate("endDateEnd", endDateEnd);
+			query2.setDate("endDateEnd", endDateEnd);
+		}
+
+		long count = (long)query2.uniqueResult();
+
+		Page page = PageUtil.createPage(15, (int)count, currentPage);
+
+		query.setFirstResult(page.getBeginIndex());
+		query.setMaxResults(page.getEveryPage());
+
+		List<RentFirstDetail> l = query.list();
+//		System.out.println(l);
+		HibernateSessionFactory.closeSession();
+
+		request.setAttribute("list", l);
+		//request.setAttribute("currentPage", currentPage);
+		request.setAttribute("page", page);
+		return SUCCESS;
+	}
+
+	public void resetRentFirstDivide() throws IOException {
+		int cid = contract.getId();
+		String dateString = request.getParameter("resetMonth");
+		int year = Integer.parseInt(dateString.split("-",2)[0]);
+		int month = Integer.parseInt(dateString.split("-",2)[1]);
+
+		Session hsession = null;
+		Transaction tx = null;
+
+		boolean isSuccess = false;
+		String error_message = "";
+
+		try_block:
+		try {
+			hsession = HibernateSessionFactory.getSession();
+			tx = hsession.beginTransaction();
+
+			Calendar toDate = Calendar.getInstance();
+			toDate.set(Calendar.YEAR,year);
+			toDate.set(Calendar.MONTH,month);
+			toDate.set(Calendar.DATE,1);
+
+			toDate.add(Calendar.MONTH,1);
+			Contract c = (Contract) hsession.get(Contract.class,cid);
+			if(c.getContractBeginDate()==null||c.getContractBeginDate().after(toDate.getTime())){
+				error_message = "提前摊销月份不可早于合同起始日期";
+				break try_block;
+			}
+
+			toDate.add(Calendar.MONTH,-1);
+			if(c.getContractEndDate()==null||c.getContractEndDate().before(toDate.getTime())){
+				error_message = "提前摊销月份不可迟于合同结束日期";
+				break try_block;
+			}
+
+			if(c.getState()==1){
+				if(c.getAbandonedFinalTime()==null||c.getAbandonedFinalTime().before(toDate.getTime())){
+					error_message = "提前摊销月份不可迟于废业日期";
+					break try_block;
+				}
+			}
+
+			Query ncQuery = hsession.createQuery("select count(*) from Contract where contractFrom=:cid ");
+			ncQuery.setInteger("cid",cid);
+			long ncCount = (Long) ncQuery.uniqueResult();
+			if(ncCount>0){
+				error_message = "在该合同基础上已发生过转包，提前摊销请在新合同上进行";
+				break try_block;
+			}
+
+			Query totalAccount = hsession.createQuery("select sum(money) from RentFirstDivide " +
+					"where carframeNum=:carNo and YEAR(month)*12+MONTH(month)>=:monthRank ");
+			Query clearAccount = hsession.createQuery("update RentFirstDivide set money=0 " +
+					"where carframeNum=:carNo and YEAR(month)*12+MONTH(month)>:monthRank");
+			Query resetAccount = hsession.createQuery("update RentFirstDivide set money=:total " +
+					"where carframeNum=:carNo and YEAR(month)*12+MONTH(month)=:monthRank");
+
+			totalAccount.setString("carNo",c.getCarframeNum());
+			totalAccount.setInteger("monthRank",year*12+month);
+			Number totalMoney = (Number)totalAccount.uniqueResult();
+
+			clearAccount.setString("carNo",c.getCarframeNum());
+			clearAccount.setInteger("monthRank",year*12+month);
+			clearAccount.executeUpdate();
+
+			resetAccount.setDouble("total",totalMoney.doubleValue());
+			resetAccount.setString("carNo",c.getCarframeNum());
+			resetAccount.setInteger("monthRank",year*12+month);
+			resetAccount.executeUpdate();
+
+			tx.commit();
+			isSuccess = true;
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			error_message = "数据处理失败，原因是："+ex.getMessage();
+		}finally {
+			HibernateSessionFactory.closeSession();
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter pw = response.getWriter();
+		JSONObject result = new JSONObject();
+		result.put("state",isSuccess);
+		result.put("msg",error_message);
+		pw.append(result.toString());
+		pw.flush();
+		pw.close();
+	}
+
+	private Short[] getContractStates() {
+		Short[] states={};
+		String[] ss = request.getParameterValues("states");
+		if(ss.length==1){
+			ss = ss[0].split(",");
+		}
+		if(ss!=null){
+			@SuppressWarnings("unchecked")
+			List<Short> statelist = (List<Short>) CollectionUtils.collect(Arrays.asList(ss), new Transformer(){
+
+				@Override
+				public Object transform(Object input) {
+					String str = (String)input;
+					return Short.parseShort(str.trim());
+				}
+
+			});
+			states = new Short[statelist.size()];
+			states = statelist.toArray(states);
+		}
+		return states;
+	}
+
+	private int getCurrentPage() {
+		int currentPage = 0;
+		String currentPagestr = request.getParameter("currentPage");
+		if(currentPagestr == null || "".equals(currentPagestr)){
+			currentPage = 1;
+		}else{
+			currentPage=Integer.parseInt(currentPagestr);
+		}
+		return currentPage;
 	}
 
 	private Date beginDateStart,beginDateEnd,endDateStart,endDateEnd;
@@ -1609,5 +1802,40 @@ public class ContractAction extends BaseAction {
 		this.addType = addType;
 	}
 
+	public static void main(String[] args){
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		HibernateSessionFactory.rebuildSessionFactory(applicationContext);
 
+		String hql = "select new com.dz.module.contract.RentFirstAnaylse(" +
+				"c.id as contractId," +
+				"CONCAT(YEAR(c.contractBeginDate),'-',MONTH(c.contractBeginDate)) as begin_month," +
+				"CONCAT(YEAR(c.contractEndDate),'-',MONTH(c.contractEndDate)) as end_month," +
+				"c.carNum as carNum," +
+				"c.branchFirm as dept," +
+				"SUM(case when rd.money=NULL then 0.0 else rd.money end ) as total_money," +
+				"COUNT(*) as total_months," +
+				"sum(case when YEAR (CURRENT_DATE)*12+MONTH(CURRENT_DATE)>= YEAR(rd.month)*12+MONTH(rd.month) " +
+				"then 1 else 0 end)," +
+				"sum(case when YEAR (CURRENT_DATE)*12+MONTH(CURRENT_DATE)= YEAR(rd.month)*12+MONTH(rd.month) " +
+				"then rd.money else 0.0 end)," +
+				"sum(case when YEAR (CURRENT_DATE)*12+MONTH(CURRENT_DATE)>= YEAR(rd.month)*12+MONTH(rd.month) " +
+				"then rd.money else 0.0 end)" +
+				")  " +
+				"from Contract c , RentFirstDivide rd " +
+				"where  c.carframeNum = rd.carframeNum  " +
+				"and YEAR (rd.month)*12+MONTH(rd.month) >=  " +
+				" YEAR(c.contractBeginDate)*12+MONTH(c.contractBeginDate) " +
+				"AND (( c.state=1 and YEAR (rd.month)*12+MONTH(rd.month) < YEAR(c.abandonedFinalTime)*12+MONTH(c.abandonedFinalTime) ) or " +
+				"( c.state=0 and YEAR (rd.month)*12+MONTH(rd.month) < YEAR(c.contractEndDate)*12+MONTH(c.contractEndDate) ))" +
+				"AND rd.money <> 0 " +
+				"group by c.id ";
+
+		Session hsession = HibernateSessionFactory.getSession();
+		Query query = hsession.createQuery(hql);
+		List<RentFirstDetail> details = query.list();
+		for (RentFirstDetail detail : details) {
+			System.out.println(detail);
+		}
+		hsession.close();
+	}
 }
