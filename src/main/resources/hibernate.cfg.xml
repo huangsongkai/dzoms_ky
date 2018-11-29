@@ -84,6 +84,8 @@
 		<mapping class="com.dz.module.vehicle.ServiceInfo" />
 		<mapping class="com.dz.module.vehicle.ServiceRightInfo" />
 		<mapping class="com.dz.module.vehicle.Trade" />
+		<mapping class="com.dz.common.seqence.MyMonth"/>
+		<mapping class="com.dz.module.contract.SysScript"/>
 
 	</session-factory>
 </hibernate-configuration>

@@ -28,7 +28,6 @@ public class InsuranceAction extends BaseAction{
 	private Vehicle vehicle;
 	private Driver driver;
 	
-	
 	public String addInsurance() {
 		try{
 			insurance.setState(0);
