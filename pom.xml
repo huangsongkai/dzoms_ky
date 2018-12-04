@@ -451,6 +451,20 @@
             <version>2.9.0</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>openjdk8</groupId>-->
+            <!--<artifactId>nashorn</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--<systemPath>${project.basedir}/libs/nashorn.jar</systemPath>-->
+            <!--<scope>system</scope>-->
+        <!--</dependency>-->
 
+        <!--<dependency>-->
+            <!--<groupId>openjdk8</groupId>-->
+            <!--<artifactId>asm</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--<systemPath>${project.basedir}/libs/openjdk-asm.jar</systemPath>-->
+            <!--<scope>system</scope>-->
+        <!--</dependency>-->
     </dependencies>
 </project>

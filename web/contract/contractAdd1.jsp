@@ -879,7 +879,7 @@
             $("input[name='rentArr']").val(rentArrJsonStr);
 
             //预付租金摊销
-            var per_money = parseFloat($("input[name='contract.rentFirst']").val()) / months;
+            var per_money = parseFloat($("input[name='contract.rentFirst']").val()) / parseFloat($("input[name='rentFirst_Month']").val());
             per_money = per_money.toFixed(2);
             $("input[name='rentFirst_MonthEach']").val(per_money);
 

@@ -108,9 +108,11 @@
             <result name="error">/error.jsp</result>
             <result name="jsonObject" type="jsonresult"/>
         </action>
-        <action name="selectContractByCarId" class="contractAction" method="selectByCarId">
-
+        <action name="selectContractByCarId" class="contractAction" method="selectByCarId"></action>
+        <action name="searchRentFirstDivide" class="contractAction" method="searchRentFirstDivide">
+            <result name="success">${url}</result>
         </action>
+        <action name="resetRentFirstDivide" class="contractAction" method="resetRentFirstDivide"></action>
     </package>
 
     <package name="bank_card" extends="default-package" namespace="/contract/bank_card">

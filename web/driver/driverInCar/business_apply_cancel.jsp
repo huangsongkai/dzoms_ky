@@ -83,7 +83,9 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
 	url:"/DZOMS/select/vehicleByLicenseNum",
 	condition:" carframeNum not in (select carframeNum from Driverincar where finished=false and operation='证照注销') ",
 	callback:function(){
-		refresh();
+        var licenseNum = $('[name="vehicle.licenseNum"]').val();
+        if(licenseNum.length==7)
+		    refresh();
 	}
 });
 });

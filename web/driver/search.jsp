@@ -199,7 +199,7 @@
 <!-- 主页面 -->
 
 <div class="line">
-	<iframe name="result_form" id="result_form" width="100%" height="100%" scrolling="no">
+	<iframe name="result_form" id="result_form" width="100%" height="1800px" scrolling="no">
 
 	</iframe>
 

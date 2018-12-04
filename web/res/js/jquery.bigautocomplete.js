@@ -34,7 +34,7 @@
 				bigAutocomplete.hideAutocomplete();
 			})			
 			
-		}
+		};
 		
 		this.autocomplete = function(param){
 			
@@ -262,7 +262,7 @@
 			
 			$this.bind("change blur",$this.data("config").callback);
 			
-		}
+		};
 		//隐藏下拉框
 		this.hideAutocomplete = function(){
 			var $bigAutocompleteContent = $("#bigAutocompleteContent");
@@ -277,4 +277,4 @@
 	
 	$.fn.bigAutocomplete = bigAutocomplete.autocomplete;
 	
-})(jQuery)
+})(jQuery);
