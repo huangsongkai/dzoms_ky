@@ -348,7 +348,7 @@
 
 
                         <tr>
-                            <td><a>管理员通讯录</a></td>
+                            <td><a href="data/interiorPhone.html">管理员通讯录</a></td>
                         </tr>
                     </table>
                 </div>
@@ -362,11 +362,11 @@
                     <table class="table" style="font-size: larger;">
                         <tr>
                             <td>系统更新时间：</td>
-                            <td>2017年9月4日</td>
+                            <td>2018年11月2日</td>
                         </tr>
                         <tr>
                             <td>系统版本号：</td>
-                            <td>1.4.Final</td>
+                            <td>1.5.Final</td>
                         </tr>
                         <tr>
                             <td><a href="data/changelog.html" target="_blank">系统说明文档</a></td>
@@ -512,7 +512,7 @@
                     </div>
                     <div class="block-content tab-container">
                         <table id="graph-data" class="graph">
-                            <caption>2017违章分析</caption>
+                            <caption>2018电子违章走势</caption>
                             <thead>
                             <tr>
                                 <td></td>
@@ -533,30 +533,42 @@
                             <tbody>
                             <tr>
                                 <th scope="row">一部</th>
-                                <td>190</td>
-                                <td>160</td>
-                                <td>40</td>
-                                <td>120</td>
-                                <td>30</td>
-                                <td>70</td>
+                                <td>155</td>
+                                <td>92</td>
+                                <td>89</td>
+                                <td>67</td>
+                                <td>45</td>
+                                <td>71</td>
+                                <td>85</td>
+                                <td>78</td>
+                                <td>89</td>
+                                <td>81</td>
                             </tr>
                             <tr>
                                 <th scope="row">二部</th>
-                                <td>3</td>
-                                <td>40</td>
-                                <td>30</td>
-                                <td>45</td>
-                                <td>35</td>
+                                <td>131</td>
+                                <td>99</td>
+                                <td>91</td>
                                 <td>49</td>
+                                <td>45</td>
+                                <td>53</td>
+                                <td>77</td>
+                                <td>110</td>
+                                <td>122</td>
+                                <td>67</td>
                             </tr>
                             <tr>
                                 <th scope="row">三部</th>
-                                <td>10</td>
-                                <td>180</td>
-                                <td>10</td>
-                                <td>85</td>
-                                <td>25</td>
-                                <td>79</td>
+                                <td>137</td>
+                                <td>94</td>
+                                <td>87</td>
+                                <td>40</td>
+                                <td>47</td>
+                                <td>60</td>
+                                <td>86</td>
+                                <td>65</td>
+                                <td>99</td>
+                                <td>74</td>
                             </tr>
 
                             <!--<tr>
@@ -630,24 +642,13 @@
                                     value="%{@com.dz.common.other.ObjectAccess@execute(#request.vehicle_count_hql)}"/></td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-
+                            <td>报废车辆</td>
+                            <%
+                                String unVehicle_count_hql = "select count(*) from Vehicle where state=2";
+                                request.setAttribute("unVehicle_count_hql", unVehicle_count_hql);
+                            %>
+                            <td><s:property
+                                    value="%{@com.dz.common.other.ObjectAccess@execute(#request.unVehicle_count_hql)}"/></td>
                         </tr>
                         <tr>
                             <td>在籍驾驶员</td>
@@ -658,6 +659,14 @@
                             <td><s:property
                                     value="%{@com.dz.common.other.ObjectAccess@execute(#request.driver_count_hql)}"/></td>
                         </tr>
+                        <tr>
+                            <td>离职驾驶员</td>
+                            <%
+                                String unDriver_count_hql = "select count(*) from Driver where isInCar=false ";
+                                request.setAttribute("unDriver_count_hql", unDriver_count_hql);
+                            %>
+                            <td><s:property
+                                    value="%{@com.dz.common.other.ObjectAccess@execute(#request.unDriver_count_hql)}"/></td>
 
                     </table>
                 </div>
@@ -672,16 +681,12 @@
                     <div class="block-content">
                         <table class="table" id="wait_deal" style="font-size: larger;">
 
-                            <tr>
-                                <td>经济指标</td>
 
+                            <tr>
+                                <td> <a href="ky/duty/TZListHistory">个人绩效考评</a></td>
                             </tr>
                             <tr>
-                                <td>驾驶员管理教育</td>
-
-                            </tr>
-                            <tr>
-                                <td>运营服务管理</td>
+                                <td> <a href="ky/duty/listduty">个人工作职责</a></td>
                             </tr>
 
                         </table>

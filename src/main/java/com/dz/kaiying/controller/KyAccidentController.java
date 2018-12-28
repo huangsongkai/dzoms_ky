@@ -38,7 +38,7 @@ public class KyAccidentController {
             isEmptyParas(map, "cxStartTime", cxStartTime[0]);
             isEmptyParas(map, "cxEndTime", cxStartTime[1]);
         }
-        String[] StartCreateDateTime =request.getParameterValues("createTime");
+        String[] StartCreateDateTime =request.getParameterValues("jarq");
         if (StartCreateDateTime != null && StartCreateDateTime[0] != "") {
             isEmptyParas(map, "startCreateDateTime", StartCreateDateTime[0]);
             isEmptyParas(map, "endCreateDateTime", StartCreateDateTime[1]);

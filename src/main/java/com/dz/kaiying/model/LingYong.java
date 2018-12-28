@@ -46,6 +46,17 @@ public class LingYong implements java.io.Serializable {
 	@Column(name = "date")//
 	private Date date;
 
+	@Column(name = "remarks")//
+	private String remarks;
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
 	public Integer getState0() {
 		return state0;
 	}

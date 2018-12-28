@@ -53,14 +53,6 @@ public class KyYiJue implements java.io.Serializable {
     @Column(name = "zbrq")
     private String zbrq; //终保日期
 
-    public String getZbrq() {
-        return zbrq;
-    }
-
-    public void setZbrq(String zbrq) {
-        this.zbrq = zbrq;
-    }
-
     @Column(name = "be")
     private String be; //保额
 
@@ -183,6 +175,15 @@ public class KyYiJue implements java.io.Serializable {
 
     @Column(name = "hsy")
     private String hys;  //核损员
+    private String dept;
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
 
     public Integer getId() {
         return id;
@@ -599,4 +600,14 @@ public class KyYiJue implements java.io.Serializable {
     public void setHys(String hys) {
         this.hys = hys;
     }
+
+
+    public String getZbrq() {
+        return zbrq;
+    }
+
+    public void setZbrq(String zbrq) {
+        this.zbrq = zbrq;
+    }
+
 }
