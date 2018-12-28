@@ -3,6 +3,8 @@
 <%@ page language="java"
          import="java.util.*,com.dz.module.user.User"
          pageEncoding="UTF-8"%>
+<%@ page import="com.dz.common.other.ObjectAccess" %>
+<%@ page import="com.dz.module.contract.ContractTemplate2" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://"
@@ -160,47 +162,41 @@
             geneRentPlanState=2;
         }
 
+        function addRentItem(beginTime,endTime,rentAmount,comment){
+            comment = comment || "";
+
+            var $option = $('<option></option>');
+            $option.append($('<input name="beginTime" readonly="readonly" style="display:none;"/>').val(beginTime));
+
+            $option.append("" + beginTime);
+
+            $option.append("--");
+            $option.append($('<input name="endTime" readonly="readonly" style="display:none;"/>').val(endTime));
+
+            $option.append("" + endTime);
+
+            $option.append("\t￥");
+            $option.append($('<input name="rentAmount" style="display:none;"/>').val(rentAmount));
+
+            $option.append("" + rentAmount);
+
+            $option.append("\t");
+            $option.append($('<input name="comment" style="display:none;"/>').val(comment));
+
+            $option.append("" + comment);
+
+            $("#rentList").append($option);
+
+            geneRentPlanState = 2;
+        }
+
         function addRent(){
             var beginTime = $(".dialog-win .beginTime").val();
             var endTime = $(".dialog-win .endTime").val();
             var rentAmount = $(".dialog-win .rentAmount").val();
             var comment = $(".dialog-win .comment").val();
 
-            /*var beginMonthString = beginMonth.year + '/' + ( beginMonth.month < 10 ? "0" + beginMonth.month : beginMonth.month);
-
-
-
-            var endMonthString = endMonth.year + '/' + ( endMonth.month < 10 ? "0" + endMonth.month : endMonth.month);
-            if(endTime==endMonthString){
-                endTime = $("#enddate").val();
-            }else{
-                /*var arr = endTime.split("/");
-                var year=parseInt(arr[0]);
-                var month=parseInt(arr[1]);
-                endTime+="/"+getDaysOfMonth(year,month-1);*\/
-                endTime+="/26";
-            }*/
-
-            var $option = $('<option></option>');
-            $option.append($('<input name="beginTime" readonly="readonly" style="display:none;"/>').val(beginTime));
-
-            $option.append(""+beginTime);
-
-            $option.append("--");
-            $option.append($('<input name="endTime" readonly="readonly" style="display:none;"/>').val(endTime));
-
-            $option.append(""+endTime);
-
-            $option.append("\t￥");
-            $option.append($('<input name="rentAmount" style="display:none;"/>').val(rentAmount));
-
-            $option.append(""+rentAmount);
-            $option.append($('<input name="comment" style="display:none;"/>').val(comment));
-
-            $option.append(""+comment);
-            $("#rentList").append($option);
-
-            geneRentPlanState=2;
+            addRentItem(beginTime,endTime,rentAmount,comment);
         }
 
         var dialogHTML;
@@ -559,7 +555,58 @@
                             <s:textfield cssClass="input datepick" id="enddate" onchange="dateRefresh()" name="contract.contractEndDate" data-validate="required:必填" />
                         </div>
                     </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="label padding">
+                            <label>
+                                合同模版
+                            </label>
+                        </div>
+                        <div class="field" >
+                            <%
+                                List<ContractTemplate2> templates = ObjectAccess.query(ContractTemplate2.class,null);
+                            %>
+                            <div class="input-group">
+                                <select class="input" id="templateId">
+                                    <option value="0">不使用</option>
+                                    <%
+                                        for (ContractTemplate2 s : templates) {
+                                            if(s.isEnabled()){
+                                    %>
+                                    <option value="<%=s.getId()%>"><%=s.getName()%></option>
+                                    <%      }
+                                        }
+                                    %>
+                                </select>
+                                <div class="addbtn">
+                                    <div class="button-group">
+                                        <input type="button" id="addToRentBtn" class="button" value="应用模版">
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                $(document).ready(function(){
+                                    $("#addToRentBtn").click(function(){
+                                        $.post("/DZOMS/contract/template2/template_json.jsp",{
+                                            id:$("#templateId").val(),
+                                            beginDate:$("#startdate").val(),
+                                            endDate:$("#enddate").val()
+                                        },function(data){
+                                            if(data!=null && data.rentlist!=null){
+                                                $('input[name="contract.rentFirst"]').val(data['rentFirst']);
+                                                $('input[name="rentFirst_Month"]').val(data['rentDivideStages']);
+                                                $('input[name="contract.deposit"]').val(data['deposit']);
 
+                                                for(var i=0;i<data['rentlist'].length;i++){
+                                                    addRentItem(data['rentlist'][i]["from"],data['rentlist'][i]["to"],data['rentlist'][i]["rent"]);
+                                                }
+                                            }
+                                        })
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
                     <br>
                     <div class="form-group">
                         <div class="label padding">

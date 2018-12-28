@@ -228,7 +228,7 @@ public class ContractAction extends BaseAction {
 		return SUCCESS;
 	}
 
-	public synchronized String contractWrite(){
+	public String contractWrite(){
 		if(contract==null||contract.getId()==null||contract.getId()==0){
 			request.setAttribute("msgStr", "信息不全，无法录入！");
 			return SUCCESS;
@@ -308,7 +308,7 @@ public class ContractAction extends BaseAction {
 
 			System.out.println("Before Plan Making......");
 			//生成合同约定
-			if(!contract.isPlanMaked()){
+			if(contract.isPlanMaked()){
 				if(contractBeginDate.getDate()>26){
 					if(m==11){
 						y++;
@@ -317,7 +317,10 @@ public class ContractAction extends BaseAction {
 						m++;
 					}
 				}
-
+//				System.out.println(jarray.size());
+//				if(jarray.size()>0){
+//					System.out.println(jarray);
+//				}
 				for(int i=0 ;i<jarray.size();i++){
 					ChargePlan chargePlan = new ChargePlan();
 					chargePlan.setFeeType("plan_base_contract");

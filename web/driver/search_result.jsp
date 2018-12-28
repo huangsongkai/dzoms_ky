@@ -222,8 +222,9 @@
                     <th class="name                    selected_able">姓名        </th>
                     <th class="sex                     selected_able">性别        </th>
                     <th class="driverClass selected_able">驾驶员属性</th>
+                    <th class="driverClass selected_able">班次	</th>
                     <th class="phoneNum1 selected_able">电话号码</th>
-                    <th class="qualificationNum        selected_able">资格证号(旧)</th>
+                    <%--<th class="qualificationNum        selected_able">资格证号(旧)</th>--%>
                     <th class="qualificationNum        selected_able">资格证号    </th>
                     <th class="idNum                   selected_able">身份证号    </th>
                     <th class="employeeNum             selected_able">员工号      </th>
@@ -244,8 +245,10 @@
                             <td class="name               selected_able"><s:property value='%{#v.name}'/></td>
                             <td class="sex                selected_able"><s:property value="%{#v.sex?'男':'女'}"/></td>
                             <td class="driverClass selected_able"><s:property value="%{#v.driverClass}"/></td>
+                            <td class="driverClass selected_able"><s:property value="%{#v.restTime}"/></td>
                             <td class="phoneNum1 selected_able"><s:property value="%{#v.phoneNum1}"/></td>
-                            <td class="qualificationNum   selected_able"><s:property value='%{#v.qualificationNo}'/></td>
+
+                            <%--<td class="qualificationNum   selected_able"><s:property value='%{#v.qualificationNo}'/></td>--%>
                             <td class="qualificationNum   selected_able"><s:property value='%{#v.qualificationNum}'/></td>
                             <td class="idNum              selected_able"><s:property value='%{#v.idNum}'/></td>
                             <td class="employeeNum        selected_able"><s:property value='%{#v.employeeNum}'/></td>

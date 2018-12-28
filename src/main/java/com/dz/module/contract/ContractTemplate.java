@@ -1,9 +1,14 @@
 package com.dz.module.contract;
 
 import com.dz.common.other.ScriptContext;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.persistence.*;
+import javax.script.ScriptException;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -12,6 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(catalog = "ky_dzomsdb",name = "contract_template")
+@Deprecated
 public class ContractTemplate implements Serializable {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -63,25 +69,41 @@ public class ContractTemplate implements Serializable {
     }
 
     private void doValidate(){
+        ContractTemplateUtil.getInstance();
         ScriptContext scriptContext = ScriptContext.getInstance();
-        Object jsObject = scriptContext.getService(name,version);
-        this.methodObject = jsObject;
+        Pair<String,Object> jsVersion = scriptContext.getServiceWithVersion(method,version);
        try{
-           if(methodObject!=null){
+           if(jsVersion!=null){
+               this.methodObject = jsVersion.getRight();
+               this.supportVersion = jsVersion.getLeft();
 //               this.supportVersion = methodObject.getMember("version").toString();
-               double sum = 0.0;
-               for (int i = 0; i < 24; i++) {
-                   Double val = (Double)scriptContext.runFunc(methodObject,null,12000,24,i);
-                   sum += val;
-               }
-               if(Math.abs(sum-12000.0)<2.0){
+
+               Calendar calendar = Calendar.getInstance();
+               Date fromDate = calendar.getTime();
+               calendar.add(Calendar.YEAR,8);
+               Date endDate = calendar.getTime();
+               List rentPlans = (List) scriptContext.runFunc(methodObject,(Object) null,fromDate,endDate,96000.0);
+//               System.out.println(rentPlans);
+               Object calTotal = scriptContext.getService("calTotal");
+               Object moneyObj = scriptContext.runFunc(calTotal,(Object) null,rentPlans);
+               Double totalMoney = Double.parseDouble(moneyObj.toString());
+//               System.out.println(totalMoney);
+               if(Math.abs(totalMoney-96000.0)<2.0){
                    //在误差范围内
                    this.validate = true;
                }
            }
        }catch (Exception e){
+           e.printStackTrace();
            this.validate = false;
        }
+    }
+
+    public List generateRents(Date fromDate,Date toDate,double totalMoney) throws ScriptException, NoSuchMethodException {
+        ContractTemplateUtil.getInstance();
+        Object methodObj = this.getMethodObject();
+        ScriptContext scriptContext = ScriptContext.getInstance();
+       return (List) scriptContext.runFunc(methodObj,(Object) null,fromDate,toDate,totalMoney);
     }
 
     public Boolean getValidate() {

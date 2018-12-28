@@ -1,6 +1,8 @@
 package com.dz.common.other;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.script.*;
 import java.lang.reflect.InvocationTargetException;
@@ -109,6 +111,22 @@ public class ScriptContext {
             return versionMap.get(version);
         }
         return versionMap.get(LASTEST);
+    }
+    
+    public Pair<String,Object> getServiceWithVersion(String name,String version){
+        Map<String,Object> versionMap = serviceMap.get(name);
+        if (versionMap == null) {
+            return null;
+        }
+        if(versionMap.containsKey(version)){
+            Object o = versionMap.get(version);
+            return new MutablePair<>(version,o);
+        }
+        Object o = versionMap.get(LASTEST);
+        SortedSet<String> versions = new TreeSet<>(versionMap.keySet());
+        versions.remove(LASTEST);
+        
+        return new MutablePair<>(versions.last(),o);
     }
 
     public Object getService(String name){

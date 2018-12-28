@@ -32,11 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @Scope("prototype")
@@ -428,7 +424,12 @@ public class ComplainAction extends BaseAction {
 	        	states = statelist.toArray(states);
 	        }
 	       //vehicle.setCarMode("123");
-	        
+	        if(endDate!=null){
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(endDate);
+				calendar.add(Calendar.DATE,1);
+				endDate = calendar.getTime();
+			}
 	//        System.out.println("ComplainAction.searchComplain(),"+complain);
 	        
 	       Page page = PageUtil.createPage(15, complainService.selectAllByStatesCount(complain,beginDate,endDate,dept,states), currentPage);

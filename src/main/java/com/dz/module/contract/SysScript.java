@@ -2,6 +2,8 @@ package com.dz.module.contract;
 
 import javax.persistence.*;
 
+import java.util.HashSet;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 /**
@@ -9,6 +11,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(catalog = "ky_dzomsdb",name = "sys_script")
+@Deprecated
 public class SysScript {
 
     @Id
@@ -71,4 +74,6 @@ public class SysScript {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public static HashSet<String> scriptSignals = new HashSet<>();
 }

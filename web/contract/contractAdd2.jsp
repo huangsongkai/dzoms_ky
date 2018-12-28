@@ -1,3 +1,6 @@
+<%@ page import="com.dz.common.other.ObjectAccess" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.dz.module.contract.ContractTemplate2" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="/struts-tags" prefix="s" %>
 <%@ page language="java"
@@ -160,11 +163,8 @@
             geneRentPlanState = 2;
         }
 
-        function addRent() {
-            var beginTime = $(".dialog-win .beginTime").val();
-            var endTime = $(".dialog-win .endTime").val();
-            var rentAmount = $(".dialog-win .rentAmount").val();
-            var comment = $(".dialog-win .comment").val();
+        function addRentItem(beginTime,endTime,rentAmount,comment){
+            comment = comment || "";
 
             var $option = $('<option></option>');
             $option.append($('<input name="beginTime" readonly="readonly" style="display:none;"/>').val(beginTime));
@@ -189,6 +189,15 @@
             $("#rentList").append($option);
 
             geneRentPlanState = 2;
+        }
+
+        function addRent() {
+            var beginTime = $(".dialog-win .beginTime").val();
+            var endTime = $(".dialog-win .endTime").val();
+            var rentAmount = $(".dialog-win .rentAmount").val();
+            var comment = $(".dialog-win .comment").val();
+
+            addRentItem(beginTime,endTime,rentAmount,comment);
         }
 
         var dialogHTML;
@@ -660,7 +669,58 @@
                                              readonly="true"></s:textfield>
                             </div>
                         </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="label padding">
+                                <label>
+                                    合同模版
+                                </label>
+                            </div>
+                            <div class="field" >
+                                <%
+                                    List<ContractTemplate2> templates = ObjectAccess.query(ContractTemplate2.class,null);
+                                %>
+                                <div class="input-group">
+                                    <select class="input" id="templateId">
+                                        <option value="0">不使用</option>
+                                        <%
+                                            for (ContractTemplate2 s : templates) {
+                                                if(s.isEnabled()){
+                                        %>
+                                        <option value="<%=s.getId()%>"><%=s.getName()%></option>
+                                        <%      }
+                                            }
+                                        %>
+                                    </select>
+                                    <div class="addbtn">
+                                        <div class="button-group">
+                                            <input type="button" id="addToRentBtn" class="button" value="应用模版">
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $(document).ready(function(){
+                                        $("#addToRentBtn").click(function(){
+                                            $.post("/DZOMS/contract/template2/template_json.jsp",{
+                                                id:$("#templateId").val(),
+                                                beginDate:$("#startdate").val(),
+                                                endDate:$("#enddate").val()
+                                            },function(data){
+                                                if(data!=null && data.rentlist!=null){
+                                                    $('input[name="contract.rentFirst"]').val(data['rentFirst']);
+                                                    $('input[name="rentFirst_Month"]').val(data['rentDivideStages']);
+                                                    $('input[name="contract.deposit"]').val(data['deposit']);
 
+                                                    for(var i=0;i<data['rentlist'].length;i++){
+                                                        addRentItem(data['rentlist'][i]["from"],data['rentlist'][i]["to"],data['rentlist'][i]["rent"]);
+                                                    }
+                                                }
+                                            })
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
                         <br>
                         <div class="form-group">
                             <div class="label padding">

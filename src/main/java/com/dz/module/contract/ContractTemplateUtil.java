@@ -1,6 +1,7 @@
 package com.dz.module.contract;
 
 import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.ScriptContext;
 
 import org.hibernate.HibernateException;
@@ -12,12 +13,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import javax.script.ScriptException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Wang on 2018/11/28.
  */
+@Deprecated
 public class ContractTemplateUtil {
     private static ContractTemplateUtil ourInstance = null;
 
@@ -27,6 +30,7 @@ public class ContractTemplateUtil {
                 if (ourInstance == null) {
                     ourInstance = new ContractTemplateUtil();
                 }
+                ourInstance.reloadScripts();
             }
         }
         return ourInstance;
@@ -80,26 +84,12 @@ public class ContractTemplateUtil {
         }
     }
 
-    public List<Double> generateRents(ContractTemplate template,double totalmoney,int totalmonth) throws ScriptException, NoSuchMethodException {
-        if(template.getValidate()){
-            ScriptContext scriptContext = ScriptContext.getInstance();
-            List<Double> result = new ArrayList<>();
-            for (int i = 0; i < totalmonth; i++) {
-                Object js = template.getMethodObject();
-                Double val = (Double) scriptContext.runFunc(js,null,totalmoney,totalmonth,i);
-                result.add(val);
-            }
-            return result;
-        }else {
-            return null;
-        }
-    }
-
     public static void main(String[] args) throws IOException, ScriptException, NoSuchMethodException {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         HibernateSessionFactory.rebuildSessionFactory(applicationContext);
 
         ContractTemplateUtil util = ContractTemplateUtil.getInstance();
+
 //        SysScript sysScript = new SysScript();
 //        sysScript.setName("合同模版基础模块");
 //        sysScript.setType("base");
@@ -111,16 +101,28 @@ public class ContractTemplateUtil {
 //        String line = "";
 //        while ((line=reader.readLine())!=null){
 //            sb.append(line);
+//            sb.append('\n');
 //        }
 //        sysScript.setScript(sb.toString());
 //        sysScript.setActive(true);
 //        util.addScript(sysScript);
+
         util.reloadScripts();
-        ScriptContext scriptContext = ScriptContext.getInstance();
-        Object average_template_service = scriptContext.getService("average_template_service");
-        System.out.println(average_template_service);
-        Date date = new Date();
-        Object days = scriptContext.runFunc(average_template_service,"calDaysOfDate",date);
-        System.out.println(days);
+        ContractTemplate template = ObjectAccess.getObject(ContractTemplate.class,1);
+        System.out.println(template.getValidate());
+        System.out.println(template.getSupportVersion());
+        System.out.println(template.getMethod());
+
+        Calendar calendar = Calendar.getInstance();
+        Date from = calendar.getTime();
+        calendar.add(Calendar.YEAR,2);
+        System.out.println(template.generateRents(from,calendar.getTime(),12000.0));
+
+//        ScriptContext scriptContext = ScriptContext.getInstance();
+//        Object average_template_service = scriptContext.getService("average_template_service");
+//        System.out.println(average_template_service);
+//        Date date = new Date();
+//        Object days = scriptContext.runFunc(average_template_service,"calDaysOfDate",date);
+//        System.out.println(days);
     }
 }

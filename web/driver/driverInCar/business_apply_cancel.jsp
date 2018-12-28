@@ -399,7 +399,7 @@ $(document).ready(function(){
                     </label>
                 </div>
                 <div class="field" >
-                    <s:textfield cssClass="input"  name="driver.businessApplyTime" readonly="readonly"></s:textfield>
+                    <s:textfield cssClass="input"  name="driver.businessApplyTime" readonly="true"></s:textfield>
                 </div>
             </div>
             <div class="form-group">
