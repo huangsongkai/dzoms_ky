@@ -480,8 +480,8 @@ public class JobDutiesService extends BaseService{
         List<EvaluateDetail> evaluateDetailList1 = evaluateDetailDao.find("from EvaluateDetail where  evaluateName = '"+evaluateName+"'" +" ORDER BY sortId");
         List<QueryEvaluateDTO> queryEvaluateDTOList = new ArrayList<>();
         for ( EvaluateDetail evaluateDetail : evaluateDetailList1 ) {
-            List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + evaluateDetail.getPersonId()+" and jobDutiesId = "+evaluateDetail.getJobDutyId() +" ORDER BY sortId");
-            UserJobDuties userJobDuties = userJobDutiesList.get(0);
+//            List<UserJobDuties> userJobDutiesList = userJobDutiesDao.find(" from UserJobDuties where personId = " + evaluateDetail.getPersonId()+" and jobDutiesId = "+evaluateDetail.getJobDutyId() +" ORDER BY sortId");
+//            UserJobDuties userJobDuties = userJobDutiesList.get(0);
             QueryEvaluateDTO queryEvaluateDTO = new QueryEvaluateDTO();
             queryEvaluateDTO.setChildProName(evaluateDetail.getChildProName());
             //queryEvaluateDTO.setChildProValue(userJobDuties.getScore());
