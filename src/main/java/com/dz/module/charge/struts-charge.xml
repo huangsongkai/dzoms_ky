@@ -26,5 +26,15 @@
                                 <param name="namespace">/common</param>
                         </result>
                 </action>
+
+                <action name="deposit_add" class="depositAction" method="add">
+                        <result name="success">/charge/deposit/add.jsp</result>
+                        <result name="error">/charge/deposit/add.jsp</result>
+                </action>
+                <action name="deposit_withdraw" class="depositAction" method="withdraw"></action>
+                <action name="deposit_search" class="depositAction" method="search">
+                        <result name="success">/charge/deposit/search_result.jsp</result>
+                </action>
+                <action name="deposit_remove" class="depositAction" method="remove"></action>
         </package>
 </struts>

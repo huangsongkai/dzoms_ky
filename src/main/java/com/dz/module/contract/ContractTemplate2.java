@@ -187,9 +187,9 @@ public class ContractTemplate2 implements Serializable {
                 continue;
             }
             int itemsCount = jobj.optInt("itemsCount",1);
-            String rentString = jobj.getString("rent");
-            String spanBeginString = jobj.getString("spanBegin");
-            String spanEndString = jobj.getString("spanEnd");
+            String rentString = el.prepareCompile(jobj.getString("rent"));
+            String spanBeginString = el.prepareCompile(jobj.getString("spanBegin"));
+            String spanEndString = el.prepareCompile(jobj.getString("spanEnd"));
 
             JexlScript rentScript = el.getEngine().createScript(rentString,"$0");
             JexlScript spanBeginScript = el.getEngine().createScript(spanBeginString,"$0");

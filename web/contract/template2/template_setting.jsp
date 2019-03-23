@@ -176,14 +176,14 @@
         }
     </style>
 </head>
-<body>
+<body >
 <div class="adminmin-bread" style="width: 100%;">
     <ul class="bread text-main" style="font-size: larger;">
                 <li>合同管理</li>
                 <li>合同模版设置</li>
     </ul>
 </div>
-<div class="line">
+<div class="line" style="height: 1000px;overflow:auto;">
     <div class="x6">
         <form id="my_form" enctype="application/x-www-form-urlencoded" action="#" class="form-x form-tips" method="post">
             <input type="hidden" id="script_id" name="id" value="<%=template.getId()%>">
@@ -455,7 +455,7 @@
                                 this.rules[i].condition = "$[期数] >= "+rule.regValue+" && $[期数] < "+rule.regValue2;
                                 return;
                             default:
-                                this.rules[i].condition = "$[期数] "+this.regMappings[rule.regType]+" ";
+                                this.rules[i].condition = "$[期数] "+this.regMappings[rule.regType]+" "+rule.regValue;
                         }
                     },this);
                 }
