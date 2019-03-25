@@ -15,4 +15,6 @@ public interface ManagerDao {
     List<RelationUr> getRelationsByUser(User user);
     void addRelationUr(RelationUr relationUr) throws HibernateException;
     void deleteRelationUrs(User user) throws HibernateException;
+
+    void updateUser(User user);
 }

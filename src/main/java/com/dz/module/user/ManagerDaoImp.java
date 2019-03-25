@@ -1,7 +1,6 @@
 package com.dz.module.user;
 
 import com.dz.common.factory.HibernateSessionFactory;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -108,4 +107,24 @@ public class ManagerDaoImp implements ManagerDao{
          query.setInteger("uid",user.getUid());
          query.executeUpdate();
     }
+
+    @Override
+    public void updateUser(User user) {
+        Session session = null;
+        Transaction transaction = null;
+        try{
+            session = HibernateSessionFactory.getSession();
+            transaction = session.beginTransaction();
+            session.update(user);
+            transaction.commit();
+        }catch (Exception e){
+            e.printStackTrace();
+            if(transaction != null)
+                transaction.rollback();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+    }
+
+
 }

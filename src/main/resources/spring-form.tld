@@ -388,8 +388,8 @@
 	</tag>
 
 	<tag>
-		<description>Renders an HTML 'input' tag with type 'password' using the bound value.</description>
-		<name>password</name>
+		<description>Renders an HTML 'input' tag with type 'upwd' using the bound value.</description>
+		<name>upwd</name>
 		<tag-class>org.springframework.web.servlet.tags.form.PasswordInputTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
@@ -579,7 +579,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>Is the password value to be shown? Defaults to false.</description>
+			<description>Is the upwd value to be shown? Defaults to false.</description>
 			<name>showPassword</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

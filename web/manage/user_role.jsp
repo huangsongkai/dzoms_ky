@@ -903,8 +903,8 @@
 								系统管理
 							</div>
 							<div class="panel-body">
+								<input type="checkbox" name="roleIds" class="role2" value="2" checked="checked" style="display: none;" />
 								<table class="table table-bordered">
-
 									<tr>
 										<td>
 											<input type="checkbox" name="roleIds" class="role201" value="201" />

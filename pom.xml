@@ -14,9 +14,9 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <struts2.version>2.3.8</struts2.version>
         <poi.version>3.14</poi.version>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.compilerVersion>1.7</maven.compiler.compilerVersion>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
     </properties>
     <build>
         <plugins>
@@ -25,8 +25,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -42,7 +42,7 @@
                 </includes>
             </resource>
             <resource>
-                <directory>src/main/resourses</directory>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>*.*</include>
                     <include>**/*.*</include>
@@ -355,7 +355,7 @@
         <!--<dependency>-->
             <!--<groupId>org.slf4j</groupId>-->
             <!--<artifactId>slf4j-log4j12</artifactId>-->
-            <!--<version>1.7.5</version>-->
+            <!--<version>1.8.5</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -456,6 +456,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-jexl3</artifactId>
             <version>3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kosprov.jargon2</groupId>
+            <artifactId>jargon2-api</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kosprov.jargon2</groupId>
+            <artifactId>jargon2-native-ri-backend</artifactId>
+            <version>1.1.1</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!--<dependency>-->

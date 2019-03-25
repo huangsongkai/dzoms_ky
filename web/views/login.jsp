@@ -16,7 +16,7 @@
 		</tr>
 		<tr>
 			<td style="text-align: right;">Password:</td>
-			<td><input id="password" name="password" type="password" class="login-input" placeholder="默认为：000000" /></td>
+			<td><input id="upwd" name="upwd" type="upwd" class="login-input" placeholder="默认为：000000" /></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>

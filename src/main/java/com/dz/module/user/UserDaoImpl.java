@@ -2,6 +2,7 @@ package com.dz.module.user;
 
 import com.dz.common.factory.HibernateSessionFactory;
 
+import com.dz.common.global.GenerateKeyHash;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -10,10 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository(value = "userdao")
+@Repository(value = "userDao")
 public class UserDaoImpl implements UserDao {
-
-
 	@Override
 	public boolean saveUser(User user) throws HibernateException{
 		// TODO Auto-generated method stub	
@@ -25,7 +24,7 @@ public class UserDaoImpl implements UserDao {
 			session = HibernateSessionFactory.getSession();
 			tx = (Transaction) session.beginTransaction();
 			
-			session.save(user);
+			session.saveOrUpdate(user);
 			tx.commit();
 			flag = true;
 		} catch (HibernateException e) {
@@ -39,10 +38,7 @@ public class UserDaoImpl implements UserDao {
 		return flag;
 	}
 
-	/**
-	 * �û���¼��֤
-	 */
-	public String userLogin(User user) throws HibernateException {
+	public String verifyUser(User user) throws HibernateException {
 		// TODO Auto-generated method stub
 		String result = "success";
 		Session session = null;
@@ -55,17 +51,17 @@ public class UserDaoImpl implements UserDao {
 			query.setString("uname",user.getUname());
 			//query.setString(0, "admin");
 			User userQ = (User)query.uniqueResult();
+			GenerateKeyHash generateKeyHash = GenerateKeyHash.getInstance();
 			if(userQ==null)
 			{
-				return "error_uname";
+				result = "error_uname";
 			}
-			else if(!userQ.getUpwd().equals(user.getUpwd()))
+			else if(!generateKeyHash.verify(userQ.getPasswordHash(),userQ.getPasswordSalt(),user.getUpwd()))
 			{
-				return "error_upwd";
+				result = "error_upwd";
 			}
 			result = userQ.getUid().toString();
-			query = null;
-			tx.commit();	
+			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null) {
 				tx.rollback();

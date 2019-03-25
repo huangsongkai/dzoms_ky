@@ -14,13 +14,15 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class User implements java.io.Serializable {
 
 	// Fields
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7584486269495002832L;
 	private Integer uid;
 	private String uname;
+	private String passwordHash;
+	private String passwordSalt;
+//	@Transient
 	private String upwd;
 	private String department;
 	private String position;
@@ -29,12 +31,6 @@ public class User implements java.io.Serializable {
 
 	/** default constructor */
 	public User() {
-	}
-
-	/** full constructor */
-	public User(String uname, String upwd) {
-		this.uname = uname;
-		this.upwd = upwd;
 	}
 
 	// Property accessors
@@ -58,13 +54,22 @@ public class User implements java.io.Serializable {
 		this.uname = uname;
 	}
 
-	@Column(name = "upwd", nullable = false, length = 30)
-	public String getUpwd() {
-		return this.upwd;
+	@Column(name = "pwdSalt", nullable = false)
+	public String getPasswordSalt() {
+		return passwordSalt;
 	}
 
-	public void setUpwd(String upwd) {
-		this.upwd = upwd;
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
+	}
+
+	@Column(name = "pwdHash", nullable = false)
+	public String getPasswordHash() {
+		return this.passwordHash;
+	}
+
+	public void setPasswordHash(String upwd) {
+		this.passwordHash = upwd;
 	}
 
 	@Column(name = "department")
@@ -94,14 +99,25 @@ public class User implements java.io.Serializable {
 		this.phone = phone;
 	}
 
+	@Transient
+	public String getUpwd() {
+		return upwd;
+	}
+
+	public void setUpwd(String upwd) {
+		this.upwd = upwd;
+	}
+
 	@Override
 	public String toString() {
 		return "User{" +
 				"uid=" + uid +
 				", uname='" + uname + '\'' +
-				", upwd='" + upwd + '\'' +
+				", passwordHash='" + passwordHash + '\'' +
+				", passwordSalt='" + passwordSalt + '\'' +
 				", department='" + department + '\'' +
 				", position='" + position + '\'' +
+				", phone='" + phone + '\'' +
 				'}';
 	}
 }

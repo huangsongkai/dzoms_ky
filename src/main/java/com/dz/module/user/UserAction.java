@@ -1,16 +1,15 @@
 package com.dz.module.user;
 
+import com.dz.common.global.GenerateKeyHash;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -20,8 +19,6 @@ import com.dz.common.global.BaseAction;
 import com.dz.common.other.ObjectAccess;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -61,15 +58,15 @@ public class UserAction extends BaseAction {
 
 	private User user; // 定义值对象
 	@Autowired
-	private UserService userService; // 定义值对象
+	private ManagerService userService; // 定义值对象
 	
 	private int theme;
 
-	public UserService getUserService() {
+	public ManagerService getUserService() {
 		return userService;
 	}
 
-	public void setUserService(UserService userService) {
+	public void setUserService(ManagerService userService) {
 		this.userService = userService;
 	}
 
@@ -96,36 +93,7 @@ public class UserAction extends BaseAction {
 	 */
 
 	public String userLogin() {
-//		String result = userService.userLogin(user);
-		String result = "success";
-		Session s = null;
-		try {
-			s = HibernateSessionFactory.getSession();
-//			Query query = s.createQuery("from User where uname=:uname");
-			Query query = s.createSQLQuery("SELECT uid FROM `user` WHERE uname = :uname ");
-			query.setString("uname",user.getUname());
-			query.setMaxResults(1);
-			Integer id = (Integer) query.uniqueResult();
-			User userQ = null;
-			if (id!=null &&id!=0){
-				userQ = (User) s.get(User.class,id);
-			}
-			System.out.println(userQ);
-
-			if(userQ==null)
-			{
-				result = "error_uname";
-			}
-			else if(!userQ.getUpwd().equals(user.getUpwd()))
-			{
-				result = "error_upwd";
-			}else
-			result = userQ.getUid().toString();
-		} catch (HibernateException e) {
-			throw e;
-		} finally {
-			HibernateSessionFactory.closeSession();
-		}
+		String result = userService.userLogin(user);
 
 		Relation_urDaoImpl relation = new Relation_urDaoImpl();
 		if (result.equals("error_uname")) {
@@ -137,7 +105,7 @@ public class UserAction extends BaseAction {
 		} else{
 			Map<String, List<Authority>> menuItems = new HashMap<String, List<Authority>>();
 			ArrayList<Authority> authority  = relation.queryAuthorityByUser(result);
-			session.setAttribute("currentmatter",userService.getCurrentMatter(authority));
+			session.setAttribute("currentmatter", new HashMap<String, ArrayList<String>>());
 			session.setAttribute("authority", authority);
 			User _user = userService.getUser(user);
 			session.setAttribute("user",_user);

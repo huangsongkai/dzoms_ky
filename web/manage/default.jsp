@@ -6,5 +6,5 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 
 <%
- response.sendRedirect(request.getContextPath() + "/manage/selectAllUsers");
+ response.sendRedirect(request.getContextPath() + "/manage/userinfo.jsp");
 %>

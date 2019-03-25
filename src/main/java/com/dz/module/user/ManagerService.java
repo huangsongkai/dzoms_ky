@@ -1,9 +1,12 @@
 package com.dz.module.user;
 
+import com.dz.common.global.GenerateKeyHash;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.dz.common.factory.HibernateSessionFactory;
@@ -18,9 +21,29 @@ import java.util.List;
 public class ManagerService {
     @Autowired
     private ManagerDao managerDao;
+
     public void addUser(User user){
+        GenerateKeyHash generateKeyHash = GenerateKeyHash.getInstance();
+        String salt = generateKeyHash.generateSaltAsString();
+        String hash = generateKeyHash.encodedHash(salt,"123");
+        user.setPasswordSalt(salt);
+        user.setPasswordHash(hash);
         managerDao.addUser(user);
     }
+
+    public void updateUserPassword(User user,String newPassword){
+        GenerateKeyHash generateKeyHash = GenerateKeyHash.getInstance();
+        user = userDao.getUser(user);
+        String salt = user.getPasswordSalt();
+        if(salt==null || StringUtils.isBlank(salt)){
+            salt = generateKeyHash.generateSaltAsString();
+        }
+        String hash = generateKeyHash.encodedHash(salt,newPassword);
+        user.setPasswordSalt(salt);
+        user.setPasswordHash(hash);
+        managerDao.updateUser(user);
+    }
+
     public void deleteUser(User user){
         managerDao.deleteUser(user);
     }
@@ -51,5 +74,37 @@ public class ManagerService {
     }
     public List<RelationUr> searchAuthoritiesByUser(User user){
         return managerDao.getRelationsByUser(user);
+    }
+
+    @Autowired
+    UserDao userDao;
+    public String userLogin(User user){
+        if (user == null) {
+            return "user_null";
+        }
+
+        return userDao.verifyUser(user);
+    }
+
+    public boolean verifyUser(User user){
+        if (user==null || user.getUpwd()==null)
+            return false;
+        return StringUtils.isNumeric(userDao.verifyUser(user));
+    }
+
+    public User getUser(User user){
+        return userDao.getUser(user);
+    }
+
+    public static void main(String[] args){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        HibernateSessionFactory.rebuildSessionFactory(applicationContext);
+
+        ManagerService managerService = applicationContext.getBean(ManagerService.class);
+        managerService.searchAllUser().forEach(user -> managerService.updateUserPassword(user,"123"));
+    }
+
+    public void updateUserInfo(User user) {
+        userDao.saveUser(user);
     }
 }

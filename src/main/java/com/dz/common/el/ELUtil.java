@@ -16,7 +16,7 @@ public class ELUtil {
         ELUtil elUtil = new ELUtil();
 //        ELUtil.mapper.setFunctions("my", new ExcelOutputUtil.MyELFunctionExtend());
 
-        Validate.isTrue(2 == elUtil.evaluate("1 + 1"));
+        Validate.isTrue(2 == (Integer) elUtil.evaluate("1 + 1"));
 //        assertEquals("5", ELUtil.evaluate("10 - 5"));
 //        System.out.println("${ 1+1 }".matches("\\$\\{(\\s|.)*?}"));
 //        System.out.println("Hello ${ 1+1 }=${10-8}?".matches("\\$\\{(\\r|\\n| |.)*?}"));

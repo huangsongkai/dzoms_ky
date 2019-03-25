@@ -23,7 +23,7 @@
     </head>
     <script>
     	function  dele_alert(id){
-    		var r=confirm("确认还是取消？");
+    		var r=confirm("确认删除该用户？");
                console.log(r);
                 
                if((""+r).startsWith("true")){
@@ -31,6 +31,12 @@
                }
               
     	}
+
+    	function rst_alert(id) {
+			if(confirm("确认重置该用户的密码为123？")){
+				$(".user_"+id+" .rstuser").click();
+			}
+		}
     </script>
     <body>
     		<div class="adminmin-bread" style="width: 100%;">
@@ -48,9 +54,12 @@
     		<tr>
     		    <td>id</td>
     			<td>用户名</td>
-    			<td>密码</td>
+    			<td>部门</td>
+    			<td>职位</td>
+				<s:if test="#session.roles.{?#this.rname=='添加用户'}.size>0">
     			<td>权限管理</td>
-    			<td>删除用户</td>
+    			<td>删除用户</td><td>重置用户密码</td>
+				</s:if>
     		</tr>
     		<%List<User> users = (List<User>)request.getAttribute("users");%>
     		<% int i=0;%>
@@ -58,10 +67,22 @@
     	    	<tr class="user_<%=record.getUid()%>">
     	    	    <td><%=record.getUid()%></td>
     	    		<td><%=record.getUname()%></td>
-    	    		<td><%=record.getUpwd()%></td>
+    	    		<td><%=record.getDepartment()%></td>
+    	    		<td><%=record.getPosition()%></td>
+					<s:if test="#session.roles.{?#this.rname=='添加用户'}.size>0">
     	    		<td><a class="button bg-blue" href="/DZOMS/manage/user_role.jsp?user.uid=<%=record.getUid()%>">权限管理</a></td>
-    			    <td><button class="button bg-red" onclick="dele_alert(<%=record.getUid()%>)">删除</button>
-    			    	<a  style="display: none;" class="button bg-red" href="/DZOMS/manage/deleteUser?user.uid=<%=record.getUid()%>"><span class="deleuser">删除用户</span></a></td>
+    			    <td>
+						<button class="button bg-red" onclick="dele_alert(<%=record.getUid()%>)">删除</button>
+    			    	<a  style="display: none;" class="button bg-red" href="/DZOMS/manage/deleteUser?user.uid=<%=record.getUid()%>">
+							<span class="deleuser">删除用户</span></a>
+					</td>
+						<td>
+							<button class="button bg-red" onclick="rst_alert(<%=record.getUid()%>)">重置密码</button>
+							<a style="display: none;" class="button bg-red" href="/DZOMS/manage/resetUserPassword?user.uid=<%=record.getUid()%>">
+								<span class="rstuser">重置密码</span></a>
+							</a>
+						</td>
+					</s:if>
     	    	</tr>
     	    	<% i++;}%>
    	 

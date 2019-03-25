@@ -2,6 +2,7 @@ package com.dz.module.user;
 
 import java.util.Map;
 
+import com.dz.common.global.BaseAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -16,7 +17,7 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 @Controller("managerAction")
 @Scope("prototype")
-public class ManagerAction extends ActionSupport{
+public class ManagerAction extends BaseAction {
     private static String MESSAGE = "message";
     private static String DISPATCH = "dispatch";
     @Autowired
@@ -38,6 +39,36 @@ public class ManagerAction extends ActionSupport{
         dispatchUrl = "selectAllUsers";
         return DISPATCH;
     }
+
+    public String resetUserPassword(){
+        service.updateUserPassword(user,"123");
+        dispatchUrl = "selectAllUsers";
+        return DISPATCH;
+    }
+
+    public String updateUserPassword(){
+        String rawPassword = request.getParameter("rawPassword");
+        String newPassword = request.getParameter("newPassword");
+        User user = (User) session.getAttribute("user");
+        user.setUpwd(rawPassword);
+        if (service.verifyUser(user)){
+            service.updateUserPassword(user,newPassword);
+            jspPage = "userinfo.jsp";
+        }else {
+            jspPage = "updateUserPassword.jsp";
+        }
+        return SUCCESS;
+    }
+
+    public String updateUser(){
+        User _user = (User) session.getAttribute("user");
+        _user.setDepartment(user.getDepartment());
+        _user.setPosition(user.getPosition());
+        service.updateUserInfo(_user);
+        jspPage = "userinfo.jsp";
+        return SUCCESS;
+    }
+
     public String selectAllUsers(){ 
     	ActionContext ac = ActionContext.getContext();
     	Map<String,Object> request = (Map)(ac.get("request"));
