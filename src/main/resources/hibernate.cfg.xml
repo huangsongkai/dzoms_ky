@@ -78,6 +78,7 @@
 		<mapping class="com.dz.module.user.message.Message" />
 		<mapping class="com.dz.module.user.message.MessageToUser" />
 		<mapping class="com.dz.module.charge.CheckChargeTable" />
+		<mapping class="com.dz.module.charge.BaseChargeItem" />
 		<mapping class="com.dz.module.vehicle.Invoice" />
 		<mapping class="com.dz.module.vehicle.License" />
 		<mapping class="com.dz.module.vehicle.Tax" />

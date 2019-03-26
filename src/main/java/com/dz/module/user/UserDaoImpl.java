@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository(value = "userDao")
+@Repository(value = "userDaoImpl")
 public class UserDaoImpl implements UserDao {
 	@Override
 	public boolean saveUser(User user) throws HibernateException{

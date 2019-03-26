@@ -3,6 +3,7 @@ package com.dz.module.contract;
 import net.sf.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,12 +51,24 @@ public class ContractPlanItem implements Serializable {
 
     @Override
     public String toString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         return "{" +
                 "\"from\":\"" + sdf.format(from) +
                 "\", \"to\":\"" + sdf.format(to) +
                 "\", \"rent\":" + rent +
                 '}';
+    }
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+
+    public static ContractPlanItem fromContractJson(JSONObject json) {
+        ContractPlanItem item = new ContractPlanItem();
+        try {
+            item.setFrom(sdf.parse(json.getString("begin")));
+            item.setTo(sdf.parse(json.getString("end")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        item.setRent(json.getDouble("money"));
+        return item;
     }
 
     /**
@@ -63,7 +76,6 @@ public class ContractPlanItem implements Serializable {
      * 与com.dz.module.contract.ContractPlanItem#toString()不同在于 to 包含该天
      */
     public String toStringForPage() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(to);
         calendar.add(Calendar.DATE,-1);

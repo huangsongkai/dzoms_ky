@@ -26,6 +26,8 @@ public class ClearTimeDaoImp implements ClearTimeDao {
         Session session = null;
         session = HibernateSessionFactory.getSession();
         Query query = session.createQuery("from ClearTime where department = :dept");
+        if (dept.equals("全部"))
+            dept = "total";
         query.setString("dept",dept);
         Object obj = query.uniqueResult();
         ClearTime ct = (ClearTime)obj;

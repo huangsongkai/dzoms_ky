@@ -16,6 +16,7 @@ import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleDao;
 import com.opensymphony.xwork2.ActionContext;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
@@ -33,6 +34,8 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 /**
  * @author doggy
@@ -1882,7 +1885,8 @@ public class ChargeService {
             }
 
             String hql_out ="select new com.dz.module.charge.CheckChargeTable("
-                    + "p.contractId as contractId,p.time as time,"
+                    + "c.id as contractId,"
+                    + "p.time as time,"
                     + "sum(case "
                     + "when p.feeType not like '%bank' then 0.0 "
                     + "when p.feeType like '%plan%' then 0.0 "
@@ -1965,6 +1969,160 @@ public class ChargeService {
             return new ArrayList<>();
         }finally{
             HibernateSessionFactory.closeSession();
+        }
+    }
+
+    /**
+     *
+     * @param currentDate 当前月份
+     * @param compareDate 比较月份
+     * @param dept 部门 可以是 一部、二部、三部、全部
+     * @param licenseNum 车牌号
+     * @param status 状态 0,1,2,3,4 -- 欠费,正常,未交,已交,全部
+     * @return
+     */
+    public List<ChargePlanCompareCheck> compareAllCheckChargeTable(Date currentDate,Date compareDate,String dept,String licenseNum,int status){
+        List<CheckChargeTable> currentTables = getAllCheckChargeTable(currentDate,dept,licenseNum,status);
+        List<CheckChargeTable> compareTables = getAllCheckChargeTable(compareDate,dept,licenseNum,status);
+        ArrayList<ChargePlanCompareCheck> compareChecks = new ArrayList<>();
+
+        mergeList(currentTables,compareTables,(t1,t2)->{
+          if(t1.getContractId()==t2.getContractId()) return 0;
+          if((t1.getDept()+t1.getCarNumber()).compareTo(t2.getDept()+t2.getCarNumber())<0)
+              return -1;
+          return 1;
+        },(currentCur,compareCur)->{
+            ChargePlanCompareCheck compareCheck = new ChargePlanCompareCheck();
+            compareCheck.setCurrent(currentCur);
+            compareCheck.setCompareTo(compareCur);
+            compareChecks.add(compareCheck);
+        });
+
+        Session session = HibernateSessionFactory.getSession();
+        try{
+            Query query = session.createQuery("select new com.dz.module.charge.BaseChargeItem(   \n" +
+                    "c.id as contractId ,\n" +
+                    "sum(case when p.feeType not like '%plan%' then 0.0  \n" +
+                    "    when p.feeType like '%base%' then 0.0\n" +
+                    "    when p.feeType like '%sub%' then p.fee\n" +
+                    "    else (-p.fee) end) as planBase,   \n" +
+                    "c.carNum as carNumber,\n" +
+                    "c.branchFirm as dept,\n" +
+                    "c.planList as planList)   \n" +
+                    "from ChargePlan p ,Contract c,ClearTime cl  \n" +
+                    "   where p.contractId=c.id and cl.department=c.branchFirm  \n" +
+                    "   and p.isClear != true  \n" +
+                    "   and p.time is not null and year(p.time)=year(:currentClearTime) and month(p.time)=month(:currentClearTime)  \n" +
+                    "   group by c.id\n" +
+                    "   order by c.branchFirm,c.carNum");
+            query.setDate("currentClearTime",currentDate);
+            List<BaseChargeItem> baseChargeItems = query.list();
+
+            mergeList(compareChecks,baseChargeItems,(compareCheck,baseChargeItem)->{
+                if (compareCheck.getCurrent()==null) return -1;
+                if (compareCheck.getCurrent().getContractId()==baseChargeItem.getContractId()) return 0;
+                if((compareCheck.getCurrent().getDept()+compareCheck.getCurrent().getCarNumber())
+                        .compareTo(baseChargeItem.getDept()+baseChargeItem.getCarNumber())<0)
+                    return -1;
+                return 1;
+            },(compareCheck,baseChargeItem)->{
+                if (compareCheck!=null && baseChargeItem!=null){
+                    compareCheck.setBaseChargeAmount(baseChargeItem.getPlanBase());
+                    String rentPlan = baseChargeItem.getPlanList();
+                    JSONArray rentArray = JSONArray.fromObject(rentPlan);
+                    double amount = 0.0;
+                    int days;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(currentDate);
+                    calendar.add(Calendar.MONTH,-1);
+                    calendar.set(Calendar.DATE,27);
+                    int fromDate = calculateMonthRank(calendar.getTime());
+                    int toDate = fromDate+30;
+                    for (int i = 0; i < rentArray.size(); i++) {
+                        ContractPlanItem item = ContractPlanItem.fromContractJson(rentArray.getJSONObject(i));
+                        days = calculateChargeDaysOfMonth(fromDate,toDate,item);
+                        amount += item.getRent() /30.0 * days;
+                    }
+                    compareCheck.setContractPlanAmount(BigDecimal.valueOf(amount));
+                }
+            });
+        }catch (HibernateException ex){
+            ex.printStackTrace();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+        return compareChecks;
+    }
+
+    private int calculateChargeDaysOfMonth(int fromDate,int endDate,ContractPlanItem item){
+        int planFrom = calculateMonthRank(item.getFrom());
+        int planEnd = calculateMonthRank(item.getTo());
+        if(planEnd<fromDate || planFrom>endDate) return 0;
+        if(planFrom<fromDate){
+            if (planEnd<endDate){
+                return planEnd - fromDate;
+            }else {
+                return endDate - fromDate;
+            }
+        }else {
+            if (planEnd<endDate)
+                return planEnd - planFrom;
+            else
+                return endDate - planFrom;
+        }
+    }
+
+    private int calculateMonthRank(Date date){
+        return (date.getYear()*12+date.getMonth())*30+date.getDate();
+    }
+
+    public static <T,S> void mergeList(List<T> tList, List<S> sList, BiFunction<T,S,Integer> compareTS, BiConsumer<T,S> mergeCosumer){
+        Iterator<T> tIterator = tList.listIterator();
+        Iterator<S> sIterator = sList.listIterator();
+        T t=null;
+        S s = null;
+
+        while (true){
+            if (t == null) {
+                if (tIterator.hasNext())
+                    t = tIterator.next();
+                else break;
+            }
+
+            if (s == null) {
+                if (sIterator.hasNext())
+                    s = sIterator.next();
+                else break;
+            }
+
+            int compareResult = compareTS.apply(t,s);
+            if (compareResult==0){
+                mergeCosumer.accept(t,s);
+                t = null;
+                s = null;
+            }else if (compareResult<0){
+                mergeCosumer.accept(t,null);
+                t = null;
+            }else {
+                mergeCosumer.accept(null,s);
+                s = null;
+            }
+        }
+
+        if (t!=null){
+            mergeCosumer.accept(t,null);
+        }
+
+        while (tIterator.hasNext()){
+            mergeCosumer.accept(tIterator.next(),null);
+        }
+
+        if (s!=null){
+            mergeCosumer.accept(null,s);
+        }
+
+        while (sIterator.hasNext()){
+            mergeCosumer.accept(null,sIterator.next());
         }
     }
 

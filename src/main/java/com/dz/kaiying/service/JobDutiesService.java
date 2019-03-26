@@ -52,7 +52,7 @@ public class JobDutiesService extends BaseService{
     @Resource
     HibernateDao<EvaluateDetail, Integer> evaluateDetailDao;
 
-    @Resource
+    @Resource(name = "userDaoImpl")
     UserDao userDao1;
     //流程相关
     @Resource

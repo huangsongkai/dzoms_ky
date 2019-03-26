@@ -171,6 +171,7 @@ public class ContractAction extends BaseAction {
 			contract_old.setAccount(BigDecimal.ZERO);
 			contract.setAccount(account);
 			hsession.update(contract_old);
+			hsession.update(contract);
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(y, m, 1);

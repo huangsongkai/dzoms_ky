@@ -14,6 +14,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class CheckService{
     @Autowired
     private PlanDao planDaoImp;
     @Autowired
+    @Qualifier("userDaoImpl")
     private UserDao userDaoImp;
     @Autowired
     private UnPassDetailDao unPassDetailDao;

@@ -53,7 +53,7 @@ public class ActivitiService  extends TaskBaseResource{
     @Resource
     FormService formService;
 
-    @Resource
+    @Resource(name = "userDaoImpl")
     UserDao userDao1;
 
 

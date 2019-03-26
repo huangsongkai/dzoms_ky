@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +78,8 @@ public class ManagerService {
     }
 
     @Autowired
-    UserDao userDao;
+    @Qualifier("userDaoImpl")
+    private UserDao userDao;
     public String userLogin(User user){
         if (user == null) {
             return "user_null";
@@ -106,5 +108,13 @@ public class ManagerService {
 
     public void updateUserInfo(User user) {
         userDao.saveUser(user);
+    }
+
+    public void setManagerDao(ManagerDao managerDao) {
+        this.managerDao = managerDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }

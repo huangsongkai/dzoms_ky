@@ -1,6 +1,7 @@
 package com.dz.module.charge;
 
 import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.global.BaseAction;
 import com.dz.common.global.DateUtil;
 import com.dz.common.global.TimePass;
 import com.dz.common.other.ObjectAccess;
@@ -38,7 +39,7 @@ import java.util.*;
  */
 @Controller
 @Scope(value = "prototype")
-public class ChargeAction extends ActionSupport{
+public class ChargeAction extends BaseAction {
     private static final int EVERYPAGE = 20;
     /**
      *
@@ -310,6 +311,17 @@ public class ChargeAction extends ActionSupport{
         Map<String,Object> request = (Map<String,Object>)context.get("request");
         request.put("tables",tables);
         jspPage = "check_charge_table.jsp";
+        return SUCCESS;
+    }
+
+    //获得某月的租金比对
+    public String getChargePlanCompareCheck(){
+        if(status>4||status<0)
+            status=4;
+
+        List<ChargePlanCompareCheck> tables = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,department,null,status);
+        request.setAttribute("tables",tables);
+        jspPage = "check_charge_compare.jsp";
         return SUCCESS;
     }
 

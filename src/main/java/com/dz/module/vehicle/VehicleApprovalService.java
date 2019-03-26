@@ -28,6 +28,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.*;
@@ -51,8 +52,8 @@ public class VehicleApprovalService {
 	@Autowired
 	private DuanXinDao duanXinDao;
 	@Autowired
+	@Qualifier("userDaoImpl")
 	private UserDao userDao;
-
 
 
 	/**

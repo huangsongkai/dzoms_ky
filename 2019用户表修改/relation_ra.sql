@@ -86,6 +86,7 @@ INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (97, 147, 147);
 INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (98, 148, 148);
 INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (99, 100, 100);
 INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (100, 158, 149);
+INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES ('101', '78', '110');
 INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (102, 102, 102);
 INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (104, 104, 104);
 INSERT INTO `relation_ra` (`id`, `rid`, `aid`) VALUES (105, 105, 105);
