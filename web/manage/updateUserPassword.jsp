@@ -52,7 +52,7 @@
 	</div>
 	<div class="form-group">
 		<div class="field field-icon">
-			<input  class="input"  type="password" size="30" placeholder="请再次输入新密码" data-validate="required:请再次输入新密码,repeat#user.upwd:两次输入的密码不一致，请检查"/>
+			<input  class="input"  type="password" size="30" placeholder="请再次输入新密码" data-validate="required:请再次输入新密码,repeat#newPassword:两次输入的密码不一致，请检查"/>
 			<span class="icon icon-key"></span>
 		</div>
 	</div>

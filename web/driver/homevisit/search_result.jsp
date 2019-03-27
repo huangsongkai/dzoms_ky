@@ -51,14 +51,23 @@ Page pg = (Page)request.getAttribute("page");
 			alert('您没有选择任何一条数据');
 			return;
 		}
-		var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.driver.homevisit.HomeVisit&ids[0].id="+selected_val+"&ids[0].isString=false"+"&url=%2fdriver%2fhomevisit%2fshow.jsp";
-		window.open(url,"家访信息",'width=800,height=600,resizable=yes,scrollbars=yes');
+        new MyRequest('/DZOMS/common/getObj')
+            .param("ids[0].className","com.dz.module.driver.homevisit.HomeVisit")
+            .param("ids[0].id",selected_val)
+            .param("ids[0].isString",false)
+            .param("url","/driver/homevisit/show.jsp")
+            .openWindow("查看家访信息");
+		// var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.driver.homevisit.HomeVisit&ids[0].id="+selected_val+"&ids[0].isString=false"+"&url=%2fdriver%2fhomevisit%2fshow.jsp";
+		// window.open(url,"家访信息",'width=800,height=600,resizable=yes,scrollbars=yes');
 	}
 	
 	function _update(){
 		var selected_val = $("input[name='cbx']:checked").val();
-		if(selected_val==undefined)
-		alert('您没有选择任何一条数据');
+		if(selected_val==undefined){
+            alert('您没有选择任何一条数据');
+		    return;
+        }
+
 		var url = "/DZOMS/driver/driverPreupdate?driver.idNum="+selected_val;
 		window.open(url,"驾驶员修改",'width=800,height=600,resizable=yes,scrollbars=yes');
 	}
@@ -73,8 +82,10 @@ Page pg = (Page)request.getAttribute("page");
 	
 	function _toPrint(){
 		var selected_val = $("input[name='cbx']:checked").val();
-		if(selected_val==undefined)
-		alert('您没有选择任何一条数据');
+		if(selected_val==undefined){
+            alert('您没有选择任何一条数据');
+        }
+
 		var url = "/DZOMS/driver/driverPreprint?driver.idNum="+selected_val;
 		window.open(url,"驾驶员打印",'width=800,height=600,resizable=yes,scrollbars=yes');
 	}

@@ -157,6 +157,9 @@ public class ChargeAction extends BaseAction {
         Map<String,Object> request = (Map<String,Object>)context.get("request");
         request.put("resultMap",resultMap);
         String returnCode = resultMap.get("returnCode");
+        if (returnCode == null) {
+            returnCode = "9";
+        }
 
         switch (returnCode){
             case "0":

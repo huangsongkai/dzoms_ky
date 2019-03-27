@@ -53,15 +53,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					window.open(url,"合同明细",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
         
-        function _detail2(){
-        	var selected_val = $("input[name='cbx']:checked").val();
-        	var checkId = $("input[name='cbx']:checked").attr('checkId');
-					if(selected_val==undefined){
-						alert('您没有选择任何一条数据');
-						return false;
-					}
-					var url = "/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id="+checkId+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+selected_val;
-					window.open(url,"审批单明细",'width=800,height=600,resizable=yes,scrollbars=yes');
+        function _detail2(approvalId,contractId){
+        	// var selected_val = $("input[name='cbx']:checked").val();
+        	// var checkId = $("input[name='cbx']:checked").attr('checkId');
+			// 		if(selected_val==undefined){
+			// 			alert('您没有选择任何一条数据');
+			// 			return false;
+			// 		}
+            new MyRequest('/DZOMS/common/getObj')
+                .param("ids[0].className","com.dz.module.vehicle.VehicleApproval")
+                .param("ids[0].id",approvalId)
+                .param("ids[0].isString",false)
+                .param("ids[1].className","com.dz.module.contract.Contract")
+                .param("ids[1].id",contractId)
+                .param("ids[1].isString",false)
+                .param("url","/vehicle/AbandonApproval/vehicle_abandon09.jsp")
+                .openWindow("审批单明细");
+					// var url = "/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id="+checkId+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+selected_val;
+					// window.open(url,"审批单明细",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
 	
@@ -142,7 +151,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <td class="oldCarframeNum selected_able"><s:property value="%{#v.carframeNum }"/></td>
 <td class="finalTime selected_able"><s:property value="%{#oc.abandonedChargeTime }"/></td>
 <td class="oldContract selected_able"><a href="/DZOMS/contract/contractPreShow?contract.id=${oc.id}" target="_blank">详情</a></td>
-<td class="oldApproval selected_able"><a href="/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id=${oaId}&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id=${oc.id}" target="_blank">详情</a></td>
+<td class="oldApproval selected_able"><a href="javascript:_detail2(${oaId},${oc.id})">详情</a></td>
 
 <td class="licenseNum selected_able"><s:property value="%{#n.licenseNum}"/></td>
 <td class="driverName selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#n.driverId).name}"/></td>
@@ -169,7 +178,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </td>
 <td class="newApproval selected_able">
 <s:if test="%{#nc!=null}">
-	<a href="/DZOMS/common/getObj?url=%2fvehicle%2fCreateApproval%2fvehicle_approval09.jsp&ids[0].id=${naId}&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id=${nc.id}" target="_blank">详情</a>
+	<a href="javascript:_detail2(${naId},${nc.id})">详情</a>
 	</s:if>
 </td>
  </tr>

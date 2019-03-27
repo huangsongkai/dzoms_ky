@@ -102,8 +102,17 @@ Page pg = (Page)request.getAttribute("page");
 						alert('您没有选择任何一条数据');
 						return false;
 					}
-					var url = "/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id="+checkId+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+selected_val;
-					window.open(url,"审批单明细",'width=800,height=600,resizable=yes,scrollbars=yes');
+            new MyRequest('/DZOMS/common/getObj')
+                .param("ids[0].className","com.dz.module.vehicle.VehicleApproval")
+                .param("ids[0].id",checkId)
+                .param("ids[0].isString",false)
+                .param("ids[1].className","com.dz.module.contract.Contract")
+                .param("ids[1].id",selected_val)
+                .param("ids[1].isString",false)
+                .param("url","/vehicle/AbandonApproval/vehicle_abandon09.jsp")
+                .openWindow("审批单明细");
+					// var url = "/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id="+checkId+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+selected_val;
+					// window.open(url,"审批单明细",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
 function toBeforePage(){

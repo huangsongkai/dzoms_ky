@@ -50,8 +50,17 @@
                 alert('您没有选择任何一条数据');
                 return;
             }
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
-            window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
+            new MyRequest('/DZOMS/common/getObj')
+                .param("ids[0].className","com.dz.module.contract.BankCard")
+                .param("ids[0].id",selected_val)
+                .param("ids[0].isString",false)
+                .param("ids[1].className","com.dz.module.driver.Driver")
+                .param("ids[1].id",driverId)
+                .param("ids[1].isString",true)
+                .param("url","/contract/bank_card/card_show.jsp")
+                .openWindow("银行卡信息");
+            // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
+            // window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _update() {
@@ -61,8 +70,18 @@
                 alert('您没有选择任何一条数据');
                 return;
             }
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp";
-            window.open(url, "银行卡信息修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
+
+            new MyRequest('/DZOMS/common/getObj')
+                .param("ids[0].className","com.dz.module.contract.BankCard")
+                .param("ids[0].id",selected_val)
+                .param("ids[0].isString",false)
+                .param("ids[1].className","com.dz.module.driver.Driver")
+                .param("ids[1].id",driverId)
+                .param("ids[1].isString",true)
+                .param("url","/contract/bank_card/card_update.jsp")
+                .openWindow("银行卡信息修改");
+            // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp";
+            // window.open(url, "银行卡信息修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _delete() {
@@ -148,26 +167,6 @@
                 $(this).val("");
             });
         });
-
-        function _detail() {
-            var selected_val = $("input[name='cbx']:checked").val();
-            var driverId = $("input[name='cbx']:checked").attr("driverId");
-            if (selected_val == undefined) {
-                alert('您没有选择任何一条数据');
-                return;
-            }
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
-            window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
-        }
-
-        function _update() {
-            var selected_val = $("input[name='cbx']:checked").val();
-            var driverId = $("input[name='cbx']:checked").attr("driverId");
-            if (selected_val == undefined)
-                alert('您没有选择任何一条数据');
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + selected_val + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp";
-            window.open(url, "银行卡信息修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
-        }
     </script>
 </head>
 <body>

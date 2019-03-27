@@ -62,8 +62,21 @@
                 return;
             }
 
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp&ids[2].className=com.dz.module.vehicle.Vehicle&ids[2].id=" + selected_val + "&ids[2].isString=true";
-            window.open(url, "银行卡修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
+            new MyRequest('/DZOMS/common/getObj')
+                .param("ids[0].className","com.dz.module.contract.BankCard")
+                .param("ids[0].id",bid)
+                .param("ids[0].isString",false)
+                .param("ids[1].className","com.dz.module.driver.Driver")
+                .param("ids[1].id",driverId)
+                .param("ids[1].isString",true)
+                .param("ids[2].className","com.dz.module.vehicle.Vehicle")
+                .param("ids[2].id",selected_val)
+                .param("ids[2].isString",true)
+                .param("url","/contract/bank_card/card_update.jsp")
+                .openWindow("银行卡信息修改");
+
+            // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_update.jsp&ids[2].className=com.dz.module.vehicle.Vehicle&ids[2].id=" + selected_val + "&ids[2].isString=true";
+            // window.open(url, "银行卡修改", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _detail() {
@@ -81,8 +94,18 @@
                 return;
             }
 
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
-            window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
+            new MyRequest('/DZOMS/common/getObj')
+                .param("ids[0].className","com.dz.module.contract.BankCard")
+                .param("ids[0].id",bid)
+                .param("ids[0].isString",false)
+                .param("ids[1].className","com.dz.module.driver.Driver")
+                .param("ids[1].id",driverId)
+                .param("ids[1].isString",true)
+                .param("url","/contract/bank_card/card_show.jsp")
+                .openWindow("银行卡信息");
+
+            // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.contract.BankCard&ids[0].id=" + bid + "&ids[0].isString=false&ids[1].className=com.dz.module.driver.Driver&ids[1].isString=true&ids[1].id=" + driverId + "&url=%2fcontract%2fbank_card%2fcard_show.jsp";
+            // window.open(url, "银行卡信息", 'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _add() {
@@ -92,9 +115,16 @@
                 return;
             }
 
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.vehicle.Vehicle&ids[0].id=" + selected_val + "&ids[0].isString=true&url=%2fcontract%2fbank_card%2fcard_bind.jsp";
-            window.open(url,'绑定银行卡到车辆',
-                'height=500, width=300, top=100, left=100, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
+            new MyRequest('/DZOMS/common/getObj',"_parent")
+                .param("ids[0].className","com.dz.module.vehicle.Vehicle")
+                .param("ids[0].id",selected_val)
+                .param("ids[0].isString",true)
+                .param("url","/contract/bank_card/card_bind.jsp")
+                .submit();
+
+            // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.vehicle.Vehicle&ids[0].id=" + selected_val + "&ids[0].isString=true&url=%2fcontract%2fbank_card%2fcard_bind.jsp";
+            // window.open(url,'绑定银行卡到车辆',
+            //     'height=500, width=300, top=100, left=100, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, status=no');
 //            window.parent.location = url;
         }
 
@@ -109,8 +139,15 @@
         }
 
         function addAndBind(carId) {
-            var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.vehicle.Vehicle&ids[0].id=" + carId + "&ids[0].isString=true&url=%2fcontract%2fbank_card%2fcard_add.jsp";
-            window.parent.location = url;
+            new MyRequest('/DZOMS/common/getObj',"_parent")
+                .param("ids[0].className","com.dz.module.vehicle.Vehicle")
+                .param("ids[0].id",carId)
+                .param("ids[0].isString",true)
+                .param("url","/contract/bank_card/card_add.jsp")
+                .submit();
+
+            // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.vehicle.Vehicle&ids[0].id=" + carId + "&ids[0].isString=true&url=%2fcontract%2fbank_card%2fcard_add.jsp";
+            // window.parent.location = url;
         }
 
         function unbindCard(cardId,carNo) {

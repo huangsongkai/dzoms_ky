@@ -129,8 +129,8 @@ function refreshApprovalCount(){
 $(document).ready(function(){
 	refreshMsgCount();
 	refreshApprovalCount();
-	setInterval(refreshMsgCount,10000);
-	setInterval(refreshApprovalCount,10000);
+	setInterval(refreshMsgCount,60000);
+	setInterval(refreshApprovalCount,60000);
 });
 
   </script>

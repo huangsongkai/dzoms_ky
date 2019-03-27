@@ -21,6 +21,7 @@
     <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
 
     <script src="/DZOMS/res/js/jquery.js"></script>
+    <script src="/DZOMS/res/js/admin.js"></script>
     <script src="/DZOMS/res/js/pintuer.js"></script>
     <script src="/DZOMS/res/js/respond.js"></script>
     <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
@@ -38,8 +39,25 @@
 
         $(document).ready(function(){
             if(chargeId!=undefined){
-                var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.charge.ChargePlan&ids[0].id="+chargeId+"&ids[0].isString=false&url=%2fcharge%2fcash_print.jsp";
-                window.open(url,"财务收款打印");
+                new MyRequest('/DZOMS/common/getObj')
+                    .param("ids[0].className","com.dz.module.charge.ChargePlan")
+                    .param("ids[0].id",chargeId)
+                    .param("ids[0].isString",false)
+                    .param("url","/charge/cash_print.jsp")
+                    .param("title","财务收款打印")
+                    .submit();
+
+                // $("<form  action='/DZOMS/common/getObj' method='post' target='_blank' style='display: none;' />")
+                //     .append($('<input />').attr("name","ids[0].className").val("com.dz.module.charge.ChargePlan"))
+                //     .append($('<input />').attr("name","ids[0].id").val(chargeId))
+                //     .append($('<input />').attr("name","ids[0].isString").val(false))
+                //     .append($('<input />').attr("name","url").val("/charge/cash_print.jsp"))
+                //     .append($('<input />').attr("name","title").val("财务收款打印"))
+                //     .appendTo($('body'))
+                //     .submit();
+
+                // var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.charge.ChargePlan&ids[0].id="+chargeId+"&ids[0].isString=false&url=%2fcharge%2fcash_print.jsp";
+                // window.open(url,"财务收款打印");
             }
         });
 

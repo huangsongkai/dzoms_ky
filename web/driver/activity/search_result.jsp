@@ -51,10 +51,15 @@ Page pg = (Page)request.getAttribute("page");
 			alert('您没有选择任何一条数据');
 			return;
 		}
-		
-		var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.driver.activity.Activity&ids[0].id="+selected_val+"&ids[0].isString=false"+"&url=%2fdriver%2factivity%2factivity_show.jsp";
+        new MyRequest('/DZOMS/common/getObj')
+            .param("ids[0].className","com.dz.module.driver.activity.Activity")
+            .param("ids[0].id",selected_val)
+            .param("ids[0].isString",false)
+            .param("url","/driver/activity/activity_show.jsp")
+            .openWindow("活动明细");
+		// var url = "/DZOMS/common/getObj?ids[0].className=com.dz.module.driver.activity.Activity&ids[0].id="+selected_val+"&ids[0].isString=false"+"&url=%2fdriver%2factivity%2factivity_show.jsp";
 		//var url = "/DZOMS/driver/driverPreshow?driver.idNum="+selected_val;
-		window.open(url,"活动明细",'width=800,height=600,resizable=yes,scrollbars=yes');
+		// window.open(url,"活动明细",'width=800,height=600,resizable=yes,scrollbars=yes');
 	}
 	
 	function _update(){

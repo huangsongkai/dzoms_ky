@@ -65,15 +65,31 @@
             var hasJiaoqiang=$("input[name='cbx']:checked").attr("hasJiaoqiang");
             var hasShangxian=$("input[name='cbx']:checked").attr("hasShangxian");
             var hasChengyunxian = $("input[name='cbx']:checked").attr("hasChengyunxian");
+
+            var myRequest =  new MyRequest('/DZOMS/common/getObj',"_parent")
+                .param("withoutPage",false)
+                .param("keyword","xubao")
+                .param("ids[0].className","com.dz.module.vehicle.Insurance")
+                .param("ids[0].isString",false)
+                .param("url","/vehicle/insurance/insurance_addNew.jsp");
             if (hasJiaoqiang.trim().length>0) {
-                var url= "/DZOMS/common/getObj?withoutPage=false&keyword=xubao&url=%2fvehicle%2finsurance%2finsurance_addNew.jsp&ids[0].className=com.dz.module.vehicle.Insurance&ids[0].id="+hasJiaoqiang;
-                window.parent.location.href=url;
+                myRequest
+                    .param("ids[0].id",hasJiaoqiang)
+                    .submit();
+                // var url= "/DZOMS/common/getObj?withoutPage=false&keyword=xubao&url=%2fvehicle%2finsurance%2finsurance_addNew.jsp&ids[0].className=com.dz.module.vehicle.Insurance&ids[0].id="+hasJiaoqiang;
+                // window.parent.location.href=url;
             }else if (hasShangxian.trim().length>0) {
-                var url= "/DZOMS/common/getObj?withoutPage=false&keyword=xubao&url=%2fvehicle%2finsurance%2finsurance_addNew.jsp&ids[0].className=com.dz.module.vehicle.Insurance&ids[0].id="+hasShangxian;
-                window.parent.location.href=url;
+                myRequest
+                    .param("ids[0].id",hasShangxian)
+                    .submit();
+                // var url= "/DZOMS/common/getObj?withoutPage=false&keyword=xubao&url=%2fvehicle%2finsurance%2finsurance_addNew.jsp&ids[0].className=com.dz.module.vehicle.Insurance&ids[0].id="+hasShangxian;
+                // window.parent.location.href=url;
             }else if (hasChengyunxian.trim().length>0) {
-                var url= "/DZOMS/common/getObj?withoutPage=false&keyword=xubao&url=%2fvehicle%2finsurance%2finsurance_addNew.jsp&ids[0].className=com.dz.module.vehicle.Insurance&ids[0].id="+hasChengyunxian;
-                window.parent.location.href=url;
+                myRequest
+                    .param("ids[0].id",hasChengyunxian)
+                    .submit();
+                // var url= "/DZOMS/common/getObj?withoutPage=false&keyword=xubao&url=%2fvehicle%2finsurance%2finsurance_addNew.jsp&ids[0].className=com.dz.module.vehicle.Insurance&ids[0].id="+hasChengyunxian;
+                // window.parent.location.href=url;
             }else{
                 var url= "/DZOMS/vehicle/insurance/insurance_addNew.jsp";
                 window.parent.location.href=url;

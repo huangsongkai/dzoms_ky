@@ -102,11 +102,29 @@
         $(document).ready(function(){
             //双击查看审批单详情
             $("tr[checkType='0']").dblclick(function(){//开业审批单
-                window.parent.location.href = "/DZOMS/common/getObj?url=%2fvehicle%2fCreateApproval%2fvehicle_approval09.jsp&ids[0].id="+$(this).attr('checkId')+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+$(this).attr('cId');
+				new MyRequest('/DZOMS/common/getObj','_parent')
+						.param("ids[0].className","com.dz.module.vehicle.VehicleApproval")
+						.param("ids[0].id",$(this).attr('checkId'))
+						.param("ids[0].isString",false)
+						.param("ids[1].className","com.dz.module.contract.Contract")
+						.param("ids[1].id",$(this).attr('cId'))
+						.param("ids[1].isString",false)
+						.param("url","/vehicle/CreateApproval/vehicle_approval09.jsp")
+						.submit();
+                // window.parent.location.href = "/DZOMS/common/getObj?url=%2fvehicle%2fCreateApproval%2fvehicle_approval09.jsp&ids[0].id="+$(this).attr('checkId')+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+$(this).attr('cId');
             });
 
             $("tr[checkType='1']").dblclick(function(){//废业审批单
-                window.parent.location.href = "/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id="+$(this).attr('checkId')+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+$(this).attr('cId');
+				new MyRequest('/DZOMS/common/getObj',"_parent")
+						.param("ids[0].className","com.dz.module.vehicle.VehicleApproval")
+						.param("ids[0].id",$(this).attr('checkId'))
+						.param("ids[0].isString",false)
+						.param("ids[1].className","com.dz.module.contract.Contract")
+						.param("ids[1].id",$(this).attr('cId'))
+						.param("ids[1].isString",false)
+						.param("url","/vehicle/AbandonApproval/vehicle_abandon09.jsp")
+						.submit();
+                // window.parent.location.href = "/DZOMS/common/getObj?url=%2fvehicle%2fAbandonApproval%2fvehicle_abandon09.jsp&ids[0].id="+$(this).attr('checkId')+"&ids[0].className=com.dz.module.vehicle.VehicleApproval&ids[1].className=com.dz.module.contract.Contract&ids[1].id="+$(this).attr('cId');
             });
         });
 
