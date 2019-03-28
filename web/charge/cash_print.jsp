@@ -67,9 +67,11 @@
 				<td class="field">
 			<%
 String type = vs.findString("bean[0].feeType");
-if(type.equals("add_bank")){
+			if (type == null) {
+				response.sendRedirect("../common/success_and_close.html");
+			}else if(type.equals("add_bank")){
               type = "哈尔滨银行回款";
-            }if(type.equals("add_bank2")){
+            }else if(type.equals("add_bank2")){
               type = "招商银行回款";
             }else if(type.equals("add_insurance")){
               type = "保险回款";

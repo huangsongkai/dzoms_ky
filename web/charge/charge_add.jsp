@@ -62,10 +62,7 @@
         });
 
         function refreshTable(){
-            $("#container").html("");
-            //append Header
-            $("#container").append("<tr> <th>类型</th> <th>金额</th> <th>记录时间</th> <th>记录人</th> </tr>");
-            var licenseNum = $("#licenseNum").val();
+                       var licenseNum = $("#licenseNum").val();
             var time = $("#time").val();
             if(licenseNum != undefined && licenseNum != "" && time != undefined && time != ""){
                 $.post("/DZOMS/charge/getAMonthRecords",{"licenseNum":licenseNum,"time":time},function(dat){
@@ -75,8 +72,12 @@
                         dat = [dat];
                     }
                     var add = 0;
+
+                    $("#container").html("");
+                    //append Header
+                    $("#container").append("<tr> <th>类型</th> <th>金额</th> <th>记录时间</th> <th>记录人</th> </tr>");
                     for(var i = 0;i < dat.length;++i){
-                        tmp = dat[i];
+                        var tmp = dat[i];
                         var type = tmp["feeType"];
                         var money = tmp["fee"];
                         var inTime = tmp["inTime"]["$"];
