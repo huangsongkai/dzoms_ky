@@ -59,8 +59,9 @@ public class UserDaoImpl implements UserDao {
 			else if(!generateKeyHash.verify(userQ.getPasswordHash(),userQ.getPasswordSalt(),user.getUpwd()))
 			{
 				result = "error_upwd";
+			}else {
+				result = userQ.getUid().toString();
 			}
-			result = userQ.getUid().toString();
 			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null) {

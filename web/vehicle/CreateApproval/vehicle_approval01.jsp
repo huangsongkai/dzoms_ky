@@ -107,7 +107,7 @@ function GetQueryString(name){
 		$("#terminationDays").prop("disabled",true);
 		
 		
-		$('input[name="vehicleApproval.cartype"]').click(function(){
+		$('input[name="vehicleApproval.cartype"]').change(function(){
 			var val = $(this).val();
 			var cartype = $(this).attr("cartype");
 			
@@ -117,7 +117,8 @@ function GetQueryString(name){
 				$("#oldLicenseNum").prop("disabled",true);
 				$("#title").html("<h2><strong>新车生成开业</strong></h2>");
 				$("#info_box").show();
-			}else if(cartype==2){//更新
+			}
+			else if(cartype==2){//更新
 				$("#oldLicenseNum").prop("disabled",false);
 				$("#title").html("<h2><strong>新车生成开业</strong></h2>");
 				$("#info_box").show();
@@ -198,7 +199,7 @@ function GetQueryString(name){
 					condition:" state=3 ",
 					callback:function(){
 						var licenseNum = $("#oldLicenseNum").val();
-						$.post("/DZOMS/common/doit",{"condition":"from Contract c where c.abandonedFinalTime is not null and c.state=1 and c.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum='"+licenseNum+"') order by id desc "},function(data){
+						$.post("/DZOMS/common/doit",{"condition":"from Contract c where c.state=1 and c.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum='"+licenseNum+"') order by id desc "},function(data){
 							var contract=data["affect"];
     						$("#contractFrom").val(contract["id"]);
    							$('[name="url"]').val("/vehicle/CreateApproval/vehicle_approval01.jsp");
@@ -256,7 +257,7 @@ function GetQueryString(name){
 	<div class="panel">
 		<div class="panel-head">
 			<div class="line" style="text-align: center;" id="title">
-	              <h2><strong>新车生成开业</strong></h2>
+	              <h2><strong>二手车生成开业</strong></h2>
              </div>
 		</div>
 		<div class="panel-body">
