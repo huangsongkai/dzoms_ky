@@ -7,7 +7,10 @@ import com.dz.common.global.TimePass;
 import com.dz.common.other.ObjectAccess;
 import com.dz.module.charge.bank.BankItem;
 import com.dz.module.charge.bank.ZhaoShangDiscount;
+import com.dz.module.charge.insurance.InsuranceBack;
+import com.dz.module.charge.insurance.InsuranceBackService;
 import com.dz.module.contract.*;
+import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleDao;
 import com.opensymphony.xwork2.ActionContext;
@@ -19,6 +22,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
+import org.dom4j.DocumentException;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -30,8 +34,11 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author doggy
@@ -322,7 +329,16 @@ public class ChargeAction extends BaseAction {
         if(status>4||status<0)
             status=4;
 
-        List<ChargePlanCompareCheck> tables = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,department,null,status);
+        List<ChargePlanCompareCheck> tables;
+        if (StringUtils.equals("全部",department)){
+            List<ChargePlanCompareCheck> table1 = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,"一部",null,status);
+            List<ChargePlanCompareCheck> table2 = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,"二部",null,status);
+            List<ChargePlanCompareCheck> table3 = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,"三部",null,status);
+            tables = Stream.concat(Stream.concat(table1.stream(),table2.stream()),table3.stream()).collect(Collectors.toList());
+        }else {
+            tables = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,department,null,status);
+        }
+
         request.setAttribute("tables",tables);
         jspPage = "check_charge_compare.jsp";
         return SUCCESS;
@@ -1383,5 +1399,51 @@ public class ChargeAction extends BaseAction {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Autowired
+    private InsuranceBackService insuranceBackService;
+
+    public void setInsuranceBackService(InsuranceBackService insuranceBackService) {
+        this.insuranceBackService = insuranceBackService;
+    }
+
+    public String requestInsuranceReceipt()  {
+        List list = null;
+        try {
+            list = insuranceBackService.requestReceipt(time);
+            ajax_message = "操作成功";
+        } catch (Exception e) {
+            e.printStackTrace();
+            ajax_message = "操作失败,"+e.getMessage();
+        }
+        return STRING_RESULT;
+    }
+
+    public String tryAttachVehicle(){
+        insuranceBackService.tryAttachVehicle();
+        ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    public String confirmChecked(){
+        String ids = request.getParameter("ids");
+        List<InsuranceBack> backs = Arrays.stream(ids.split(",")).mapToInt(Integer::parseInt)
+                .mapToObj(i-> ObjectAccess.getObject(InsuranceBack.class, i))
+                .collect(Collectors.toList());
+        User user = (User) session.getAttribute("user");
+        insuranceBackService.confirmChecked(backs,user);
+        ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    public String refuseInsuranceBack(){
+        String ids = request.getParameter("ids");
+        List<InsuranceBack> backs = Arrays.stream(ids.split(",")).mapToInt(Integer::parseInt)
+                .mapToObj(i-> ObjectAccess.getObject(InsuranceBack.class, i))
+                .collect(Collectors.toList());
+        insuranceBackService.refuseInsuranceBack(backs);
+        ajax_message = "success";
+        return STRING_RESULT;
     }
 }

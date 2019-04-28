@@ -87,6 +87,8 @@
 		<mapping class="com.dz.module.vehicle.Trade" />
 		<mapping class="com.dz.common.seqence.MyMonth"/>
 		<mapping class="com.dz.module.contract.SysScript"/>
+		<mapping class="com.dz.module.charge.insurance.InsuranceReceipt"/>
+		<mapping class="com.dz.module.charge.insurance.InsuranceBack"/>
 
 	</session-factory>
 </hibernate-configuration>

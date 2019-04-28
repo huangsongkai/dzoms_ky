@@ -9,15 +9,15 @@ import java.util.Date;
 import java.util.Map;
 
 public class DateTypeConverter extends StrutsTypeConverter {
-	public  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-	public  SimpleDateFormat dateFormat0 = new SimpleDateFormat("yyyy-MM-dd");
-	public  SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM");
-	public  SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	public  SimpleDateFormat dateFormat20 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	public  SimpleDateFormat dateFormat3 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-	public  SimpleDateFormat dateFormat4 = new SimpleDateFormat("HH:mm");
-	public  SimpleDateFormat dateFormat5 = new SimpleDateFormat("MM/dd");
-	public  SimpleDateFormat dateFormat6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	public static SimpleDateFormat dateFormat0 = new SimpleDateFormat("yyyy-MM-dd");
+	public static SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM");
+	public static SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	public static SimpleDateFormat dateFormat20 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat dateFormat3 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+	public static SimpleDateFormat dateFormat4 = new SimpleDateFormat("HH:mm");
+	public static SimpleDateFormat dateFormat5 = new SimpleDateFormat("MM/dd");
+	public static SimpleDateFormat dateFormat6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
 	final static String pattern =  "^\\d{4}(\\/)\\d{1,2}\\/\\d{1,2}$";
 	final static String pattern0 =  "^\\d{4}(\\-)\\d{1,2}\\-\\d{1,2}$";

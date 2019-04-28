@@ -2051,6 +2051,24 @@ public class ChargeService {
         }finally {
             HibernateSessionFactory.closeSession();
         }
+
+        Iterator<ChargePlanCompareCheck> checkIterator = compareChecks.iterator();
+        ChargePlanCompareCheck[] checks = new ChargePlanCompareCheck[2];
+        int i=0;
+        while (checkIterator.hasNext()){
+            checks[i&1] = checkIterator.next();
+            ChargePlanCompareCheck preOne = checks[1-i&1];
+            if (preOne!=null && preOne.getCompareTo()!=null && checks[i&1].getCompareTo()==null){
+                if (org.apache.commons.lang3.StringUtils.equals(preOne.getCompareTo().getCarNumber(),checks[i&1].getCurrent().getCarNumber())){
+                    //同一辆车 合并
+                    preOne.setCurrent(checks[i&1].getCurrent());
+                    preOne.setContractPlanAmount(checks[i&1].getContractPlanAmount());
+                    checkIterator.remove();
+                }
+            }
+            i++;
+        }
+
         return compareChecks;
     }
 

@@ -485,5 +485,18 @@
             <!--<systemPath>${project.basedir}/libs/openjdk-asm.jar</systemPath>-->
             <!--<scope>system</scope>-->
         <!--</dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.56</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
     </dependencies>
 </project>
