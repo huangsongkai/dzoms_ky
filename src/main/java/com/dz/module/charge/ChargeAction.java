@@ -9,6 +9,7 @@ import com.dz.module.charge.bank.BankItem;
 import com.dz.module.charge.bank.ZhaoShangDiscount;
 import com.dz.module.charge.insurance.InsuranceBack;
 import com.dz.module.charge.insurance.InsuranceBackService;
+import com.dz.module.charge.insurance.InsuranceReceipt;
 import com.dz.module.contract.*;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
@@ -320,7 +321,8 @@ public class ChargeAction extends BaseAction {
         @SuppressWarnings("unchecked")
         Map<String,Object> request = (Map<String,Object>)context.get("request");
         request.put("tables",tables);
-        jspPage = "check_charge_table.jsp";
+        if (jspPage==null || jspPage.length()==0)
+            jspPage = "check_charge_table.jsp";
         return SUCCESS;
     }
 
@@ -1423,6 +1425,64 @@ public class ChargeAction extends BaseAction {
     public String tryAttachVehicle(){
         insuranceBackService.tryAttachVehicle();
         ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    public String manalAttachVehicle(){
+        String carNum = request.getParameter("carNum");
+        String receiptId = request.getParameter("receiptId");
+        Vehicle vehicle = new Vehicle();
+        vehicle.setLicenseNum(carNum);
+        vehicle = vehicleDao.selectByLicense(vehicle);
+
+        if (vehicle==null){
+            ajax_message = "操作失败，找不到车牌号为"+carNum+"的车辆！";
+            return STRING_RESULT;
+        }
+
+        InsuranceReceipt receipt = ObjectAccess.getObject(InsuranceReceipt.class,receiptId);
+        if (receipt==null){
+            ajax_message = "操作失败，找不到单号为"+receiptId+"的单据，确认是否已被其它用户删除？";
+            return STRING_RESULT;
+        }
+
+        if (receipt.getState()>0){
+            ajax_message = "操作失败，该单据已成功匹配，不可再次匹配。";
+            return STRING_RESULT;
+        }
+
+        insuranceBackService.manalAttachVehicle(receipt,vehicle);
+        ajax_message = "操作成功！";
+        return STRING_RESULT;
+    }
+
+    public String removeRecipt(){
+        String receiptId = request.getParameter("receiptId");
+        InsuranceReceipt receipt = ObjectAccess.getObject(InsuranceReceipt.class,receiptId);
+        if (receipt==null){
+            ajax_message = "操作失败，找不到单号为"+receiptId+"的单据，确认是否已被其它用户删除？";
+            return STRING_RESULT;
+        }
+
+        if (receipt.getState()>0){
+            ajax_message = "操作失败，该单据已成功匹配，不可删除！";
+            return STRING_RESULT;
+        }
+
+        ajax_message = "操作成功！";
+
+        Session hsession;
+        Transaction transaction;
+        try {
+            hsession = HibernateSessionFactory.getSession();
+            transaction = hsession.beginTransaction();
+            hsession.delete(receipt);
+            transaction.commit();
+        }catch (HibernateException ex){
+            ajax_message = "操作失败，数据库错误："+ ex.getMessage();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
         return STRING_RESULT;
     }
 

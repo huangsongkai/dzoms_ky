@@ -79,20 +79,62 @@
                 document.vehicleSele.submit();
             });
         }
+
+        function _exportExcel(){
+            $('[name="vehicleSele"]').attr("action","/DZOMS/common/selectToExcel").attr("target","_blank").submit();
+            $('[name="vehicleSele"]').attr("action","/DZOMS/common/select").attr("target","_self");
+        }
+
+        $(document).ready(function () {
+            $("tr.data-tr").dblclick(function (e) {
+                if ($('[name="condition"]').val().contains("state<0")){
+                    var receiptId = $(this).find("td:nth-child(1)").text();
+
+                    if(confirm("确认对该项‘"+$(this).find("td:nth-child(4)").text()+"’进行匹配？")){
+                        var carNum;
+                        do{
+                            carNum = prompt("请指定车牌号：","黑A");
+                        }while (carNum!=null && carNum.length!=7);
+
+                        if (carNum==null){
+                            return;
+                        }
+
+                        $.post('/DZOMS/charge/manalAttachVehicle',{
+                            carNum:carNum,
+                            receiptId:receiptId
+                        },function (msg) {
+                            alert(msg);
+                            document.vehicleSele.submit();
+                        });
+                    }else if(confirm("是否移除该失败记录？")){
+                        $.post('/DZOMS/charge/removeRecipt',{
+                            receiptId:receiptId
+                        },function (msg) {
+                            alert(msg);
+                            document.vehicleSele.submit();
+                        });
+                    }
+                }
+            });
+        });
     </script>
 </head>
 <body>
 <div class="panel  margin-small" >
     <div class="panel-head">
         <div class="line">
-            <div class="xm2">
+            <div class="xm4">
                 查询结果合计：<%=pg.getTotalCount() %>条记录
+                <s:if test="#request.columns!=null ">，总额<s:property value="#request.columns"></s:property> </s:if>
+
             </div>
-            <div class="xm6 xm4-move">
+            <div class="xm6 xm2-move">
                 <div class="button-toolbar">
                     <div class="button-group">
-                        <button onclick="_match()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
-                            匹配到车辆</button>
+                        <button onclick="_match()" type="button" class="button icon-search text-blue" style="line-height: 6px;">匹配到车辆</button>
+                        <button onclick="_exportExcel()" type="button" class="button icon-search text-blue" style="line-height: 6px;">导出为Excel</button>
+
                     </div>
                 </div>
             </div>
@@ -112,7 +154,7 @@
             </tr>
             <s:if test="#request.list != null">
                 <s:iterator value="#request.list" var="bp">
-                    <tr>
+                    <tr class="data-tr">
                         <td><s:property value="#bp.receiptId"/></td>
                         <td><s:date format="yyyy/MM/dd" name="#bp.timestamp"></s:date></td>
                         <td><s:property value="#bp.amount"/></td>
@@ -176,7 +218,10 @@
     </div>
 </div>
     <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele">
-        <input type="hidden" name="orderby" value="id desc">
+        <input type="hidden" name="templatePath" value="charge/insurance_receipt.xls">
+        <input type="hidden" name="outputName" value="保险回执单据信息表">
+        <s:hidden name="orderby"></s:hidden>
+        <s:hidden name="column"></s:hidden>
         <s:hidden name="condition"></s:hidden>
         <s:hidden name="className"></s:hidden>
         <s:hidden name="url"></s:hidden>

@@ -308,6 +308,36 @@ public class InsuranceBackService {
         }
     }
 
+    public void manalAttachVehicle(InsuranceReceipt receipt,Vehicle vehicle){
+        final Session session = HibernateSessionFactory.getSession();
+        InsuranceBack back = new InsuranceBack();
+        back.setReceiptId(receipt.getReceiptId());
+        back.setAmount(receipt.getAmount());
+        back.setAttachment(receipt.getAttachment());
+        back.setTimestamp(receipt.getTimestamp());
+        back.setCarframeNum(vehicle.getCarframeNum());
+        back.setCarNum(vehicle.getLicenseNum());
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+
+            session.saveOrUpdate(back);
+            receipt = (InsuranceReceipt) session.get(InsuranceReceipt.class,back.getReceiptId());
+            receipt.setState(back.getId());
+            session.saveOrUpdate(receipt);
+            tx.commit();
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if (tx!=null){
+                    tx.rollback();
+                }
+            }catch (TransactionException ex){ }
+            HibernateSessionFactory.closeSession();
+        }
+    }
+
     public void confirmChecked(List<InsuranceBack> backs,User user){
         Session session;
         Transaction tx = null;

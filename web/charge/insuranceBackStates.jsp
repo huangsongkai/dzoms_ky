@@ -57,6 +57,11 @@
             document.vehicleSele.submit();
         }
 
+        function _exportExcel(){
+            $('[name="vehicleSele"]').attr("action","/DZOMS/common/selectToExcel").attr("target","_blank").submit();
+            $('[name="vehicleSele"]').attr("action","/DZOMS/common/select").attr("target","_self");
+        }
+
         $(document).ready(function(){
             var currentPage = parseInt($("input[name='currentPage']").val());
             $("#page-input").val(currentPage + "/<%=pg.getTotalPage()%>");
@@ -129,10 +134,11 @@
 <div class="panel  margin-small" >
     <div class="panel-head">
         <div class="line">
-            <div class="xm2">
+            <div class="xm4">
                 查询结果合计：<%=pg.getTotalCount() %>条记录
+                <s:if test="#request.columns!=null ">，总额<s:property value="#request.columns"></s:property> </s:if>
             </div>
-            <div class="xm6 xm4-move">
+            <div class="xm6 xm2-move">
                 <div class="button-toolbar">
                     <div class="button-group">
                         <button onclick="_comfirmAccount()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
@@ -141,6 +147,7 @@
                             全选</button>
                         <button onclick="_selectReverse()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
                             反选</button>
+                        <button onclick="_exportExcel()" type="button" class="button icon-search text-blue" style="line-height: 6px;">导出为Excel</button>
                     </div>
                 </div>
             </div>
@@ -235,7 +242,10 @@
     </div>
 </div>
     <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele">
-        <input type="hidden" name="orderby" value="id desc">
+        <input type="hidden" name="templatePath" value="charge/insurance_back.xls">
+        <input type="hidden" name="outputName" value="保险回款进账信息表">
+        <s:hidden name="orderby"></s:hidden>
+        <s:hidden name="column"></s:hidden>
         <s:hidden name="condition"></s:hidden>
         <s:hidden name="className"></s:hidden>
         <s:hidden name="url"></s:hidden>

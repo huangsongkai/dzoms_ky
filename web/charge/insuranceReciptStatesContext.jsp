@@ -35,6 +35,7 @@
                 <input type="hidden" name="url" value="/charge/insuranceReciptStates.jsp" />
                 <input type="hidden" name="className" value="com.dz.module.charge.insurance.InsuranceReceipt"/>
                 <input type="hidden" name="orderby" value="timestamp,receiptId desc">
+                <input type="hidden" name="column" value="sum(amount)">
                 <div class="form-group">
                     <div class="label">
                         <label>状态</label>

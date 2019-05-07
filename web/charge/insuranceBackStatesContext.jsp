@@ -14,26 +14,53 @@
     <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
     <script src="/DZOMS/res/js/jquery.js"></script>
     <script src="/DZOMS/res/js/pintuer.js"></script>
+    <script>
+        function beforeSubmit() {
+            var hql = "";
+            var state = $('[name="state"]').val();
+            hql += state;
+            var dept = $('[name="dept"]').val();
+            hql += dept;
+
+            $('[name="condition"]').val(hql);
+            return true;
+        }
+    </script>
 </head>
 <body>
 
 <div class="line">
     <div class="panel  margin-small" >
         <div class="panel-head">
-            <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele" target="result_form">
+            <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele" onsubmit="return beforeSubmit();" target="result_form">
                 <input type="hidden" name="url" value="/charge/insuranceBackStates.jsp" />
                 <input type="hidden" name="className" value="com.dz.module.charge.insurance.InsuranceBack"/>
                 <input type="hidden" name="orderby" value="timestamp,receiptId desc">
+                <input type="hidden" name="column" value="sum(amount)">
+                <input type="hidden" name="condition" value="">
                 <div class="form-group">
                     <div class="label">
                         <label>状态</label>
                     </div>
                     <div class="field">
-                        <select name="condition" class="input">
+                        <select name="state" class="input">
                             <option value=" and state=0 " selected="selected">未入账</option>
                             <option value=" and state>0 ">已进账</option>
                             <option value=" and state<0 ">进账失败</option>
                             <option value=" ">全部</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label>部门</label>
+                    </div>
+                    <div class="field">
+                        <select name="dept" class="input">
+                            <option value=" and carframeNum in (select carframeNum from Vehicle where dept='一部') " >一部</option>
+                            <option value=" and carframeNum in (select carframeNum from Vehicle where dept='二部') " >二部</option>
+                            <option value=" and carframeNum in (select carframeNum from Vehicle where dept='三部') " >三部</option>
+                            <option value=" " selected="selected">全部</option>
                         </select>
                         <input type="submit" value="查询">
                     </div>

@@ -389,6 +389,16 @@ public class ObjectAccess extends BaseAction {
 			count = ObjectAccess.execute("select count(*) from "+className+" where " + hql);
 		}
 
+		Object columns = null;
+		if (column!=null && column.length()>0){
+			if(position>0){
+				columns = ObjectAccess.execute("select "+column+" from "+className+" where " + StringUtils.substring(hql,0,position));
+			}else{
+				columns = ObjectAccess.execute("select "+column+" from "+className+" where " + hql);
+			}
+		}
+
+
 		Page page;
 		if (BooleanUtils.isTrue(withoutPage)) {
 			page = PageUtil.createPage((int)count,(int)count, 0);
@@ -399,6 +409,7 @@ public class ObjectAccess extends BaseAction {
 		try {
 			List<?> l = ObjectAccess.query(Class.forName(className), hql, null, null, orderby, page);
 			request.setAttribute("list", l);
+			request.setAttribute("columns",columns);
 			//request.setAttribute("currentPage", currentPage);
 			request.setAttribute("page", page);
 		} catch (ClassNotFoundException e) {
