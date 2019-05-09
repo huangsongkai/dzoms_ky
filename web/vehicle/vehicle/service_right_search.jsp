@@ -121,38 +121,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <iframe name="result_form" width="100%" height="800px" id="result_form" scrolling="no">
 
     </iframe>
-
 </div>
 
 <script type="text/javascript" src="/DZOMS/res/js/DateTimeHelper.js" ></script>
+  <script src="/DZOMS/res/js/apps.js"></script>
 </body>
- <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    	function iFrameHeight() {
-	try{
-var ifm= document.getElementById("result_form");   
-var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
-
-$(document).ready(function(){
-	window.setInterval('iFrameHeight();',3600);
-});
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
-    </script>
 </html>
 
 

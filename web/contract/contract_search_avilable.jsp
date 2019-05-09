@@ -64,7 +64,7 @@ $(document).ready(function(){
 <div class="adminmin-bread" style="width: 100%;">
 		<ul class="bread text-main" style="font-size: larger;"> 
                 <li>合同</li>
-                <li>合同查询</li>
+                <li>有效合同查询</li>
         </ul>
 </div>
 <div class="line">
@@ -73,24 +73,15 @@ $(document).ready(function(){
           		查询条件
           	</div>
           	<div class="panel-body">
-          		<form class="form-inline" method="post"  id="search_form" action="/DZOMS/contract/contractSearch" target="result_form">
-          		      	<div class="form-group">
+          		<form class="form-inline" method="post"  id="search_form" action="/DZOMS/contract/contractSearchAvilable" target="result_form">
+          		    <input type="hidden" name="url" value="/contract/search_avliable_result.jsp">
+					<div class="form-group">
           		      	 <div class="label">
-          		      	 	 <label>合同开始日期</label>
+          		      	 	 <label>有效区间</label>
           		      	 </div>
           		      	 <div class="field">
           		      	 	 <input type="text"  name="beginDateStart" class="datepick input"/>
           		      	 	 到<input type="text"  name="beginDateEnd" class="datepick input"/>
-          		      	 </div>
-          		       </div>
-          		       
-          		        <div class="form-group">
-          		      	 <div class="label">
-          		      	 	 <label>合同结束日期</label>
-          		      	 </div>
-          		      	 <div class="field">
-          		      	 	<input type="text" name="endDateStart" class="datepick input"/>
-          		      	 	到<input type="text" name="endDateEnd" class="datepick input"/>
           		      	 </div>
           		       </div>
           		       
@@ -123,11 +114,7 @@ $(document).ready(function(){
           		      	 	  <input type="text" id="contractor" name="idNum" class="input"/>
           		      	 </div>
           		       </div>
-          		        <br>
-          		         
-          		       <input type="hidden" name="states" value="0" />
-			           <input type="hidden" name="states" value="-1" />
-          		       
+
           		       <div class="form-group">
           		      	 <div class="label">
           		      	 	 <label>排序</label>
@@ -141,6 +128,9 @@ $(document).ready(function(){
 								<input type="radio" name="rank" value="true" checked="checked"/> 从小到大 &nbsp;
 								<input type="radio" name="rank" value="false" /> 从大到小 &nbsp;
 							</div>
+						   <div class="field">
+							   <input type="submit" value="查询">
+						   </div>
           		       </div>
           		</form>
           	</div>
@@ -157,32 +147,4 @@ $(document).ready(function(){
 </div>
     <script type="text/javascript" src="/DZOMS/res/js/DateTimeHelper.js" ></script>
 </body>
-
- <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    	function iFrameHeight() {
-	try{
-var ifm= document.getElementById("result_form");   
-var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
-
-$(document).ready(function(){
-	window.setInterval('iFrameHeight();',3600);
-});
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
-    </script>
 </html>

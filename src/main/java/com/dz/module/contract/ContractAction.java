@@ -1373,6 +1373,137 @@ public class ContractAction extends BaseAction {
 		return SUCCESS;
 	}
 
+	public String contractSearchAvilable(){
+		int currentPage = getCurrentPage();
+		Session session = HibernateSessionFactory.getSession();
+
+		String hql = "from Contract where state in (0,1) ";
+
+		if (!StringUtils.isEmpty(dept)&&!dept.startsWith("all")) {
+			hql+= String.format("and branchFirm='%s' ", dept);
+		}
+
+		if (!StringUtils.isEmpty(idNum)) {
+			hql+= String.format("and idNum like '%%%s%%' ", idNum);
+		}
+
+		if (!StringUtils.isEmpty(carNum)) {
+			hql+= String.format("and carNum like '%%%s%%' ", carNum);
+		}
+
+		String innerCondition = " contractBeginDate >= contractEndDate ";
+
+		if (beginDateStart!=null) {
+			innerCondition += "or (contractBeginDate <= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateStart ) ";
+		}
+
+		if (beginDateEnd!=null) {
+			innerCondition += "or (contractBeginDate <= :beginDateEnd and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateEnd ) ";
+		}
+
+		if (beginDateStart!=null && endDateStart !=null){
+			innerCondition += "or (contractBeginDate >= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) <= :beginDateEnd ) ";
+			innerCondition += "or (contractBeginDate <= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateEnd ) ";
+		}
+
+		hql += " and (" + innerCondition+ ") ";
+
+
+		Query query2 = session.createQuery("select count(*) "+hql);
+		hql += " order by "+order;
+
+		if (BooleanUtils.isFalse(rank)){
+			hql += " desc ";
+		}
+		Query query = session.createQuery(hql);
+
+		if (beginDateStart!=null) {
+			query.setDate("beginDateStart", beginDateStart);
+			query2.setDate("beginDateStart", beginDateStart);
+		}
+
+		if (beginDateEnd!=null) {
+			query.setDate("beginDateEnd", beginDateEnd);
+			query2.setDate("beginDateEnd", beginDateEnd);
+		}
+
+		long count = (long)query2.uniqueResult();
+
+		Page page = PageUtil.createPage(15, (int)count, currentPage);
+
+		query.setFirstResult(page.getBeginIndex());
+		query.setMaxResults(page.getEveryPage());
+
+		List<Contract> l = query.list();
+		HibernateSessionFactory.closeSession();
+
+		request.setAttribute("list", l);
+		//request.setAttribute("currentPage", currentPage);
+		request.setAttribute("page", page);
+//		setUrl("/contract/search_result.jsp");
+		return "selectToUrl";
+	}
+
+	public String contractToExcelAvliable(){
+		Session session = HibernateSessionFactory.getSession();
+
+		String hql = "from Contract where state in (0,1) ";
+
+		if (!StringUtils.isEmpty(dept)&&!dept.startsWith("all")) {
+			hql+= String.format("and branchFirm='%s' ", dept);
+		}
+
+		if (!StringUtils.isEmpty(idNum)) {
+			hql+= String.format("and idNum like '%%%s%%' ", idNum);
+		}
+
+		if (!StringUtils.isEmpty(carNum)) {
+			hql+= String.format("and carNum like '%%%s%%' ", carNum);
+		}
+
+		String innerCondition = " contractBeginDate >= contractEndDate ";
+
+		if (beginDateStart!=null) {
+			innerCondition += "or (contractBeginDate <= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateStart ) ";
+		}
+
+		if (beginDateEnd!=null) {
+			innerCondition += "or (contractBeginDate <= :beginDateEnd and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateEnd ) ";
+		}
+
+		if (beginDateStart!=null && endDateStart !=null){
+			innerCondition += "or (contractBeginDate >= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) <= :beginDateEnd ) ";
+			innerCondition += "or (contractBeginDate <= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateEnd ) ";
+		}
+
+		hql += " and (" + innerCondition+ ") ";
+		hql += " order by "+order;
+
+		if (BooleanUtils.isFalse(rank)){
+			hql += " desc ";
+		}
+		Query query = session.createQuery(hql);
+
+		if (beginDateStart!=null) {
+			query.setDate("beginDateStart", beginDateStart);
+		}
+
+		if (beginDateEnd!=null) {
+			query.setDate("beginDateEnd", beginDateEnd);
+		}
+
+		List<Contract> l = query.list();
+		HibernateSessionFactory.closeSession();
+
+		List<List<? extends Serializable>> datalist = new ArrayList<List<? extends Serializable>>();
+		List<String> datasrc;
+		datasrc = Arrays.asList("contracts");
+		datalist.add(l);
+		request.setAttribute("datasrc", datasrc);
+		request.setAttribute("datalist", datalist);
+		return SUCCESS;
+	}
+
 	public String searchRentFirstDivide(){
 		int currentPage = getCurrentPage();
 

@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			condition = (alreadyInput=="是" ?" and businessLicenseId is not null ":" and businessLicenseId is null ");
 			$("input[name='condition']").val(" and state in (0,1) "+condition);
 		}
-		$("input[name='condition']").val($("input[name='condition']").val()+" order by licenseNum");
+		$("input[name='condition']").val($("input[name='condition']").val());
 		$("[name='vehicleSele']").submit();
 	}
 	
@@ -146,31 +146,5 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		refreshSearch();
 	}
 });
- 
- 
-    	function iFrameHeight() {
-	try{
-var ifm= document.getElementById("result_form");   
-var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
-
-$(document).ready(function(){
-	window.setInterval('iFrameHeight();',3600);
-});
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
     </script>
 </html>

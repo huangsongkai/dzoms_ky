@@ -44,6 +44,7 @@
             <result name="abandoned">/contract/contract_search_abandoned.jsp</result>
             <result name="error">/error.jsp</result>
             <result name="jsonObject" type="jsonresult"/>
+            <result name="selectToUrl">${url}</result>
         </action>
         <action name="selectContractByCarId" class="contractAction" method="selectByCarId">
 
@@ -77,7 +78,15 @@
 
         <action name="contractToExcel" class="contractAction" method="contractToExcel">
             <param name="templatePath">/contract/contract.xls</param>
-            <param name="outputName">contract</param>
+            <param name="outputName">合同表</param>
+            <result name="success" type="chain">
+                <param name="actionName">outputExcel</param>
+                <param name="namespace">/common</param>
+            </result>
+        </action>
+        <action name="contractToExcelAvliable" class="contractAction" method="contractToExcelAvliable">
+            <param name="templatePath">/contract/contract.xls</param>
+            <param name="outputName">有效合同表</param>
             <result name="success" type="chain">
                 <param name="actionName">outputExcel</param>
                 <param name="namespace">/common</param>
@@ -107,6 +116,7 @@
             <result name="abandoned">/contract/contract_search_abandoned.jsp</result>
             <result name="error">/error.jsp</result>
             <result name="jsonObject" type="jsonresult"/>
+            <result name="selectToUrl">${url}</result>
         </action>
         <action name="selectContractByCarId" class="contractAction" method="selectByCarId"></action>
         <action name="searchRentFirstDivide" class="contractAction" method="searchRentFirstDivide">
