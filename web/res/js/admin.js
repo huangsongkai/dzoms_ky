@@ -72,14 +72,24 @@ function MyRequest(url,target) {
 		$form.appendTo($('body')).submit().remove();
 	};
 
-	this.openWindow = function (name,style) {
+	this.openWindow = function (name,style,callback) {
 		name = name || "new window";
 		style = style || 'width=800,height=600,resizable=yes,scrollbars=yes';
 		this.target = name;
 		var iTop = (window.screen.availHeight-600)/2; //获得窗口的垂直位置;
 		var iLeft = (window.screen.availWidth-800)/2; //获得窗口的水平位置;
-		window.open('about:blank',name,style);
+		var winObj = window.open('about:blank',name,style);
 		this.submit();
+
+		if (callback) {
+			var loop = setInterval(function() {
+				if(winObj.closed) {
+					clearInterval(loop);
+					callback();
+					//注：子窗口可通过window.opener向原窗口设置参数
+				}
+			}, 1000);
+		}
 	};
 
 	return this;

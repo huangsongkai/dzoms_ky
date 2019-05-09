@@ -70,7 +70,7 @@
 <div class="adminmin-bread" style="width: 100%;">
     <ul class="bread text-main" style="font-size: larger;">
         <li>合同</li>
-        <li>预售金摊销统计</li>
+        <li>预付金摊销统计</li>
     </ul>
 </div>
 <div class="line">
@@ -83,7 +83,7 @@
                 <input type="hidden" name="url" value="/contract/rent_divide_anaylse_result.jsp">
                 <div class="form-group">
                     <div class="label">
-                        <label>合同开始日期</label>
+                        <label>摊销起止日期（在范围内有摊销的）</label>
                     </div>
                     <div class="field">
                         <input type="text"  name="beginDateStart" class="datepick input"/>
@@ -91,15 +91,15 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="label">
-                        <label>合同结束日期</label>
-                    </div>
-                    <div class="field">
-                        <input type="text" name="endDateStart" class="datepick input"/>
-                        到<input type="text" name="endDateEnd" class="datepick input"/>
-                    </div>
-                </div>
+                <%--<div class="form-group">--%>
+                    <%--<div class="label">--%>
+                        <%--<label>合同结束日期</label>--%>
+                    <%--</div>--%>
+                    <%--<div class="field">--%>
+                        <%--<input type="text" name="endDateStart" class="datepick input"/>--%>
+                        <%--到<input type="text" name="endDateEnd" class="datepick input"/>--%>
+                    <%--</div>--%>
+                <%--</div>--%>
 
                 <div class="form-group">
                     <div class="label"><label>部门</label></div>
@@ -122,25 +122,27 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="label">
-                        <label>承包人身份证号</label>
-                    </div>
-                    <div class="field">
-                        <input type="text" id="contractor" name="idNum" class="input"/>
-                    </div>
-                </div>
+                <%--<div class="form-group">--%>
+                    <%--<div class="label">--%>
+                        <%--<label>承包人身份证号</label>--%>
+                    <%--</div>--%>
+                    <%--<div class="field">--%>
+                        <%--<input type="text" id="contractor" name="idNum" class="input"/>--%>
+                    <%--</div>--%>
+                <%--</div>--%>
                 <br>
-                <div class="form-group">
-                    <div class="label">
-                        <label>合同状态</label>
-                    </div>
-                    <div class="field">
-                        <s:checkboxlist name="states"
-                                        list="#{0:'正常',1:'已终止',4:'待废止',-1:'延期'}"
-                                        value="{0}" />
-                    </div>
-                </div>
+                <input type="hidden" name="states" value="0" />
+                <input type="hidden" name="states" value="1" />
+                <%--<div class="form-group">--%>
+                    <%--<div class="label">--%>
+                        <%--<label>合同状态</label>--%>
+                    <%--</div>--%>
+                    <%--<div class="field">--%>
+                        <%--<s:checkboxlist name="states"--%>
+                                        <%--list="#{0:'正常',1:'已终止',4:'待废止',-1:'延期'}"--%>
+                                        <%--value="{0}" />--%>
+                    <%--</div>--%>
+                <%--</div>--%>
 
                 <div class="form-group">
                     <div class="label">

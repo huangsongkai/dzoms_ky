@@ -7,6 +7,7 @@ import java.util.Date;
 /**
  * @author ghode
  * Created on 18-11-20.
+ * 押金、服务保证金
  */
 @Entity
 //@Table(catalog = "ky_dzomsdb", name = "deposit")
@@ -17,6 +18,7 @@ public class Deposit implements Serializable {
     private int id;
 
     @Column(name = "carframe_num")
+    /** 车牌号 */
     private String carframeNum;
     @Column(name = "id_num")
     private String idNum;

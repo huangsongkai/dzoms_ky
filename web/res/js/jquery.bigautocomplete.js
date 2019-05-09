@@ -273,7 +273,7 @@
 
             $this.bind("change blur", $this.data("config").callback);
 
-        }
+        };
         //隐藏下拉框
         this.hideAutocomplete = function () {
             var $bigAutocompleteContent = $("#bigAutocompleteContent");

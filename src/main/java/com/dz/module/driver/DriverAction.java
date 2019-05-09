@@ -9,6 +9,7 @@ import com.dz.common.other.FileAccessUtil;
 import com.dz.common.other.FileUploadUtil;
 import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.PageUtil;
+import com.dz.module.charge.Deposit;
 import com.dz.module.contract.BankCard;
 import com.dz.module.contract.BankCardService;
 import com.dz.module.user.*;
@@ -163,7 +164,73 @@ public class DriverAction extends BaseAction{
 		url = "driverCheck";
 		return "nextAction";
 	}
+
+	private Deposit deposit;
+
+	public Deposit getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(Deposit deposit) {
+		this.deposit = deposit;
+	}
+
 	public String driverAppendCaiWu(){
+		Session session = null;
+		Transaction tx = null;
+		Driver rd = driver;
+		Driver driver = null;
+		try{
+			session = HibernateSessionFactory.getSession();
+			tx = session.beginTransaction();
+			driver = (Driver) session.get(Driver.class,rd.getIdNum());
+			driver.setStatus(3);
+			driver.setCaiwufuzeren(rd.getCaiwufuzeren());
+			driver.setCaiwufuzerenyijian(rd.getCaiwufuzerenyijian());
+			driver.setFuwubaozhengjin(rd.getFuwubaozhengjin());
+
+//			deposit.setCarframeNum(driver.getBusinessApplyCarframeNum());
+			deposit.setIdNum(driver.getIdNum());
+			deposit.setInDate(new Date());
+			deposit.setuNameIn(((User) DriverAction.this.session.getAttribute("user")).getUname());
+
+			if(driver.getBusinessApplyTime()==null||driver.getBusinessApplyTime().before(new Date(50,0,1))){
+				driver.setBusinessApplyTime(null);
+				driver.setBusinessApplyRegistrant(null);
+				driver.setBusinessApplyRegistTime(null);
+				driver.setBusinessApplyState(null);
+			}
+
+			if(driver.getBusinessReciveTime()==null||driver.getBusinessReciveTime().before(new Date(50,0,1))){
+				driver.setBusinessReciveTime(null);
+				driver.setBusinessReciveRegistrant(null);
+				driver.setBusinessReciveRegistTime(null);
+			}
+
+			if(driver.getBusinessApplyCancelTime()==null||driver.getBusinessApplyCancelTime().before(new Date(50,0,1))){
+				driver.setBusinessApplyCancelTime(null);
+				driver.setBusinessApplyCancelRegistrant(null);
+				driver.setBusinessApplyCancelRegistTime(null);
+			}
+
+			if(driver.getBusinessReciveCancelTime()==null||driver.getBusinessReciveCancelTime().before(new Date(50,0,1))){
+				driver.setBusinessReciveCancelTime(null);
+				driver.setBusinessReciveCancelRegistrant(null);
+				driver.setBusinessReciveCancelRegistTime(null);
+				driver.setBusinessApplyCancelState(null);
+			}
+
+			session.update(driver);
+			session.saveOrUpdate(deposit);
+			tx.commit();
+		}catch(HibernateException he){
+			if(tx != null){
+				tx.rollback();
+			}
+			he.printStackTrace();
+		}finally{
+			HibernateSessionFactory.closeSession();
+		}
 		driverService.appendCaiWu(driver);
 		url = "driverCheck";
 		return "nextAction";
@@ -805,6 +872,13 @@ public class DriverAction extends BaseAction{
 					changeRestTime(restTime,d,anotherDriver);
 					s.update(anotherDriver);
 				}
+			}
+
+			Query query = s.createQuery("from Deposit d where d.idNum=:idNum and d.carframeNum is null ");
+			List<Deposit> deposits = query.list();
+			for(Deposit dp : deposits){
+				dp.setCarframeNum(v.getCarframeNum());
+				s.saveOrUpdate(dp);
 			}
 
 			s.saveOrUpdate(d);

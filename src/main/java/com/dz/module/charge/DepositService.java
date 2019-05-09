@@ -82,7 +82,7 @@ public class DepositService {
         }
     }
 
-    public List search(String licenseNum, String driverName,
+    public List search(String licenseNum, String driverName,String idNum,
                        String depositId,
                        Date inDateBegin, Date inDateEnd,
                        Date backDateBegin, Date backDateEnd, int currentPageNum) {
@@ -96,6 +96,10 @@ public class DepositService {
 
             if (licenseNum != null) {
                 hql += "and v.licenseNum like :licenseNum ";
+            }
+
+            if (idNum != null) {
+                hql += "and dr.idNum like :idNum ";
             }
 
             if (driverName != null) {
@@ -120,6 +124,9 @@ public class DepositService {
             }
             if (driverName != null) {
                 query.setString("name", "%" + driverName + "%");
+            }
+            if (idNum != null) {
+                query.setString("idNum", "%" + idNum + "%");
             }
             if (depositId != null) {
                 query.setString("depositId", "%" + depositId + "%");

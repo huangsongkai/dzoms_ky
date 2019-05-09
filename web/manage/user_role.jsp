@@ -978,7 +978,10 @@
 											<input type="checkbox" name="roleIds" class="role431" value="431" />
 											约定重新生成权限
 										</td>
-
+										<td>
+											<input type="checkbox" name="roleIds" class="role437" value="437" />
+											营运证状态回退
+										</td>
 									</tr>
 
 								</table>

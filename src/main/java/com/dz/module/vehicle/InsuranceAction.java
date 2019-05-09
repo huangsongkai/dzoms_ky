@@ -1,9 +1,13 @@
 package com.dz.module.vehicle;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
 
+import com.dz.module.contract.ContractTemplate2;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -57,8 +61,91 @@ public class InsuranceAction extends BaseAction{
 		try{
 			s = HibernateSessionFactory.getSession();
 			tx = s.beginTransaction();
-			Query q = s.createQuery("update Insurance set state=1 where state=0");
-			q.executeUpdate();
+//			Query q = s.createQuery("update Insurance set state=1 where state=0");
+			Query qx = s.createQuery("from Insurance where state=0");
+
+			List<Insurance> list = qx.list();
+			for (Insurance insurance1 : list) {
+				if (insurance1.getInsuranceClass().equals("商业保险单")){
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(insurance1.getBeginDate());
+					int beginYear = calendar.get(Calendar.YEAR),beginMonth = calendar.get(Calendar.MONTH),beginDate = calendar.get(Calendar.DATE);
+					calendar.setTime(insurance1.getEndDate());
+					int endYear = calendar.get(Calendar.YEAR),endMonth = calendar.get(Calendar.MONTH),endDate = calendar.get(Calendar.DATE);
+
+					int local_months = (endYear - beginYear) * 12 + (endMonth - beginMonth)+(beginDate<27?1:0)+(endDate>26?1:0);
+					int beginRank = beginYear * 12 + beginMonth + (beginDate>26?1:0) + 1; //最后的+1 是因为Calendar 的Month从0开始
+
+					int totalDays = ContractTemplate2.TemplatePage.calDateSpan(insurance1.getBeginDate(),insurance1.getEndDate());
+					BigDecimal moneyPerDay = vehicle.getInsuranceBase().divide(BigDecimal.valueOf(totalDays),RoundingMode.HALF_EVEN);
+					int totalMoney = 0;
+					vehicle = (Vehicle) s.get(Vehicle.class,insurance1.getCarframeNum());
+					for (int i=1;i<local_months-1;i++) {
+						double money = moneyPerDay.multiply(BigDecimal.valueOf(30)).setScale(0,RoundingMode.HALF_DOWN).doubleValue();
+						totalMoney += money;
+						InsuranceDivide2 divide = new InsuranceDivide2(beginRank+i,insurance1.getId(), money);
+						s.saveOrUpdate(divide);
+					}
+
+					int days = 0;
+					if(local_months==1){
+						//这一段时间在一个月里面
+
+//						if(beginDate==27&&endDate==26){
+//							days=30;
+//						}else
+//						if(beginDate>26){
+//							if(endDate>26){
+//								days = endDate - beginDate + 1;
+//							}else{
+//								//days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginDate+1+parseInt(endDate);
+//								days = 31 - beginDate + endDate + (beginDate>30?1:0);
+//							}
+//						}else{
+//							days = endDate - beginDate + 1;
+//						}
+//						BigDecimal planOfRent = moneyPerDay.multiply(BigDecimal.valueOf(days)) ;
+//						InsuranceDivide2 divide = new InsuranceDivide2(beginRank,insurance1.getId(),planOfRent.doubleValue());
+						InsuranceDivide2 divide = new InsuranceDivide2(beginRank,insurance1.getId(),vehicle.getInsuranceBase().doubleValue());
+						s.saveOrUpdate(divide);
+					}else{
+						//这一段时间分属不同的月
+						//第一个月
+						if(beginDate==27){
+							days=30;
+						}else if(beginDate>27){
+							//days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginDate+27;
+							days = 57 - beginDate + (beginDate>30?1:0);
+						}else{
+							days = 27 - beginDate;
+						}
+						BigDecimal planOfRent = moneyPerDay.multiply(BigDecimal.valueOf(days)).setScale(0,RoundingMode.HALF_DOWN);
+						totalMoney += planOfRent.intValue();
+						InsuranceDivide2 divide = new InsuranceDivide2(beginRank,insurance1.getId(),planOfRent.doubleValue());
+						s.saveOrUpdate(divide);
+
+						//最后一个月
+//						if(endDate==26){
+//							days=30;
+//						}else if(endDate>=30){
+//							days = 4;
+//						}else if(endDate>26){
+//							days = endDate - 26;
+//						}else{
+//							//days = parseInt(getDaysOfMonth(endArr[0],endArr[1]-1))+parseInt(endDate)-26;
+//							days = 4 + endDate;
+//						}
+//						planOfRent = moneyPerDay.multiply(BigDecimal.valueOf(days-1)) ;
+//						divide = new InsuranceDivide2(beginRank+local_months-1,insurance1.getId(),planOfRent.doubleValue());
+						planOfRent = vehicle.getInsuranceBase().subtract(BigDecimal.valueOf(totalDays));
+						divide = new InsuranceDivide2(beginRank+local_months-1,insurance1.getId(),planOfRent.doubleValue());
+						s.saveOrUpdate(divide);
+					}
+				}
+				insurance1.setState(1);
+				s.update(insurance1);
+			}
+//			q.executeUpdate();
 			tx.commit();
 		}catch(HibernateException e){
 			e.printStackTrace();

@@ -65,40 +65,60 @@
     <script>
         //<%--手工签到--%>
         function add1(){
-            var idNum = $("input[name='cbx']:checked").val();
+            var idNums = $("input[name='cbx']");
             var checkType = $(".dialog-win .checkType").val();
             var checkMethod = $(".dialog-win .checkClass").val();
             var checkTime = $(".dialog-win .checkTime").val();
 
-            $.post('driver/meeting/manmalCheck2',{
-                checkClass:checkType,
-                idNum:idNum,
-                method:checkMethod,
-                checkTime:checkTime,
-                "meeting.id":"${param.meetingId}",
-                "meetingId":"${param.meetingId}"
-            },function (data) {
-                var msg = data["msg"];
-                if(msg && msg.length && msg.length>0){
-                    alert(msg);
-                }
-                document.vehicleSele.submit();
-            });
+            var count =0;
+            var msgs = [];
+
+            for (var i = 0; i < idNums.length; i++) {
+                $.post('driver/meeting/manmalCheck2',{
+                    checkClass:checkType,
+                    idNum:idNums[i].value,
+                    method:checkMethod,
+                    checkTime:checkTime,
+                    "meeting.id":"${param.meetingId}",
+                    "meetingId":"${param.meetingId}"
+                },function (data) {
+                    var msg = data["msg"];
+                    count ++;
+                    if(msg && msg.length && msg.length>0){
+                        // alert(msg);
+                        msgs.push(msg);
+                    }
+                    if (count == idNums.length) {
+                        if (msgs.length>0){
+                            alert("本次执行返回以下消息：\n"+msgs.join('\n'));
+                        }
+                        document.vehicleSele.submit();
+                    }
+                });
+            }
+
         }
 
         var use_tr_pos = true;
 
         //<%--清除签到--%>
         function clearCheck(){
-            var idNum = $("input[name='cbx']:checked").val();
+            var idNums = $("input[name='cbx']");
 
-            $.post('driver/meeting/clearCheck',{
-                idNum:idNum,
-                "meeting.id":"${param.meetingId}",
-                "meetingId":"${param.meetingId}"
-            },function (data) {
-                document.vehicleSele.submit();
-            });
+            var count =0;
+
+            for (var i = 0; i < idNums.length; i++) {
+                $.post('driver/meeting/clearCheck',{
+                    idNum:idNums[i].value,
+                    "meeting.id":"${param.meetingId}",
+                    "meetingId":"${param.meetingId}"
+                },function (data) {
+                    count++;
+                    if (count==idNums.length){
+                        document.vehicleSele.submit();
+                    }
+                });
+            }
         }
     </script>
     <style>
@@ -158,7 +178,7 @@
                         <tr ondblclick="hand_check(this)"
                             class="<s:property value="%{#v.isChecked?'bg-green-light':'bg-red-light'}" />">
                                 <%--<td><input type="radio" name="cbx" value="<s:property value="%{#v.idNum}" />" <s:property value="%{#v.isChecked?'disabled=\"true\"':''}" /> /></td> --%>
-                            <td><input type="radio" name="cbx" value="<s:property value="%{#v.idNum}" />"/></td>
+                            <td><input type="checkbox" name="cbx" value="<s:property value="%{#v.idNum}" />"/></td>
                             <s:set name="t_driver"
                                    value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#v.idNum)}"/>
                             <s:set name="t_meeting"

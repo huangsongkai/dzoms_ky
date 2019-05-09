@@ -8,6 +8,12 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="java.math.BigDecimal" %>
 <%--
   Created by IntelliJ IDEA.
   User: Ghode
@@ -56,7 +62,15 @@
     //    String carNo = request.getParameter("carframeNum");
 //    String idNum = request.getParameter("idNum");
     String driverName = request.getParameter("driverName");
+    String idNum = request.getParameter("idNum");
     String licenseNum = request.getParameter("licenseNum");
+    String type = request.getParameter("type");
+    boolean isDespointIn = type!=null && StringUtils.equals("yes",type);
+    String beginDate = request.getParameter("beginDate");
+    String endDate = request.getParameter("endDate");
+    Date dateBegin = StringUtils.isBlank(beginDate) ? null : DateTypeConverter.dateFormat.parse(beginDate);
+    Date dateEnd = StringUtils.isBlank(beginDate) ? null : DateTypeConverter.dateFormat.parse(endDate);
+
     int currentPage = toInt(request.getParameter("currentPage"));
     if (currentPage <= 0) {
         currentPage = 1;
@@ -67,6 +81,7 @@
     long counts = service.searchCount(licenseNum, driverName, null, null, null, null, null);
     long pages = (counts + 29) / 30;
 %>
+
 <html>
 <head>
     <title>查询押金信息</title>
@@ -90,6 +105,12 @@
                     $("#driverId").val(idNum);
                 }
             });
+
+            $('#driverId').bigAutocomplete({
+                url: "/DZOMS/select/driverById",
+                doubleClick: true
+            });
+
             $('#license_num').bigAutocomplete({
                 url: "/DZOMS/select/vehicleByLicenseNum",
                 doubleClick: true,
@@ -168,14 +189,23 @@
 
                         <div class="form-group">
                             <div class="label">
-                                <label>驾驶员</label>
+                                <label>驾驶员姓名</label>
                             </div>
                             <div class="field">
                                 <input type="text" id="driver_name" name="driverName" value="<%=isNull2(driverName)%>"
                                        class="input input-auto"/>
-                                <input type="hidden" id="driverId" name="idNum"/>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="label">
+                                <label>驾驶员身份证号</label>
+                            </div>
+                            <div class="field">
+                                <input type="text" id="driverId" name="idNum" class="input input-auto"/>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="label">
                                 <label>车牌号</label>
@@ -186,10 +216,38 @@
                                 <input type="hidden" id="carframeId" name="carframeNum"/>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <div class="label">
-                                <input type="submit" class="button" value="查询"/>
+                                <label>查询类型</label>
                             </div>
+                            <div class="field">
+                                <div class="button-group radio">
+                                    <label class="button active">
+                                        <input name="type" value="yes" checked="checked" type="radio"><span class="icon icon-check"></span> 收入押金
+                                    </label>
+                                    <label class="button">
+                                        <input name="type" value="no" type="radio"><span class="icon icon-times"></span> 返还押金
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group padding">
+                            <div class="label">
+                                <label>查询范围</label>
+                            </div>
+                            <div class="field">
+                                <input type="text" name="beginDate" class="datetimepicker input input-auto" size="10"/>
+                            </div>
+                            至
+                            <div class="field">
+                                <input type="text" name="endDate" class="datetimepicker input input-auto" size="10"/>
+                            </div>
+                        </div>
+
+                        <div class="form-button">
+                            <input type="submit" class="button" value="查询"/>
                         </div>
                     </form>
                 </div>
@@ -199,9 +257,61 @@
 </div>
 <table class="table table-bordered table-hover  table-striped">
     <tr>
+        <th>部门</th>
+        <th>收款总额</th>
+        <th>付款总额</th>
+        <th>累计收款总额</th>
+        <th>累计付款总额</th>
+        <th>累计结余</th>
+    </tr>
+    <%
+        Session s = HibernateSessionFactory.getSession();
+        Query q = s.createQuery("select v.dept,\n" +
+                "sum(case when d.inDate<:beginDate then 0.0 when d.inDate>:endDate then 0.0 else d.inMoney end ),\n" +
+                "sum(case when d.backDate<:beginDate then 0.0 when d.backDate>:endDate then 0.0 else d.backMoney end ),\n" +
+                "sum(case when d.inDate>:endDate then 0.0 else d.inMoney end ),\n" +
+                "sum(case when d.backDate>:endDate then 0.0 else d.backMoney end )\n" +
+                "from Deposit d,Vehicle v \n" +
+                "where d.carframeNum=v.carframeNum \n" +
+                "group by v.dept\n" +
+                "order by (CASE v.dept WHEN '一部' THEN 1 WHEN '二部' THEN 2 WHEN '三部' THEN 3 ELSE 4 END)");
+        q.setDate("beginDate",dateBegin==null?new Date(100,1,1):dateBegin);
+        q.setDate("endDate",dateEnd==null?new Date(200,1,1):dateEnd);
+        List<Object[]> results = q.list();
+        BigDecimal sum0 = BigDecimal.ZERO;
+        BigDecimal sum1 = BigDecimal.ZERO;
+        BigDecimal sum2 = BigDecimal.ZERO;
+        BigDecimal sum3 = BigDecimal.ZERO;
+        BigDecimal col0 = BigDecimal.ZERO;
+        BigDecimal col1 = BigDecimal.ZERO;
+        BigDecimal col2 = BigDecimal.ZERO;
+        BigDecimal col3 = BigDecimal.ZERO;
+        for (Object[] row:results) {
+    %>
+        <tr>
+            <td><%=row[0]%></td>
+            <td><% col0 = BigDecimal.valueOf(((Number) row[1]).doubleValue()); sum0 = sum0.add(col0);%><%=col0%></td>
+            <td><% col1 = BigDecimal.valueOf(((Number) row[2]).doubleValue()); sum1 = sum1.add(col1);%><%=col1%></td>
+            <td><% col2 = BigDecimal.valueOf(((Number) row[3]).doubleValue()); sum2 = sum2.add(col2);%><%=col2%></td>
+            <td><% col3 = BigDecimal.valueOf(((Number) row[4]).doubleValue()); sum3 = sum3.add(col3);%><%=col3%></td>
+            <td><%=col2.subtract(col3)%></td>
+        </tr>
+    <%}%>
+    <tr>
+        <td>合计</td>
+        <td><%=sum0%></td>
+        <td><%=sum1%></td>
+        <td><%=sum2%></td>
+        <td><%=sum3%></td>
+        <td><%=sum2.subtract(sum3)%></td>
+    </tr>
+</table>
+<table class="table table-bordered table-hover  table-striped">
+    <tr>
+        <th>部门</th>
         <th>车牌号</th>
-        <th>车架号</th>
         <th>驾驶员</th>
+        <th>身份证号</th>
         <th>押金单号</th>
         <th>收入押金</th>
         <th>返还押金</th>
@@ -213,22 +323,23 @@
     <%
         // if (true) {//TODO (StringUtils.isNotBlank(driverName) && StringUtils.isNotBlank(licenseNum)) {
 
-        List<Deposit> list = service.search(licenseNum, driverName, null, null, null, null, null, currentPage);
+        List<Deposit> list;
+        if(isDespointIn){
+            list = service.search(licenseNum, driverName,idNum, null, dateBegin, dateEnd, null, null, currentPage);
+        }else {
+            list = service.search(licenseNum, driverName,idNum, null, null, null, dateBegin, dateEnd, currentPage);
+        }
         for (Deposit deposit : list) {
             Vehicle vehicle = ObjectAccess.getObject(Vehicle.class, deposit.getCarframeNum());
             Driver driver = ObjectAccess.getObject(Driver.class, deposit.getIdNum());
     %>
     <tr>
-        <td><%=vehicle.getLicenseNum()%>
-        </td>
-        <td><%=vehicle.getCarframeNum()%>
-        </td>
-        <td><%=driver.getName()%>
-        </td>
-        <td><%=deposit.getDepositId()%>
-        </td>
-        <td><%=deposit.getInMoney()%>
-        </td>
+        <td><%=vehicle.getDept()%></td>
+        <td><%=vehicle.getLicenseNum()%></td>
+        <td><%=driver.getName()%></td>
+        <td><%=driver.getIdNum()%></td>
+        <td><%=deposit.getDepositId()%></td>
+        <td><%=deposit.getInMoney()%></td>
         <td>
             <%if (deposit.getBackMoney() == 0) {%>
             <a class="button"
@@ -239,12 +350,9 @@
         </td>
         <td><%=deposit.getInDate()%>
         </td>
-        <td><%=dateFormat(deposit.getBackDate())%>
-        </td>
-        <td><%=deposit.getuNameIn()%>
-        </td>
-        <td><%=isNull(deposit.getuNameBack())%>
-        </td>
+        <td><%=dateFormat(deposit.getBackDate())%></td>
+        <td><%=deposit.getuNameIn()%></td>
+        <td><%=isNull(deposit.getuNameBack())%></td>
     </tr>
     <%
         }
@@ -273,5 +381,18 @@
         </div>
     </div>
 </div>
+<script>
+    $('.datetimepicker').datetimepicker({
+        lang:"ch",           //语言选择中文
+        format:"Y/m/d",      //格式化日期
+        timepicker:false,    //关闭时间选项
+        yearStart:2000,     //设置最小年份
+        yearEnd:2050,        //设置最大年份
+        //todayButton:false    //关闭选择今天按钮
+        onSelectDate:function(){
+            $("#search_form").submit();
+        }
+    });
+</script>
 </body>
 </html>

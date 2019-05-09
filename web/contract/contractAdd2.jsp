@@ -197,6 +197,17 @@
             var rentAmount = $(".dialog-win .rentAmount").val();
             var comment = $(".dialog-win .comment").val();
 
+            if ($("#startdate").val() != beginTime ){
+                if (!confirm("该约定起始日期为"+beginTime+",与合同起始日期"+$("#startdate").val()+"不同，是否继续？")){
+                    return;
+                }
+            }
+            if ($("#enddate").val() != endTime ){
+                if (!confirm("该约定结束日期为"+endTime+",与合同结束日期"+$("#enddate").val()+"不同，是否继续？")){
+                    return;
+                }
+            }
+
             addRentItem(beginTime,endTime,rentAmount,comment);
         }
 

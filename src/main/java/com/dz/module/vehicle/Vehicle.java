@@ -2,6 +2,7 @@ package com.dz.module.vehicle;
 
 import com.dz.module.contract.BankCardOfVehicle;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -86,6 +87,8 @@ public class Vehicle implements java.io.Serializable {
 
 	@Column
 	private Boolean reused;
+
+	private BigDecimal insuranceBase;
 
 	// Constructors
 
@@ -701,7 +704,13 @@ public class Vehicle implements java.io.Serializable {
 	public void setReused(Boolean reused) {
 		this.reused = reused;
 	}
-	
-	
 
+	@Column(name = "insurance_base",precision = 2)
+	public BigDecimal getInsuranceBase() {
+		return insuranceBase;
+	}
+
+	public void setInsuranceBase(BigDecimal insuranceBase) {
+		this.insuranceBase = insuranceBase;
+	}
 }

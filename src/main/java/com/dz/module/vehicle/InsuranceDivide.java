@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by Wang on 2018/11/27.
  */
-@Entity
+@Entity(name = "insurancedivide")
 public class InsuranceDivide {
     @EmbeddedId
     private InsuranceDivideID id;

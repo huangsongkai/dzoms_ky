@@ -33,6 +33,13 @@
         var actionName = '${actionName}';
         var keyword = '${keyword}';
 
+        function updateInsuranceBase(){
+            var vehicleName = $("#carframe_num").val();
+            new MyRequest("/DZOMS/vehicle/insurance/insurance_base_show.jsp")
+                .param("carframeNum",vehicleName)
+                .openWindow("保险基础费用设置",'width=800,height=600,resizable=yes,scrollbars=yes');
+        }
+
         $(document).ready(function(){
             $("#carframe_num").bigAutocomplete({
                 url:"/DZOMS/select/VehicleBycarframeNum",
@@ -207,7 +214,11 @@
                         </label>
                     </div>
                     <div class="field">
-                        <s:textfield cssClass="input" id="carframe_num" theme="simple" name="insurance.carframeNum" value="%{bean[0].carframeNum}" data-validate="required:请选择,length#>=1:必填"></s:textfield>
+                        <div class="input-group">
+                            <s:textfield cssClass="input" cssStyle="width: 50%" id="carframe_num" theme="simple" name="insurance.carframeNum" value="%{bean[0].carframeNum}" data-validate="required:请选择,length#>=1:必填"></s:textfield>
+                            <s:textfield cssClass="input" cssStyle="width: 50%" id="insurance_base" theme="simple" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',bean[0].carframeNum).insuranceBase}" readonly="true"></s:textfield>
+                            <span class="addon button"><button onclick="updateInsuranceBase()" ><span class="icon-edit text-blue"></span>修改基础保费</button></span>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -258,7 +269,6 @@
 
                         <a class="icon icon-wrench" href="javascript:openItem('insuranceCompany','保险公司')"></a>
                     </div>
-
                 </div>
                 <div class="form-group" >
                     <div class="label">

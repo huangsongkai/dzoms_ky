@@ -196,6 +196,17 @@
             var rentAmount = $(".dialog-win .rentAmount").val();
             var comment = $(".dialog-win .comment").val();
 
+            if ($("#startdate").val() != beginTime ){
+                if (!confirm("该约定起始日期为"+beginTime+",与合同起始日期"+$("#startdate").val()+"不同，是否继续？")){
+                    return;
+                }
+            }
+            if ($("#enddate").val() != endTime ){
+                if (!confirm("该约定结束日期为"+endTime+",与合同结束日期"+$("#enddate").val()+"不同，是否继续？")){
+                    return;
+                }
+            }
+
             addRentItem(beginTime,endTime,rentAmount,comment);
         }
 
@@ -486,7 +497,7 @@
                             </label>
                         </div>
                         <div class="field" >
-                            <s:textfield cssClass="input" name="contract.carNum" readonly="readonly"></s:textfield>
+                            <s:textfield cssClass="input" name="contract.carNum" readonly="true"></s:textfield>
                         </div>
                     </div>
                     <div class="form-group">
@@ -552,7 +563,7 @@
                             </label>
                         </div>
                         <div class="field" >
-                            <s:textfield cssClass="input datepick" id="enddate" onchange="dateRefresh()" name="contract.contractEndDate" data-validate="required:必填" />
+                            <s:textfield cssClass="input" id="enddate"  name="contract.contractEndDate" readonly="true" />
                         </div>
                     </div>
                     <br>

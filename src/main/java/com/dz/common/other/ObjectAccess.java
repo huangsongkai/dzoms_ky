@@ -54,7 +54,7 @@ public class ObjectAccess extends BaseAction {
 		}else{
 			obj = getObject(className,id);
 		}
-		JSONObject json = JSONObject.fromObject(obj);
+		JSONObject json = JSONObject.fromObject(obj,IgnoreFieldProcessorImpl.getDefaultConfig(true,"bovList","bOfVList"));
 		ServletActionContext.getResponse().setContentType("application/json");
 		ServletActionContext.getResponse().setCharacterEncoding("utf-8");
 		PrintWriter out = ServletActionContext.getResponse().getWriter();

@@ -23,6 +23,7 @@ public class DepositAction extends BaseAction {
 
     private String licenseNum;
     private String driverName;
+    private String idNum;
     private String depositId;
     private Date inDateBegin;
     private Date inDateEnd;
@@ -66,7 +67,7 @@ public class DepositAction extends BaseAction {
 
     public String search() {
         List<Deposit> res;
-        res = service.search(licenseNum, driverName, depositId, inDateBegin, inDateEnd, backDateBegin, backDateEnd,0);
+        res = service.search(licenseNum, driverName,idNum, depositId, inDateBegin, inDateEnd, backDateBegin, backDateEnd,0);
         request.setAttribute("list", res);
         return SUCCESS;
     }

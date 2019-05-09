@@ -11,6 +11,7 @@ import com.dz.module.charge.ChargePlan;
 import com.dz.module.contract.Contract;
 import com.dz.module.contract.ContractService;
 import com.dz.module.user.RelationUr;
+import com.dz.module.user.Role;
 import com.dz.module.user.User;
 import com.dz.module.user.message.Message;
 import com.dz.module.user.message.MessageToUser;
@@ -1440,7 +1441,37 @@ public class VehicleAction extends BaseAction{
 	}
 
 	public String revokeServiceRight(){
-		request.setAttribute("msgStr", "由于与合同计费发生挂钩，功能停用。");
+		List<Role> roles = (List<Role>) session.getAttribute("roles");
+		Optional<Role> roleOptional = roles.stream().filter(r->r.getRname().equals("营运证状态回退")).findAny();
+		if (roleOptional.isPresent()){
+			request.setAttribute("msgStr", "由于与合同计费发生挂钩，该功能需要“营运证状态回退”权限。");
+		}else {
+			Session s = null;
+			Transaction tx = null;
+			try {
+				s = HibernateSessionFactory.getSession();
+				tx = s.beginTransaction();
+				ServiceRightInfo i = (ServiceRightInfo) s.get(ServiceRightInfo.class, vehicle.getCarframeNum());
+
+				if (i == null || i.getState() != 1) {
+					request.setAttribute("msgStr", "回退失败。");
+					return SUCCESS;
+				}
+				i.setState(0);
+				s.saveOrUpdate(i);
+				tx.commit();
+			}catch(HibernateException e){
+				e.printStackTrace();
+				if(tx!=null){
+					tx.rollback();
+				}
+				request.setAttribute("msgStr", "回退失败。原因是"+e.getMessage());
+				return SUCCESS;
+			}finally{
+				HibernateSessionFactory.closeSession();
+			}
+			request.setAttribute("msgStr", "操作成功。");
+		}
 		return SUCCESS;
 
 //		Session s = null;

@@ -1,9 +1,5 @@
 <%@taglib uri="/struts-tags" prefix="s"%>
-<%@ page language="java" import="java.util.*,com.dz.module.vehicle.*,com.dz.module.user.User" pageEncoding="UTF-8"%>
-<%@page import="org.springframework.web.context.support.*"%>
-<%@page import="org.springframework.context.*" %>
-<%@page import="org.apache.commons.collections.*" %>
-<%@page import="com.dz.common.other.*" %>
+<%@ page language="java" import="com.dz.common.other.ObjectAccess,com.dz.module.vehicle.Insurance,java.util.List" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -28,6 +24,13 @@
     <script>
         var actionName = '${actionName}';
 
+        function updateInsuranceBase(){
+            var vehicleName = $("#carframe_num").val();
+            new MyRequest("/DZOMS/vehicle/insurance/insurance_base_show.jsp")
+                .param("carframeNum",vehicleName)
+                .openWindow("保险基础费用设置",'width=800,height=600,resizable=yes,scrollbars=yes');
+        }
+
         $(document).ready(function(){
             $("#carframe_num").bigAutocomplete({
                 url:"/DZOMS/select/VehicleBycarframeNum",
@@ -39,9 +42,18 @@
                         return "carframeNum not in (select carframeNum from Insurance where insuranceClass='"+$("#insuranceClass").val()+"' group by carframeNum,insuranceClass having max(endDate) < now() ) "
                 },
                 doubleClick:true,
-                doubleClickDefault:'LFV'
+                doubleClickDefault:'LFV',
+                callback:function () {
+                    if ($("#carframe_num").val().length>=17)
+                    $.post("/DZOMS/common/getObject",{
+                        className:"com.dz.module.vehicle.Vehicle",
+                        id:$("#carframe_num").val(),
+                        isString:true
+                    },function (vehicle) {
+                        $("#insurance_base").val(vehicle["insuranceBase"]);
+                    });
+                }
             });
-
 
             $("#insuranceCompany").bigAutocomplete({
                 url:"/DZOMS/select/itemsOfinsuranceCompany",
@@ -64,8 +76,6 @@
                     }
                 }
             });
-
-
         });
 
         <%
@@ -130,18 +140,14 @@
 <body>
 <div class="adminmin-bread" style="width: 100%;">
     <ul class="bread text-main" style="font-size: larger;">
-
         <li>车辆管理</li>
         <li>新增</li>
         <li>新增保险信息</li>
     </ul>
 </div>
-
-
 <div class="xm7 xm2-move">
     <div class="alert alert-yellow padding"><span class="close rotate-hover"></span><strong>注意：</strong>录入保险信息前需要录入购置税信息。</div>
     <div class="panel">
-
         <div class="panel-head">新增保险信息</div>
         <div class="panel-body">
             <form class="form-x" action="/DZOMS/vehicle/insurance_add" method="post">
@@ -182,7 +188,11 @@
                         </label>
                     </div>
                     <div class="field">
-                        <s:textfield cssClass="input" id="carframe_num" theme="simple" name="insurance.carframeNum" value="%{bean[0].carframeNum}" data-validate="required:请选择,length#>=1:必填"></s:textfield>
+                        <div class="input-group">
+                            <s:textfield cssClass="input" cssStyle="width: 50%" id="carframe_num" theme="simple" name="insurance.carframeNum" value="%{bean[0].carframeNum}" data-validate="required:请选择,length#>=1:必填"></s:textfield>
+                            <input class="input" style="width: 50%" id="insurance_base" readonly>
+                            <span class="addon button"><button onclick="updateInsuranceBase()" ><span class="icon-edit text-blue"></span>修改</button></span>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
