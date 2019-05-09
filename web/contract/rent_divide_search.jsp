@@ -7,6 +7,7 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
+	request.getRequestDispatcher("/contract/rent_divide_month.jsp").forward(request,response);
 %>
 <%@taglib uri="http://www.hit.edu.cn/permission" prefix="m" %>
 <m:permission role="合同新增,合同查询,合同修改权限" any="true">
@@ -70,7 +71,7 @@ function clearAll(){
 <div class="adminmin-bread" style="width: 100%;">
 		<ul class="bread text-main" style="font-size: larger;"> 
                 <li>合同</li>
-                <li>预售金摊销查询</li>
+                <li>预付金摊销查询</li>
         </ul>
 </div>
 <div class="line">
@@ -83,23 +84,23 @@ function clearAll(){
           		    <input type="hidden" name="url" value="/contract/rent_divide_search_result.jsp">
 					<div class="form-group">
           		      	 <div class="label">
-          		      	 	 <label>合同开始日期</label>
+          		      	 	 <label>摊销起止日期（在范围内有摊销的）</label>
           		      	 </div>
           		      	 <div class="field">
           		      	 	 <input type="text"  name="beginDateStart" class="datepick input"/>
           		      	 	 到<input type="text"  name="beginDateEnd" class="datepick input"/>
           		      	 </div>
           		       </div>
-          		       
-          		        <div class="form-group">
-          		      	 <div class="label">
-          		      	 	 <label>合同结束日期</label>
-          		      	 </div>
-          		      	 <div class="field">
-          		      	 	<input type="text" name="endDateStart" class="datepick input"/>
-          		      	 	到<input type="text" name="endDateEnd" class="datepick input"/>
-          		      	 </div>
-          		       </div>
+
+          		        <%--<div class="form-group">--%>
+          		      	 <%--<div class="label">--%>
+          		      	 	 <%--<label>合同结束日期</label>--%>
+          		      	 <%--</div>--%>
+          		      	 <%--<div class="field">--%>
+          		      	 	<%--<input type="text" name="endDateStart" class="datepick input"/>--%>
+          		      	 	<%--到<input type="text" name="endDateEnd" class="datepick input"/>--%>
+          		      	 <%--</div>--%>
+          		       <%--</div>--%>
           		       
           		       <div class="form-group">
 							<div class="label"><label>部门</label></div>
@@ -122,25 +123,27 @@ function clearAll(){
           		      	 </div>
           		       </div>
           		      
-          		        <div class="form-group">
-          		      	 <div class="label">
-          		      	 	 <label>承包人身份证号</label>
-          		      	 </div>
-          		      	 <div class="field">
-          		      	 	  <input type="text" id="contractor" name="idNum" class="input"/>
-          		      	 </div>
-          		       </div>
+          		        <%--<div class="form-group">--%>
+          		      	 <%--<div class="label">--%>
+          		      	 	 <%--<label>承包人身份证号</label>--%>
+          		      	 <%--</div>--%>
+          		      	 <%--<div class="field">--%>
+          		      	 	  <%--<input type="text" id="contractor" name="idNum" class="input"/>--%>
+          		      	 <%--</div>--%>
+          		       <%--</div>--%>
           		        <br>
-          		         <div class="form-group">
-          		      	 <div class="label">
-          		      	 	 <label>合同状态</label>
-          		      	 </div>
-          		      	 <div class="field">
-          		      	 	<s:checkboxlist name="states" 
-                    		list="#{0:'正常',1:'已终止',4:'待废止',-1:'延期'}" 
-                    		value="{0}" />
-          		      	 </div>
-          		       </div>
+          		         <%--<div class="form-group">--%>
+          		      	 <%--<div class="label">--%>
+          		      	 	 <%--<label>合同状态</label>--%>
+          		      	 <%--</div>--%>
+          		      	 <%--<div class="field">--%>
+          		      	 	<%--<s:checkboxlist name="states" --%>
+                    		<%--list="#{0:'正常',1:'已终止',4:'待废止',-1:'延期'}" --%>
+                    		<%--value="{0,1}" />--%>
+          		      	 <%--</div>--%>
+          		       <%--</div>--%>
+					<input type="hidden" name="states" value="0" />
+					<input type="hidden" name="states" value="1" />
           		       
           		       <div class="form-group">
           		      	 <div class="label">
@@ -180,30 +183,4 @@ function clearAll(){
 </body>
 
  <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    	function iFrameHeight() {
-	try{
-var ifm= document.getElementById("result_form");   
-var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
-
-$(document).ready(function(){
-	window.setInterval('iFrameHeight();',3600);
-});
-    $(document).ready(function() {
-    	try{
-    		 App.init();
-    	}catch(e){
-    		//TODO handle the exception
-    	}
-    	
-       
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-    });
-    </script>
 </html>

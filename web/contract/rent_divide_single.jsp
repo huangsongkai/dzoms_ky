@@ -1,26 +1,19 @@
-<%@ page import="com.dz.common.other.ObjectAccess" %>
-<%@ page import="org.hibernate.Session" %>
 <%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
-<%@ page import="org.hibernate.Query" %>
-<%@ page import="com.dz.module.vehicle.Vehicle" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Collections" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="com.dz.module.contract.Contract" %>
 <%@ page import="com.dz.module.contract.RentFirstDivide" %>
 <%@ page import="com.dz.module.driver.Driver" %>
-<%@ page import="java.text.SimpleDateFormat" %><%--
-  Created by IntelliJ IDEA.
-  User: doggy
-  Date: 16-5-22
-  Time: 下午12:57
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="com.dz.module.vehicle.Vehicle" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Date" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <html>
 <head>
-    <title>预售金单车查询</title>
+    <title>预付金单车查询</title>
    <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
   <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
 
@@ -32,7 +25,9 @@
     <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
   <script>
       function carFocus(){
-      	$("input[name='licenseNum']").val("黑A");
+          if ($("input[name='licenseNum']").val().length!=7) {
+              $("input[name='licenseNum']").val("黑A");
+          }
       }
 
       $(document).ready(function(){
@@ -41,12 +36,23 @@
           });
       });
   </script>
+    <style>
+        tr.tr-yellow{
+            background-color: yellow;
+        }
+        tr.tr-green{
+            background-color: green;
+        }
+        tr.tr-gray{
+            background-color: lightgrey;
+        }
+    </style>
 </head>
 <body>
 	<div class="adminmin-bread" style="width: 100%;">
 		<ul class="bread text-main" style="font-size: larger;"> 
                 <li>财务管理</li>
-                <li>预售金单车查询</li>
+                <li>预付金单车查询</li>
     </ul>
 </div>
     <%!
@@ -60,15 +66,23 @@
     String licenseNum = request.getParameter("licenseNum");
     String startTime = request.getParameter("startTime");
     String endTime = request.getParameter("endTime");
+
+    if (StringUtils.isBlank(startTime)){
+        startTime = "2000/01";
+    }
+
+    if (StringUtils.isBlank(endTime)){
+        endTime = "2050/01";
+    }
 %>
 <div class="line">
 	<form action="#" method="post" class="form-inline">
         <label style="margin-left: 40px;">车牌号</label>
-        <input type="text" class="input" value="黑A" name="licenseNum" value="<%=nullIf(licenseNum)%>" onfocus="carFocus()">
+        <input type="text" class="input" name="licenseNum" value="<%=nullIf(licenseNum)%>" onfocus="carFocus()">
         <label>开始年月</label>
-        <input type="text" class="input datetimepicker" name="startTime" value="<%=nullIf(startTime)%>">
+        <input type="text" class="input datetimepicker" name="startTime" value="<%=nullIf(request.getParameter("startTime"))%>">
         <label>结束年月</label>
-        <input type="text" class="input datetimepicker" name="endTime" value="<%=nullIf(endTime)%>">
+        <input type="text" class="input datetimepicker" name="endTime" value="<%=nullIf(request.getParameter("endTime"))%>">
         <input type="submit" value="提交" class="button bg-main">
    </form>
 </div>
@@ -110,9 +124,13 @@
     %>
     <div id="show" style="width: 100%;height: 800px;overflow:scroll;">
         <%=err_mag%>
-        <% if(result!=null && result.size()>0){ %>
+        <% if(result!=null && result.size()>0){
+            Date currentMonth = new Date();
+            int currentMonthRank = currentMonth.getYear()*12 + currentMonth.getMonth();
+        %>
         <table class="table table-bordered table-responsive">
             <tr>
+                <th>期号</th>
                 <th>部门</th>
                 <th>车牌号</th>
                 <th>车主</th>
@@ -125,8 +143,11 @@
                 Contract c = (Contract) res[0];
                 RentFirstDivide rd = (RentFirstDivide) res[1];
                 Driver d = (Driver) res[2];
+                int monthRank = rd.getMonth().getYear()*12 + rd.getMonth().getMonth();
+                String state = (currentMonthRank==monthRank)?"tr-green":(currentMonthRank<monthRank?"tr-gray":"tr-yellow");
               %>
-                <tr>
+                <tr class="<%=state%>">
+                    <td><%=i+1%></td>
                     <td><%=c.getBranchFirm()%></td>
                     <td><%=c.getCarNum()%></td>
                     <td><%=d.getName()%></td>

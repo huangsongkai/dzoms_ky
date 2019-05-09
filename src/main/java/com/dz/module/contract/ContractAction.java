@@ -349,13 +349,20 @@ public class ContractAction extends BaseAction {
 			//自动导入或新车开业   需生成 首付摊销
 			int rentFirst_Month = Integer.parseInt(request.getParameter("rentFirst_Month"));
 
-			BigDecimal rentFirst_MonthEach = BigDecimal.valueOf(Double.parseDouble( request.getParameter("rentFirst_MonthEach")));
+//			BigDecimal rentFirst_MonthEach = BigDecimal.valueOf(Double.parseDouble( request.getParameter("rentFirst_MonthEach")));
+			double rentFirst = contract.getRentFirst();
+			long rentFirst_MonthEach = Math.round(rentFirst / rentFirst_Month);
 			y = contractBeginDate_calendar.get(Calendar.YEAR);
 			m = contractBeginDate.getMonth();
 			for(int i=0;i<rentFirst_Month;i++){
 				RentFirstDivide divide = new RentFirstDivide();
 				divide.setCarframeNum(vehicle.getCarframeNum());
-				divide.setMoney(rentFirst_MonthEach);
+				if (i==rentFirst_Month-1){
+					divide.setMoney(BigDecimal.valueOf(rentFirst).subtract(BigDecimal.valueOf(rentFirst_MonthEach).multiply(BigDecimal.valueOf(rentFirst_Month-1))));
+				}else {
+					divide.setMoney(BigDecimal.valueOf(rentFirst_MonthEach));
+				}
+
 				divide.setRegister(user.getUid());
 				divide.setRegTime(new Date());
 
@@ -1406,7 +1413,9 @@ public class ContractAction extends BaseAction {
 			innerCondition += "or (contractBeginDate <= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateEnd ) ";
 		}
 
-		hql += " and (" + innerCondition+ ") ";
+		if (beginDateStart!=null || endDateStart !=null){
+			hql += " and (" + innerCondition+ ") ";
+		}
 
 
 		Query query2 = session.createQuery("select count(*) "+hql);
@@ -1476,7 +1485,9 @@ public class ContractAction extends BaseAction {
 			innerCondition += "or (contractBeginDate <= :beginDateStart and (case when abandonedFinalTime is null then contractEndDate else abandonedFinalTime end) >= :beginDateEnd ) ";
 		}
 
-		hql += " and (" + innerCondition+ ") ";
+		if (beginDateStart!=null || endDateStart !=null){
+			hql += " and (" + innerCondition+ ") ";
+		}
 		hql += " order by "+order;
 
 		if (BooleanUtils.isFalse(rank)){
@@ -1548,21 +1559,40 @@ public class ContractAction extends BaseAction {
 			hql+= String.format("and c.carNum like '%%%s%%' ", carNum);
 		}
 
+		String innerCondition = " c.contractBeginDate >= c.contractEndDate ";
+
 		if (beginDateStart!=null) {
-			hql+= String.format("and c.contractBeginDate >= :%s ", "beginDateStart");
+			innerCondition += "or (c.contractBeginDate <= :beginDateStart and (case when c.abandonedFinalTime is null then c.contractEndDate else c.abandonedFinalTime end) >= :beginDateStart ) ";
 		}
 
 		if (beginDateEnd!=null) {
-			hql+= String.format("and c.contractBeginDate <= :%s ", "beginDateEnd");
+			innerCondition += "or (c.contractBeginDate <= :beginDateEnd and (case when c.abandonedFinalTime is null then c.contractEndDate else c.abandonedFinalTime end) >= :beginDateEnd ) ";
 		}
 
-		if (endDateStart!=null) {
-			hql+= String.format("and c.contractEndDate >= :%s ", "endDateStart");
+		if (beginDateStart!=null && endDateStart !=null){
+			innerCondition += "or (c.contractBeginDate >= :beginDateStart and (case when c.abandonedFinalTime is null then c.contractEndDate else c.abandonedFinalTime end) <= :beginDateEnd ) ";
+			innerCondition += "or (c.contractBeginDate <= :beginDateStart and (case when c.abandonedFinalTime is null then c.contractEndDate else c.abandonedFinalTime end) >= :beginDateEnd ) ";
 		}
 
-		if (endDateEnd!=null) {
-			hql+= String.format("and c.contractEndDate <= :%s ", "endDateEnd");
+		if (beginDateStart!=null || endDateStart !=null){
+			hql += " and (" + innerCondition+ ") ";
 		}
+
+//		if (beginDateStart!=null) {
+//			hql+= String.format("and c.contractBeginDate >= :%s ", "beginDateStart");
+//		}
+//
+//		if (beginDateEnd!=null) {
+//			hql+= String.format("and c.contractBeginDate <= :%s ", "beginDateEnd");
+//		}
+//
+//		if (endDateStart!=null) {
+//			hql+= String.format("and c.contractEndDate >= :%s ", "endDateStart");
+//		}
+//
+//		if (endDateEnd!=null) {
+//			hql+= String.format("and c.contractEndDate <= :%s ", "endDateEnd");
+//		}
 
 		String groupAndOrder = " GROUP BY c.id ";
 		groupAndOrder += " order by c."+order;
@@ -1586,15 +1616,15 @@ public class ContractAction extends BaseAction {
 			query2.setDate("beginDateEnd", beginDateEnd);
 		}
 
-		if (endDateStart!=null) {
-			query.setDate("endDateStart", endDateStart);
-			query2.setDate("endDateStart", endDateStart);
-		}
-
-		if (endDateEnd!=null) {
-			query.setDate("endDateEnd", endDateEnd);
-			query2.setDate("endDateEnd", endDateEnd);
-		}
+//		if (endDateStart!=null) {
+//			query.setDate("endDateStart", endDateStart);
+//			query2.setDate("endDateStart", endDateStart);
+//		}
+//
+//		if (endDateEnd!=null) {
+//			query.setDate("endDateEnd", endDateEnd);
+//			query2.setDate("endDateEnd", endDateEnd);
+//		}
 
 		long count = (long)query2.uniqueResult();
 
