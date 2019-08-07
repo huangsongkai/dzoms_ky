@@ -130,7 +130,6 @@ public class AccidentDaoImp implements AccidentDao,WaitToDo{
 		Transaction trans = null;
 		List<Accident> list;
 		try{
-			HibernateSessionFactory.closeSession();
 			Session session = HibernateSessionFactory.getSession();
 			trans = session.beginTransaction();
 			list = session.createQuery(sql).list();

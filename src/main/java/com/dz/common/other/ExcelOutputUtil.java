@@ -1,27 +1,10 @@
 package com.dz.common.other;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.*;
-
-import com.dz.module.contract.BankCard;
-import com.dz.module.contract.BankCardOfVehicle;
+import com.dz.common.global.BaseAction;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
@@ -37,7 +20,10 @@ import org.jxls.util.TransformerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.dz.common.global.BaseAction;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Controller
 @Scope("prototype")
@@ -203,7 +189,7 @@ public class ExcelOutputUtil extends BaseAction {
 		}
 
 		private int seq=0;
-		private Map<String,List<BigDecimal>> map = new HashMap<>();
+		private Map<String,List<Number>> map = new HashMap<>();
 
 		public int initSeq(){
 			seq=0;
@@ -215,28 +201,39 @@ public class ExcelOutputUtil extends BaseAction {
 			return seq;
 		}
 
-		public double group(String key,BigDecimal val){
+		public Number group(String key,Number val){
+			return group(key, val,2);
+		}
+
+		public Number group(String key,Number val,int scale){
 			if(!map.containsKey(key)){
-				map.put(key, new ArrayList<BigDecimal>());
+				map.put(key, new ArrayList<>());
 			}
 
 			map.get(key).add(val);
-			val.setScale(2, BigDecimal.ROUND_HALF_UP);
-
-			return Double.parseDouble(String.format("%.2f", val.doubleValue()));
-		}
-
-		public double sum(String key){
-			BigDecimal sum = BigDecimal.ZERO;
-			sum.setScale(4, BigDecimal.ROUND_HALF_UP);
-
-			for (BigDecimal val : map.get(key)) {
-				sum = sum.add(val);
+			if (val instanceof BigDecimal){
+				((BigDecimal) val).setScale(scale, BigDecimal.ROUND_HALF_UP);
 			}
 
-			sum.setScale(2, BigDecimal.ROUND_HALF_UP);
-			return Double.parseDouble(String.format("%.2f", sum.doubleValue()));
+			return Double.parseDouble(String.format("%."+scale+"f", val.doubleValue()));
 		}
+
+		public Number sum(String key){
+			return sum(key,2);
+		}
+
+		public Number sum(String key,int scale){
+			BigDecimal sum = BigDecimal.ZERO;
+			sum.setScale(scale+2, BigDecimal.ROUND_HALF_UP);
+
+			for (Number val : map.get(key)) {
+				sum = sum.add(BigDecimal.valueOf(val.doubleValue()));
+			}
+
+			sum.setScale(scale, BigDecimal.ROUND_HALF_UP);
+			return Double.parseDouble(String.format("%."+scale+"f", sum.doubleValue()));
+		}
+
 
 		private Map<String,Object> dict = new HashMap<>();
 

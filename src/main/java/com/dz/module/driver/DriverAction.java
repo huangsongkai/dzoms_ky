@@ -149,7 +149,7 @@ public class DriverAction extends BaseAction{
 		this.setDriver(d);
 		this.families = driverService.selectFamily(driver);
 
-		File[] fs = FileAccessUtil.list(System.getProperty("com.dz.root") +"data/driver/"+driver.getIdNum()+"/checkfiles");
+//		File[] fs = FileAccessUtil.list(System.getProperty("com.dz.root") +"data/driver/"+driver.getIdNum()+"/checkfiles");
 
 		if(hzw.equals("1")){
 			url = "/driver/applycheck/score_in.jsp";
@@ -875,6 +875,7 @@ public class DriverAction extends BaseAction{
 			}
 
 			Query query = s.createQuery("from Deposit d where d.idNum=:idNum and d.carframeNum is null ");
+			query.setString("idNum",d.getIdNum());
 			List<Deposit> deposits = query.list();
 			for(Deposit dp : deposits){
 				dp.setCarframeNum(v.getCarframeNum());

@@ -1,79 +1,46 @@
+<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
 <%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
-<%@ page import="com.dz.module.vehicle.InsuranceDivide2" %>
-<%@ page import="com.dz.module.vehicle.Vehicle" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.hibernate.Query" %>
 <%@ page import="org.hibernate.Session" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.List" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Calendar" %>
-<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
-<html>
-<head>
-    <title>保险摊销查询</title>
-   <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
-  <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
+<%!
+    static String nullIf(String val){
+        return val==null?"":val;
+    }
 
-  <script src="/DZOMS/res/js/jquery.js"></script>
-  <script src="/DZOMS/res/js/pintuer.js"></script>
-  <script src="/DZOMS/res/js/respond.js"></script>
-  <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
-    <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
-    <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
-  <script>
-      $(document).ready(function(){
-        
-      });
-  </script>
-</head>
-<body>
-	<div class="adminmin-bread" style="width: 100%;">
-		<ul class="bread text-main" style="font-size: larger;"> 
-                <li>保险管理</li>
-                <li>保险摊销查询</li>
-    </ul>
-</div>
-    <%!
-        static String nullIf(String val){
-            return val==null?"":val;
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-    %>
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+%>
 <%
     String dept = request.getParameter("dept");
     String startTime = request.getParameter("startTime");
     if(StringUtils.equals("全部",dept)){
         dept = "";
     }
+    String doExport = request.getParameter("doExport");
+    boolean isDoExport = doExport!=null && StringUtils.equals("yes",doExport);
 %>
-<div class="line">
-	<form action="#" method="post" class="form-inline">
-        <label style="margin-left: 40px;">部门</label>
-        <s:select cssClass="input" list="{'一部','二部','三部','全部'}" name="dept" value="#parameters.dept"></s:select>
-        <label>月份</label>
-        <input type="text" class="input datetimepicker" name="startTime" value="<%=nullIf(startTime)%>">
-        <input type="submit" value="提交" class="button bg-main">
-   </form>
-</div>
-    <%
-        String err_mag = "";
-        List result = null;
+<%
+    String err_mag = "";
+    List result = null;
 
-        int startYear;int startMonth;
-        Calendar cal = Calendar.getInstance();
-        if(StringUtils.isBlank(startTime)){
-            startYear = cal.get(Calendar.YEAR);
-            startMonth = cal.get(Calendar.MONTH)+1;
-        }else{
-            startYear = Integer.parseInt(StringUtils.split(startTime.replace("/","-"),"-",2)[0]);
-            startMonth = Integer.parseInt(StringUtils.split(startTime.replace("/","-"),"-",2)[1]);
-        }
+    int startYear;int startMonth;
+    Calendar cal = Calendar.getInstance();
+    if(StringUtils.isBlank(startTime)){
+        startYear = cal.get(Calendar.YEAR);
+        startMonth = cal.get(Calendar.MONTH)+1;
+    }else{
+        startYear = Integer.parseInt(StringUtils.split(startTime.replace("/","-"),"-",2)[0]);
+        startMonth = Integer.parseInt(StringUtils.split(startTime.replace("/","-"),"-",2)[1]);
+    }
 
-        make_table:
+    make_table:
     {
         Session hsession = HibernateSessionFactory.getSession();
 
@@ -107,7 +74,60 @@
 
         HibernateSessionFactory.closeSession();
     }
-    %>
+%>
+<%
+    if (isDoExport){
+        List<String> datasrc = Arrays.asList("year","month","dept","list");
+        List datalist = Arrays.asList(startYear,startMonth,dept,result);
+        String templatePath = "/vehicle/insurance/insurance_divide_anaylse.xls";
+        String outputName = String.format("%4d年%02d月%s保险摊销汇总",startYear,startMonth,dept);
+        request.setAttribute("datasrc",datasrc);
+        request.setAttribute("datalist",datalist);
+        request.setAttribute("templatePath",templatePath);
+        request.setAttribute("outputName",outputName);
+        request.getRequestDispatcher("/common/outputExcel.action").forward(request,response);
+    }
+%>
+<html>
+<head>
+    <title>保险摊销查询</title>
+   <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
+  <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
+
+  <script src="/DZOMS/res/js/jquery.js"></script>
+  <script src="/DZOMS/res/js/pintuer.js"></script>
+  <script src="/DZOMS/res/js/respond.js"></script>
+  <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
+    <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
+    <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
+  <script>
+      $(document).ready(function(){
+        $("#doExport").click(function () {
+            $("input[name='doExport']").val("yes");
+            $("#theform").submit();
+            $("input[name='doExport']").val("no");
+        });
+      });
+  </script>
+</head>
+<body>
+	<div class="adminmin-bread" style="width: 100%;">
+		<ul class="bread text-main" style="font-size: larger;"> 
+                <li>保险管理</li>
+                <li>保险摊销查询</li>
+    </ul>
+</div>
+<div class="line">
+	<form id="theform" action="#" method="post" class="form-inline">
+        <label style="margin-left: 40px;">部门</label>
+        <s:select cssClass="input" list="{'一部','二部','三部','全部'}" name="dept" value="#parameters.dept"></s:select>
+        <label>月份</label>
+        <input type="text" class="input datetimepicker" name="startTime" value="<%=startYear%>-<%=startMonth%>">
+        <input type="submit" value="提交" class="button bg-main">
+        <input type="hidden" name="doExport" value="no">
+        <input id="doExport" type="button" value="导出Excel" class="button bg-main">
+   </form>
+</div>
     <div id="show" style="width: 100%;height: 800px;overflow:scroll;">
         <%=err_mag%>
         <% if(result!=null && result.size()>0){ %>

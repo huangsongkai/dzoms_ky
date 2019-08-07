@@ -90,12 +90,10 @@ public class DepositService {
         try {
             session = HibernateSessionFactory.getSession();
 
-            String hql = "select d from Deposit d,Vehicle v,Driver dr " +
-                    "where d.carframeNum=v.carframeNum " +
-                    "and d.idNum=dr.idNum ";
+            String hql = "select d from Deposit d,Driver dr where d.idNum=dr.idNum ";
 
             if (licenseNum != null) {
-                hql += "and v.licenseNum like :licenseNum ";
+                hql += "and (d.carframeNum is null or d.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum like :licenseNum) ) ";
             }
 
             if (idNum != null) {
@@ -114,7 +112,7 @@ public class DepositService {
             }
 
             if (backDateBegin != null && backDateEnd != null) {
-                hql += "and d.backDate >= :backDateBegin and d.backDate <= :backDateEnd ";
+                hql += "and d.backDate is not null and d.backDate >= :backDateBegin and d.backDate <= :backDateEnd ";
             }
 
             Query query = session.createQuery(hql);
@@ -145,7 +143,6 @@ public class DepositService {
             query.setMaxResults(30);
             query.setFirstResult(currentPageNum * 30 - 30);
 
-
             return query.list();
         } catch (HibernateException ex) {
             ex.printStackTrace();
@@ -165,12 +162,11 @@ public class DepositService {
         try {
             session = HibernateSessionFactory.getSession();
 
-            String hql = "select count(d) from Deposit d,Vehicle v,Driver dr " +
-                    "where d.carframeNum=v.carframeNum " +
-                    "and d.idNum=dr.idNum ";
+            String hql = "select count(d) from Deposit d,Driver dr " +
+                    "where d.idNum=dr.idNum ";
 
             if (licenseNum != null) {
-                hql += "and v.licenseNum like :licenseNum ";
+                hql += "and (d.carframeNum is null or d.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum like :licenseNum) ) ";
             }
 
             if (driverName != null) {

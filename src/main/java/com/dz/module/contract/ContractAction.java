@@ -1266,6 +1266,55 @@ public class ContractAction extends BaseAction {
 		return SUCCESS;
 	}
 
+	private String data;
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void contractSort() throws IOException {
+		JSONArray jsonArray = JSONArray.fromObject(data);
+
+		Session s = HibernateSessionFactory.getSession();
+		Transaction tx = null;
+		boolean isSuccess = true;
+		String error_message = "";
+		try {
+			tx = s.beginTransaction();
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject pair = jsonArray.getJSONObject(i);
+				int id = pair.getInt("id");
+				String contractId = pair.getString("contractId");
+				Contract c = (Contract) s.get(Contract.class,id);
+				c.setContractId(contractId);
+				s.update(c);
+			}
+			tx.commit();
+		}catch (Exception ex){
+			isSuccess = false;
+			error_message = ex.getMessage();
+		}finally {
+			if (tx!=null){
+				tx.rollback();
+			}
+			HibernateSessionFactory.closeSession();
+		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter pw = response.getWriter();
+		JSONObject result = new JSONObject();
+		result.put("state",isSuccess);
+		result.put("msg",error_message);
+		pw.append(result.toString());
+		pw.flush();
+		pw.close();
+	}
+
 	public String contractAbandon(){
 		Contract c = contractService.selectById(contract.getId());
 
@@ -1293,6 +1342,16 @@ public class ContractAction extends BaseAction {
 	public String contractSearchAllAvilable(){
 		jsonObject = contractService.contractSearchAllAvilable();
 		return "jsonObject";
+	}
+
+	private Boolean withoutPage;
+
+	public void setWithoutPage(Boolean withoutPage) {
+		this.withoutPage = withoutPage;
+	}
+
+	public Boolean getWithoutPage() {
+		return withoutPage;
 	}
 
 	public String contractSearch(){
@@ -1364,19 +1423,20 @@ public class ContractAction extends BaseAction {
 			query2.setDate("endDateEnd", endDateEnd);
 		}
 
-		long count = (long)query2.uniqueResult();
-
-		Page page = PageUtil.createPage(15, (int)count, currentPage);
-
-		query.setFirstResult(page.getBeginIndex());
-		query.setMaxResults(page.getEveryPage());
-
+		Page page;
+		if (withoutPage==null || !withoutPage){
+			long count = (long)query2.uniqueResult();
+			page = PageUtil.createPage(15, (int)count, currentPage);
+			query.setFirstResult(page.getBeginIndex());
+			query.setMaxResults(page.getEveryPage());
+			request.setAttribute("page", page);
+		}
 		List<Contract> l = query.list();
 		HibernateSessionFactory.closeSession();
 
 		request.setAttribute("list", l);
 		//request.setAttribute("currentPage", currentPage);
-		request.setAttribute("page", page);
+
 		return SUCCESS;
 	}
 

@@ -65,7 +65,7 @@
     <script>
         //<%--手工签到--%>
         function add1(){
-            var idNums = $("input[name='cbx']");
+            var idNums = $("input[name='cbx']:checked");
             var checkType = $(".dialog-win .checkType").val();
             var checkMethod = $(".dialog-win .checkClass").val();
             var checkTime = $(".dialog-win .checkTime").val();
@@ -103,7 +103,7 @@
 
         //<%--清除签到--%>
         function clearCheck(){
-            var idNums = $("input[name='cbx']");
+            var idNums = $("input[name='cbx']:checked");
 
             var count =0;
 

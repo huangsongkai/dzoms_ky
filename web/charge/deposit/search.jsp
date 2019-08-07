@@ -39,6 +39,10 @@
         }
     }
 
+    static <T> T nullIf(Object o,T nullValue,T notNullValue){
+        return o==null?nullValue:notNullValue;
+    }
+
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     String dateFormat(Date d) {
@@ -61,6 +65,8 @@
 <%
     //    String carNo = request.getParameter("carframeNum");
 //    String idNum = request.getParameter("idNum");
+    try {
+
     String driverName = request.getParameter("driverName");
     String idNum = request.getParameter("idNum");
     String licenseNum = request.getParameter("licenseNum");
@@ -69,7 +75,7 @@
     String beginDate = request.getParameter("beginDate");
     String endDate = request.getParameter("endDate");
     Date dateBegin = StringUtils.isBlank(beginDate) ? null : DateTypeConverter.dateFormat.parse(beginDate);
-    Date dateEnd = StringUtils.isBlank(beginDate) ? null : DateTypeConverter.dateFormat.parse(endDate);
+    Date dateEnd = StringUtils.isBlank(endDate) ? null : DateTypeConverter.dateFormat.parse(endDate);
 
     int currentPage = toInt(request.getParameter("currentPage"));
     if (currentPage <= 0) {
@@ -78,7 +84,16 @@
     ApplicationContext app = SpringContextListener.getApplicationContext();
     DepositService service = app.getBean(DepositService.class);
 
-    long counts = service.searchCount(licenseNum, driverName, null, null, null, null, null);
+    List<Deposit> list;
+    long counts;
+    if(isDespointIn){
+        counts = service.searchCount(licenseNum, driverName, null, dateBegin, dateEnd, null, null);
+        list = service.search(licenseNum, driverName,idNum, null, dateBegin, dateEnd, null, null, currentPage);
+    }else {
+        counts = service.searchCount(licenseNum, driverName, null, null, null, dateBegin, dateEnd);
+        list = service.search(licenseNum, driverName,idNum, null, null, null, dateBegin, dateEnd, currentPage);
+    }
+
     long pages = (counts + 29) / 30;
 %>
 
@@ -223,12 +238,25 @@
                             </div>
                             <div class="field">
                                 <div class="button-group radio">
+                                    <% if(type!=null && StringUtils.equals("no",type)){
+                                        %>
+                                    <label class="button ">
+                                        <input name="type" value="yes"  type="radio"><span class="icon icon-check"></span> 收入押金
+                                    </label>
+                                    <label class="button active">
+                                        <input name="type" value="no" type="radio" checked="checked"><span class="icon icon-times"></span> 返还押金
+                                    </label>
+                                    <%
+                                    }else{
+                                    %>
                                     <label class="button active">
                                         <input name="type" value="yes" checked="checked" type="radio"><span class="icon icon-check"></span> 收入押金
                                     </label>
                                     <label class="button">
                                         <input name="type" value="no" type="radio"><span class="icon icon-times"></span> 返还押金
                                     </label>
+                                    <%
+                                    }%>
                                 </div>
                             </div>
                         </div>
@@ -310,6 +338,7 @@
     <tr>
         <th>部门</th>
         <th>车牌号</th>
+        <%--<th>车架号</th>--%>
         <th>驾驶员</th>
         <th>身份证号</th>
         <th>押金单号</th>
@@ -322,20 +351,17 @@
     </tr>
     <%
         // if (true) {//TODO (StringUtils.isNotBlank(driverName) && StringUtils.isNotBlank(licenseNum)) {
-
-        List<Deposit> list;
-        if(isDespointIn){
-            list = service.search(licenseNum, driverName,idNum, null, dateBegin, dateEnd, null, null, currentPage);
-        }else {
-            list = service.search(licenseNum, driverName,idNum, null, null, null, dateBegin, dateEnd, currentPage);
-        }
         for (Deposit deposit : list) {
-            Vehicle vehicle = ObjectAccess.getObject(Vehicle.class, deposit.getCarframeNum());
+            Vehicle vehicle = null;
+            if (deposit.getCarframeNum() != null) {
+                vehicle = ObjectAccess.getObject(Vehicle.class, deposit.getCarframeNum());
+            }
             Driver driver = ObjectAccess.getObject(Driver.class, deposit.getIdNum());
     %>
     <tr>
-        <td><%=vehicle.getDept()%></td>
-        <td><%=vehicle.getLicenseNum()%></td>
+        <td><%=vehicle==null?"":vehicle.getDept()%></td>
+        <td><%=vehicle==null?"":vehicle.getLicenseNum()%></td>
+        <%--<td><%=deposit.getCarframeNum()%></td>--%>
         <td><%=driver.getName()%></td>
         <td><%=driver.getIdNum()%></td>
         <td><%=deposit.getDepositId()%></td>
@@ -396,3 +422,8 @@
 </script>
 </body>
 </html>
+<%
+        }catch (Exception e){
+        e.printStackTrace(response.getWriter());
+        }
+    %>

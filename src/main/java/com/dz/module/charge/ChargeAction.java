@@ -331,14 +331,23 @@ public class ChargeAction extends BaseAction {
         if(status>4||status<0)
             status=4;
 
+        Date currentTime = service.getCurrentTime(department);
+        if (time == null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTime);
+            calendar.add(Calendar.MONTH,-1);
+            time = calendar.getTime();
+        }
+
         List<ChargePlanCompareCheck> tables;
+
         if (StringUtils.equals("全部",department)){
-            List<ChargePlanCompareCheck> table1 = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,"一部",null,status);
-            List<ChargePlanCompareCheck> table2 = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,"二部",null,status);
-            List<ChargePlanCompareCheck> table3 = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,"三部",null,status);
+            List<ChargePlanCompareCheck> table1 = service.compareAllCheckChargeTable(currentTime,time,"一部",null,status);
+            List<ChargePlanCompareCheck> table2 = service.compareAllCheckChargeTable(currentTime,time,"二部",null,status);
+            List<ChargePlanCompareCheck> table3 = service.compareAllCheckChargeTable(currentTime,time,"三部",null,status);
             tables = Stream.concat(Stream.concat(table1.stream(),table2.stream()),table3.stream()).collect(Collectors.toList());
         }else {
-            tables = service.compareAllCheckChargeTable(service.getCurrentTime(department),time,department,null,status);
+            tables = service.compareAllCheckChargeTable(currentTime,time,department,null,status);
         }
 
         request.setAttribute("tables",tables);

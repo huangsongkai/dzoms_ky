@@ -25,6 +25,10 @@
             <result name="success">/contract/search_result.jsp</result>
         </action>
 
+        <action name="contractSearchToUrl" class="contractAction" method="contractSearch">
+            <result name="success">${url}</result>
+        </action>
+
         <action name="contractPreAdd" class="contractAction" method="contractPreAdd">
             <result name="success">${url}</result>
         </action>
@@ -46,9 +50,8 @@
             <result name="jsonObject" type="jsonresult"/>
             <result name="selectToUrl">${url}</result>
         </action>
-        <action name="selectContractByCarId" class="contractAction" method="selectByCarId">
-
-        </action>
+        <action name="selectContractByCarId" class="contractAction" method="selectByCarId"></action>
+        <action name="contractSort" class="contractAction" method="contractSort"></action>
 
         <action name="bankCard*" class="bankCardAction" method="bankCard{1}">
             <result name="add_success">/finance/bank_card/search_vehicle_about_bankcard.jsp?no</result>
@@ -97,6 +100,10 @@
             <result name="success">/contract/search_result.jsp</result>
         </action>
 
+        <action name="contractSearchToUrl" class="contractAction" method="contractSearch">
+            <result name="success">${url}</result>
+        </action>
+
         <action name="contractPreAdd" class="contractAction" method="contractPreAdd">
             <result name="success">${url}</result>
         </action>
@@ -108,6 +115,8 @@
         <action name="contractUpdate*" class="contractAction" method="contractUpdate{1}">
             <result name="success">/contract/contractShow.jsp</result>
         </action>
+
+        <action name="contractSort" class="contractAction" method="contractSort"></action>
 
         <action name="contract*" class="contractAction" method="contract{1}">
             <result name="success">/contract/contract_search.jsp</result>

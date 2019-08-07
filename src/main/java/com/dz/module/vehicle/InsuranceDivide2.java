@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class InsuranceDivide2 {
     @EmbeddedId
     private InsuranceDivideID id;
+    private String carframeNum;
     private Double money;
 
     @Embeddable
@@ -61,6 +62,14 @@ public class InsuranceDivide2 {
         this.id.setMonthRank(monthRank);
         this.id.setInsuranceId(insuranceId);
         this.money = money;
+    }
+
+    public void setCarframeNum(String carframeNum) {
+        this.carframeNum = carframeNum;
+    }
+
+    public String getCarframeNum() {
+        return carframeNum;
     }
 }
 

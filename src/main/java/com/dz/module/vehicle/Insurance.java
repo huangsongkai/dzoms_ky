@@ -211,4 +211,17 @@ public class Insurance implements java.io.Serializable {
 		this.state = state;
 	}
 
+	@Override
+	public String toString() {
+		return "Insurance{" +
+				"id=" + id +
+				", insuranceClass='" + insuranceClass + '\'' +
+				", carframeNum='" + carframeNum + '\'' +
+				", insuranceNum='" + insuranceNum + '\'' +
+				", insuranceMoney=" + insuranceMoney +
+				", beginDate=" + beginDate +
+				", endDate=" + endDate +
+				", state=" + state +
+				'}';
+	}
 }

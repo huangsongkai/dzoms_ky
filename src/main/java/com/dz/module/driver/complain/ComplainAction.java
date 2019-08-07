@@ -424,16 +424,17 @@ public class ComplainAction extends BaseAction {
 	        	states = statelist.toArray(states);
 	        }
 	       //vehicle.setCarMode("123");
+		Date nextDate = endDate;
 	        if(endDate!=null){
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(endDate);
 				calendar.add(Calendar.DATE,1);
-				endDate = calendar.getTime();
+				nextDate = calendar.getTime();
 			}
 	//        System.out.println("ComplainAction.searchComplain(),"+complain);
 	        
-	       Page page = PageUtil.createPage(15, complainService.selectAllByStatesCount(complain,beginDate,endDate,dept,states), currentPage);
-			List<Complain> l = complainService.selectByStates(page,complain, beginDate,endDate,dept,states,order);
+	       Page page = PageUtil.createPage(15, complainService.selectAllByStatesCount(complain,beginDate,nextDate,dept,states), currentPage);
+			List<Complain> l = complainService.selectByStates(page,complain, beginDate,nextDate,dept,states,order);
 			request.setAttribute("list", l);
 			request.setAttribute("page", page);
 			
