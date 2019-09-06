@@ -32,6 +32,8 @@
                         <result name="error">/charge/deposit/add.jsp</result>
                 </action>
                 <action name="deposit_withdraw" class="depositAction" method="withdraw"></action>
+                <action name="deposit_match" class="depositAction" method="match"></action>
+                <action name="deposit_update_ticketId" class="depositAction" method="updateTicketId"></action>
                 <action name="deposit_search" class="depositAction" method="search">
                         <result name="success">/charge/deposit/search_result.jsp</result>
                 </action>

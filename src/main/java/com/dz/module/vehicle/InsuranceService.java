@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class InsuranceService {
 		return insuranceDao.selectByCondition(page,insurance,vehicle);
 	}
 
-    static void makeDivide(Session s, Insurance insurance, BigDecimal insuranceBase) {
+    static void makeDivide2(Session s, Insurance insurance, BigDecimal insuranceBase) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(insurance.getBeginDate());
         int beginYear = calendar.get(Calendar.YEAR),beginMonth = calendar.get(Calendar.MONTH),beginDate = calendar.get(Calendar.DATE);
@@ -97,22 +98,6 @@ public class InsuranceService {
         int days = 0;
         if(local_months==1){
             //这一段时间在一个月里面
-
-//						if(beginDate==27&&endDate==26){
-//							days=30;
-//						}else
-//						if(beginDate>26){
-//							if(endDate>26){
-//								days = endDate - beginDate + 1;
-//							}else{
-//								//days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginDate+1+parseInt(endDate);
-//								days = 31 - beginDate + endDate + (beginDate>30?1:0);
-//							}
-//						}else{
-//							days = endDate - beginDate + 1;
-//						}
-//						BigDecimal planOfRent = moneyPerDay.multiply(BigDecimal.valueOf(days)) ;
-//						InsuranceDivide2 divide = new InsuranceDivide2(beginRank,insurance1.getId(),planOfRent.doubleValue());
             InsuranceDivide2 divide = new InsuranceDivide2(beginRank, insurance.getId(), insuranceBase.doubleValue());
             divide.setCarframeNum(insurance.getCarframeNum());
             s.saveOrUpdate(divide);
@@ -163,6 +148,51 @@ public class InsuranceService {
             }
         }
     }
+    static void makeDivide(Session s, Insurance insurance, BigDecimal insuranceBase) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(insurance.getBeginDate());
+        int beginYear = calendar.get(Calendar.YEAR),beginMonth = calendar.get(Calendar.MONTH);
+        calendar.setTime(insurance.getEndDate());
+        int endYear = calendar.get(Calendar.YEAR),endMonth = calendar.get(Calendar.MONTH);
+
+        int local_months = 12;
+//        int local_months = (beginYear-endYear)*12+endMonth-beginMonth;
+        int beginRank = beginYear * 12 + beginMonth + 1; //最后的+1 是因为Calendar 的Month从0开始
+
+//        if (local_months!=12){
+//            System.out.println("该保险起止时间范围不为12个月，存在错误:"+insurance);
+//            return;
+//        }
+
+        BigDecimal moneyPerDay = insuranceBase.setScale(2).divide(BigDecimal.valueOf(12.0), RoundingMode.HALF_EVEN);
+        BigDecimal totalMoney = BigDecimal.ZERO.setScale(2,RoundingMode.HALF_EVEN);
+       // vehicle = (Vehicle) s.get(Vehicle.class, insurance.getCarframeNum());
+        for (int i=0;i<11;i++) {
+            totalMoney = totalMoney.add(moneyPerDay);
+            InsuranceDivide2 divide = new InsuranceDivide2(beginRank+i, insurance.getId(), moneyPerDay.doubleValue());
+            divide.setCarframeNum(insurance.getCarframeNum());
+            s.saveOrUpdate(divide);
+        }
+
+            //最后一个月
+        BigDecimal planOfRent = insuranceBase.subtract(totalMoney);
+        if (planOfRent.compareTo(BigDecimal.ZERO)>0){
+            InsuranceDivide2 divide = new InsuranceDivide2(beginRank+local_months-1, insurance.getId(),planOfRent.doubleValue());
+            divide.setCarframeNum(insurance.getCarframeNum());
+            s.saveOrUpdate(divide);
+        }else {
+            //一般不可能出现，除非 每月租金在 0.5 -- 12/13 之间
+            InsuranceDivide2.InsuranceDivideID divideID = new InsuranceDivide2.InsuranceDivideID();
+            divideID.setInsuranceId(insurance.getId());
+            divideID.setMonthRank(beginRank+local_months-2);
+            InsuranceDivide2 divide = (InsuranceDivide2) s.get(InsuranceDivide2.InsuranceDivideID.class,divideID);
+            divide.setMoney(divide.getMoney()+planOfRent.doubleValue());
+//            divide = new InsuranceDivide2(beginRank+local_months-1, insurance.getId(),planOfRent.doubleValue());
+//            divide.setCarframeNum(insurance.getCarframeNum());
+            s.saveOrUpdate(divide);
+        }
+
+    }
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -192,6 +222,7 @@ public class InsuranceService {
                 tx.commit();
             }catch (Exception ex){
                 ex.printStackTrace();
+                System.out.println(Arrays.toString(objects));
                 if (tx!=null){
                     tx.rollback();
                 }

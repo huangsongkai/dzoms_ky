@@ -1,19 +1,20 @@
+<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
+<%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
 <%@ page import="com.dz.common.other.ObjectAccess" %>
 <%@ page import="com.dz.common.test.SpringContextListener" %>
 <%@ page import="com.dz.module.charge.Deposit" %>
 <%@ page import="com.dz.module.charge.DepositService" %>
 <%@ page import="com.dz.module.driver.Driver" %>
 <%@ page import="com.dz.module.vehicle.Vehicle" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="org.hibernate.Session" %>
 <%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
-<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
-<%@ page import="org.hibernate.Session" %>
-<%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
-<%@ page import="org.hibernate.Query" %>
-<%@ page import="java.math.BigDecimal" %>
 <%--
   Created by IntelliJ IDEA.
   User: Ghode
@@ -66,11 +67,15 @@
     //    String carNo = request.getParameter("carframeNum");
 //    String idNum = request.getParameter("idNum");
     try {
-
     String driverName = request.getParameter("driverName");
     String idNum = request.getParameter("idNum");
     String licenseNum = request.getParameter("licenseNum");
     String type = request.getParameter("type");
+    String ticketId = request.getParameter("ticketId");
+
+        String doExport = request.getParameter("doExport");
+        boolean isDoExport = doExport!=null && StringUtils.equals("yes",doExport);
+
     boolean isDespointIn = type!=null && StringUtils.equals("yes",type);
     String beginDate = request.getParameter("beginDate");
     String endDate = request.getParameter("endDate");
@@ -78,22 +83,35 @@
     Date dateEnd = StringUtils.isBlank(endDate) ? null : DateTypeConverter.dateFormat.parse(endDate);
 
     int currentPage = toInt(request.getParameter("currentPage"));
-    if (currentPage <= 0) {
-        currentPage = 1;
-    }
+
     ApplicationContext app = SpringContextListener.getApplicationContext();
     DepositService service = app.getBean(DepositService.class);
 
     List<Deposit> list;
     long counts;
     if(isDespointIn){
-        counts = service.searchCount(licenseNum, driverName, null, dateBegin, dateEnd, null, null);
-        list = service.search(licenseNum, driverName,idNum, null, dateBegin, dateEnd, null, null, currentPage);
+        counts = service.searchCount(licenseNum, driverName, ticketId, dateBegin, dateEnd, null, null);
+        list = service.search(licenseNum, driverName,idNum, ticketId, dateBegin, dateEnd, null, null, currentPage);
     }else {
-        counts = service.searchCount(licenseNum, driverName, null, null, null, dateBegin, dateEnd);
-        list = service.search(licenseNum, driverName,idNum, null, null, null, dateBegin, dateEnd, currentPage);
+        counts = service.searchCount(licenseNum, driverName, ticketId, null, null, dateBegin, dateEnd);
+        list = service.search(licenseNum, driverName,idNum, ticketId, null, null, dateBegin, dateEnd, currentPage);
     }
 
+    if (isDoExport){
+        List<String> datasrc = Arrays.asList("list");
+        List datalist = Arrays.asList(list);
+        String templatePath = "charge/deposit/deposit.xls";
+        String outputName = "服务保证金导出";
+        request.setAttribute("datasrc",datasrc);
+        request.setAttribute("datalist",datalist);
+        request.setAttribute("templatePath",templatePath);
+        request.setAttribute("outputName",outputName);
+        request.getRequestDispatcher("/common/outputExcel.action").forward(request,response);
+    }
+
+    if (currentPage <= 0) {
+            currentPage = 1;
+        }
     long pages = (counts + 29) / 30;
 %>
 
@@ -115,10 +133,7 @@
             $('#driver_name').bigAutocomplete({
                 url: "/DZOMS/select/driverByName",
                 doubleClick: true,
-                valueColumn: "idNum",
-                callback: function (name, idNum) {
-                    $("#driverId").val(idNum);
-                }
+                valueColumn: "idNum"
             });
 
             $('#driverId').bigAutocomplete({
@@ -129,15 +144,18 @@
             $('#license_num').bigAutocomplete({
                 url: "/DZOMS/select/vehicleByLicenseNum",
                 doubleClick: true,
-                valueColumn: "carframeNum",
-                callback: function (name, carframeNum) {
-                    $("#carframeId").val(carframeNum);
-                }
+                valueColumn: "carframeNum"
             });
 
             $("#page-input").blur(function () {
                 $("input[name='currentPage']").val($("#page-input").val());
                 $('form').submit();
+            });
+
+            $('#ticketId').bigAutocomplete({
+                url: "/DZOMS/select/DepositBydepositId",
+                doubleClick: true,
+                valueColumn: "depositId"
             });
         });
 
@@ -182,6 +200,74 @@
                 })
             }
         }
+
+        function _match() {
+            var selected_val = $("input[name='cbx']:checked").val();
+            if(selected_val==undefined){
+                alert('您没有选择任何一条数据');
+                return;
+            }
+
+            if($('#deposit-'+selected_val).find("td.licenseNum").text().length>0){
+                alert('该押金数据已有车辆！');
+            }else {
+                $.post("/DZOMS/charge/deposit_match", {
+                    "deposit.id": id
+                }, function (data) {
+                    if (data != null) {
+                        if (data.isSuccess) {
+                            alert("匹配成功！");
+                            $('form').submit();
+                        } else {
+                            alert("匹配失败！原因是：" + data.errorMsg);
+                        }
+                    }
+                })
+            }
+        }
+
+        function _update() {
+            var selected_val = $("input[name='cbx']:checked").val();
+            if(selected_val==undefined){
+                alert('您没有选择任何一条数据');
+                return;
+            }
+            var newTicketId = prompt("请输入一个新票号：");
+            if(newTicketId.trim().length>0){
+                $.post("/DZOMS/charge/deposit_update_ticketId", {
+                    "deposit.id": id,
+                    "deposit.depositId":newTicketId
+                }, function (data) {
+                    if (data != null) {
+                        if (data.isSuccess) {
+                            alert("修改成功！");
+                            $('form').submit();
+                        } else {
+                            alert("修改失败！原因是：" + data.errorMsg);
+                        }
+                    }
+                })
+            }
+        }
+
+        function _withdraw() {
+            var selected_val = $("input[name='cbx']:checked").val();
+            if(selected_val==undefined){
+                alert('您没有选择任何一条数据');
+                return;
+            }
+            if($('#deposit-'+selected_val).find("a.button").length>0){
+                $('#deposit-'+selected_val).find("a.button").click();
+            }else {
+                alert('已返还的押金不可重复返还！');
+            }
+        }
+
+        function _toExcel() {
+            $('form input[name="doExport"]').val("yes");
+            $('form').submit();
+            $('form input[name="doExport"]').val("no");
+        }
     </script>
 </head>
 <body>
@@ -201,7 +287,7 @@
                 <div class="xm12 padding">
                     <form action="#" method="post" class="definewidth m20 form form-inline" style="width: 100%;">
                         <input type="hidden" name="currentPage" value="<%=currentPage%>">
-
+                        <input type="hidden" name="doExport" value="no" >
                         <div class="form-group">
                             <div class="label">
                                 <label>驾驶员姓名</label>
@@ -218,6 +304,15 @@
                             </div>
                             <div class="field">
                                 <input type="text" id="driverId" name="idNum" class="input input-auto"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="label">
+                                <label>票号</label>
+                            </div>
+                            <div class="field">
+                                <input type="text" id="ticketId" name="ticketId" value="<%=isNull2(ticketId)%>" class="input input-auto"/>
                             </div>
                         </div>
 
@@ -273,6 +368,7 @@
                                 <input type="text" name="endDate" class="datetimepicker input input-auto" size="10"/>
                             </div>
                         </div>
+
 
                         <div class="form-button">
                             <input type="submit" class="button" value="查询"/>
@@ -334,8 +430,23 @@
         <td><%=sum2.subtract(sum3)%></td>
     </tr>
 </table>
+<div class="line">
+    <div class="button-toolbar">
+        <div class="button-group">
+            <button onclick="_match()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
+                匹配车牌号</button>
+            <button onclick="_update()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
+                修改票号</button>
+            <button onclick="_withdraw()" type="button" class="button icon-pencil text-blue" style="line-height: 6px;">
+                返还押金</button>
+            <button onclick="_toExcel()" type="button" class="button icon-file-excel-o text-blue" style="line-height: 6px;">
+                导出为Excel</button>
+        </div>
+    </div>
+</div>
 <table class="table table-bordered table-hover  table-striped">
     <tr>
+        <th>选择</th>
         <th>部门</th>
         <th>车牌号</th>
         <%--<th>车架号</th>--%>
@@ -348,6 +459,7 @@
         <th>返还日期</th>
         <th>操作员1</th>
         <th>操作员2</th>
+        <th>备注</th>
     </tr>
     <%
         // if (true) {//TODO (StringUtils.isNotBlank(driverName) && StringUtils.isNotBlank(licenseNum)) {
@@ -358,9 +470,10 @@
             }
             Driver driver = ObjectAccess.getObject(Driver.class, deposit.getIdNum());
     %>
-    <tr>
+    <tr id="deposit-<%=deposit.getId()%>">
+        <td><input type="radio" name="cbx" value="<%=deposit.getId()%>" ></td>
         <td><%=vehicle==null?"":vehicle.getDept()%></td>
-        <td><%=vehicle==null?"":vehicle.getLicenseNum()%></td>
+        <td class="licenseNum"><%=vehicle==null?"":vehicle.getLicenseNum()%></td>
         <%--<td><%=deposit.getCarframeNum()%></td>--%>
         <td><%=driver.getName()%></td>
         <td><%=driver.getIdNum()%></td>
@@ -379,6 +492,7 @@
         <td><%=dateFormat(deposit.getBackDate())%></td>
         <td><%=deposit.getuNameIn()%></td>
         <td><%=isNull(deposit.getuNameBack())%></td>
+        <td><%=isNull(deposit.getComment())%></td>
     </tr>
     <%
         }

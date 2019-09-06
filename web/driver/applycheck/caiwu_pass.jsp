@@ -13,14 +13,62 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@taglib uri="/struts-tags" prefix="s"%>
-<%@ page language="java" import="java.util.*,com.dz.module.user.User" pageEncoding="UTF-8"%>
+<%@ page language="java" import="com.dz.common.other.ObjectAccess" pageEncoding="UTF-8"%>
+<%@ page import="com.dz.common.test.SpringContextListener" %>
+<%@ page import="com.dz.module.charge.Deposit" %>
+<%@ page import="com.dz.module.charge.DepositService" %>
+<%@ page import="com.dz.module.driver.Driver" %>
+<%@ page import="com.dz.module.vehicle.Vehicle" %>
+<%@ page import="com.opensymphony.xwork2.util.ValueStack" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://"
             + request.getServerName() + ":" + request.getServerPort()
             + path + "/";
 %>
+<%!
+    String isNull(Object s) {
+        if (s == null) {
+            return "-";
+        } else {
+            return s.toString();
+        }
+    }
 
+    String isNull2(Object s) {
+        if (s == null) {
+            return "";
+        } else {
+            return s.toString();
+        }
+    }
+
+    static <T> T nullIf(Object o,T nullValue,T notNullValue){
+        return o==null?nullValue:notNullValue;
+    }
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+    String dateFormat(Date d) {
+        if (d == null) {
+            return "-";
+        } else {
+            return sdf.format(d);
+        }
+    }
+
+    int toInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+%>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -148,7 +196,69 @@
                 <input type="submit" class="button bg-main" value="通过">
             </form>
         </blockquote>
-	<blockquote class="readonly-yes">
+    <blockquote class="readonly-yes">
+        <strong>
+            该驾驶员的服务保证金缴纳历史记录
+        </strong>
+        <%
+            ValueStack vs = (ValueStack) request.getAttribute("struts.valueStack");
+            Driver driver = (Driver) vs.findValue("driver");
+            ApplicationContext app = SpringContextListener.getApplicationContext();
+            DepositService service = app.getBean(DepositService.class);
+            List<Deposit> list = service.search(null,driver.getName(),driver.getIdNum(),null,null,null,null,null,0);
+        %>
+        <table class="table table-bordered table-hover  table-striped">
+            <tr>
+                <th>部门</th>
+                <th>车牌号</th>
+                <%--<th>车架号</th>--%>
+                <th>驾驶员</th>
+                <th>身份证号</th>
+                <th>押金单号</th>
+                <th>收入押金</th>
+                <th>返还押金</th>
+                <th>收入日期</th>
+                <th>返还日期</th>
+                <th>操作员1</th>
+                <th>操作员2</th>
+            </tr>
+            <%
+                // if (true) {//TODO (StringUtils.isNotBlank(driverName) && StringUtils.isNotBlank(licenseNum)) {
+                for (Deposit deposit : list) {
+                    Vehicle vehicle = null;
+                    if (deposit.getCarframeNum() != null) {
+                        vehicle = ObjectAccess.getObject(Vehicle.class, deposit.getCarframeNum());
+                    }
+//                    Driver driver = ObjectAccess.getObject(Driver.class, deposit.getIdNum());
+            %>
+            <tr>
+                <td><%=vehicle==null?"":vehicle.getDept()%></td>
+                <td><%=vehicle==null?"":vehicle.getLicenseNum()%></td>
+                <%--<td><%=deposit.getCarframeNum()%></td>--%>
+                <td><%=driver.getName()%></td>
+                <td><%=driver.getIdNum()%></td>
+                <td><%=deposit.getDepositId()%></td>
+                <td><%=deposit.getInMoney()%></td>
+                <td>
+                    <%if (deposit.getBackMoney() == 0) {%>
+                   未退还
+                    <%} else {%>
+                    已退还<%=deposit.getBackMoney()%>
+                    <%}%>
+                </td>
+                <td><%=deposit.getInDate()%>
+                </td>
+                <td><%=dateFormat(deposit.getBackDate())%></td>
+                <td><%=deposit.getuNameIn()%></td>
+                <td><%=isNull(deposit.getuNameBack())%></td>
+            </tr>
+            <%
+                }
+            %>
+        </table>
+
+    </blockquote>
+	    <blockquote class="readonly-yes">
             <strong>
                 运营部经理意见
             </strong>

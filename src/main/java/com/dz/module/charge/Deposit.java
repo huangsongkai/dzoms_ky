@@ -39,6 +39,8 @@ public class Deposit implements Serializable {
     @Column(name = "u_name_back")
     private String uNameBack;
 
+    private String comment;
+
     public int getId() {
         return id;
     }
@@ -119,5 +121,11 @@ public class Deposit implements Serializable {
         this.depositId = depositId;
     }
 
+    public String getComment() {
+        return comment;
+    }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }

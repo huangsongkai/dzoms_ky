@@ -135,7 +135,16 @@
                     </div>
                     <div class="field form-inline">
                         <s:textfield cssClass="input" name="deposit.depositId"/>
-
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label>
+                            备注
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:textfield cssClass="input" name="deposit.comment"/>
                     </div>
                 </div>
                 <div class="xm6-move">

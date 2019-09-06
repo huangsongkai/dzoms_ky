@@ -199,6 +199,15 @@ public class DriverAction extends BaseAction{
 			deposit.setInDate(new Date());
 			deposit.setuNameIn(((User) DriverAction.this.session.getAttribute("user")).getUname());
 
+			if (StringUtils.isNotBlank(driver.getApplyLicenseNum())){
+				Vehicle vehicle = new Vehicle();
+				vehicle.setLicenseNum(driver.getApplyLicenseNum());
+				vehicle = vehicleService.selectByLicenseNum(vehicle);
+				if (vehicle!=null){
+					deposit.setCarframeNum(vehicle.getCarframeNum());
+				}
+			}
+
 			if(driver.getBusinessApplyTime()==null||driver.getBusinessApplyTime().before(new Date(50,0,1))){
 				driver.setBusinessApplyTime(null);
 				driver.setBusinessApplyRegistrant(null);
@@ -226,7 +235,7 @@ public class DriverAction extends BaseAction{
 			}
 
 			session.update(driver);
-			depositService.add(deposit);
+			depositService.add(deposit,session);
 			tx.commit();
 		}catch(HibernateException he){
 			if(tx != null){
@@ -234,7 +243,7 @@ public class DriverAction extends BaseAction{
 			}
 			he.printStackTrace();
 		}catch (RuntimeException ex){
-
+			ex.printStackTrace();
 		}
 		finally{
 			HibernateSessionFactory.closeSession();

@@ -22,15 +22,7 @@ public class DepositService {
         try {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
-
-//            System.out.println(deposit.getCarframeNum());
-//            System.out.println(deposit.getIdNum());
-            if (haveRecord(session, deposit)) {
-                throw new RuntimeException("该用户存在票号相同的押金¿");
-            }
-
-            deposit.setInDate(new Date());
-            session.saveOrUpdate(deposit);
+            add(deposit,session);
 
             tx.commit();
             System.out.println("押金已存");
@@ -45,6 +37,14 @@ public class DepositService {
                 session.close();
             }
         }
+    }
+    public void add(Deposit deposit,Session session) {
+            if (haveRecord(session, deposit)) {
+                throw new RuntimeException("该用户存在票号相同的押金¿");
+            }
+
+            deposit.setInDate(new Date());
+            session.saveOrUpdate(deposit);
     }
 
     /**
@@ -139,9 +139,14 @@ public class DepositService {
                 query.setDate("backDateEnd", backDateEnd);
             }
 
-            if (currentPageNum <= 0) currentPageNum = 1;
-            query.setMaxResults(30);
-            query.setFirstResult(currentPageNum * 30 - 30);
+            if (currentPageNum==-100){
+                //仅该函数特别约定 currentPageNum为-100时代表不分页
+                //专用于Excel导出
+            }else {
+                if (currentPageNum <= 0) currentPageNum = 1;
+                query.setMaxResults(30);
+                query.setFirstResult(currentPageNum * 30 - 30);
+            }
 
             return query.list();
         } catch (HibernateException ex) {

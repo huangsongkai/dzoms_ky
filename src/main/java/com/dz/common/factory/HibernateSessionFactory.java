@@ -68,16 +68,19 @@ public class HibernateSessionFactory {
 
     /**
      *  Close the single hibernate session instance.
-     *
-     *  @throws HibernateException
-     */
-    public static void closeSession() throws HibernateException {
+     **/
+    public static void closeSession() {
         Session session = threadLocal.get();
         threadLocal.set(null);
 
-        if (session != null) {
-            session.close();
+        try {
+            if (session != null) {
+                session.close();
+            }
+        }catch (HibernateException ex){
+            ex.printStackTrace();
         }
+
     }
 
     /**

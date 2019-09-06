@@ -47,16 +47,21 @@
 
         function _detail(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
+
             var url = "/DZOMS/driver/driverPreshow?driver.idNum="+selected_val;
             window.open(url,"驾驶员明细",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _update(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
             var url = "/DZOMS/driver/driverPreupdate?driver.idNum="+selected_val;
             //window.open(url,"驾驶员修改",'width=800,height=600,resizable=yes,scrollbars=yes');
 
@@ -90,8 +95,10 @@
 
         function _toPrint(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
             var url = "/DZOMS/driver/driverPreprint?driver.idNum="+selected_val;
             window.open(url,"驾驶员打印",'width=800,height=600,resizable=yes,scrollbars=yes');
         }

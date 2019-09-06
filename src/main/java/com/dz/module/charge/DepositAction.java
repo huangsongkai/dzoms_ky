@@ -1,9 +1,15 @@
 package com.dz.module.charge;
 
+import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.BaseAction;
+import com.dz.module.driver.Driver;
 import com.dz.module.user.User;
+import com.dz.module.vehicle.Vehicle;
 import net.sf.json.JSONObject;
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Expression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -12,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Controller
 @Scope(value = "prototype")
@@ -47,12 +54,12 @@ public class DepositAction extends BaseAction {
         return SUCCESS;
     }
 
-    public void withdraw() throws IOException {
+    private void wrapAsJson(Supplier<JSONObject> supplier) throws IOException {
         JSONObject jsonObject = new JSONObject();
         try {
-            User user = (User) session.getAttribute("user");
-            service.withdraw(deposit.getId(), deposit.getBackMoney(), user.getUname());
+            JSONObject json = supplier.get();
             jsonObject.put("isSuccess",true);
+            jsonObject.accumulateAll(json);
         } catch (RuntimeException ex) {
             jsonObject.put("isSuccess",false);
             jsonObject.put("errorMsg",ex.getMessage());
@@ -65,12 +72,99 @@ public class DepositAction extends BaseAction {
         pw.close();
     }
 
+    public void withdraw() throws IOException {
+        wrapAsJson(this::doWithdraw);
+    }
+
+    private JSONObject doWithdraw() {
+        User user = (User) session.getAttribute("user");
+        service.withdraw(deposit.getId(), deposit.getBackMoney(), user.getUname());
+        return new JSONObject();
+    }
+
+    /**
+     * 对没有绑定车辆的押金进行自动匹配
+     * @throws IOException
+     */
+    public void match() throws IOException {
+        wrapAsJson(()->{
+            Session s = HibernateSessionFactory.getSession();
+            Transaction tx = null;
+            JSONObject json = new JSONObject();
+            try {
+                Deposit d = (Deposit) s.get(Deposit.class,deposit.getId());
+                Driver driver = (Driver) s.get(Driver.class,deposit.getIdNum());
+
+                tx = s.beginTransaction();
+                if (driver.getCarframeNum()!=null){
+                    //Vehicle vehicle = (Vehicle) s.get(Vehicle.class,driver.getCarframeNum());
+                    d.setCarframeNum(driver.getCarframeNum());
+                    s.saveOrUpdate(d);
+                }else if(driver.getApplyLicenseNum()!=null){
+                    Vehicle vehicle = (Vehicle) s.createCriteria(Vehicle.class)
+                            .add(Expression.eq("licenseNum",driver.getApplyLicenseNum()))
+                            .setMaxResults(1)
+                            .uniqueResult();
+                    if (vehicle==null){
+                        json.put("isSuccess",false);
+                        json.put("errorMsg","驾驶员申请时的"+driver.getApplyLicenseNum()+"不是有效的车牌号！");
+                    }else {
+                        d.setCarframeNum(vehicle.getCarframeNum());
+                        s.saveOrUpdate(d);
+                    }
+                }else {
+                    json.put("isSuccess",false);
+                    json.put("errorMsg","驾驶员不在车，且申请时未记录车牌号，无法匹配！");
+                }
+                tx.commit();
+            }catch (RuntimeException ex) {
+                json.put("isSuccess",false);
+                json.put("errorMsg",ex.getMessage());
+            }finally {
+                HibernateSessionFactory.closeSession();
+            }
+            return json;
+        });
+    }
+
+    public void updateTicketId() throws IOException{
+        wrapAsJson(()->{
+            Session s = HibernateSessionFactory.getSession();
+            Transaction tx = null;
+            JSONObject json = new JSONObject();
+            try {
+                Deposit d = (Deposit) s.get(Deposit.class,deposit.getId());
+                tx = s.beginTransaction();
+                Deposit d2 = (Deposit) s.createCriteria(Deposit.class)
+                        .add(Expression.eq("depositId",deposit.getDepositId()))
+                        .setMaxResults(1)
+                        .uniqueResult();
+                if (d2==null){
+                    d.setDepositId(deposit.getDepositId());
+                    s.saveOrUpdate(d);
+                }else {
+                        json.put("isSuccess",false);
+                        json.put("errorMsg","已存在票号为"+deposit.getDepositId()+"的条目！");
+
+                }
+                tx.commit();
+            }catch (RuntimeException ex) {
+                json.put("isSuccess",false);
+                json.put("errorMsg",ex.getMessage());
+            }finally {
+                HibernateSessionFactory.closeSession();
+            }
+            return json;
+        });
+    }
+
     public String search() {
         List<Deposit> res;
         res = service.search(licenseNum, driverName,idNum, depositId, inDateBegin, inDateEnd, backDateBegin, backDateEnd,0);
         request.setAttribute("list", res);
         return SUCCESS;
     }
+
 
 
     public void remove() throws IOException {
