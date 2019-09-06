@@ -175,7 +175,7 @@
                <tr>
                     <td>确认结果</td>
                     <td colspan="7">
-                        <s:textfield rows="5" cssClass="input" value="属实"></s:textfield>
+                        <s:textfield cssClass="input" value="%{complain.state>0?'属实':'不属实'}" disabled="true"/>
                     </td>
                 </tr>
                 <tr>
@@ -184,7 +184,7 @@
                         <s:textarea rows="5" cssClass="input" placeholder="多行文本框" name="complain.dealContext"></s:textarea>
                     </td>
                 </tr>
-                <!--<tr>
+                <%--<tr>
                     <td>确认人</td>
                     <td>
                     	<s:textfield cssClass="input" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',complain.confirmPerson).uname}"/>
@@ -193,7 +193,7 @@
                     <td>确认时间</td>
                     <td><s:textfield cssClass="input" name="complain.confirmTime" readonly="readonly" /></td>
                 </tr>
-               -->
+               --%>
                 <tr>
                     <td>落实结果</td>
                     <td colspan="7">
@@ -219,6 +219,12 @@
                     <td>回访记录</td>
                     <td colspan="7">
                         <s:textarea rows="5" cssClass="input" placeholder="多行文本框" name="complain.visitBackResult"></s:textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>回访结果</td>
+                    <td colspan="7">
+                        <s:select rows="5" cssClass="input" name="confirmReault" list="#{'true':'属实','flase':'不属实'}"></s:select>
                     </td>
                 </tr>
                 <tr>

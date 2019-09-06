@@ -131,20 +131,11 @@ Page pg = (Page)request.getAttribute("page");
 <s:if test="%{#v.state==0}">
 	<a class="button bg-blue" href="/DZOMS/driver/complain/preconfirmComplain.action?complain.id=${v.id}" target="_parent">落实</a>
 	</s:if>
-	<s:elseif test="%{#v.state==1}">
-	<a class="button bg-blue" href="/DZOMS/driver/complain/preconfirmComplain.action?complain.id=${v.id}" target="_parent">落实</a>
-	</s:elseif>
-	<s:elseif test="%{#v.state==2}">
-	<a class="button bg-blue" href="/DZOMS/driver/complain/previsit_backComplain.action?complain.id=${v.id}" target="_parent">回访</a>
-	</s:elseif>
-	<s:elseif test="%{#v.state==3}">
-	<a class="button bg-blue" href="/DZOMS/driver/complain/prefinishComplain.action?complain.id=${v.id}" target="_parent">完结</a>
-	</s:elseif>
-	<s:elseif test="%{#v.state==4}">
-	<a class="button bg-blue" href="/DZOMS/driver/complain/preattachComplain.action?complain.id=${v.id}" target="_parent">补充登记</a>
+	<s:elseif test="%{#v.state==1||#v.state==-1}">
+	<a class="button bg-blue" href="/DZOMS/driver/complain/preconfirmComplain.action?complain.id=${v.id}" target="_parent">回访</a>
 	</s:elseif>
 	<s:else>
-	<a class="button bg-blue" href="/DZOMS/driver/complain/complainPreshow.action?complain.id=${v.id}" target="_parent">查看</a>
+	<a class="button bg-blue" href="/DZOMS/driver/complain/preattachComplain.action?complain.id=${v.id}" target="_parent">补充登记</a>
 	</s:else>
                 			</td>
                 			</tr>

@@ -23,10 +23,10 @@ public class DepositService {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
 
-            System.out.println(deposit.getCarframeNum());
-            System.out.println(deposit.getIdNum());
-            if (haveRecord(session, deposit.getCarframeNum(), deposit.getIdNum())) {
-                throw new RuntimeException("该用户存在未付清的押金¿");
+//            System.out.println(deposit.getCarframeNum());
+//            System.out.println(deposit.getIdNum());
+            if (haveRecord(session, deposit)) {
+                throw new RuntimeException("该用户存在票号相同的押金¿");
             }
 
             deposit.setInDate(new Date());
@@ -275,15 +275,17 @@ public class DepositService {
         return null;
     }
 
-    private boolean haveRecord(Session session, String carframeNum, String idNum) {
+    private boolean haveRecord(Session session, Deposit deposit) {
         String hql = "select count(*) from Deposit d " +
                 "where d.inMoney != d.backMoney " +
                 "and d.carframeNum = :carframeNum " +
-                "and d.idNum = :idNum";
+                "and d.idNum = :idNum " +
+                "and d.depositId = :depositId ";
 
         Query query = session.createQuery(hql);
-        query.setString("carframeNum", carframeNum);
-        query.setString("idNum", idNum);
+        query.setString("carframeNum", deposit.getCarframeNum());
+        query.setString("idNum", deposit.getIdNum());
+        query.setString("depositId", deposit.getDepositId());
         long count = (long) query.uniqueResult();
         System.out.println("count:" + count);
         return count > 0;

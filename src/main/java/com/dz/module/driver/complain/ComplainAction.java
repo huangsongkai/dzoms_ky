@@ -9,24 +9,18 @@ import com.dz.common.other.PageUtil;
 import com.dz.module.driver.Driver;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
-import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ArrayUtils;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -231,7 +225,7 @@ public class ComplainAction extends BaseAction {
 
 			if(confirmReault){
 //				oc.setState(1);
-				oc.setState(2);
+				oc.setState(1);
 			}
 			else{
 				oc.setState(-1);
@@ -279,7 +273,20 @@ public class ComplainAction extends BaseAction {
 			oc.setVisitBackPerson(user.getUid());
 			
 			oc.setFinishTime(new Date());
-			oc.setState(4);
+			if (oc.getState()>0) {
+				if (confirmReault) {
+					oc.setState(3);
+				} else {
+					oc.setState(2);
+				}
+			}
+			else{
+				if (confirmReault) {
+					oc.setState(-3);
+				} else {
+					oc.setState(-2);
+				}
+			}
 
 			oc.setFinishPerson(user.getUid());
 
@@ -403,24 +410,24 @@ public class ComplainAction extends BaseAction {
 	        	ss = ss[0].split(",");
 	        }
 	        if(ss!=null){
-	        	final boolean[] hasNeg = new boolean[1];
+//	        	final boolean[] hasNeg = new boolean[1];
 	        	@SuppressWarnings("unchecked")
 				List<Short> statelist = (List<Short>) CollectionUtils.collect(Arrays.asList(ss), new Transformer(){
 					@Override
 					public Object transform(Object input) {
 						String str = (String)input;
 						short val = Short.parseShort(str.trim());
-						if(val<0)
-							hasNeg[0] = true;
+//						if(val<0)
+//							hasNeg[0] = true;
 						return val;
 					}
 	        	});
-	        	states = new Short[0];
-	        	if(hasNeg[0]){
-	        		statelist.add((short)-2);
-	        		statelist.add((short)-3);
-	        		statelist.add((short)-4);
-	        	}
+//	        	states = new Short[0];
+//	        	if(hasNeg[0]){
+//	        		statelist.add((short)-2);
+//	        		statelist.add((short)-3);
+//	        		statelist.add((short)-4);
+//	        	}
 	        	states = statelist.toArray(states);
 	        }
 	       //vehicle.setCarMode("123");

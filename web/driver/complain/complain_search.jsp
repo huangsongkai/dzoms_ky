@@ -99,7 +99,7 @@ $(document).ready(function(){
 			              <div class="form-group">
 			              	<div class="label"><label>投诉状态</label></div>
 			              	<div class="field">
-			              		<s:checkboxlist name="states" list="#{0:'待确认',1:'待落实',2:'待回访',3:'待完结',4:'已完结',-1:'不属实'}" 
+			              		<s:checkboxlist name="states" list="#{0:'待确认',1:'确认属实',-1:'确认不属实',2:'回访不属实',3:'回访属实',-2:'确认回访均不属实',-3:'确认不属实回访属实'}"
                     		        value="{0,1,2,3,4,-1}" cssClass="checkbox" />
 			              	</div>
 			              </div>

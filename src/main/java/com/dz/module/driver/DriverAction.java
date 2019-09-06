@@ -10,29 +10,28 @@ import com.dz.common.other.FileUploadUtil;
 import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.PageUtil;
 import com.dz.module.charge.Deposit;
+import com.dz.module.charge.DepositService;
 import com.dz.module.contract.BankCard;
 import com.dz.module.contract.BankCardService;
-import com.dz.module.user.*;
+import com.dz.module.user.ManagerService;
+import com.dz.module.user.RelationUr;
+import com.dz.module.user.Role;
+import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleService;
 import com.opensymphony.xwork2.ActionContext;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.javatuples.Triplet;
-import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -166,6 +165,8 @@ public class DriverAction extends BaseAction{
 	}
 
 	private Deposit deposit;
+	@Autowired
+	private DepositService depositService;
 
 	public Deposit getDeposit() {
 		return deposit;
@@ -173,6 +174,10 @@ public class DriverAction extends BaseAction{
 
 	public void setDeposit(Deposit deposit) {
 		this.deposit = deposit;
+	}
+
+	public void setDepositService(DepositService depositService) {
+		this.depositService = depositService;
 	}
 
 	public String driverAppendCaiWu(){
@@ -221,14 +226,17 @@ public class DriverAction extends BaseAction{
 			}
 
 			session.update(driver);
-			session.saveOrUpdate(deposit);
+			depositService.add(deposit);
 			tx.commit();
 		}catch(HibernateException he){
 			if(tx != null){
 				tx.rollback();
 			}
 			he.printStackTrace();
-		}finally{
+		}catch (RuntimeException ex){
+
+		}
+		finally{
 			HibernateSessionFactory.closeSession();
 		}
 		driverService.appendCaiWu(driver);

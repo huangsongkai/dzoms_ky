@@ -38,7 +38,7 @@
                 "condition": "from Vehicle where licenseNum='" + licenseNum + "'"
             }, function (data) {
                 data = data["affect"];
-+6+
+
                 if (data === undefined) {
                     return;
                 }

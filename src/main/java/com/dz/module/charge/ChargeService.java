@@ -162,27 +162,51 @@ public class ChargeService {
                 continue;
             int cardId = 0;
             BankCard bankCard = null;
-            for(BankCardOfVehicle bv:br.getBankCards()){
-                if(bv.getBankCard()==null){
-                    //数据错误 bankcard 不存在的情况
-                    s.delete(bv);
-                    continue;
+
+            Transaction tx0 = null;
+            try {
+                tx0 = s.beginTransaction();
+                for(BankCardOfVehicle bv:br.getBankCards()){
+                    if(bv.getBankCard()==null){
+                        //数据错误 bankcard 不存在的情况
+                        s.delete(bv);
+                        continue;
+                    }
+                    if(bv.getBankCard().getCardClass().equals("招商银行")&&bv.getBankCard().getId()>cardId){
+                        bankCard = bv.getBankCard();
+                        cardId = bankCard.getId();
+                    }
                 }
-                if(bv.getBankCard().getCardClass().equals("招商银行")&&bv.getBankCard().getId()>cardId){
-                    bankCard = bv.getBankCard();
-                    cardId = bankCard.getId();
+                s.flush();
+                tx0.commit();
+            }catch (Exception ex){
+                if (tx0!=null){
+                    tx0.rollback();
                 }
+                ex.printStackTrace();
             }
+
             if (bankCard!=null){
                 Driver driver = (Driver) s.get(Driver.class,bankCard.getIdNumber());
                 if(driver==null){
                     //数据错误，没有人员与之对应的情况
-                    List<BankCardOfVehicle> bl = bankCard.getbOfVList();
-                    if(bl!=null){
-                        for (BankCardOfVehicle bankCardOfVehicle:bl)
-                            s.delete(bankCardOfVehicle);
+                    Transaction tx1 = null;
+                    try {
+                        tx1 = s.beginTransaction();
+                        List<BankCardOfVehicle> bl = bankCard.getbOfVList();
+                        if(bl!=null){
+                            for (BankCardOfVehicle bankCardOfVehicle:bl)
+                                s.delete(bankCardOfVehicle);
+                        }
+                        s.delete(bankCard);
+                        s.flush();
+                        tx1.commit();
+                    }catch (Exception ex){
+                        if (tx1!=null)
+                            tx1.rollback();
+                        ex.printStackTrace();
                     }
-                    s.delete(bankCard);
+
                     continue;
                 }
 
@@ -257,6 +281,8 @@ public class ChargeService {
                     resultMap.put("REQNBR",REQNBR);
                     resultMap.put("REQSTA",REQSTA);
 
+                    HibernateSessionFactory.closeSession();
+                    s = HibernateSessionFactory.getSession();
                     Transaction tx = null;
                     try {
                         tx = s.beginTransaction();
@@ -467,8 +493,23 @@ public class ChargeService {
 
                                             if(realFee.doubleValue()>0.0){
                                                 //仍有剩余的Money 一般不可能出现 停止计费 应该是错误
-                                                System.out.println("仍有剩余的Money，停止计费！");
-                                                return returnCode;
+                                                System.out.println("在计划外仍有剩余的Money，按第一项进账！");
+                                                Query query2 = session.createQuery("from BankItem bi where bi.cardNumber like :cardNumber");
+                                                query2.setString("cardNumber","%"+ACCNBR+"%");
+                                                List<BankItem> items2 = query2.list();
+                                                BankItem item = items2.get(0);
+
+                                                ChargePlan cp = new ChargePlan();
+                                                cp.setContractId(item.getContract().getId());
+                                                cp.setFeeType("add_bank2");
+                                                cp.setFee(realFee);
+                                                cp.setTime(item.getForTime());
+                                                cp.setIsClear(false);
+                                                cp.setInTime(item.getRealTime());
+                                                cp.setRegister(item.getRegister());
+                                                cp.setComment(""+item.getId()+",超出计划的扣款");
+//                                                return returnCode;
+                                                session.saveOrUpdate(cp);
                                             }
                                         }
                                     }else {

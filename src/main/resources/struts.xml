@@ -4,7 +4,7 @@
         <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
         <constant name="struts.ui.theme" value="simple" />
         <constant name="struts.ui.templateDir" value="template"></constant>
-        <constant name="struts.action.excludePattern" value="/tmp/.*,/fileAdapt/.*"></constant>
+        <constant name="struts.action.excludePattern" value="/tmp/.*,/fileAdapt/.*,/ky/.*"></constant>
 
 
         <package name="default-package" extends="struts-default">

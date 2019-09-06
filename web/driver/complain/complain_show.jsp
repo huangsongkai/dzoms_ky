@@ -174,11 +174,11 @@
                 <td><s:textfield cssClass="input" name="complain.registTime"/></td>
             </tr>
 
-            <s:if test="%{complain.state>0}">
+            <s:if test="%{complain.state!=0}">
                 <tr>
                     <td>确认结果</td>
                     <td colspan="7">
-                        <s:textfield rows="5" cssClass="input" value="属实"></s:textfield>
+                        <s:textfield cssClass="input" value="%{complain.state>0?'属实':'不属实'}" disabled="true"/>
                     </td>
                 </tr>
                 <tr>
@@ -187,41 +187,6 @@
                         <s:textarea rows="5" cssClass="input" placeholder="多行文本框" name="complain.dealContext"></s:textarea>
                     </td>
                 </tr>
-                <tr>
-                    <td>确认人</td>
-                    <td>
-                        <s:textfield cssClass="input" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',complain.confirmPerson).uname}"/>
-                    </td>
-                    <td colspan="3"></td>
-                    <td>确认时间</td>
-                    <td><s:textfield cssClass="input" name="complain.confirmTime" readonly="readonly" /></td>
-                </tr>
-            </s:if>
-            <s:if test="%{complain.state<0}">
-                <tr>
-                    <td>确认结果</td>
-                    <td colspan="7">
-                        <s:textfield rows="5" cssClass="input" value="不属实"></s:textfield>
-                    </td>
-                </tr>
-                <tr>
-                    <td>处理结果</td>
-                    <td colspan="7">
-                        <s:textarea rows="5" cssClass="input" placeholder="多行文本框" name="complain.dealContext"></s:textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td>确认人</td>
-                    <td>
-                        <s:textfield cssClass="input" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',complain.confirmPerson).uname}"/>
-                    </td>
-                    <td colspan="3"></td>
-                    <td>确认时间</td>
-                    <td><s:textfield cssClass="input" name="complain.confirmTime" readonly="readonly" /></td>
-                </tr>
-            </s:if>
-
-            <s:if test="%{complain.state>1}">
                 <tr>
                     <td>落实结果</td>
                     <td colspan="7">
@@ -232,24 +197,29 @@
                     <td class="tableleft">分值</td>
                     <td><s:textfield cssClass="input" name="complain.grade"/></td>
                 </tr>
-                <!--<tr>
-                <td>落实负责人</td>
-                <td>
-                <s:textfield cssClass="input" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',complain.dealPerson).uname}"/>
-                </td>
-
-                <td colspan="3"></td>
-                <td>落实时间</td>
-                <td><s:textfield  cssClass="datepick input" name="complain.dealTime" /></td>
-                </tr>-->
+                <tr>
+                    <td>确认人</td>
+                    <td>
+                        <s:textfield cssClass="input" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',complain.confirmPerson).uname}"/>
+                    </td>
+                    <td colspan="3"></td>
+                    <td>确认时间</td>
+                    <td><s:textfield cssClass="input" name="complain.confirmTime" readonly="true" /></td>
+                </tr>
             </s:if>
-            <s:if test="%{complain.state>2}">
+
+            <s:if test="%{complain.state>1 || complain.state<-1}">
+                <tr>
+                    <td>回访结果</td>
+                    <td colspan="7">
+                        <s:textfield cssClass="input" value="%{(complain.state==3||complain.state==-3)?'属实':'不属实'}" disabled="true"/>
+                    </td>
+                </tr>
                 <tr>
                     <td>回访记录</td>
                     <td colspan="7">
                         <s:textarea rows="5" cssClass="input" placeholder="多行文本框" name="complain.visitBackResult"></s:textarea>
                     </td>
-
                 </tr>
                 <tr>
                     <td>回访负责人</td>
@@ -264,18 +234,7 @@
                     </td>
                 </tr>
             </s:if>
-            <s:if test="%{complain.state>3}">
-                <tr>
-                    <td>完结负责人</td>
-                    <td>
-                        <s:textfield  cssClass="input" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',complain.finishPerson).uname}" />
-                    </td>
 
-                    <td colspan="3"></td>
-                    <td>完结时间</td>
-                    <td><s:textfield  cssClass="input" name="complain.finishTime" /></td>
-                </tr>
-            </s:if>
             <s:if test="%{complain.attachDetail!=null}">
                 <tr>
                     <td>补充登记</td>

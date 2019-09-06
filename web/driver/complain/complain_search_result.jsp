@@ -242,8 +242,7 @@ Page pg = (Page)request.getAttribute("page");
             <th class="registrant        selected_able">登记人                      </th>
             <th class="registTime    selected_able">登记日期                    </th>
             <th class="state        selected_able">当前状态                    </th>
-			
-						<th class="isTrue     selected_able">是否属实                    </th>
+					<%--<th class="isTrue     selected_able">是否属实                    </th>--%>
             <th class="confirmPerson selected_able">确认人                      </th>
             <th class="confirmTime     selected_able">确认时间		              </th>
             <th class="dealPerson       selected_able">落实人                      </th>
@@ -287,23 +286,29 @@ Page pg = (Page)request.getAttribute("page");
 		待确认
 	</s:if>
 	<s:elseif test="%{#v.state==1}">
-		待落实
+		属实，待回访
+	</s:elseif>
+	<s:elseif test="%{#v.state==-1}">
+		不属实，待回访
 	</s:elseif>
 	<s:elseif test="%{#v.state==2}">
-		待回访
+		落实属实，回访不属实
+	</s:elseif>
+	<s:elseif test="%{#v.state==-2}">
+		落实不属实，回访不属实
 	</s:elseif>
 	<s:elseif test="%{#v.state==3}">
-		待完结
+		落实属实，回访也属实
 	</s:elseif>
-	<s:elseif test="%{#v.state==4}">
-		已完结
+	<s:elseif test="%{#v.state==-3}">
+		落实不属实，回访属实
 	</s:elseif>
 	<s:else>
-		不属实
+		未知
 	</s:else>
 </td>
 
-<td class="isTrue selected_able"><s:property value="%{#v.state>0?'是':'否'}"/></td>
+<%--<td class="isTrue selected_able"><s:property value="%{#v.state>0?'是':'否'}"/></td>--%>
 <td class="confirmPerson selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',#v.confirmPerson).uname}"/></td>
 <td class="confirmTime selected_able"><s:property value="%{#v.confirmTime}"/></td>
 <td class="dealPerson selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',#v.dealPerson).uname}"/></td>
@@ -376,7 +381,7 @@ Page pg = (Page)request.getAttribute("page");
 		<label class="button active"><input type="checkbox" name="sbx" value="registrant" checked="checked"><span class="icon icon-check text-green"></span>登记人</label>
 		<label class="button active"><input type="checkbox" name="sbx" value="registTime" checked="checked"><span class="icon icon-check text-green"></span>登记日期</label>
 		<label class="button active"><input type="checkbox" name="sbx" value="state" checked="checked"><span class="icon icon-check text-green"></span>当前状态</label>
-		<label class="button active"><input type="checkbox" name="sbx" value="isTrue" checked="checked"><span class="icon icon-check text-green"></span>是否属实</label>
+		<%--<label class="button active"><input type="checkbox" name="sbx" value="isTrue" checked="checked"><span class="icon icon-check text-green"></span>是否属实</label>--%>
 		<label class="button "><input type="checkbox" name="sbx" value="confirmPerson"><span class="icon icon-check text-green"></span>确认人</label>
 		<label class="button "><input type="checkbox" name="sbx" value="confirmTime" ><span class="icon icon-check text-green"></span>确认时间</label>
 		<label class="button "><input type="checkbox" name="sbx" value="dealPerson" ><span class="icon icon-check text-green"></span>落实人</label>
