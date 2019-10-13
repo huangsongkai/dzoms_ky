@@ -1159,6 +1159,7 @@ Date.parseFunctions={count:0};Date.parseRegexes=[];Date.formatFunctions={count:0
 		var begin_year = options.begin_year;
 		var end_month = options.end_month;
 		var end_year = options.end_year;
+		var separator = options.separator || "/";
 
 		var canlederBox = null;
 		box.click(function(){
@@ -1208,8 +1209,8 @@ Date.parseFunctions={count:0};Date.parseRegexes=[];Date.formatFunctions={count:0
 			var year = now.getFullYear();
 			var month = now.getMonth() + 1;
 			if(box.val()){
-				year = box.val().split("/")[0] * 1;
-				month = box.val().split("/")[1] * 1;
+				year = box.val().split(separator)[0] * 1;
+				month = box.val().split(separator)[1] * 1;
 			}
 
 			canlederBox.find(_title_ul_li).eq(1).find("div.inner").html(_getSelect(year));
@@ -1285,7 +1286,7 @@ Date.parseFunctions={count:0};Date.parseRegexes=[];Date.formatFunctions={count:0
 					}
 					
 					month = month < 10 ? "0" + month : month;
-					canlederBox.data("box").val(year + "/" + month);
+					canlederBox.data("box").val(year + separator + month);
 					canlederBox.hide();
 				});
 				

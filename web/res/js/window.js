@@ -146,7 +146,12 @@ function showImagePic(obj){
 
 var button_bind_len=0;
 function button_bind_html(seletor,innerHtml,fnName){
-	var $butOK = $('<button class="button bg-green dialog-close but-ok" onclick="'+fnName+'">确认</button>');
+	var $butOK;
+	if (fnName instanceof Function){
+		$butOK = $('<button class="button bg-green dialog-close but-ok">确认</button>').click(fnName);
+	} else {
+		$butOK = $('<button class="button bg-green dialog-close but-ok" onclick="'+fnName+'">确认</button>');
+	}
 	var $innerDiv = $('<div class="dialog-foot"></div>')
 				.append('<button class="button dialog-close">取消</button>')
 				.append($butOK);

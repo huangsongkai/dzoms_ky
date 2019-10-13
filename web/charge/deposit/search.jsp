@@ -390,15 +390,15 @@
     </tr>
     <%
         Session s = HibernateSessionFactory.getSession();
-        Query q = s.createQuery("select v.dept,\n" +
+        Query q = s.createQuery("select (CASE WHEN d.carframeNum IS NULL THEN '其它' ELSE v.dept END),\n" +
                 "sum(case when d.inDate<:beginDate then 0.0 when d.inDate>:endDate then 0.0 else d.inMoney end ),\n" +
                 "sum(case when d.backDate<:beginDate then 0.0 when d.backDate>:endDate then 0.0 else d.backMoney end ),\n" +
                 "sum(case when d.inDate>:endDate then 0.0 else d.inMoney end ),\n" +
                 "sum(case when d.backDate>:endDate then 0.0 else d.backMoney end )\n" +
                 "from Deposit d,Vehicle v \n" +
-                "where d.carframeNum=v.carframeNum \n" +
-                "group by v.dept\n" +
-                "order by (CASE v.dept WHEN '一部' THEN 1 WHEN '二部' THEN 2 WHEN '三部' THEN 3 ELSE 4 END)");
+                "where d.carframeNum=v.carframeNum or (d.carframeNum is null and v.carframeNum=(select MAX(carframeNum) from Vehicle)) \n" +
+                "group by (CASE WHEN d.carframeNum IS NULL THEN '其它' ELSE v.dept END)\n" +
+                "order by (CASE WHEN d.carframeNum IS NULL THEN 4 WHEN v.dept='一部' THEN 1 WHEN v.dept='二部' THEN 2 ELSE 3 END)");
         q.setDate("beginDate",dateBegin==null?new Date(100,1,1):dateBegin);
         q.setDate("endDate",dateEnd==null?new Date(200,1,1):dateEnd);
         List<Object[]> results = q.list();

@@ -27,10 +27,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
+import org.hibernate.criterion.Expression;
 import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -200,9 +198,10 @@ public class DriverAction extends BaseAction{
 			deposit.setuNameIn(((User) DriverAction.this.session.getAttribute("user")).getUname());
 
 			if (StringUtils.isNotBlank(driver.getApplyLicenseNum())){
-				Vehicle vehicle = new Vehicle();
-				vehicle.setLicenseNum(driver.getApplyLicenseNum());
-				vehicle = vehicleService.selectByLicenseNum(vehicle);
+				Vehicle vehicle = (Vehicle) session.createCriteria(Vehicle.class)
+						.add(Expression.eq("licenseNum",driver.getApplyLicenseNum()))
+						.setMaxResults(1)
+						.uniqueResult();
 				if (vehicle!=null){
 					deposit.setCarframeNum(vehicle.getCarframeNum());
 				}
@@ -236,10 +235,15 @@ public class DriverAction extends BaseAction{
 
 			session.update(driver);
 			depositService.add(deposit,session);
+
 			tx.commit();
 		}catch(HibernateException he){
-			if(tx != null){
-				tx.rollback();
+			try {
+				if (tx != null) {
+					tx.rollback();
+				}
+			}catch (Exception ee){
+				ee.printStackTrace();
 			}
 			he.printStackTrace();
 		}catch (RuntimeException ex){
@@ -248,7 +252,7 @@ public class DriverAction extends BaseAction{
 		finally{
 			HibernateSessionFactory.closeSession();
 		}
-		driverService.appendCaiWu(driver);
+//		driverService.appendCaiWu(driver);
 		url = "driverCheck";
 		return "nextAction";
 	}

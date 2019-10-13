@@ -8,6 +8,7 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.math.RoundingMode" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%!
@@ -107,7 +108,20 @@
             $("#theform").submit();
             $("input[name='doExport']").val("no");
         });
+
       });
+
+      var showTableBody = true;
+      function toggleTableBody() {
+          if (showTableBody){
+              $("#divide-table tbody").css("display","none");
+          } else {
+              $("#divide-table tbody").css("display","table-row-group");
+          }
+          showTableBody = !showTableBody;
+      }
+
+
   </script>
 </head>
 <body>
@@ -126,22 +140,25 @@
         <input type="submit" value="提交" class="button bg-main">
         <input type="hidden" name="doExport" value="no">
         <input id="doExport" type="button" value="导出Excel" class="button bg-main">
+
+        <input type="button" class="button bg-main" value="隐藏/显示摊销内容" onclick="toggleTableBody()">
    </form>
 </div>
     <div id="show" style="width: 100%;height: 800px;overflow:scroll;">
         <%=err_mag%>
         <% if(result!=null && result.size()>0){ %>
-        <table class="table table-bordered table-responsive">
+        <table id="divide-table" class="table table-bordered table-responsive">
             <thead>
             <tr>
+                <th>序号</th>
                 <th>月份</th>
                 <th>部门</th>
                 <th>车牌号</th>
                 <th>保险原值</th>
                 <th>已摊期数</th>
                 <th>未摊期数</th>
-                <th>本期金额</th>
-                <th>累计金额</th>
+                <th>本期摊销金额</th>
+                <th>累计摊销金额</th>
                 <th>期末净值</th>
                 <th>投保日期</th>
             </tr>
@@ -154,21 +171,29 @@
                 BigDecimal sum4 = BigDecimal.ZERO;
                 BigDecimal sum5 = BigDecimal.ZERO;
                 BigDecimal sum6 = BigDecimal.ZERO;
+
+                BigDecimal col1 = BigDecimal.ZERO;
+                BigDecimal col2 = BigDecimal.ZERO;
+                BigDecimal col3 = BigDecimal.ZERO;
+                BigDecimal col4 = BigDecimal.ZERO;
+                BigDecimal col5 = BigDecimal.ZERO;
+                BigDecimal col6 = BigDecimal.ZERO;
                 for(int i = 0; i < result.size(); i++) {
                 Object[] ins = (Object[]) result.get(i);
 
                 int monthRank = (Integer) ins[0];
             %>
             <tr>
+                <td><%=i+1%></td>
                 <td><%=startYear%>-<%=startMonth%></td>
                 <td><%=ins[1]%></td>
                 <td><%=ins[2]%></td>
-                <td><%=ins[3]%><%sum = sum.add(BigDecimal.valueOf(((Number) ins[3]).doubleValue()));%></td>
-                <td><%=ins[4]%><%sum2 = sum2.add(BigDecimal.valueOf(((Number) ins[4]).doubleValue()));%></td>
-                <td><%=ins[5]%><%sum3 = sum3.add(BigDecimal.valueOf(((Number) ins[5]).doubleValue()));%></td>
-                <td><%=ins[6]%><%sum4 = sum4.add(BigDecimal.valueOf(((Number) ins[6]).doubleValue()));%></td>
-                <td><%=ins[7]%><%sum5 = sum5.add(BigDecimal.valueOf(((Number) ins[7]).doubleValue()));%></td>
-                <td><%=ins[8]%><%sum6 = sum6.add(BigDecimal.valueOf(((Number) ins[8]).doubleValue()));%></td>
+                <td><%col1=BigDecimal.valueOf(((Number) ins[3]).doubleValue());%><%=col1.setScale(2, RoundingMode.HALF_UP)%><%sum = sum.add(col1);%></td>
+                <td><%col2=BigDecimal.valueOf(((Number) ins[4]).doubleValue());%><%=col2.setScale(2, RoundingMode.HALF_UP)%><%sum2 = sum2.add(col2);%></td>
+                <td><%col3=BigDecimal.valueOf(((Number) ins[5]).doubleValue());%><%=col3.setScale(2, RoundingMode.HALF_UP)%><%sum3 = sum3.add(col3);%></td>
+                <td><%col4=BigDecimal.valueOf(((Number) ins[6]).doubleValue());%><%=col4.setScale(2, RoundingMode.HALF_UP)%><%sum4 = sum4.add(col4);%></td>
+                <td><%col5=BigDecimal.valueOf(((Number) ins[7]).doubleValue());%><%=col5.setScale(2, RoundingMode.HALF_UP)%><%sum5 = sum5.add(col5);%></td>
+                <td><%col6=BigDecimal.valueOf(((Number) ins[8]).doubleValue());%><%=col6.setScale(2, RoundingMode.HALF_UP)%><%sum6 = sum6.add(col6);%></td>
                 <td><%=DateTypeConverter.dateFormat20.format(ins[9])%></td>
             </tr>
             <%}%>
@@ -178,12 +203,13 @@
                 <td>合计</td>
                 <td>-</td>
                 <td>-</td>
-                <td><%=sum%></td>
-                <td><%=sum2%></td>
-                <td><%=sum3%></td>
-                <td><%=sum4%></td>
-                <td><%=sum5%></td>
-                <td><%=sum6%></td>
+                <td>-</td>
+                <td><%=sum.setScale(2,RoundingMode.HALF_UP)%></td>
+                <td><%=sum2.setScale(2,RoundingMode.HALF_UP)%></td>
+                <td><%=sum3.setScale(2,RoundingMode.HALF_UP)%></td>
+                <td><%=sum4.setScale(2,RoundingMode.HALF_UP)%></td>
+                <td><%=sum5.setScale(2,RoundingMode.HALF_UP)%></td>
+                <td><%=sum6.setScale(2,RoundingMode.HALF_UP)%></td>
                 <td>-</td>
             </tr>
             </tfoot>

@@ -263,6 +263,7 @@ $(function(){
 		if(functionName!=undefined&&functionName!=null){
 			var info = eval(functionName+"()");
 			win.find(".dialog").find('.dialog-body').html(info);
+			// $(".dialog").find('.dialog-body').html(info);
 		}
 		
 		var x=parseInt($(window).width()-win.outerWidth())/2;

@@ -1,17 +1,9 @@
 package com.dz.module.vehicle;
 
+import javax.persistence.*;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-
 import static javax.persistence.GenerationType.IDENTITY;
-
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * VehicleApproval entity. @author MyEclipse Persistence Tools
@@ -238,7 +230,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.contractId = contractId;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "termination_date", length = 0)
 	public Date getTerminationDate() {
 		return this.terminationDate;
@@ -379,7 +371,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.onetimeAfterpay = onetimeAfterpay;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "approval_branch_date", length = 0)
 	public Date getApprovalBranchDate() {
 		return this.approvalBranchDate;
@@ -416,7 +408,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.officeRemark = officeRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "approval_office_date", length = 0)
 	public Date getApprovalOfficeDate() {
 		return this.approvalOfficeDate;
@@ -444,7 +436,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.cashierRemark = cashierRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "cashier_approval_date", length = 0)
 	public Date getCashierApprovalDate() {
 		return this.cashierApprovalDate;
@@ -481,7 +473,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.financeRemark = financeRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "approval_finance_date", length = 0)
 	public Date getApprovalFinanceDate() {
 		return this.approvalFinanceDate;
@@ -518,7 +510,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.financeManagerRemark = financeManagerRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "finance_manager_approval_date", length = 0)
 	public Date getFinanceManagerApprovalDate() {
 		return this.financeManagerApprovalDate;
@@ -555,7 +547,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.branchManagerRemark = branchManagerRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "branch_manager_approval_date", length = 0)
 	public Date getBranchManagerApprovalDate() {
 		return this.branchManagerApprovalDate;
@@ -592,7 +584,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.assurerRemark = assurerRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "assurer_approval_date", length = 0)
 	public Date getAssurerApprovalDate() {
 		return this.assurerApprovalDate;
@@ -629,7 +621,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.managerRemark = managerRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "manager_approval_date", length = 0)
 	public Date getManagerApprovalDate() {
 		return this.managerApprovalDate;
@@ -666,7 +658,7 @@ public class VehicleApproval implements java.io.Serializable {
 		this.directorRemark = directorRemark;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "approval_director_date", length = 0)
 	public Date getApprovalDirectorDate() {
 		return this.approvalDirectorDate;
