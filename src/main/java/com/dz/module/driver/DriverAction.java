@@ -114,6 +114,10 @@ public class DriverAction extends BaseAction{
 				}
 
 				rd.setStatus(0);
+				if(StringUtils.contains(driver.getApplyMatter(), "临")){
+					rd.setStatus(1);
+				}
+
 				rd.setApplyMatter(driver.getApplyMatter());
 				rd.setFuwubaozhengjin(driver.getFuwubaozhengjin());
 				rd.setApplyLicenseNum(driver.getApplyLicenseNum());
