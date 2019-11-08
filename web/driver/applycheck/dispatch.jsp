@@ -85,7 +85,7 @@
                     </div>
                     <div class="field">
                         <s:textfield id="applyLicenseNum" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="车牌号" />
-                        <input type="submit" class="button" value="查询" />
+
                     </div>
 
                     <div class="label">
@@ -93,7 +93,7 @@
                     </div>
                     <div class="field">
                         <s:textfield id="部门" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="部门" />
-                        <input type="submit" class="button" value="查询" />
+
                     </div>
 
                     <div class="label">
@@ -101,7 +101,7 @@
                     </div>
                     <div class="field">
                         <s:textfield id="申请日期" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="申请日期" />
-                        <input type="submit" class="button" value="查询" />
+
                     </div>
 
                     <div class="label">
