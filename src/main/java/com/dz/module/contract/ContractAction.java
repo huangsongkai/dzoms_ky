@@ -309,7 +309,10 @@ public class ContractAction extends BaseAction {
 
 			System.out.println("Before Plan Making......");
 			//生成合同约定
-			if(contract.isPlanMaked()){
+			Contract c = (Contract) hsession.get(Contract.class,contract.getId());
+
+			if(!c.isPlanMaked() && (vehicle.getOperateCardTime()==null ||
+					vehicle.getOperateCardTime().getTime()<new Date(110,1,1).getTime()) ){
 				if(contractBeginDate.getDate()>26){
 					if(m==11){
 						y++;
