@@ -822,6 +822,10 @@
 											<input type="checkbox" name="roleIds" class="role82" value="82" />
 											清账
 										</td>
+										<td>
+											<input type="checkbox" name="roleIds" class="role254" value="254" />
+											服务保证金录入
+										</td>
 									</tr>
 									<tr>
 										<td>查询：</td>

@@ -67,7 +67,6 @@
             <li>驾驶员</li>
             <li>聘用</li>
             <li>聘用审核</li>
-
         </ul>
     </div>
 </div>
@@ -77,38 +76,35 @@
     </div>
     <div class="panel-body">
         <div class="line padding">
-            <form action="driverCheck" method="post" class="form form-x">
+            <form action="driverCheck" method="post" class="form form-inline">
                 <div class="form-group">
-
                     <div class="label">
                         <label for="applyLicenseNum">车牌号</label>
                     </div>
                     <div class="field">
-                        <s:textfield id="applyLicenseNum" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="车牌号" />
-                        <input type="submit" class="button" value="查询" />
+                        <s:textfield id="applyLicenseNum" cssClass="input input-auto" name="driver.applyLicenseNum" size="11" placeholder="车牌号" />
                     </div>
-
+                </div>
+                <div class="form-group">
                     <div class="label">
                         <label for="部门">部门</label>
                     </div>
                     <div class="field">
-                        <s:textfield id="部门" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="部门" />
-                        <input type="submit" class="button" value="查询" />
+                        <s:select id="部门" name="driver.dept" cssClass="input input-auto" list="#{'全部':'全部','一部':'一部','二部':'二部','三部':'三部','未指定':'未指定'}"></s:select>
                     </div>
 
                     <div class="label">
-                        <label for="申请日期">申请日期</label>
+                        <label for="申请日期">申请日期 &ge; </label>
                     </div>
                     <div class="field">
-                        <s:textfield id="申请日期" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="申请日期" />
-                        <input type="submit" class="button" value="查询" />
+                        <s:textfield id="申请日期" cssClass="input input-auto" name="driver.applyTime" size="11" placeholder="申请日期" />
                     </div>
 
                     <div class="label">
-                        <label for="申请事项（驾驶员属性）">车牌号</label>
+                        <label for="申请事项（驾驶员属性）">申请事项</label>
                     </div>
                     <div class="field">
-                        <s:textfield id="申请事项（驾驶员属性）" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="申请事项（驾驶员属性）" />
+                        <s:select id="申请事项（驾驶员属性）" cssClass="input input-auto" name="driver.applyMatter" list="#{'全部':'全部','新包车':'新包车','转包车':'转包车','驾驶员':'驾驶员','临驾':'临驾'}"></s:select>
                         <input type="submit" class="button" value="查询" />
                     </div>
                 </div>

@@ -72,7 +72,7 @@
                         sumbittable = true;
                     });
                 }
-            }else{
+            }else if(applyType === "新包车"){
             	$.post("/DZOMS/common/doit", {"condition": "from Vehicle where licenseNum = '" + licenseNum + "'"}, function (data) {
                         if(data["affect"] === undefined){
                             sumbittable = confirm("该车不存在，是否继续？");

@@ -163,14 +163,19 @@ public class DriverAction extends BaseAction{
 
 	public String driverAppendScore(){
 		driverService.appendScore(driver);
-        if (StringUtils.contains(driver.getApplyMatter(), "转包车")) {
-            Session s = null;
+		Session s = null;
+		s = HibernateSessionFactory.getSession();
+		Driver rd = (Driver) s.get(Driver.class, driver.getIdNum());
+
+		System.out.println(rd.getApplyMatter());
+		System.out.println(StringUtils.contains(rd.getApplyMatter(), "转包车"));
+        if (StringUtils.contains(rd.getApplyMatter(), "转包车")) {
             Transaction tx = null;
             try {
-                s = HibernateSessionFactory.getSession();
                 tx = s.beginTransaction();
-                Driver rd = (Driver) s.get(Driver.class, driver.getIdNum());
+				System.out.println(rd.getStatus());
                 rd.setStatus(rd.getStatus() + 1);
+                s.update(rd);
                 tx.commit();
                 request.setAttribute("msgStr", "申请成功。");
             } catch (HibernateException e) {
@@ -302,24 +307,67 @@ public class DriverAction extends BaseAction{
 //		List<Driver> drivers = driverService.driverSearch(PageUtil.createPage(total,total,1));
 //
 		Session s = HibernateSessionFactory.getSession();
+		Transaction tx = null;
+		try {
+			tx = s.beginTransaction();
+			String sql = "select d.id_num FROM driver AS d WHERE d.status in (0,1,2) AND DATE_ADD(d.apply_time,INTERVAL 2 WEEK)<NOW()";
+			Query q_del = s.createSQLQuery(sql);
+			List<String> ids = q_del.list();
+			Driver d;
+			for (String id : ids) {
+				d = (Driver) s.get(Driver.class,id);
+				s.delete(d);
+			}
+			tx.commit();
+		}catch (HibernateException ex){
+			ex.printStackTrace();
+			if (tx!=null){
+				tx.rollback();
+			}
+		}
 
-		String hql = "from Driver where status in (1,2) ";
-
-        Date today = new Date();
-
+//        Date today = new Date();
+//
+		String hql = "from Driver d where status in (1,2) ";
         if (driver != null && StringUtils.isNotBlank(driver.getApplyLicenseNum())) {
-			hql += " and (applyLicenseNum is null or applyLicenseNum like :carNum )";
-            if (today.getTime() - driver.getApplyTime().getTime()
-                    > 1000 * 60 * 60 * 24 * 14) { //两者相减大于两周
-                hql+= "delete from Driver WHERE id = " + driver.getIdNum();
-            }
+			hql += " and (d.applyLicenseNum is null or d.applyLicenseNum like :carNum )";
         }
+
+        if (driver!=null && !StringUtils.equalsIgnoreCase(driver.getDept(),"全部")){
+        	if("未指定".equals(driver.getDept())){
+        		hql+=" and (d.applyLicenseNum is null or length(d.applyLicenseNum)<7 or not exists(select 1 from Vehicle v where v.licenseNum=d.applyLicenseNum)) ";
+			}else {
+        		hql+=" and (d.applyLicenseNum is not null and exists(select 1 from Vehicle v where v.licenseNum=d.applyLicenseNum and v.dept=:dept) ) ";
+			}
+		}
+
+        if (driver!=null && driver.getApplyTime()!=null && driver.getApplyTime().getTime()>new Date(100,1,1).getTime()){
+        	hql += " and d.applyTime >=  :applyTime ";
+		}
+
+        if (driver!=null && driver.getApplyMatter()!=null && !driver.getApplyMatter().equals("全部")){
+        	hql += " and d.applyMatter = :applyMatter ";
+		}
 
 		Query q_d = s.createQuery(hql);
 
 		if(driver!=null && StringUtils.isNotBlank(driver.getApplyLicenseNum())){
 			q_d.setString("carNum", "%"+driver.getApplyLicenseNum().trim()+"%");
 		}
+
+		if (driver!=null && !StringUtils.equalsIgnoreCase(driver.getDept(),"全部")
+				&& !StringUtils.equalsIgnoreCase(driver.getDept(),"未指定")){
+			q_d.setString("dept",driver.getDept());
+		}
+
+		if (driver!=null && driver.getApplyTime()!=null && driver.getApplyTime().getTime()>new Date(100,1,1).getTime()){
+			q_d.setDate("applyTime",driver.getApplyTime());
+		}
+
+		if (driver!=null && driver.getApplyMatter()!=null && !driver.getApplyMatter().equals("全部")){
+			q_d.setString("applyMatter",driver.getApplyMatter());
+		}
+
 		List<Driver> drivers = q_d.list();
 //		int total = drivers.size();
 
