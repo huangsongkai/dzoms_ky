@@ -48,6 +48,7 @@
         String hql = "select \n" +
                 "div.id.monthRank,\n" +
                 "v.dept,\n" +
+                "ins.id," +
                 "v.licenseNum, \n" +
                 "sum(div.money),\n" +
                 "sum (case when div.id.monthRank<:rank then 1 else 0 end ),\n" +

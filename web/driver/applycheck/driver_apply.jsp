@@ -163,6 +163,7 @@
                        <div class="field">
                            <select id="applyType" name="driver.applyMatter">
                                <option>新包车</option>
+                               <option>转包车</option>
                                <option>驾驶员</option>
                                <option>临驾</option>
                        </select>

@@ -79,11 +79,36 @@
         <div class="line padding">
             <form action="driverCheck" method="post" class="form form-x">
                 <div class="form-group">
+
                     <div class="label">
                         <label for="applyLicenseNum">车牌号</label>
                     </div>
                     <div class="field">
                         <s:textfield id="applyLicenseNum" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="车牌号" />
+                        <input type="submit" class="button" value="查询" />
+                    </div>
+
+                    <div class="label">
+                        <label for="部门">部门</label>
+                    </div>
+                    <div class="field">
+                        <s:textfield id="部门" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="部门" />
+                        <input type="submit" class="button" value="查询" />
+                    </div>
+
+                    <div class="label">
+                        <label for="申请日期">申请日期</label>
+                    </div>
+                    <div class="field">
+                        <s:textfield id="申请日期" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="申请日期" />
+                        <input type="submit" class="button" value="查询" />
+                    </div>
+
+                    <div class="label">
+                        <label for="申请事项（驾驶员属性）">车牌号</label>
+                    </div>
+                    <div class="field">
+                        <s:textfield id="申请事项（驾驶员属性）" cssClass="input input-auto" name="driver.applyLicenseNum" size="7" placeholder="申请事项（驾驶员属性）" />
                         <input type="submit" class="button" value="查询" />
                     </div>
                 </div>

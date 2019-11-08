@@ -112,6 +112,10 @@
 
         $(document).ready(function(){
             $(".readonly-yes input,.readonly-yes textarea").attr("readonly","readonly");
+
+            if ("${driver.applyMatter}"==="转包车"){
+                $('.shoukuan').hide();
+            }
         });
 
 
@@ -187,12 +191,15 @@
             <form method="post" action="/DZOMS/driver/driverAppendCaiWu">
                 <label>服务保证金</label><s:textfield name="driver.fuwubaozhengjin" readonly="true"/>
                 <label style="display: none;">财务负责人意见</label><input type="hidden" name="driver.caiwufuzerenyijian">
-                <label>实收金额</label><s:textfield name="deposit.inMoney"/>
-                <label>收款时间</label><s:textfield readonly="true"><s:param name="value"><s:date name="%{new java.util.Date()}" format="yyyy-MM-dd"/></s:param> </s:textfield>
-                <label>收款人</label><s:textfield value="%{#session.user.uname}" readonly="true"/>
-                <label>收据单号</label><s:textfield name="deposit.depositId" />
-                <s:hidden value="%{#session.user.uname}" name="driver.caiwufuzeren"/>
-                <s:hidden value="%{driver.idNum}" name="driver.idNum"/>
+                <div class="shoukuan">
+                    <label>实收金额</label><s:textfield name="deposit.inMoney"/>
+                    <label>收款时间</label><s:textfield readonly="true"><s:param name="value"><s:date name="%{new java.util.Date()}" format="yyyy-MM-dd"/></s:param> </s:textfield>
+                    <label>收款人</label><s:textfield value="%{#session.user.uname}" readonly="true"/>
+                    <label>收据单号</label><s:textfield name="deposit.depositId" />
+                    <s:hidden value="%{#session.user.uname}" name="driver.caiwufuzeren"/>
+                    <s:hidden value="%{driver.idNum}" name="driver.idNum"/>
+                </div>
+
                 <input type="submit" class="button bg-main" value="通过">
             </form>
         </blockquote>
