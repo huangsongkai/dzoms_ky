@@ -173,13 +173,16 @@ public class VehicleApprovalAction extends BaseAction{
 		out.close();
 	}
 
+	//												  0,1,2,3,4,5,6,7
+	private static final int[] stateTransferMap = {1,2,7,4,5,6,8,3};
+	private static final int[] stateTransferMap2= {1,3,4,2,5,6,7,8};
 	public String vehicleApprovalPreUpdate() {
 		vehicleApproval = vehicleApprovalService.queryVehicleApprovalById(vehicleApproval.getId());
 		contract = (Contract) ObjectAccess.getObject("com.dz.module.contract.Contract", vehicleApproval.getContractId());
 		if(vehicleApproval.getCheckType()==0){
-			url = "/vehicle/CreateApproval/vehicle_approval0"+(vehicleApproval.getState()+1)+".jsp";
+			url = "/vehicle/CreateApproval/vehicle_approval0"+(stateTransferMap[vehicleApproval.getState()])+".jsp";
 		}else{
-			url = "/vehicle/AbandonApproval/vehicle_abandon0"+(vehicleApproval.getState()+1)+".jsp";
+			url = "/vehicle/AbandonApproval/vehicle_abandon0"+(stateTransferMap2[vehicleApproval.getState()])+".jsp";
 		}
 
 		return SUCCESS;

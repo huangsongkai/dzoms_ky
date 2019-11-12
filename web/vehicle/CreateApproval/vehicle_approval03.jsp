@@ -445,19 +445,28 @@ $(document).ready(function(){
                 </s:textarea>
             </div>
         </blockquote>
+    <blockquote class="form-disabled">
+        <strong>综合业务部-经理意见：</strong>
+        <div>
+            <s:textarea id="managerRemark"
+                        name="vehicleApproval.managerRemark" cssClass="input-xlarge"
+                        rows="3" cssStyle="width:100%">
+
+            </s:textarea>
+        </div>
+    </blockquote>
         <blockquote class="border-main">
             <strong>运营管理部-经理意见：</strong>
             <div>
-                <s:textarea id="managerRemark"
-                            name="vehicleApproval.managerRemark" cssClass="input-xlarge"
+                <s:textarea id="cashierRemark"
+                            name="vehicleApproval.cashierRemark" cssClass="input-xlarge"
                             rows="3" cssStyle="width:100%">
-                    
                 </s:textarea>
             </div>
         </blockquote>
         
         <div class="xm7-move">
-        	<input type="button" value="同意" class="button bg-green" onclick="approvalApply('#managerRemark');">
+        	<input type="button" value="同意" class="button bg-green" onclick="approvalApply('#cashierRemark');">
             <input type="submit" value="提交" class="button bg-green">
               <button type="button" class="button bg-green dialogs" name="backid"
 							id="backid" data-toggle="click" data-target="#mydialog" data-mask="1" data-width="50%">中止</button>

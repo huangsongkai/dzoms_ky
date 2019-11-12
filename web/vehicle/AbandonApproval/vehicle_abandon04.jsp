@@ -120,7 +120,7 @@
 					<td class="tableleft">原因</td>
 					<td >
 					<s:textfield name="contract.abandonReason"
-						readonly="readonly" />
+						readonly="true" />
 					</td>
 				</tr>
 				<tr>
@@ -148,7 +148,7 @@
 							cssStyle="width:100%"></s:textarea>
 					</td>
 				</tr>
-				<!--<tr>
+				<%--<tr>
 					<td class="tableleft">收款员意见</td>
 					<td colspan="3">
 						<s:textarea cssClass="input-xlarge"
@@ -156,13 +156,22 @@
 							cssStyle="width:100%">
 						</s:textarea>
 					</td>
-				</tr>-->
+				</tr>--%>
+				<tr>
+					<td class="tableleft">综合业务部经理意见</td>
+					<td colspan="3">
+						<s:textarea cssClass="input-xlarge"
+									id="managerRemark"
+									name="vehicleApproval.managerRemark" rows="3"
+									cssStyle="width:100%"></s:textarea>
+					</td>
+				</tr>
 				<tr class="form-not-disabled">
 					<td class="tableleft">运营部经理意见</td>
 					<td colspan="3">
 						<s:textarea cssClass="input-xlarge"
-							id="managerRemark"
-							name="vehicleApproval.managerRemark" rows="3" 
+							id="cashierRemark"
+							name="vehicleApproval.cashierRemark" rows="3"
 							cssStyle="width:100%"></s:textarea>
 					</td>
 				</tr>
@@ -170,7 +179,7 @@
 				<tr>
 					<td class="tableleft"></td>
 					<td colspan="3" style="text-align:right;">
-						<input type="button" value="同意" class="btn btn-primary" onclick="approvalApply('#managerRemark');">
+						<input type="button" value="同意" class="btn btn-primary" onclick="approvalApply('#cashierRemark');">
 						<button type="submit" class="btn btn-primary" type="button">提交</button>
 						&nbsp;&nbsp;
 						<button type="button" class="btn btn-success dialogs" name="backid"

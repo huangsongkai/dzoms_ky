@@ -131,6 +131,12 @@
         <action name="searchRentFirstDivide" class="contractAction" method="searchRentFirstDivide">
             <result name="success">${url}</result>
         </action>
+        <action name="searchRentFirstDivideToExcel" class="contractAction" method="searchRentFirstDivideToExcel">
+            <result name="success" type="chain">
+                <param name="actionName">outputExcel</param>
+                <param name="namespace">/common</param>
+            </result>
+        </action>
         <action name="resetRentFirstDivide" class="contractAction" method="resetRentFirstDivide"></action>
     </package>
 

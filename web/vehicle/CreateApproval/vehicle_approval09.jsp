@@ -484,10 +484,13 @@ $(document).ready(function(){
                 </s:textarea>
             </div>
         </blockquote>
-        
-        <s:if test="%{bean[0].state>2}">
+
+    <s:set name="bean_state" value="%{bean[0].state<=0?(-bean[0].state):bean[0].state}"></s:set>
+    <% int[] applyStateMap = {0,1,2,4,5,6,7,3};request.setAttribute("applyStateMap",applyStateMap); %>
+    <s:set name="stage" value="%{#request.applyStateMap[#bean_stage] + (bean[0].state<=0?1:0)}"></s:set>
+        <s:if test="%{#stage>2}">
         <blockquote class="form-disabled">
-            <strong>运营管理部-经理意见：</strong>
+            <strong>综合业务部-经理意见：</strong>
             <div>
                 <s:textarea id="managerRemark"
                             name="bean[0].managerRemark" cssClass="input-xlarge"
@@ -497,8 +500,20 @@ $(document).ready(function(){
             </div>
         </blockquote>
         </s:if>
-        
-        <s:if test="%{bean[0].state>3 || bean[0].state<-2}">
+
+        <s:if test="%{#stage>3}">
+            <blockquote class="form-disabled">
+                <strong>运营管理部-经理意见：</strong>
+                <div>
+                    <s:textarea id="cashierRemark"
+                                name="bean[0].cashierRemark" cssClass="input-xlarge"
+                                rows="3" cssStyle="width:100%">
+                    </s:textarea>
+                </div>
+            </blockquote>
+        </s:if>
+
+    <s:if test="%{#stage>4}">
         <blockquote class="form-disabled">
             <strong>计财部收款员意见：</strong>
             <div>
@@ -511,8 +526,8 @@ $(document).ready(function(){
             </div>
         </blockquote>
         </s:if>
-        
-        <s:if test="%{bean[0].state>4 || bean[0].state<-3}">
+
+    <s:if test="%{#stage>5}">
         <blockquote class="form-disabled">
             <strong>计财部经理意见：</strong>
             <div>
@@ -525,8 +540,8 @@ $(document).ready(function(){
             </div>
         </blockquote>
         </s:if>
-        
-        <s:if test="%{bean[0].state>5 || bean[0].state<-4}">
+
+    <s:if test="%{#stage>6}">
         <blockquote class="form-disabled">
             <strong>主管副总经理意见：</strong>
             <div>
@@ -541,8 +556,8 @@ $(document).ready(function(){
             </div>
         </blockquote>
         </s:if>
-        
-        <s:if test="%{bean[0].state>6 || bean[0].state<-5}">
+
+    <s:if test="%{#stage>7}">
         <blockquote class="border-main form-disabled">
             <strong>综合办公室意见：</strong>
             <div>

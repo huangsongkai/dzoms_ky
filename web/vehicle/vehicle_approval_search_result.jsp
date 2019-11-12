@@ -84,14 +84,28 @@
             });
         });
 
+        var rangeFrom         =[0,1,2,3,4,5,6,7];
+        var applyStateMap     =[0,1,2,4,5,6,7,3];
+        var abandondStateMap = [0,1,3,2,4,5,6,7];
         $(document).ready(function () {
-            $(".step").each(function () {
-                var status = $(this).attr("status");
+            $("tr[checkType='0'] .step").each(function () {
+                var status = applyStateMap[$(this).attr("status")];
                 var i = 0;
-                for (; i < parseInt(status) && i < 7; i++) {
+                for (; i < parseInt(status) && i < 8; i++) {
                     $(this).find(".step-bar").eq(i).addClass("complete");
                 }
-                if (i < 7) {
+                if (i < 8) {
+                    $(this).find(".step-bar").eq(i).addClass("active");
+                }
+            });
+
+            $("tr[checkType='1'] .step").each(function () {
+                var status = abandondStateMap[$(this).attr("status")];
+                var i = 0;
+                for (; i < parseInt(status) && i < 8; i++) {
+                    $(this).find(".step-bar").eq(i).addClass("complete");
+                }
+                if (i < 8) {
                     $(this).find(".step-bar").eq(i).addClass("active");
                 }
             });
@@ -174,9 +188,9 @@
                                     value="%{#c.carframeNum }"/></td>
                             <td class="licenseNum selected_able"><s:property
                                     value="%{#c.carNum}"/></td>
-                            <!-- <td class="state selected_able"><s:property value="%{#v.state}"/></td>
---></tr>
-                        <tr style='<s:property value="%{((#c.state==0||#c.state==1)#c.planMaked!=true)?'background-color: red;':''}"/>'
+                            <%-- <td class="state selected_able"><s:property value="%{#v.state}"/></td>--%>
+                        </tr>
+                        <tr style='<s:property value="%{((#c.state==0||#c.state==1) && #c.planMaked!=true)?'background-color: red;':''}"/>'
                             checkType="<s:property value="%{#v.checkType}"/>"
                             checkId="<s:property value="%{#v.id}"/>"
                             cId="<s:property value="%{#v.contractId}"/>">
@@ -185,7 +199,7 @@
                                     <div class="step"
                                          status='<s:property value="%{#v.state}"/>'>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.branchManagerApprovalDate}" format="yyyy/MM/dd"/></h2>">
@@ -193,7 +207,7 @@
                                                 class="step-text">承租人申请开业</span></span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.assurerApprovalDate}" format="yyyy/MM/dd"/></h2>">
@@ -201,62 +215,62 @@
                                                 class="step-text">保险员审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.managerApprovalDate}" format="yyyy/MM/dd"/></h2>">
                                             <span class="step-point">3</span><span
-                                                class="step-text">运营管理部经理审批</span>
+                                                class="step-text">综合业务部经理审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
-                                             title="<h2><s:date name="%{#v.managerApprovalDate}" format="yyyy/MM/dd"/></h2>">
-											<span class="step-point">3
+                                             title="<h2><s:date name="%{#v.cashierApprovalDate}" format="yyyy/MM/dd"/></h2>">
+											<span class="step-point">4
 												.5</span><span
                                                 class="step-text">运营管理部经理审批</span>
                                         </div>
 
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.financeManagerApprovalDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">4</span><span
+                                            <span class="step-point">5</span><span
                                                 class="step-text">计财部收款</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.approvalFinanceDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">5</span><span
+                                            <span class="step-point">6</span><span
                                                 class="step-text">计财部经理审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.approvalDirectorDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">6</span><span
+                                            <span class="step-point">7</span><span
                                                 class="step-text">主管副总经理审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.approvalOfficeDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">7</span><span
+                                            <span class="step-point">8</span><span
                                                 class="step-text">综合办公室审批</span>
                                         </div>
                                     </div>
                                 </s:if>
                                 <s:else>
                                     <div class="step"
-                                         status='<s:property value="%{#v.state==1?#v.state:(#v.state-1)}"/>'>
+                                         status='<s:property value="%{#v.state}"/>'>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.branchManagerApprovalDate}" format="yyyy/MM/dd"/></h2>">
@@ -264,7 +278,7 @@
                                                 class="step-text">承租人申请废业</span></span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.assurerApprovalDate}" format="yyyy/MM/dd"/></h2>">
@@ -272,43 +286,51 @@
                                                 class="step-text">保险员审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.managerApprovalDate}" format="yyyy/MM/dd"/></h2>">
                                             <span class="step-point">3</span><span
+                                                class="step-text">综合业务部经理审批</span>
+                                        </div>
+                                        <div class="step-bar tips"
+                                             style="width: 12.5%;"
+                                             data-toggle="hover"
+                                             data-place="top"
+                                             title="<h2><s:date name="%{#v.cashierApprovalDate}" format="yyyy/MM/dd"/></h2>">
+                                            <span class="step-point">4</span><span
                                                 class="step-text">运营管理部经理审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.approvalOfficeDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">4</span><span
+                                            <span class="step-point">5</span><span
                                                 class="step-text">综合办公室审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.approvalFinanceDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">5</span><span
+                                            <span class="step-point">6</span><span
                                                 class="step-text">计财部收款</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.financeManagerApprovalDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">6</span><span
+                                            <span class="step-point">7</span><span
                                                 class="step-text">计财部经理审批</span>
                                         </div>
                                         <div class="step-bar tips"
-                                             style="width: 14.28%;"
+                                             style="width: 12.5%;"
                                              data-toggle="hover"
                                              data-place="top"
                                              title="<h2><s:date name="%{#v.approvalDirectorDate}" format="yyyy/MM/dd"/></h2>">
-                                            <span class="step-point">7</span><span
+                                            <span class="step-point">8</span><span
                                                 class="step-text">主管副总经理审批</span>
                                         </div>
                                     </div>

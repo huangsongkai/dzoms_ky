@@ -53,24 +53,31 @@
 
         function _detail(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
+
             var url = "/DZOMS/contract/contractPreShow?contract.id="+selected_val;
             window.open(url,"合同明细",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _update(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
             var url = "/DZOMS/contract/contractPreUpdate1?contract.id="+selected_val;
             window.open(url,"合同修改",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
 
         function _updateContractId(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
             var url = "/DZOMS/contract/contractPreUpdateContractId?contract.id="+selected_val;
             window.open(url,"档案号修改",'width=800,height=600,resizable=yes,scrollbars=yes');
         }
@@ -85,8 +92,10 @@
 
         function _toPrint(){
             var selected_val = $("input[name='cbx']:checked").val();
-            if(selected_val==undefined)
+            if(selected_val==undefined){
                 alert('您没有选择任何一条数据');
+                return;
+            }
             var url = "/DZOMS/driver/driverPreprint?driver.idNum="+selected_val;
             window.open(url,"驾驶员打印",'width=800,height=600,resizable=yes,scrollbars=yes');
         }

@@ -82,7 +82,10 @@
 					<td>
 						<input type="checkbox" name="roleIds" class="role151" value="151" />
 						收款员
-
+					</td>
+					<td>
+						<input type="checkbox" name="roleIds" class="role146" value="146" />
+						综合业务部经理
 					</td>
 					<td>
 						<input type="checkbox" name="roleIds" class="role152" value="152" />

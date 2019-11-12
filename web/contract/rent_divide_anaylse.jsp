@@ -45,6 +45,10 @@
             });
 
             $("#search_form").submit();
+
+            $("#export-excel").click(function () {
+                $('#search_form').attr("action","/DZOMS/contract/searchRentFirstDivideToExcel").submit();
+            });
         });
 
         function clearAll(){
@@ -164,6 +168,7 @@
                 </div>
                 <div class="form-group">
                     <input type="submit" value="查询" />
+                    <input type="button" id="export-excel" value="导出" />
                 </div>
             </form>
         </div>

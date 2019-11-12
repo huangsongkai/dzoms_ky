@@ -159,11 +159,21 @@
 					</td>
 				</tr>-->
 				<tr>
+					<td class="tableleft">综合业务部经理意见</td>
+					<td colspan="3">
+						<s:textarea cssClass="input-xlarge"
+									id="managerRemark"
+									name="vehicleApproval.managerRemark" rows="3"
+									cssStyle="width:100%"></s:textarea>
+					</td>
+				</tr>
+				<tr>
 					<td class="tableleft">运营部经理意见</td>
 					<td colspan="3">
 						<s:textarea cssClass="input-xlarge"
-							name="vehicleApproval.managerRemark" rows="3" 
-							cssStyle="width:100%"></s:textarea>
+									id="cashierRemark"
+									name="vehicleApproval.cashierRemark" rows="3"
+									cssStyle="width:100%"></s:textarea>
 					</td>
 				</tr>
 				<tr>

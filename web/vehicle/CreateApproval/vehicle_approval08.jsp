@@ -435,16 +435,25 @@ function beforeSubmit(){
                 </s:textarea>
             </div>
         </blockquote>
-        <blockquote class="form-disabled">
-            <strong>运营管理部-经理意见：</strong>
-            <div>
-                <s:textarea id="managerRemark"
-                            name="vehicleApproval.managerRemark" cssClass="input-xlarge"
-                            rows="3" cssStyle="width:100%">
-                    
-                </s:textarea>
-            </div>
-        </blockquote>
+    <blockquote class="form-disabled">
+        <strong>综合业务部-经理意见：</strong>
+        <div>
+            <s:textarea id="managerRemark"
+                        name="vehicleApproval.managerRemark" cssClass="input-xlarge"
+                        rows="3" cssStyle="width:100%">
+
+            </s:textarea>
+        </div>
+    </blockquote>
+    <blockquote class="form-disabled">
+        <strong>运营管理部-经理意见：</strong>
+        <div>
+            <s:textarea id="cashierRemark"
+                        name="vehicleApproval.cashierRemark" cssClass="input-xlarge"
+                        rows="3" cssStyle="width:100%">
+            </s:textarea>
+        </div>
+    </blockquote>
         <blockquote class="form-disabled">
             <strong>计财部经理意见：</strong>
             <div>

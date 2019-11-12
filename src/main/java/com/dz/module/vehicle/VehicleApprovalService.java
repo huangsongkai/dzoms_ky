@@ -880,7 +880,15 @@ public class VehicleApprovalService {
                 vehicleApproval.setManagerRemark(_vehicleApproval.getManagerRemark());
                 vehicleApproval.setIsapprovalManager(_vehicleApproval.getIsapprovalManager());
                 return vehicleApprovalDao.executeUpdate(vehicleApproval);
-            } else if (state == 5)//主管副总经理审批
+            }else if (state==7){
+                vehicleApproval.setCashierApprovalDate(new Date());
+                vehicleApproval.setState(3);
+                vehicleApproval.setCashierName(uName);
+                vehicleApproval.setCashierRemark(_vehicleApproval.getCashierRemark());
+//                vehicleApproval.setIsapprovalAssurer(_vehicleApproval.getIsapprovalManager());
+                return vehicleApprovalDao.executeUpdate(vehicleApproval);
+            }
+            else if (state == 5)//主管副总经理审批
             {
                 String carframeNum = contract.getCarframeNum();
                 if (StringUtils.isEmpty(carframeNum)) {
@@ -941,12 +949,12 @@ public class VehicleApprovalService {
                 vehicleApproval.setAssurerName(uName);
                 vehicleApproval.setAssurerApprovalDate(new Date());
                 vehicleApproval.setIsapprovalAssurer(_vehicleApproval.getIsapprovalAssurer());
-                vehicleApproval.setState(3);//直接跳过收款员
-            } else if (state == 2) {
+                vehicleApproval.setState(3);
+            } else if (state == 2) {//cashier 代表运营部经理
                 vehicleApproval.setCashierRemark(_vehicleApproval.getCashierRemark());
                 vehicleApproval.setCashierName(uName);
                 vehicleApproval.setCashierApprovalDate(new Date());
-                vehicleApproval.setState(3);
+                vehicleApproval.setState(4);
             } else if (state == 3) {
                 String carframeNum = contract.getCarframeNum();
 
@@ -959,7 +967,7 @@ public class VehicleApprovalService {
                 vehicleApproval.setManagerRemark(_vehicleApproval.getManagerRemark());
                 vehicleApproval.setManagerName(uName);
                 vehicleApproval.setManagerApprovalDate(new Date());
-                vehicleApproval.setState(4);
+                vehicleApproval.setState(2);
                 vehicleApproval.setIsapprovalManager(_vehicleApproval.getIsapprovalManager());
             } else if (state == 4) {
                 vehicleApproval.setOfficeRemark(_vehicleApproval.getOfficeRemark());
@@ -990,7 +998,7 @@ public class VehicleApprovalService {
                 vehicleApproval.setDirectorRemark(_vehicleApproval.getDirectorRemark());
                 vehicleApproval.setDirectorName(uName);
                 vehicleApproval.setApprovalDirectorDate(new Date());
-                vehicleApproval.setState(3);
+                vehicleApproval.setState(8);
                 vehicleApproval.setIsapprovalDirector(_vehicleApproval.getIsapprovalDirector());
 
                 Vehicle vehicle = ObjectAccess.getObject(Vehicle.class, contract.getCarframeNum());
@@ -1226,8 +1234,12 @@ public class VehicleApprovalService {
         switch (role.getRname()) {
             case "分部经理":
                 break;
-            case "运营部经理":
+            case "综合业务部经理":
                 approvalList = vehicleApprovalDao.queryVehicleApprovalByState((short) 0, 2);
+                toDolist.addAll(CollectionUtils.collect(approvalList, new VehicleApprovalWaitDealTransformer()));
+                break;
+            case "运营部经理":
+                approvalList = vehicleApprovalDao.queryVehicleApprovalByState((short) 0, 7);
                 toDolist.addAll(CollectionUtils.collect(approvalList, new VehicleApprovalWaitDealTransformer()));
                 break;
             case "副总经理":
@@ -1266,6 +1278,10 @@ public class VehicleApprovalService {
             case "分部经理":
                 break;
             case "运营部经理":
+                approvalList = vehicleApprovalDao.queryVehicleApprovalByState((short) 1, 2);
+                toDolist.addAll(CollectionUtils.collect(approvalList, new VehicleApprovalWaitDealTransformer("废业审批")));
+                break;
+            case "综合业务部经理":
                 approvalList = vehicleApprovalDao.queryVehicleApprovalByState((short) 1, 3);
                 toDolist.addAll(CollectionUtils.collect(approvalList, new VehicleApprovalWaitDealTransformer("废业审批")));
                 break;

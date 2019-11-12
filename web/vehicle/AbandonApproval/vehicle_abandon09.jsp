@@ -149,7 +149,7 @@
 				<td class="tableleft">原因</td>
 				<td >
 					<s:textfield name="bean[1].abandonReason"
-								 readonly="readonly" />
+								 readonly="true" />
 				</td>
 			</tr>
 			<tr>
@@ -169,7 +169,10 @@
 				</td>
 			</tr>
 
-			<s:if test="%{bean[0].state>1}">
+			<s:set name="bean_state" value="%{bean[0].state<=0?(-bean[0].state):bean[0].state}"></s:set>
+			<% int[] applyStateMap = {0,1,3,2,4,5,6,7};request.setAttribute("applyStateMap",applyStateMap); %>
+			<s:set name="stage" value="%{#request.applyStateMap[#bean_stage] + (bean[0].state<=0?1:0)}"></s:set>
+			<s:if test="%{#stage>1}">
 				<tr>
 					<td class="tableleft">保险管理员意见</td>
 					<td colspan="3">
@@ -179,7 +182,7 @@
 					</td>
 				</tr>
 			</s:if>
-			<!--<tr>
+			<%--<tr>
 					<td class="tableleft">收款员意见</td>
 					<td colspan="3">
 						<s:textarea cssClass="input-xlarge"
@@ -187,10 +190,10 @@
 							cssStyle="width:100%">
 						</s:textarea>
 					</td>
-				</tr>-->
-			<s:if test="%{bean[0].state>3 || bean[0].state<-1}">
+				</tr>--%>
+			<s:if test="%{#stage>2}">
 				<tr>
-					<td class="tableleft">运营部经理意见</td>
+					<td class="tableleft">综合业务部经理意见</td>
 					<td colspan="3">
 						<s:textarea cssClass="input-xlarge"
 									name="bean[0].managerRemark" rows="3"
@@ -198,7 +201,17 @@
 					</td>
 				</tr>
 			</s:if>
-			<s:if test="%{bean[0].state>4 || bean[0].state<-3}">
+			<s:if test="%{#stage>3}">
+				<tr>
+					<td class="tableleft">运营部经理意见</td>
+					<td colspan="3">
+						<s:textarea cssClass="input-xlarge"
+									name="bean[0].cashierRemark" rows="3"
+									cssStyle="width:100%"></s:textarea>
+					</td>
+				</tr>
+			</s:if>
+			<s:if test="%{#stage>4}">
 
 				<tr>
 					<td class="tableleft">综合办公室意见</td>

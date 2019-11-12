@@ -67,7 +67,7 @@
 <div class="adminmin-bread" style="width: 100%;">
 		<ul class="bread text-main" style="font-size: larger;"> 
                 <li>审批</li>
-                <li>开业审批</li>
+                <li>废业审批</li>
     </ul>
 </div>
 <div class="line">
