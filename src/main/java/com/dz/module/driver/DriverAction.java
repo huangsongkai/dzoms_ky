@@ -283,8 +283,49 @@ public class DriverAction extends BaseAction{
 		return "nextAction";
 	}
 
-	public String driverCheck(){
+	public void driverRemoveItem() throws IOException {
+		JSONObject jobj = new JSONObject();
+		Session s = HibernateSessionFactory.getSession();
+		if (idNum!=null && idNum.length()>0){
+			Driver driver = (Driver) s.get(Driver.class,idNum);
+			if (driver==null){
+				jobj.put("msg", String.format("身份证为%s的驾驶员不存在！",idNum));
+				jobj.put("state",false);
+			}
+			else if (driver.getStatus()<3){
+			    Transaction tx = null;
+			    try {
+			        tx = s.beginTransaction();
+                    s.delete(driver);
+			        tx.commit();
+                    jobj.put("msg", "删除成功");
+                    jobj.put("state",true);
+                }catch (HibernateException ex){
+			        ex.printStackTrace();
+			        if (tx!=null){
+			            tx.rollback();
+                    }
+                    jobj.put("msg", "删除失败，数据库操作失败，原因是："+ex.getMessage());
+                    jobj.put("state",false);
+                }
+			}else {
+				jobj.put("msg", "驾驶员已收过保证金不可删除！");
+				jobj.put("state",false);
+			}
+		}else {
+			jobj.put("msg", "身份证号不可为空！");
+			jobj.put("state",false);
+		}
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
 
+		out.print(jobj.toString());
+		out.flush();
+		out.close();
+	}
+
+	public String driverCheck(){
 		User user = (User)session.getAttribute("user");
 		List<RelationUr> relationUrs = managerService.searchAuthoritiesByUser(user);
 		boolean isLuRuRen = false;

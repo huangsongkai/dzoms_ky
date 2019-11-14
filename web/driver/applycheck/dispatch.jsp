@@ -1,5 +1,11 @@
 <%@ page import="com.dz.module.driver.UrlAttachBean" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="com.dz.module.vehicle.Vehicle" %>
+<%@ page import="com.dz.module.driver.Driver" %>
+<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%--
   Created by IntelliJ IDEA.
@@ -52,6 +58,18 @@
                 $("#applyLicenseNum").val("黑A");
             }
         });
+
+        function removeItem(id_num) {
+            $.get("/DZOMS/driver/driverRemoveItem",{
+                "idNum":id_num
+            },function (data) {
+                if (data && data.state){
+                    alert("删除成功，请点击搜索按钮刷新！")
+                } else {
+                    alert(data.msg);
+                }
+            })
+        }
 
     </script>
     <style>
@@ -113,20 +131,43 @@
 
         <table class="table">
             <tr>
-                <th>姓名</th>
+                <th>部门</th>
                 <th>车牌号</th>
+                <th>姓名</th>
                 <th>身份证</th>
+                <th>申请事项</th>
+                <th>申请日期</th>
                 <th>操作</th>
+                <th>操作2</th>
             </tr>
 
-            <%for(UrlAttachBean uab:urlAttachBeen)
+            <%
+                Session s = HibernateSessionFactory.getSession();
+                Query query = s.createQuery("from Vehicle where licenseNum=:licenseNum");
+                query.setMaxResults(1);
+
+                for(UrlAttachBean uab:urlAttachBeen)
 //          	if(!uab.getUrl().contains("driverPreupdate"))
-            {%>
+            {
+                String dept="";
+                if (uab.getCarNum()!=null){
+                    query.setString("licenseNum",uab.getCarNum());
+                    Vehicle vehicle = (Vehicle) query.uniqueResult();
+                    if (vehicle!=null){
+                        dept = vehicle.getDept();
+                    }
+                }
+                Driver driver = (Driver) s.get(Driver.class,uab.getIdNum());
+            %>
             <tr class="page-x page<%=i++/pageSize+1%>">
-                <td><%=uab.getName()%></td>
+                <td><%=dept%></td>
                 <td><%=uab.getCarNum()%></td>
+                <td><%=uab.getName()%></td>
                 <td><%=uab.getIdNum()%></td>
+                <td><%=driver.getApplyMatter()%></td>
+                <td><%=DateTypeConverter.dateFormat3.format(driver.getApplyTime())%></td>
                 <td><a href="<%=uab.getUrl()%>" class="button bg-blue">审核</a></td>
+                <td><a href="#" onclick="removeItem('<%=uab.getIdNum()%>')" class="button bg-blue">删除</a></td>
             </tr>
             <%}%>
         </table>

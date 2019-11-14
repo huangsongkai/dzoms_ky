@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page import="com.dz.common.convertor.DateTypeConverter" %>
 <%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
 <%@ page import="com.dz.common.other.ObjectAccess" %>
@@ -88,17 +89,23 @@
         DepositService service = app.getBean(DepositService.class);
 
         List<Deposit> list;
-        long counts;
-        if (isDespointIn) {
-            counts = service.searchCount(licenseNum, driverName, ticketId, dateBegin, dateEnd, null, null);
-            list = service.search(licenseNum, driverName, idNum, ticketId, dateBegin, dateEnd, null, null, currentPage);
-        } else {
-            counts = service.searchCount(licenseNum, driverName, ticketId, null, null, dateBegin, dateEnd);
-            list = service.search(licenseNum, driverName, idNum, ticketId, null, null, dateBegin, dateEnd, currentPage);
+        long counts = 0;
+
+
+        System.out.println(licenseNum);
+        System.out.println(driverName);
+        System.out.println(idNum);
+        System.out.println(ticketId);
+        System.out.println(dateBegin);
+        System.out.println(dateEnd);
+
+        if (currentPage <= 0) {
+            currentPage = 1;
         }
 
         if (isDoExport) {
             List<String> datasrc = Arrays.asList("list");
+            list = service.search(licenseNum, driverName, idNum, ticketId, dateBegin, dateEnd, null, null, -100);
             List datalist = Arrays.asList(list);
             String templatePath = "charge/deposit/deposit.xls";
             String outputName = "服务保证金导出";
@@ -107,11 +114,17 @@
             request.setAttribute("templatePath", templatePath);
             request.setAttribute("outputName", outputName);
             request.getRequestDispatcher("/common/outputExcel.action").forward(request, response);
+        }else {
+            if (isDespointIn) {
+                counts = service.searchCount(licenseNum, driverName, ticketId, dateBegin, dateEnd, null, null);
+                list = service.search(licenseNum, driverName, idNum, ticketId, dateBegin, dateEnd, null, null, currentPage);
+            } else {
+                counts = service.searchCount(licenseNum, driverName, ticketId, null, null, dateBegin, dateEnd);
+                list = service.search(licenseNum, driverName, idNum, ticketId, null, null, dateBegin, dateEnd, currentPage);
+            }
         }
 
-        if (currentPage <= 0) {
-            currentPage = 1;
-        }
+
         long pages = (counts + 29) / 30;
 %>
 
@@ -214,7 +227,7 @@
                 alert('该押金数据已有车辆！');
             } else {
                 $.post("/DZOMS/charge/deposit_match", {
-                    "deposit.id": id
+                    "deposit.id": selected_val
                 }, function (data) {
                     if (data != null) {
                         if (data.isSuccess) {
@@ -237,7 +250,7 @@
             var newTicketId = prompt("请输入一个新票号：");
             if (newTicketId.trim().length > 0) {
                 $.post("/DZOMS/charge/deposit_update_ticketId", {
-                    "deposit.id": id,
+                    "deposit.id": selected_val,
                     "deposit.depositId": newTicketId
                 }, function (data) {
                     if (data != null) {
@@ -311,6 +324,7 @@
                             </div>
                             <div class="field">
                                 <input type="text" id="driverId" name="idNum"
+                                       value="<%=isNull2(idNum)%>"
                                        class="input input-auto"/>
                             </div>
                         </div>
@@ -385,12 +399,14 @@
                             </div>
                             <div class="field">
                                 <input type="text" name="beginDate"
+                                       value="<%=isNull2(beginDate)%>"
                                        class="datetimepicker input input-auto"
                                        size="10"/>
                             </div>
                             至
                             <div class="field">
                                 <input type="text" name="endDate"
+                                       value="<%=isNull2(endDate)%>"
                                        class="datetimepicker input input-auto"
                                        size="10"/>
                             </div>

@@ -1,10 +1,12 @@
 package com.dz.module.charge;
 
 import com.dz.common.factory.HibernateSessionFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -92,19 +94,19 @@ public class DepositService {
 
             String hql = "select d from Deposit d,Driver dr where d.idNum=dr.idNum ";
 
-            if (licenseNum != null) {
+            if (StringUtils.isNotBlank(licenseNum) ) {
                 hql += "and (d.carframeNum is null or d.carframeNum in (select v.carframeNum from Vehicle v where v.licenseNum like :licenseNum) ) ";
             }
 
-            if (idNum != null) {
+            if (StringUtils.isNotBlank(idNum )) {
                 hql += "and dr.idNum like :idNum ";
             }
 
-            if (driverName != null) {
+            if (StringUtils.isNotBlank(driverName)) {
                 hql += "and dr.name like :name ";
             }
 
-            if (depositId != null) {
+            if (StringUtils.isNotBlank(depositId)) {
                 hql += "and d.depositId like :depositId ";
             }
             if (inDateBegin != null && inDateEnd != null) {
@@ -117,16 +119,16 @@ public class DepositService {
 
             Query query = session.createQuery(hql);
 
-            if (licenseNum != null) {
+            if (StringUtils.isNotBlank(licenseNum) ) {
                 query.setString("licenseNum", "%" + licenseNum + "%");
             }
-            if (driverName != null) {
+            if (StringUtils.isNotBlank(driverName)) {
                 query.setString("name", "%" + driverName + "%");
             }
-            if (idNum != null) {
+            if (StringUtils.isNotBlank(idNum )) {
                 query.setString("idNum", "%" + idNum + "%");
             }
-            if (depositId != null) {
+            if (StringUtils.isNotBlank(depositId)) {
                 query.setString("depositId", "%" + depositId + "%");
             }
 
@@ -157,6 +159,14 @@ public class DepositService {
             }
         }
         return Collections.emptyList();
+    }
+
+    public static void main(String[] args) {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        HibernateSessionFactory.rebuildSessionFactory(applicationContext);
+        DepositService service = applicationContext.getBean(DepositService.class);
+
+        System.out.println(service.search("", "", "", "", null, null, null, null, 1));
     }
 
     public long searchCount(String licenseNum, String driverName,
