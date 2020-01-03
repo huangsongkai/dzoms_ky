@@ -11,6 +11,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "insurance", catalog = "ky_dzomsdb")
+@DiscriminatorValue("insurance")
 public class Insurance implements java.io.Serializable {
 
 	// Fields
@@ -43,11 +44,8 @@ public class Insurance implements java.io.Serializable {
 	public Insurance() {
 	}
 
-	/** full constructor */
-	public Insurance(String insuranceClass, String carframeNum,
-			String insuranceNum, String insuranceCompany, Double insuranceMoney,
-			Date beginDate, Date endDate, Date signDate, String driverId,
-			Integer register, Date registTime) {
+	public Insurance(Integer id, String insuranceClass, String carframeNum, String insuranceNum, String insuranceCompany, Double insuranceMoney, Date beginDate, Date endDate, Date signDate, String driverId, Integer register, Date registTime, String phone, String address, int state) {
+		this.id = id;
 		this.insuranceClass = insuranceClass;
 		this.carframeNum = carframeNum;
 		this.insuranceNum = insuranceNum;
@@ -59,6 +57,28 @@ public class Insurance implements java.io.Serializable {
 		this.driverId = driverId;
 		this.register = register;
 		this.registTime = registTime;
+		this.phone = phone;
+		this.address = address;
+		this.state = state;
+	}
+
+	public Insurance(Insurance insurance) {
+		this.id = insurance.id;
+		this.insuranceClass = insurance.insuranceClass;
+		this.carframeNum = insurance.carframeNum;
+		this.insuranceNum = insurance.insuranceNum;
+		this.insuranceCompany = insurance.insuranceCompany;
+		this.insuranceMoney = insurance.insuranceMoney;
+		this.beginDate = insurance.beginDate;
+		this.endDate = insurance.endDate;
+		this.signDate = insurance.signDate;
+		this.driverId = insurance.driverId;
+		this.register = insurance.register;
+		this.registTime = insurance.registTime;
+		this.phone = insurance.phone;
+		this.address = insurance.address;
+		this.state = insurance.state;
+		this.enterpriseID = insurance.enterpriseID;
 	}
 
 	// Property accessors

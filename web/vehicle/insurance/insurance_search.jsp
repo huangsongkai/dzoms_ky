@@ -1,6 +1,7 @@
 <%@page import="com.dz.common.other.ObjectAccess"%>
 <%@page import="com.dz.module.vehicle.Vehicle"%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib prefix="s" uri="/struts-tags" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -18,6 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	<link rel="stylesheet" href="/DZOMS/res/css/pintuer.css">
 	<link rel="stylesheet" href="/DZOMS/res/css/admin.css">
+	  <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
 	<script src="/DZOMS/res/js/jquery.js"></script>
 	<script src="/DZOMS/res/js/pintuer.js"></script>
 	<script src="/DZOMS/res/js/respond.js"></script>
@@ -26,8 +28,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
 	<script>
 	function refreshSearch(){
-
 		$("[name='vehicleSele']").submit();
+	}
+
+	function reset(){
+		$("[name='vehicleSele']")[0].reset()
 	}
 	
 		$(document).ready(function(){
@@ -85,6 +90,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         			<blockquote class="xm9">
         				<table class="table table-bordered">
         					<tr>
+								<td>部门</td>
+								<td>
+									<select name="vehicle.dept">
+										<option>全部</option>
+										<option>一部</option>
+										<option>二部</option>
+										<option>三部</option>
+									</select>
+								</td>
         						<td>车架号</td>
         						<td><input type="text" id="carframe_num" name="insurance.carframeNum" class="input" /></td>
         						<td>车牌号</td>
@@ -101,7 +115,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         							</select>
         						</td>
         					</tr>
-        				
+							<tr>
+								<td>录入时间</td>
+								<td >
+									<input type="text" class="input datepicker" name="inputFrom"></td>
+								<td >到</td>
+								<td ><input type="text" class="input datepicker" name="inputEnd"></td>
+								<td>起始时间</td>
+								<td ><input type="text" class="input datepicker" name="startFrom"></td>
+								<td >到</td>
+								<td ><input type="text" class="input datepicker" name="startEnd"></td>
+								<td><input type="button" value="查询" onclick="refreshSearch()"></td>
+								<td><input type="button" value="清空条件" onclick="reset()"></td>
+							</tr>
         				</table>
          			</blockquote>
         		</div>
@@ -116,8 +142,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </iframe>
 
 </div>
-
-<script type="text/javascript" src="/DZOMS/res/js/DateTimeHelper.js" ></script>
+	<script src="/DZOMS/res/js/jquery.datetimepicker.js"></script>
+	<script>
+		$('.datepicker').datetimepicker(
+				{
+					lang:"ch",           //语言选择中文
+					datepicker:true,
+					timepicker:false,    //关闭时间选项
+					format:"Y/m/d"
+				});
+	</script>
 </body>
 </html>
 

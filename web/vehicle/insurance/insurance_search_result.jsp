@@ -133,29 +133,41 @@ Page pg = (Page)request.getAttribute("page");
 
                 <tr>
                     <th>选择</th>
-            <th class="insuranceClass selected_able">保险类别</th>
-            <th class="insuranceNum selected_able">保单号</th>
-            <th class="carframeNum selected_able">车架号</th>
-            <th class="licenseNum selected_able">车牌号</th>
-            <th class="driverName selected_able">被保险人</th>
+                    <th class="dept selected_able">部门</th>
+                    <th class="licenseNum selected_able">车牌号</th>
+                    <th class="carframeNum selected_able">车架号</th>
+                    <th class="insuranceClass selected_able">保险类别</th>
+                    <th class="insuranceNum selected_able">保单号</th>
+            <%--<th class="driverName selected_able">被保险人</th>--%>
            <!-- <th class="driverPhone selected_able">被保险人联系电话</th>
             <th class="driverId selected_able">被保险人身份证号</th>-->
-            <th class="insuranceCompany selected_able">保险人公司名称</th>
-            <th class="insuranceMoney selected_able">保险费</th>
+            <%--<th class="insuranceCompany selected_able">保险人公司名称</th>--%>
+                    <th class="insuranceMoney selected_able">保险费</th>
+                    <th class="baseMoney selected_able">基础保费</th>
+                    <th class="dates selected_able">起始时间</th>
+                    <th class="dates selected_able">结束时间</th>
+                    <th class="register selected_able">录入时间</th>
+                    <th class="register selected_able">录入人</th>
                 </tr>
                <s:if test="%{#request.insurance!=null&&#request.insurance.size()!=0}">  
         <s:iterator value="%{#request.insurance}" var="v">
                         <tr>
-<td><input type="radio" name="cbx" value="<s:property value='%{#v.id}'/>" ></td>
-<td class="insuranceClass selected_able"><s:property value="%{#v.insuranceClass}"/></td>
-<td class="insuranceNum selected_able"><s:property value="%{#v.insuranceNum}"/></td>
-<td class="carframeNum selected_able"><s:property value="%{#v.carframeNum}"/></td>
-<td class="licenseNum selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',#v.carframeNum).licenseNum}"/></td>
-<!--<td class="driverName selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#v.driverId).name}"/></td>
-<td class="driverPhone selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#v.driverId).phoneNum1}"/></td>-->
-<td class="driverName selected_able"><s:property value="%{#v.driverId}"/></td>
-<td class="insuranceCompany selected_able"><s:property value="%{#v.insuranceCompany}"/></td>
-<td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceMoney}"/></td>
+                            <td><input type="radio" name="cbx" value="<s:property value='%{#v.id}'/>" ></td>
+                            <td class="dept selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',#v.carframeNum).dept}"/></td>
+                            <td class="licenseNum selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',#v.carframeNum).licenseNum}"/></td>
+                            <td class="carframeNum selected_able"><s:property value="%{#v.carframeNum}"/></td>
+                            <td class="insuranceClass selected_able"><s:property value="%{#v.insuranceClass}"/></td>
+                            <td class="insuranceNum selected_able"><s:property value="%{#v.insuranceNum}"/></td>
+<%--<td class="driverName selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#v.driverId).name}"/></td>
+<td class="driverPhone selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#v.driverId).phoneNum1}"/></td>--%>
+<%--<td class="driverName selected_able"><s:property value="%{#v.driverId}"/></td>--%>
+<%--<td class="insuranceCompany selected_able"><s:property value="%{#v.insuranceCompany}"/></td>--%>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceMoney}"/></td>
+                            <td class="baseMoney selected_able"><s:property value="%{#v.baseMoney}"/></td>
+                            <td class="dates selected_able"><s:date name="%{#v.beginDate}" format="yyyy/MM/dd HH:mm"/></td>
+                            <td class="dates selected_able"><s:date name="%{#v.endDate}" format="yyyy/MM/dd HH:mm"/></td>
+                            <td class="register selected_able"><s:date name="%{#v.registTime}" format="yyyy/MM/dd"/></td>
+                            <td class="register selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',#v.register).uname}" /> </td>
                         </tr>
                     </s:iterator>
 </s:if>
@@ -226,21 +238,33 @@ Page pg = (Page)request.getAttribute("page");
             <label class="button active">
                 <input type="checkbox" name="sbx" value="licenseNum" checked="checked"><span class="icon icon-check text-green"></span>车牌号
             </label>
-            <label class="button active">
-                <input type="checkbox" name="sbx" value="driverName" checked="checked"><span class="icon icon-check text-green"></span>被保险人
-            </label>
+                <label class="button active">
+                    <input type="checkbox" name="sbx" value="dept" checked="checked"><span class="icon icon-check text-green"></span>部门
+                </label>
+            <%--<label class="button active">--%>
+                <%--<input type="checkbox" name="sbx" value="driverName" checked="checked"><span class="icon icon-check text-green"></span>被保险人--%>
+            <%--</label>--%>
            <!-- <label class="button active">
                 <input type="checkbox" name="sbx" value="driverPhone" checked="checked"><span class="icon icon-check text-green"></span>被保险人联系电话
             </label>
             <label class="button active">
                 <input type="checkbox" name="sbx" value="driverId" checked="checked"><span class="icon icon-check text-green"></span>被保险人身份证号
             </label>-->
-            <label class="button active">
-                <input type="checkbox" name="sbx" value="insuranceCompany" checked="checked"><span class="icon icon-check text-green"></span>保险人公司名称
-            </label>
+            <%--<label class="button active">--%>
+                <%--<input type="checkbox" name="sbx" value="insuranceCompany" checked="checked"><span class="icon icon-check text-green"></span>保险人公司名称--%>
+            <%--</label>--%>
 						<label class="button active">
                 <input type="checkbox" name="sbx" value="insuranceMoney" checked="checked"><span class="icon icon-check text-green"></span>保险费
             </label>
+                <label class="button active">
+                    <input type="checkbox" name="sbx" value="baseMoney" checked="checked"><span class="icon icon-check text-green"></span>基础保费
+                </label>
+                <label class="button active">
+                    <input type="checkbox" name="sbx" value="dates" checked="checked"><span class="icon icon-check text-green"></span>起止时间
+                </label>
+                <label class="button active">
+                    <input type="checkbox" name="sbx" value="register" checked="checked"><span class="icon icon-check text-green"></span>录入人
+                </label>
             </div>
 
         </div>
@@ -256,7 +280,12 @@ Page pg = (Page)request.getAttribute("page");
     <s:hidden name="insurance.carframeNum" />
     <s:hidden name="insurance.insuranceNum" />
     <s:hidden name="vehicle.licenseNum" />
+    <s:hidden name="vehicle.dept" />
     <s:hidden name="insurance.insuranceClass" />
+    <s:hidden name="inputFrom" />
+    <s:hidden name="inputEnd" />
+    <s:hidden name="startFrom" />
+    <s:hidden name="startEnd" />
     <s:hidden name="currentPage" value="%{#request.page.currentPage}" id="currentPage"></s:hidden>
 </form>
 

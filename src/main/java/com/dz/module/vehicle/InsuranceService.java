@@ -4,10 +4,7 @@ import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.Page;
 import com.dz.module.contract.ContractTemplate2;
 import com.dz.module.driver.Driver;
-import org.hibernate.HibernateException;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
@@ -16,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -60,13 +58,13 @@ public class InsuranceService {
 	}
 
 
-	public int selectByConditionCount(Insurance insurance, Vehicle vehicle) {
-		return insuranceDao.selectByConditionCount(insurance,vehicle);
+	public int selectByConditionCount(Insurance insurance, Vehicle vehicle, Date inputFrom, Date inputEnd, Date startFrom, Date startEnd) {
+		return insuranceDao.selectByConditionCount(insurance,vehicle,inputFrom,inputEnd,startFrom,startEnd);
 	}
 
 
-	public List<Insurance> selectByCondition(Page page, Insurance insurance, Vehicle vehicle) {
-		return insuranceDao.selectByCondition(page,insurance,vehicle);
+	public List<Insurance> selectByCondition(Page page, Insurance insurance, Vehicle vehicle, Date inputFrom, Date inputEnd, Date startFrom, Date startEnd) {
+		return insuranceDao.selectByCondition(page,insurance,vehicle,inputFrom,inputEnd,startFrom,startEnd);
 	}
 
     static void makeDivide2(Session s, Insurance insurance, BigDecimal insuranceBase) {
@@ -148,6 +146,24 @@ public class InsuranceService {
             }
         }
     }
+
+    /**
+     * 检查新录保险时间范围内是否已有保险记录
+     * @param s
+     * @param carframeNum
+     * @param beginDate 新录保险的起始时间
+     * @return 正常时(不存在时) 返回 true
+     */
+    public boolean checkInsuranceDivide(Session s, String carframeNum, Date beginDate){
+        Query query = s.createQuery("select count(*) from InsuranceDivide2 where carframeNum=:car and id.monthRank > :rank ");
+        query.setString("car",carframeNum);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(beginDate);
+        query.setInteger("rank",calendar.get(Calendar.YEAR)*12+calendar.get(Calendar.MONTH)+1);
+        long size = (long) query.uniqueResult();
+        return size==0;
+    }
+
     static void makeDivide(Session s, Insurance insurance, BigDecimal insuranceBase) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(insurance.getBeginDate());

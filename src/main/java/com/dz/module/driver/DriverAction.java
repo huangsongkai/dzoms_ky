@@ -357,7 +357,8 @@ public class DriverAction extends BaseAction{
 			Driver d;
 			for (String id : ids) {
 				d = (Driver) s.get(Driver.class,id);
-				s.delete(d);
+				d.setStatus(4);
+				s.update(d);
 			}
 			tx.commit();
 		}catch (HibernateException ex){

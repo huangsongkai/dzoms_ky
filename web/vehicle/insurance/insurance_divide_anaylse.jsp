@@ -51,10 +51,10 @@
                 "ins.id," +
                 "v.licenseNum, \n" +
                 "sum(div.money),\n" +
-                "sum (case when div.id.monthRank<:rank then 1 else 0 end ),\n" +
+                "sum (case when div.id.monthRank<=:rank then 1 else 0 end ),\n" +
                 "sum (case when div.id.monthRank>:rank then 1 else 0 end ),\n" +
                 "sum (case when div.id.monthRank=:rank then div.money else 0 end ),\n" +
-                "sum (case when div.id.monthRank<:rank then div.money else 0 end ),\n" +
+                "sum (case when div.id.monthRank<=:rank then div.money else 0 end ),\n" +
                 "sum (case when div.id.monthRank>:rank then div.money else 0 end ),\n" +
                 "ins.beginDate\n" +
                 "from InsuranceDivide2 div,Insurance ins,Vehicle v \n" +

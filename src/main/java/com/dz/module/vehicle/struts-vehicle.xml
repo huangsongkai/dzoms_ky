@@ -82,6 +82,7 @@
 			<result name="success">${url}</result>
 			<result name="error">${url}</result>
 		</action>
+        <action name="checkInsuranceDivide" class="insuranceAction" method="checkInsuranceDivide"></action>
 		<action name="insuranceSele" class="insuranceAction" method="selectByCondition">
 			<result name="success">/vehicle/insurance/insurance_search_result.jsp</result>
 			<result name="error">/error.jsp</result>

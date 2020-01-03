@@ -133,6 +133,29 @@
                 openItem('insuranceMoneyCy', '承运人险金额');
             }
         }
+
+        function beforeSubmit() {
+            if ($('#insuranceClass').val()=='商业保险单') {
+                $.get("/DZOMS/vehicle/checkInsuranceDivide",{
+                    "vehicle.carframeNum":$('#carframe_num').val(),
+                    "insurance.beginDate":$('#beginDate').val()
+                },function (data) {
+                    if (data.result == 'true'){
+                        $('[name="insurance.state"]').val(3);
+                        $('form').submit();
+                    } else {
+                        if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
+                            $('[name="insurance.state"]').val(3);
+                        } else {
+                            $('[name="insurance.state"]').val(0);
+                        }
+                        $('form').submit();
+                    }
+                })
+            }else {
+                $('form').submit();
+            }
+        }
     </script>
     <jsp:include page="/common/msg_info.jsp"></jsp:include>
     <style>
@@ -156,13 +179,12 @@
     <div class="panel">
         <div class="panel-head">新增保险信息</div>
         <div class="panel-body">
-            <form class="form-x" action="/DZOMS/vehicle/insurance_add"
-                  method="post">
-                <s:hidden name="url"
-                          value="/vehicle/insurance/insurance_add.jsp"/>
+            <form class="form-x" action="/DZOMS/vehicle/insurance_add" method="post">
+                <s:hidden name="url" value="/vehicle/insurance/insurance_add.jsp"/>
                 <s:if test="%{bean!=null&&bean[0]!=null}">
                     <s:hidden name="insurance.id" value="%{bean[0].id}"/>
                 </s:if>
+                <s:hidden name="insurance.state" value="0" />
                 <div class="form-group">
                     <div class="label">
                         <label>
@@ -273,7 +295,7 @@
                         </label>
                     </div>
                     <div class="field">
-                        <s:textfield cssClass="input" placeholder="选择日期时间"
+                        <s:textfield cssClass="input" placeholder="选择日期时间" id="beginDate"
                                      name="insurance.beginDate"
                                      data-validate="required:请填选择日期时间,datetime:请输入日期时间，如：2015-05-06 00:00:00">
                             <s:param name="value">
@@ -298,7 +320,6 @@
                                         format="yyyy/MM/dd HH:mm"></s:date>
                             </s:param>
                         </s:textfield>
-
                     </div>
                 </div>
                 <div class="form-group">
@@ -392,13 +413,11 @@
                     </div>
                 </div>
                 <div class="xm6-move">
-                    <input type="submit" class="button bg-green" value="提交">
+                    <input type="button" class="button bg-green" value="提交" onclick="beforeSubmit()">
                 </div>
             </form>
         </div>
-
     </div>
-
     <!-- <div class="form-group">
          <div class="label">
              <label>
@@ -414,7 +433,7 @@
 
 <div class="line">
     <%
-        List<Insurance> list = ObjectAccess.query(Insurance.class, " state=0 ");
+        List<Insurance> list = ObjectAccess.query(Insurance.class, " state!=1 ");
         request.setAttribute("list", list);
     %>
     <s:if test="%{#request.list!=null&&#request.list.size()>0}">
@@ -472,7 +491,6 @@
     <input type="hidden" name="insurance.id"/>
     <input type="submit" style="display: none;" id="del_but"/>
 </form>
-
 <form action="/DZOMS/common/getObj" method="post">
     <input type="hidden" name="url"
            value="/vehicle/insurance/insurance_add.jsp"/>

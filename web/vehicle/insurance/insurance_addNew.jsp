@@ -158,6 +158,29 @@
                 openItem('insuranceMoneyCy','承运人险金额');
             }
         }
+
+        function beforeSubmit() {
+            if ($('#insuranceClass').val()=='商业保险单') {
+                $.get("/DZOMS/vehicle/checkInsuranceDivide",{
+                    "vehicle.carframeNum":$('#carframe_num').val(),
+                    "insurance.beginDate":$('#beginDate').val()
+                },function (data) {
+                    if (data.result == 'true'){
+                        $('[name="insurance.state"]').val(3);
+                        $('form').submit();
+                    } else {
+                        if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
+                            $('[name="insurance.state"]').val(3);
+                        } else {
+                            $('[name="insurance.state"]').val(0);
+                        }
+                        $('form').submit();
+                    }
+                })
+            }else {
+                $('form').submit();
+            }
+        }
     </script>
     <style>
         .label{
@@ -413,7 +436,7 @@
                     </div>
                 </div>
                 <div class="xm6-move">
-                    <input type="submit" class="button bg-green" value="提交">
+                    <input type="button" class="button bg-green" value="提交" onclick="beforeSubmit()">
                 </div>
             </form>
         </div>
@@ -435,7 +458,7 @@
 
 <div class="line">
     <%
-        List<Insurance> list = ObjectAccess.query(Insurance.class, " state=0 ");
+        List<Insurance> list = ObjectAccess.query(Insurance.class, " state!=1 ");
         request.setAttribute("list", list);
     %>
     <s:if test="%{#request.list!=null&&#request.list.size()>0}">

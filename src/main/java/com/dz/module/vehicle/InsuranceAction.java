@@ -1,9 +1,12 @@
 package com.dz.module.vehicle;
 
-import java.util.List;
-
-import javax.servlet.http.Cookie;
-
+import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.global.BaseAction;
+import com.dz.common.global.Page;
+import com.dz.common.other.ObjectAccess;
+import com.dz.common.other.PageUtil;
+import com.dz.module.driver.Driver;
+import net.sf.json.JSONObject;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -12,12 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.dz.common.factory.HibernateSessionFactory;
-import com.dz.common.global.BaseAction;
-import com.dz.common.global.Page;
-import com.dz.common.other.ObjectAccess;
-import com.dz.common.other.PageUtil;
-import com.dz.module.driver.Driver;
+import javax.servlet.http.Cookie;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @Scope("prototype")
@@ -30,7 +32,7 @@ public class InsuranceAction extends BaseAction{
 	
 	public String addInsurance() {
 		try{
-			insurance.setState(0);
+//			insurance.setState(0);
 			insuranceService.addInsurance(insurance);
 			Cookie cookie;
 			if(insurance.getInsuranceClass().equals("交强险")){
@@ -50,6 +52,21 @@ public class InsuranceAction extends BaseAction{
 		request.setAttribute("msgStr", "添加成功。");
 		return SUCCESS;
 	}
+
+	public void checkInsuranceDivide() throws IOException{
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        PrintWriter out = response.getWriter();
+
+        Session session = HibernateSessionFactory.getSession();
+        boolean checked = insuranceService.checkInsuranceDivide(session,vehicle.getCarframeNum(),insurance.getBeginDate());
+
+        JSONObject json = new JSONObject();
+        json.put("result",checked);
+        out.print(json.toString());
+        out.flush();
+        out.close();
+    }
 	
 	public String relookInsurance(){
 		Session s = null;
@@ -58,11 +75,11 @@ public class InsuranceAction extends BaseAction{
 			s = HibernateSessionFactory.getSession();
 			tx = s.beginTransaction();
 //			Query q = s.createQuery("update Insurance set state=1 where state=0");
-			Query qx = s.createQuery("from Insurance where state=0");
+			Query qx = s.createQuery("from Insurance where state!=1");
 
 			List<Insurance> list = qx.list();
 			for (Insurance insurance1 : list) {
-				if (insurance1.getInsuranceClass().equals("商业保险单")){
+				if (insurance1.getInsuranceClass().equals("商业保险单") && insurance1.getState()==3){
 					vehicle = (Vehicle) s.get(Vehicle.class, insurance1.getCarframeNum());
 					insuranceService.makeDivide(s, insurance1, vehicle.getInsuranceBase());
 				}
@@ -153,6 +170,7 @@ public class InsuranceAction extends BaseAction{
 		return SUCCESS;
 	}
 
+	private Date inputFrom,inputEnd,startFrom,startEnd;
 	public String selectByCondition(){
 		int currentPage = 0;
         String currentPagestr = request.getParameter("currentPage");
@@ -161,9 +179,10 @@ public class InsuranceAction extends BaseAction{
         }else{
         	currentPage=Integer.parseInt(currentPagestr);
         }
+
        //vehicle.setCarMode("123");
-       Page page = PageUtil.createPage(15, insuranceService.selectByConditionCount(insurance,vehicle), currentPage);
-		List<Insurance> l = insuranceService.selectByCondition(page, insurance,vehicle);
+       Page page = PageUtil.createPage(15, insuranceService.selectByConditionCount(insurance,vehicle,inputFrom,inputEnd,startFrom,startEnd), currentPage);
+		List<Insurance> l = insuranceService.selectByCondition(page, insurance,vehicle,inputFrom,inputEnd,startFrom,startEnd);
 		request.setAttribute("insurance", l);
 		//request.setAttribute("currentPage", currentPage);
 		request.setAttribute("page", page);
@@ -224,5 +243,37 @@ public class InsuranceAction extends BaseAction{
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
+	}
+
+	public Date getInputFrom() {
+		return inputFrom;
+	}
+
+	public void setInputFrom(Date inputFrom) {
+		this.inputFrom = inputFrom;
+	}
+
+	public Date getInputEnd() {
+		return inputEnd;
+	}
+
+	public void setInputEnd(Date inputEnd) {
+		this.inputEnd = inputEnd;
+	}
+
+	public Date getStartFrom() {
+		return startFrom;
+	}
+
+	public void setStartFrom(Date startFrom) {
+		this.startFrom = startFrom;
+	}
+
+	public Date getStartEnd() {
+		return startEnd;
+	}
+
+	public void setStartEnd(Date startEnd) {
+		this.startEnd = startEnd;
 	}
 }

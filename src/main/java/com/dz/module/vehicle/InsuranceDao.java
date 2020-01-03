@@ -2,6 +2,7 @@ package com.dz.module.vehicle;
 
 //import java.util.ArrayList;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -16,6 +17,6 @@ public interface InsuranceDao {
 	List<Insurance> selectAll();
 	List<Insurance> selectByVehicle(Vehicle vehicle);
 	List<Insurance> selectByDriver(Driver driver);
-	public int selectByConditionCount(Insurance insurance, Vehicle vehicle);
-	public List<Insurance> selectByCondition(Page page, Insurance insurance, Vehicle vehicle);
+	public int selectByConditionCount(Insurance insurance, Vehicle vehicle, Date inputFrom, Date inputEnd, Date startFrom, Date startEnd);
+	public List<Insurance> selectByCondition(Page page, Insurance insurance, Vehicle vehicle, Date inputFrom, Date inputEnd, Date startFrom, Date startEnd);
 }

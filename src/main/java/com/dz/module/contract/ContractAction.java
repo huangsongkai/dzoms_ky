@@ -152,6 +152,11 @@ public class ContractAction extends BaseAction {
 				}
 			}
 
+			Query query = hsession.createQuery("select max(c.id) from Contract c where c.state=1 and c.carframeNum=:car ");
+			query.setString("car",contract.getCarframeNum());
+			int id = (int) query.uniqueResult();
+			contract.setContractFrom(id);
+
 			/**原车剩余的当月费用处理*/
 			Contract contract_old = (Contract) hsession.get(Contract.class,contract.getContractFrom());
 
@@ -281,7 +286,6 @@ public class ContractAction extends BaseAction {
 			System.out.println("Before Transaction OK!");
 
 			contract.setState((short)0);
-			hsession.saveOrUpdate(contract);
 
 			System.out.println(contract.getCarframeNum());
 			Vehicle vehicle = (Vehicle) hsession.get(Vehicle.class, contract.getCarframeNum());
@@ -297,8 +301,6 @@ public class ContractAction extends BaseAction {
 				return SUCCESS;
 			}
 
-
-
 			int y = 0;
 			int m = 0;
 			Date contractBeginDate = contract.getContractBeginDate();
@@ -311,8 +313,13 @@ public class ContractAction extends BaseAction {
 			//生成合同约定
 			Contract c = (Contract) hsession.get(Contract.class,contract.getId());
 
-			if(!c.isPlanMaked() && (vehicle.getOperateCardTime()==null ||
-					vehicle.getOperateCardTime().getTime()<new Date(110,1,1).getTime()) ){
+			System.out.println(c.isPlanMaked());
+			System.out.println(vehicle.getOperateCardTime());
+			System.out.println(vehicle.getOperateCardTime()!=null &&
+					vehicle.getOperateCardTime().getTime()>new Date(110,1,1).getTime());
+			if((!c.isPlanMaked()) &&
+					vehicle.getOperateCardTime()!=null &&
+					vehicle.getOperateCardTime().getTime()>new Date(110,1,1).getTime() ){
 				if(contractBeginDate.getDate()>26){
 					if(m==11){
 						y++;
@@ -321,10 +328,10 @@ public class ContractAction extends BaseAction {
 						m++;
 					}
 				}
-//				System.out.println(jarray.size());
-//				if(jarray.size()>0){
-//					System.out.println(jarray);
-//				}
+				System.out.println(jarray.size());
+				if(jarray.size()>0){
+					System.out.println(jarray);
+				}
 				for(int i=0 ;i<jarray.size();i++){
 					ChargePlan chargePlan = new ChargePlan();
 					chargePlan.setFeeType("plan_base_contract");
@@ -341,11 +348,38 @@ public class ContractAction extends BaseAction {
 					chargePlan.setTime(calendar.getTime());
 					m++;
 					hsession.saveOrUpdate(chargePlan);
+					System.out.printf("%d,%f,%tF\n",i,chargePlan.getFee().doubleValue(),chargePlan.getTime());
 				}
 
 				contract.setPlanMaked(true);
-				hsession.update(contract);
+//				hsession.update(contract);
 			}
+			//TODO copy properties from contract to c
+			c.setState((short) 0);
+			c.setContractType(contract.getContractType());
+			c.setContractId(contract.getContractId());
+			c.setBusinessForm(contract.getBusinessForm());
+			c.setAscription(contract.getAscription());
+			c.setContractBeginDate(contract.getContractBeginDate());
+			c.setContractEndDate(contract.getContractEndDate());
+			c.setRent(contract.getRent());
+			c.setRentFirst(contract.getRentFirst());
+			c.setRemark(contract.getRemark());
+			c.setDeposit(contract.getDeposit());
+			c.setPenalty(contract.getPenalty());
+
+			c.setIdentityGuarantor(contract.getIdentityGuarantor());
+			c.setGuarantorName(contract.getGuarantorName());
+			c.setPhoneNumGuarantor(contract.getPhoneNumGuarantor());
+			c.setAddressCurrentGuarantor(contract.getAddressCurrentGuarantor());
+			c.setAddressLicenseGuarantor(contract.getAddressLicenseGuarantor());
+
+			c.setPlanList(contract.getPlanList());
+			c.setInputer(contract.getInputer());
+			c.setInputTime(contract.getInputTime());
+			c.setAccount(contract.getAccount());
+
+			hsession.update(c);
 
 			System.out.println("Before Rent Making......");
 
@@ -417,7 +451,9 @@ public class ContractAction extends BaseAction {
 		}catch(HibernateException ex){
 			ex.printStackTrace();
 			if(tx!=null){
-				tx.rollback();
+				try {
+					tx.rollback();
+				}catch (Exception e){}
 			}
 			request.setAttribute("msgStr", "创建合同失败。错误原因："+ex.getMessage());
 			return SUCCESS;
