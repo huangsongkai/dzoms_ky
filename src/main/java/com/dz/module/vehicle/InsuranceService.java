@@ -159,7 +159,7 @@ public class InsuranceService {
         query.setString("car",carframeNum);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(beginDate);
-        query.setInteger("rank",calendar.get(Calendar.YEAR)*12+calendar.get(Calendar.MONTH)+1);
+        query.setInteger("rank",calendar.get(Calendar.YEAR)*12+calendar.get(Calendar.MONTH));
         long size = (long) query.uniqueResult();
         return size==0;
     }

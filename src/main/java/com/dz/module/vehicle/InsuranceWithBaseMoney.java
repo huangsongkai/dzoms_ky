@@ -2,6 +2,7 @@ package com.dz.module.vehicle;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -21,11 +22,16 @@ public class InsuranceWithBaseMoney extends Insurance{
 
     public InsuranceWithBaseMoney(Insurance insurance,Double baseMoney){
         super(insurance);
-        this.baseMoney = baseMoney==null?0.0:baseMoney;
+        this.baseMoney = baseMoney==null?0.0: baseMoney;
     }
 
     public double getBaseMoney() {
         return baseMoney;
+    }
+
+    @Transient
+    public String getBaseMoney2(){
+        return String.format("%.2f",baseMoney);
     }
 
     public void setBaseMoney(double baseMoney) {

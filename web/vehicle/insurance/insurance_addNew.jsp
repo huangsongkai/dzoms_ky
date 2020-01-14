@@ -163,22 +163,22 @@
             if ($('#insuranceClass').val()=='商业保险单') {
                 $.get("/DZOMS/vehicle/checkInsuranceDivide",{
                     "vehicle.carframeNum":$('#carframe_num').val(),
-                    "insurance.beginDate":$('#beginDate').val()
+                    "insurance.beginDate":$('[name="insurance.beginDate"]').val()
                 },function (data) {
-                    if (data.result == 'true'){
+                    if (data.result){
                         $('[name="insurance.state"]').val(3);
-                        $('form').submit();
+                        $('#add-form').submit();
                     } else {
                         if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
                             $('[name="insurance.state"]').val(3);
                         } else {
                             $('[name="insurance.state"]').val(0);
                         }
-                        $('form').submit();
+                        $('#add-form').submit();
                     }
                 })
             }else {
-                $('form').submit();
+                $('#add-form').submit();
             }
         }
     </script>
@@ -205,8 +205,9 @@
 
         <div class="panel-head">新增保险信息</div>
         <div class="panel-body">
-            <form class="form-x" action="/DZOMS/vehicle/insurance_add" method="post">
+            <form id="add-form" class="form-x" action="/DZOMS/vehicle/insurance_add" method="post">
                 <s:hidden name="url" value="/vehicle/insurance/insurance_addNew.jsp"/>
+                <s:hidden name="insurance.state" value="0" />
                 <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
                     <s:hidden name="insurance.id" value="%{bean[0].id}"/>
                 </s:if>

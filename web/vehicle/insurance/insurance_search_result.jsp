@@ -163,7 +163,7 @@ Page pg = (Page)request.getAttribute("page");
 <%--<td class="driverName selected_able"><s:property value="%{#v.driverId}"/></td>--%>
 <%--<td class="insuranceCompany selected_able"><s:property value="%{#v.insuranceCompany}"/></td>--%>
                             <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceMoney}"/></td>
-                            <td class="baseMoney selected_able"><s:property value="%{#v.baseMoney}"/></td>
+                            <td class="baseMoney selected_able"><s:property value="%{#v.getBaseMoney2()}"/></td>
                             <td class="dates selected_able"><s:date name="%{#v.beginDate}" format="yyyy/MM/dd HH:mm"/></td>
                             <td class="dates selected_able"><s:date name="%{#v.endDate}" format="yyyy/MM/dd HH:mm"/></td>
                             <td class="register selected_able"><s:date name="%{#v.registTime}" format="yyyy/MM/dd"/></td>
