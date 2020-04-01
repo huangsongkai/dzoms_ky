@@ -40,9 +40,9 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
 	condition:" state=1 ",
 	callback:function(){
 		var licenseNum = $("[name='vehicle.licenseNum']").val();
-		var condition1 = "select v from Vehicle v where v.licenseNum ='" + licenseNum + "'";
+		var condition1 = "select v from Vehicle v where v.licenseNum ='" + licenseNum + "' ";
 	
-		$.post("/DZOMS/common/doit",{"condition":condition1},function(data){
+		$.post("/DZOMS/common/doit",{"condition":condition1+' order by inDate desc '},function(data){
 			if (data!=undefined&&data["affect"]!=undefined) {
 				var vehicle = data["affect"];
 				$('[name="driver.carframeNum"]').val(vehicle["carframeNum"]);

@@ -15,7 +15,6 @@ import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.dz.module.vehicle.VehicleDao;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -23,7 +22,6 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
-import org.dom4j.DocumentException;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -35,7 +33,6 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -1007,7 +1004,32 @@ public class ChargeAction extends BaseAction {
 //            }
 //        });
 
+        ActionContext context = ActionContext.getContext();
+        @SuppressWarnings("unchecked")
+        Map<String,Object> request = (Map<String,Object>)context.get("request");
+//        System.out.println(bps);
+
+        Vehicle vehicle = new Vehicle();
+        vehicle.setLicenseNum(licenseNum);
+        Vehicle v = vehicleDao.selectByLicense(vehicle);
+
+        Contract contract = null;
+        if(v != null){
+            contract = contractDao.selectByCarId(v.getCarframeNum());
+            request.put("contract",contract);
+        }
+        Session hsession = HibernateSessionFactory.getSession();
         for(BatchPlan bp:bps){
+            if (contract != null && bp.getFee()==null) {
+                Contract finalContract = contract;
+                BatchPlan bp2 = (BatchPlan) hsession.get(BatchPlan.class,bp.getId());
+                Optional<ChargePlan> chargePlanOptional = bp2.getChargePlanList().stream()
+                        .filter(cp->cp.getContractId()== finalContract.getId())
+                        .findFirst();
+                bp.setFee(chargePlanOptional.map(ChargePlan::getFee)
+                        .orElse(BigDecimal.ZERO));
+            }
+
             String type = bp.getFeeType();
             if(type.equals("plan_base_contract")){
                 bp.setFeeType("合同基本费用");
@@ -1027,23 +1049,9 @@ public class ChargeAction extends BaseAction {
                 bp.setFeeType("其他费用");
                 bp.setFee(bp.getFee().negate());
             }
-
         }
-        ActionContext context = ActionContext.getContext();
-        @SuppressWarnings("unchecked")
-        Map<String,Object> request = (Map<String,Object>)context.get("request");
+
         request.put("bps",bps);
-//        System.out.println(bps);
-
-        Vehicle vehicle = new Vehicle();
-        vehicle.setLicenseNum(licenseNum);
-        Vehicle v = vehicleDao.selectByLicense(vehicle);
-
-        if(v != null){
-            Contract contract = contractDao.selectByCarId(v.getCarframeNum());
-            request.put("contract",contract);
-        }
-
         jspPage = "bps_show.jsp";
         return SUCCESS;
     }

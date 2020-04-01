@@ -117,7 +117,7 @@ $(document).ready(function() {
 	function licenseNumChangeCallBack(){		
 		var condition1 = "from Vehicle where licenseNum ='" + $licenseNum.val() + "'";
 		
-		$.post("/DZOMS/common/doit",{"condition":condition1},function(data){
+		$.post("/DZOMS/common/doit",{"condition":condition1+ ' order by inDate desc ' },function(data){
 			if (data!=undefined&&data["affect"]!=undefined) {
 				var vehicle = data["affect"];
 				

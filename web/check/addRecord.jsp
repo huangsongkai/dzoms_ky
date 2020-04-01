@@ -54,7 +54,8 @@
         function setAll(){
             var licenseNum = $("#licenseNum").val();
             $.post("/DZOMS/common/doit",{
-                "condition":"from Driver where idNum=(select driverId from Vehicle where licenseNum='"+licenseNum+"')"
+                // "condition":"from Driver where idNum=(select driverId from Vehicle where licenseNum='"+licenseNum+"')"
+                "condition":"select d from Driver d,Vehicle v where d.idNum = v.driverId and v.licenseNum ='" + licenseNum + "'  order by v.inDate desc "
             },function(data){
                 var driver = data["affect"];
                 if(driver==undefined){
@@ -63,7 +64,7 @@
                 $("#driver").val(driver["name"]);
             });
             $.post("/DZOMS/common/doit",{
-                "condition":"from Vehicle where licenseNum='"+licenseNum+"'"
+                "condition":"from Vehicle where licenseNum='"+licenseNum+"'  order by inDate desc "
             },function(data){
                 data = data["affect"];
                 
@@ -124,7 +125,8 @@
             });
         
         		$.post("/DZOMS/common/doit",{
-                "condition":"from Contract where idNum=(select driverId from Vehicle where licenseNum='"+licenseNum+"')"
+                // "condition":"from Contract where idNum=(select driverId from Vehicle where licenseNum='"+licenseNum+"')"
+                "condition":"select c from Contract c,Vehicle v where c.idNum=v.driverId and v.licenseNum='"+licenseNum+"'  order by v.inDate desc "
             },function(data){
                 data = data["affect"];
                 

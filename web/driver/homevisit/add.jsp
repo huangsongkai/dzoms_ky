@@ -67,7 +67,7 @@
                 doubleClick:true,
                 doubleClickDefault:'黑A',
                 callback:function(){
-                    $.post("/DZOMS/common/doit",{"condition":"from Vehicle where licenseNum='"+$("#carNum").val()+"' "},function(data){
+                    $.post("/DZOMS/common/doit",{"condition":"from Vehicle where licenseNum='"+$("#carNum").val()+"'  order by inDate desc "},function(data){
                         if (data!=undefined &&data["affect"]!=undefined ) {
                             var vehicle = data["affect"];
 //                        $("#department").val(vehicle["dept"]);

@@ -136,6 +136,10 @@
 
         function beforeSubmit() {
             if ($('#insuranceClass').val()=='商业保险单') {
+                if($('#insurance_base').val()==''){
+                    alert("请先设置基础保费金额！");
+                    return false;
+                }
                 $.get("/DZOMS/vehicle/checkInsuranceDivide",{
                     "vehicle.carframeNum":$('#carframe_num').val(),
                     "insurance.beginDate":$('[name="insurance.beginDate"]').val()
@@ -468,9 +472,7 @@
                     <td class="modify selected_able"><a
                             href="javascript:modifyV('<s:property value="%{#v.id}"/>')">修改</a>
                     </td>
-                    <td class="delete selected_able"><a
-                            href="javascript:deleteV('<s:property value="%{#v.id}"/>')">删除</a>
-                    </td>
+                    <td class="delete selected_able"><a href="javascript:deleteV('<s:property value="%{#v.id}"/>','<s:property value="%{#v.carframeNum}"/>')">删除</a></td>
                 </tr>
             </s:iterator>
         </table>
@@ -504,9 +506,9 @@
 
 </body>
 <script>
-    function deleteV(cid) {
+    function deleteV(cid,vnum){
         $('input[name="insurance.id"]').val(cid);
-        if (confirm("确认删除车架号为" + cid + "的发票信息？")) {
+        if (confirm("确认删除车架号为"+vnum+"的发票信息？")) {
             $("#del_but").click();
         }
     }

@@ -246,7 +246,8 @@
                         days=30;
                     }else if(beginArr[2]>27){
                         //days = getDaysOfMonth(beginArr[0],beginArr[1]-1)-beginArr[2]+27;
-                        days = 57 - beginArr[2] + (beginArr[2]>30?1:0);
+                        // days = 57 - beginArr[2] + (beginArr[2]>30?1:0);
+                        days = 57 - beginArr[2] /**+ (beginArr[2] > 30 ? 1 : 0)*/;
                     }else{
                         days = 27 - beginArr[2];
                     }

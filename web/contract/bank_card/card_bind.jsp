@@ -65,7 +65,7 @@
 
         function refreshVehicle() {
             if($("#license_num").val().trim().length==7)
-                $.post("/DZOMS/common/doit",{"condition":"from Vehicle where licenseNum='"+$("#license_num").val()+"'"},function(data){
+                $.post("/DZOMS/common/doit",{"condition":"from Vehicle where licenseNum='"+$("#license_num").val()+"'  order by inDate desc "},function(data){
                     if (data["affect"]!=undefined && data["affect"] != null) {
                         var vehicle=data["affect"] ;
                         $('input[name="bankCard.carNum"]').val(vehicle["carframeNum"]);

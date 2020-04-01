@@ -2,9 +2,6 @@ package com.dz.module.charge;
 
 import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.DateUtil;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -163,7 +160,7 @@ public class ChargeDaoImp implements ChargeDao {
             query.setInteger("cid",srcId);
             List<ChargePlan> plans = query.list();
             for(ChargePlan cp : plans){
-                if(DateUtil.isYM1BGYM2(cp.getTime(),start)){
+                if(DateUtil.isYM1BGYM2WithMonth26(cp.getTime(),start)){
                     cp.setIsClear(true);
                 }
             }

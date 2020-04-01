@@ -306,9 +306,11 @@ public class VehicleDaoImpl implements VehicleDao {
 		try {
 			session = HibernateSessionFactory.getSession();
 			tx = (Transaction) session.beginTransaction();
-			String sql = "from Vehicle where licenseNum = :license_num";
+			String sql = "from Vehicle where licenseNum = :license_num order by inDate desc ";
 			Query query = session.createQuery(sql);
 			query.setString("license_num", vehicle.getLicenseNum());
+
+			query.setMaxResults(1);
 			sql_vehicle = (Vehicle) query.uniqueResult();
 			tx.commit();
 		} catch (HibernateException e) {

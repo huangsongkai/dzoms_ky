@@ -124,7 +124,7 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
 	url:"/DZOMS/select/vehicleByLicenseNum",
 	callback:function(){
 		var licenseNum = $("[name='vehicle.licenseNum']").val();
-		var condition1 = "select d.name from Driver d,Vehicle v where d.idNum = v.driverId and v.licenseNum ='" + licenseNum + "'";
+		var condition1 = "select d.name from Driver d,Vehicle v where d.idNum = v.driverId and v.licenseNum ='" + licenseNum + "'  order by inDate desc ";
 	
 		$.post("/DZOMS/common/doit",{"condition":condition1},function(data){
 			if (data!=undefined&&data["affect"]!=undefined) {

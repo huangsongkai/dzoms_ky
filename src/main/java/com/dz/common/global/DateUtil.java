@@ -103,4 +103,18 @@ public class DateUtil {
             return getNextMonth(srcDate);
         }
     }
+
+    public static boolean isYM1BGYM2WithMonth26(Date date1,Date date2){
+        if(date1 == null || date2 == null)
+            return false;
+        int year1 = date1.getYear();
+        int month1 = date1.getMonth();
+        int day1 = date1.getDate()>26?1:0;
+        int year2 = date2.getYear();
+        int month2 = date2.getMonth();
+        int day2 = date2.getDate()>26?1:0;
+        if(year1 > year2) return true;
+        if(year1 == year2 && month1+day1 >= month2+day2) return true;
+        return false;
+    }
 }

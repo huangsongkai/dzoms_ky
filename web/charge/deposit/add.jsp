@@ -35,7 +35,7 @@
         function setCarframeNum() {
             var licenseNum = $("#licenseNum").val();
             $.post("/DZOMS/common/doit", {
-                "condition": "from Vehicle where licenseNum='" + licenseNum + "'"
+                "condition": "from Vehicle where licenseNum='" + licenseNum + "'  order by inDate desc "
             }, function (data) {
                 data = data["affect"];
 

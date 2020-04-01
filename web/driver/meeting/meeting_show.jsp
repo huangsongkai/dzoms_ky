@@ -47,7 +47,7 @@
 
             $("[name='licenseNum']").bigAutocomplete({
                 url:"/DZOMS/select/VehicleBylicenseNum",
-                condition:" 1=1 order by licenseNum ",
+                condition:" 1=1 order by licenseNum,inDate desc  ",
                 doubleClick:true,
                 doubleClickDefault:'黑A'
             });

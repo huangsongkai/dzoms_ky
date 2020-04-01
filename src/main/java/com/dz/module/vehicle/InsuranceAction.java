@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -81,7 +82,9 @@ public class InsuranceAction extends BaseAction{
 			for (Insurance insurance1 : list) {
 				if (insurance1.getInsuranceClass().equals("商业保险单") && insurance1.getState()==3){
 					vehicle = (Vehicle) s.get(Vehicle.class, insurance1.getCarframeNum());
-					insuranceService.makeDivide(s, insurance1, vehicle.getInsuranceBase());
+					if(vehicle.getInsuranceBase()!=null && vehicle.getInsuranceBase().compareTo(BigDecimal.ZERO)>0){
+						InsuranceService.makeDivide(s, insurance1, vehicle.getInsuranceBase());
+					}
 				}
 				insurance1.setState(1);
 				s.update(insurance1);
@@ -149,7 +152,7 @@ public class InsuranceAction extends BaseAction{
 			s = HibernateSessionFactory.getSession();
 			tx = s.beginTransaction();
 			Insurance v = (Insurance) s.get(Insurance.class, insurance.getId());
-			if(v == null||v.getState()!=0){
+			if(v == null||(v.getState()!=0 && v.getState()!=3)){
 				request.setAttribute("msgStr", "删除失败。");
 				return SUCCESS;
 			}else{

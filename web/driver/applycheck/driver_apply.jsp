@@ -35,7 +35,7 @@
                 if (licenseNum === "") {
                     sumbittable = confirm("该驾驶员未输入车牌号，是否继续？");
                 } else {
-                    $.post("/DZOMS/common/doit", {"condition": "from Vehicle where licenseNum = '" + licenseNum + "'"}, function (data) {
+                    $.post("/DZOMS/common/doit", {"condition": "from Vehicle where licenseNum = '" + licenseNum + "' order by inDate desc "}, function (data) {
                         if(data["affect"] === undefined){
                             alert("该车不存在");
                             sumbittable = false;
