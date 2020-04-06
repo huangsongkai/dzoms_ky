@@ -18,6 +18,9 @@ public class RemoveRecord {
     private int startNum;
     //结束编号
     private int endNum;
+
+    private String prefix;
+
     //类型（进货还是出货）
     private String style;
     //车牌号
@@ -208,5 +211,13 @@ public class RemoveRecord {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }

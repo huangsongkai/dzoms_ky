@@ -84,7 +84,7 @@
         <td><%=entry.getValue().getRecordTime()%></td>
         <td>
           <%for(CountPass cp:entry.getValue().getCountPasses()){%>
-              <%=cp.getStart()%>-<%=cp.getEnd()%>|
+              <%=cp.getPrefix()%><%=cp.getStart()%>-<%=cp.getPrefix()%><%=cp.getEnd()%>|
           <%}%>
         </td>
         <td><%=entry.getValue().getRecorder()%></td>

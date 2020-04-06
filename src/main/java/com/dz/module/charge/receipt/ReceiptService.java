@@ -1,5 +1,6 @@
 package com.dz.module.charge.receipt;
 
+import com.dz.common.factory.HibernateSessionFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -7,10 +8,6 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dz.common.factory.HibernateSessionFactory;
-
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -27,15 +24,18 @@ public class ReceiptService {
     @Autowired
     private RemoveRecordDaoImp removeRecordDao;
     public boolean deleteRecord(int id,int startNum,int endNum){
+        ReceiptRecord receiptRecord = receiptDao.getRecord(id);
+        String prefix = receiptRecord.getPrefix();
         if(receiptDao.deleteRecord(id)){
-            return rollDao.deleteRoll(startNum,endNum);
+            return rollDao.deleteRoll(startNum,endNum,prefix);
         }
         return false;
     }
     public boolean inRemove(int id,int startNum,int endNum,String reason){
-        removeRecordDao.addOne(transfer(receiptDao.getRecord(id),reason));
+        ReceiptRecord record = receiptDao.getRecord(id);
+        removeRecordDao.addOne(transfer(record,reason));
         if(receiptDao.deleteRecord(id)){
-            return rollDao.deleteRoll(startNum,endNum);
+            return rollDao.deleteRoll(startNum,endNum,record.getPrefix());
         }
         return false;
     }
@@ -45,13 +45,15 @@ public class ReceiptService {
     public boolean addRecord(ReceiptRecord receiptRecord){
     	 Session session = HibernateSessionFactory.getSession();
          Transaction tx = null;
+         receiptRecord.setStartFullNum(receiptRecord.getPrefix()+receiptRecord.getStartNum());
+         receiptRecord.setEndFullNum(receiptRecord.getPrefix()+receiptRecord.getEndNum());
          try{
         	 tx = session.beginTransaction();
         	 if("进货".equals(receiptRecord.getStyle())){
-                 rollDao.addFromSeg(receiptRecord.getStartNum(),receiptRecord.getEndNum(),new Date().getYear()+1900,session);
+                 rollDao.addFromSeg(receiptRecord.getStartNum(),receiptRecord.getEndNum(),receiptRecord.getNumberSize(),receiptRecord.getPrefix(),new Date().getYear()+1900,session);
                  receiptRecord.setYear(new Date().getYear()+1900);
              }else{
-                 rollDao.markAsUsed(receiptRecord.getStartNum(), receiptRecord.getEndNum(),session);
+                 rollDao.markAsUsed(receiptRecord.getStartNum(), receiptRecord.getEndNum(),receiptRecord.getNumberSize(),receiptRecord.getPrefix(),session);
              }
         	 Query query = session.createQuery("select count(*) from Roll where solded = 0");
              long storage = (Long)query.uniqueResult();
@@ -89,16 +91,17 @@ public class ReceiptService {
     public long getStorage(){
         return rollDao.getStorage();
     }
-    public boolean validateIn(int start,int end){
-        return rollDao.isValidForIn(start,end);
+    public boolean validateIn(int start,int end,String prefix){
+        return rollDao.isValidForIn(start,end,prefix);
     }
-    public boolean validateSoled(int start,int end,int year){
-        return rollDao.isValidForSold(start, end,year);
+    public boolean validateSoled(int start,int end,int year,String prefix){
+        return rollDao.isValidForSold(start, end,year,prefix);
     }
     public boolean outRemove(int id,int startNum,int endNum,String reason){
-        removeRecordDao.addOne(transfer(receiptDao.getRecord(id),reason));
+        ReceiptRecord record = receiptDao.getRecord(id);
+        removeRecordDao.addOne(transfer(record,reason));
         if(receiptDao.deleteRecord(id)){
-                return rollDao.markAsUnUsed(startNum,endNum);
+                return rollDao.markAsUnUsed(startNum,endNum,record.getPrefix());
         }
         return false;
     }
@@ -111,6 +114,7 @@ public class ReceiptService {
         remove.setEndNum(record.getEndNum());
         remove.setHappenTime(record.getHappenTime());
         remove.setStartNum(record.getStartNum());
+        remove.setPrefix(record.getPrefix());
         remove.setProveNum(record.getProveNum());
         remove.setRecordTime(new Date());
         remove.setInNum(record.getInNum());

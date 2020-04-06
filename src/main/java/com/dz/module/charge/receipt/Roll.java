@@ -18,6 +18,10 @@ public class Roll {
     private int id;
     private int startNum;
     private int endNum;
+    private int numberSize;
+    private String prefix;
+    private String startFullNum,endFullNum;
+
     private int year;
     //0表示买入，1表示卖出
     private int solded;
@@ -61,4 +65,36 @@ public class Roll {
 	public void setYear(int year) {
 		this.year = year;
 	}
+
+    public int getNumberSize() {
+        return numberSize;
+    }
+
+    public void setNumberSize(int numberSize) {
+        this.numberSize = numberSize;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getStartFullNum() {
+        return startFullNum;
+    }
+
+    public void setStartFullNum(String startFullNum) {
+        this.startFullNum = startFullNum;
+    }
+
+    public String getEndFullNum() {
+        return endFullNum;
+    }
+
+    public void setEndFullNum(String endFullNum) {
+        this.endFullNum = endFullNum;
+    }
 }

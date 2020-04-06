@@ -22,15 +22,18 @@
             var startNum = data[1];
             var endNum = data[2];
             var style = data[3];
-            validateAndRemove(id,startNum,endNum,style);
+            var prefix = data[4];
+            validateAndRemove(id,startNum,endNum,style,prefix);
         }
-        function validateAndRemove(id,startNum,endNum,style){
+        function validateAndRemove(id,startNum,endNum,style,prefix){
                     if(style == "进货"){
-                        $.post("/DZOMS/charge/receipt/validateOut",{"startNum":startNum,"endNum":endNum},function(data){
+                        $.post("/DZOMS/charge/receipt/validateOut",{"startNum":startNum,"endNum":endNum,"prefix":prefix},function(data){
                             if(data.startsWith("success")){
                                 if(confirm("是否作废此发票？")){
                                     var reason = prompt("请输入作废原因");
-                                    $.post("/DZOMS/charge/receipt/inRemove",{"rr.id":id,"rr.startNum":startNum,"rr.endNum":endNum,"reason":reason},function(dax){
+                                    $.post("/DZOMS/charge/receipt/inRemove",{
+                                        "rr.id":id,"rr.startNum":startNum,"rr.endNum":endNum,"reason":reason
+                                    },function(dax){
                                         $('#form', window.parent.document).submit();
                                     });
                                 }
@@ -41,7 +44,9 @@
                     }else{
                         if(confirm("是否作废此发票？")){
                             var reason = prompt("请输入作废原因");
-                            $.post("/DZOMS/charge/receipt/outRemove",{"rr.id":id,"rr.startNum":startNum,"rr.endNum":endNum,"reason":reason},function(dax){
+                            $.post("/DZOMS/charge/receipt/outRemove",{
+                                "rr.id":id,"rr.startNum":startNum,"rr.endNum":endNum,"reason":reason
+                            },function(dax){
                                 $('#form', window.parent.document).submit();
                             });
                         }
@@ -131,12 +136,12 @@
         <%-- <td><%=outNum%></td> --%>
         <%-- <td><%=rr.getStorage()%></td> --%>
         <%-- <td><%=rr.getAllPrice()%></td> --%>
-        <td><%=rr.getStartNum()%> - <%=rr.getEndNum()%></td>
+        <td><%=rr.getStartFullNum()%> - <%=rr.getEndFullNum()%></td>
         <%-- <td><%=rr.getRecorder()==null?"-":rr.getRecorder()%></td> --%>
         <td><%=rr.getRecordTime()==null?"-":rr.getRecordTime()%></td>
         <td><%=rr.getYear()==0?"0":rr.getYear() %></td>
         <s:if test="#session.roles.{?#this.rname=='发票作废权限'}.size>0">   	
-	       <td><a id="<%=rr.getId()%>|<%=rr.getStartNum()%>|<%=rr.getEndNum()%>|<%=rr.getStyle()%>" onclick="removex(this)">作废</a></td>
+	       <td><a id="<%=rr.getId()%>|<%=rr.getStartNum()%>|<%=rr.getEndNum()%>|<%=rr.getStyle()%>|<%=rr.getPrefix()%>" onclick="removex(this)">作废</a></td>
 		</s:if>
         
       </tr>
@@ -172,13 +177,13 @@
 </div>
 
 </body>
- <script src="/DZOMS/res/js/apps.js"></script>
-    <script>
-    $(document).ready(function() {
-        App.init();
-        // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-        // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
+ <%--<script src="/DZOMS/res/js/apps.js"></script>--%>
+    <%--<script>--%>
+    <%--$(document).ready(function() {--%>
+        <%--App.init();--%>
+        <%--// $(".xdsoft_datetimepicker.xdsoft_noselect").show();--%>
+        <%--// $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));--%>
 
-    });
-    </script>
+    <%--});--%>
+    <%--</script>--%>
 </html>

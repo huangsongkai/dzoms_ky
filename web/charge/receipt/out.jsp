@@ -62,7 +62,7 @@
 			  }
 			 $("#storage").val(txt);
 		  });
-		  $.post("/DZOMS/common/getIndex?kind=1",[],function(data){
+		  $.post("/DZOMS/common/getIndex?kind=2",[],function(data){
 			  var wei = data.length;
 			  var s = "fapiaoxiaoshou";
 			  for(var i = 0;i < 7-wei;i++){
@@ -112,25 +112,36 @@
 			  });
 		  });
 	  };
+
+	  var pattern =/^([a-zA-Z0]*)([1-9][0-9]*)$/;
+	  var patternR =/^([0-9]*)\S*/;
     function fillEnd(){
       var startNum = $("#startNum").val();
-      $("#endNum").val(eval(startNum)+999);
-      $("#showNum").html("1袋");
-      $("#numb").val(10);
+		if (/^[a-zA-Z0-9]*[0-9]{5}$/.test(startNum)){
+			var startNumReverse = startNum.split('').reverse().join('');
+			var atLeastSize = startNumReverse.match(patternR)[1].length;
+			var startNumRight = startNum.substr(startNum.length-atLeastSize);
+			startNumRight = startNumRight.match(pattern)[2];
+			var startNumLeft = startNum.substr(0,startNum.length-startNumRight.length);
+			$('#prefix').val(startNumLeft);
+			$('#start').val(startNumRight);
+			var endNum = parseInt(startNumRight)+999;
+			$('#end').val(endNum);
+			$("#endNum").val(startNumLeft+''+endNum);
+			$("#showNum").html("1袋");
+			$("#numb").val(10);
 
-      var startNum = $("#startNum").val();
-      var endNum = $("#endNum").val();
-      var num = eval(endNum)-eval(startNum)+1;
-      if(num%100!=0){
-      	alert("出售数量应为整袋！");
-      	$("#endNum").val("");
-      }else{
-      	$("#allPrice").val(num/100*eval($("input[name='rr.price']").val()));
-      }
+			$("#allPrice").val(10*eval($("input[name='rr.price']").val()));
+		} else {
+			alert('起始票号不符合规范')
+		}
     }
     function calNum(){
-      var startNum = $("#startNum").val();
-      var endNum = $("#endNum").val();
+      var startNum = $("#start").val();
+      var prefix = $('#prefix').val();
+      var endFullNum = $("#endNum").val();
+      var  endNum = endFullNum.substr(prefix.length);
+
       var num = eval(endNum)-eval(startNum)+1;
       
       if(num%100!=0){
@@ -171,10 +182,13 @@
         alert("发票开始编号与结束编号必填！！！");
         return false;
       }else{
-        if((eval(endNum)-eval(startNum)+1)%100 != 0){
+		  var start = $("#start").val();
+		  var end = $("#end").val();
+		  var prefix = $("#prefix").val();
+        if((eval(end)-eval(start)+1)%100 != 0){
           alert("发票开始编号与结束编号错误！！！");
         }else{
-          $.post("/DZOMS/charge/receipt/validateOut",{"startNum":startNum,"endNum":endNum},function(data){
+          $.post("/DZOMS/charge/receipt/validateOut",{"startNum":start,"endNum":end,"prefix":prefix},function(data){
             if(data.startsWith("success")){
               $("#form").submit();
             }else{
@@ -326,7 +340,9 @@
 								<label>起始号</label>
 							</div>
 							<div class="field">
-								<input type="text" name="rr.startNum" id="startNum" onblur="fillEnd()" class="input input-auto" size="20">
+								<input type="hidden" name="rr.prefix" id="prefix">
+								<input type="hidden" name="rr.startNum" id="start">
+								<input type="text" name="rr.startFullNum" id="startNum" onblur="fillEnd()" class="input input-auto" size="20">
 							</div>
 						</div>
           		        <div class="form-group">
@@ -334,7 +350,8 @@
           		       	   	  <label>结束号</label>
           		       	   </div>
           		       	   <div class="field">
-          		       	   	 <input type="text" name="rr.endNum" id="endNum" onchange="calNum()" class="input input-auto" size="20">
+							   <input type="hidden" name="rr.endNum" id="end">
+          		       	   	 <input type="text" name="rr.endFullNum" id="endNum" onchange="calNum()" class="input input-auto" size="20">
           		       	   </div>
           		       </div>
             <div class="form-group">

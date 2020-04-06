@@ -87,21 +87,21 @@
 		timepicker:false,    //关闭时间选项
 		yearStart:2000,     //设置最小年份
     });
-    function iFrameHeight() {
-	try{
-              var ifm= document.getElementById("result_form");   
-              var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;   
-if(ifm != null && subWeb != null) {
-   ifm.height = subWeb.body.scrollHeight+200;
-}   }catch(e){}
-}    
+//     function iFrameHeight() {
+// 	try{
+//               var ifm= document.getElementById("result_form");
+//               var subWeb = document.frames ? document.frames["result_form"].document : ifm.contentDocument;
+// if(ifm != null && subWeb != null) {
+//    ifm.height = subWeb.body.scrollHeight+200;
+// }   }catch(e){}
+// }
 
-$(document).ready(function(){
-	//window.setInterval('iFrameHeight();',3600);
-});
+// $(document).ready(function(){
+// 	//window.setInterval('iFrameHeight();',3600);
+// });
 </script>
 
- <script src="/DZOMS/res/js/apps.js"></script>
+ <%--<script src="/DZOMS/res/js/apps.js"></script>--%>
     <script>
     $(document).ready(function() {
         $("#carId").bigAutocomplete({

@@ -31,7 +31,7 @@
 		  var time = new Date();
 		  $("#time").val($("#recordTime").val());
 		 // $("#recordTime").val(time.toLocaleDateString());
-		  $.post("/DZOMS/common/getIndex?kind=0",[],function(data){
+		  $.post("/DZOMS/common/getIndex?kind=1",[],function(data){
 			  var wei = data.length;
 			  var s = "fapiaojinhuo";
 			  for(ii = 0;ii < 7-wei;ii++){
@@ -73,27 +73,40 @@
 
 		  });
 	  });
-    function fillEnd(ii){
-      var startNum = $("#startNum"+ii).val();
-      $("#endNum"+ii).val(eval(startNum)+9999);
-      getSum();
-      
-      var startNum = $("#startNum"+ii).val();
-      var endNum = $("#endNum"+ii).val();
-      var num = eval(endNum)-eval(startNum)+1;
 
-      if(num%100!=0){
-      	alert("出售数量应为整袋！");
-      	$("#endNum").val("");
-      }else{
-      	$("input[name='rr.allPrice']").val(num/100*eval($("input[name='rr.price']").val()));
-      }
+	  var pattern =/^([a-zA-Z0]*)([1-9][0-9]*)$/;
+	  var patternR =/^([0-9]*)\S*/;
+    function fillEnd(ii){
+    	var startNum = $("#startNum"+ii).val();
+    	if (/^[a-zA-Z0-9]*[0-9]{5}$/.test(startNum)){
+    		var startNumReverse = startNum.split('').reverse().join('');
+    		var atLeastSize = startNumReverse.match(patternR)[1].length;
+    		var startNumRight = startNum.substr(startNum.length-atLeastSize);
+    		startNumRight = startNumRight.match(pattern)[2];
+    		var startNumLeft = startNum.substr(0,startNum.length-startNumRight.length);
+
+			$("input[name='rr.numberSize']").val(startNumLeft.length);
+			$("input[name='rr.prefix']").val(startNumLeft);
+			$("input[name='rr.startNum']").val(startNumRight);
+
+			var endNum = parseInt(startNumRight)+9999;
+			$("input[name='rr.endNum']").val(endNum);
+
+			$("#endNum"+ii).val(startNumLeft+''+endNum);
+			getSum();
+			$("input[name='rr.allPrice']").val(100*parseFloat($("input[name='rr.price']").val()));
+		} else {
+    		alert('起始票号不符合规范')
+		}
     }
     
     function calNum(ii){
-      var startNum = $("#startNum"+ii).val();
-      var endNum = $("#endNum"+ii).val();
-      var num = eval(endNum)-eval(startNum)+1;
+      // var startNum = $("#startNum"+ii).val();
+      var startNum = $("input[name='rr.startNum']").val();
+      // var endNum = $("#endNum"+ii).val();
+		var endNumString = $("#endNum"+ii).val();
+		var endNum = endNumString.substr($("input[name='rr.numberSize']").val());
+		var num = eval(endNum)-eval(startNum)+1;
 
       if(num%100!=0){
       	alert("出售数量应为整袋！");
@@ -109,8 +122,11 @@
     	var box=0,bag=0,roll=0;
     	var boxtemp=0,bagtemp=0,rolltemp=0;
     	for(var ii=0;ii<index;ii++){
-			var startNum = $("#startNum"+ii).val();
-			var endNum = $("#endNum"+ii).val();
+			// var startNum = $("#startNum"+ii).val();
+			var startNum = $("input[name='rr.startNum']").val();
+			// var endNum = $("#endNum"+ii).val();
+			var endNumString = $("#endNum"+ii).val();
+			var endNum = endNumString.substr($("input[name='rr.numberSize']").val());
 			var num = eval(endNum)-eval(startNum)+1;
     		boxtemp = Math.floor(num/10000);
     		bagtemp = Math.floor((num-boxtemp*10000)/1000);
@@ -142,9 +158,11 @@
 		}
 		var nullflag = true;
 		//for(var i=0;i<index;i++){
-	      var startNum = $("#startNum"+i).val();
-	      var endNum = $("#endNum"+i).val();
-	      
+	    //   var startNum = $("#startNum"+i).val();
+	    //   var endNum = $("#endNum"+i).val();
+		var startNum = $("input[name='rr.startNum']").val();
+		var endNumString = $("#endNum"+i).val();
+		var endNum = endNumString.substr($("input[name='rr.numberSize']").val());
 	      //alert(i);
 	     // alert(startNum);
 	     // alert(endNum);
@@ -158,7 +176,13 @@
 	          alert("发票开始编号与结束编号错误！！！");
 	          return false;
 	        }else{
-	          $.post("/DZOMS/charge/receipt/validateIn",{"startNum":startNum,"endNum":endNum},function(data){
+	        	var prefix = $("input[name='rr.prefix']").val();
+	          $.post("/DZOMS/charge/receipt/validateIn",{
+	          	"prefix":prefix,
+				  "numberSize":$("input[name='rr.numberSize']").val(),
+				  "startNum":startNum,
+				  "endNum":endNum
+			  },function(data){
 	           // alert(data.substring(0,7));
 	           // alert(data.substring(0,7).length);
 	            if(data.substring(0,7)=="success"){
@@ -168,7 +192,7 @@
 	              $("#form")[0].submit();
 	              i++;
 	            }else{
-	              alert("发票段"+startNum+"-"+endNum+"已经存在于数据库中！！！");
+	              alert("发票段"+prefix+startNum+"-"+prefix+endNum+"已经存在于数据库中！！！");
 	              return;
 	            }
 	          });
@@ -287,10 +311,6 @@ function getFormJson(frm) {
 					 </div>
 					 <br/>
 
-          		       	    
-          		       	
-          		       
-          		    
           		       <div class="form-group" style="display:none">
           		       	   <div class="label">
           		       	   	  <label>单据编号:</label>
@@ -351,6 +371,8 @@ function getFormJson(frm) {
           		       	   <div class="field">
           		       	   <input type="hidden" name="rr.startNum">
           		       	   <input type="hidden" name="rr.endNum">
+          		       	   <input type="hidden" name="rr.numberSize">
+          		       	   <input type="hidden" name="rr.prefix">
           		       	   	<input type="text" id="startNum0" onblur="fillEnd(0)" class="input input-auto" size="20">
           		       	   </div>
           		       </div>

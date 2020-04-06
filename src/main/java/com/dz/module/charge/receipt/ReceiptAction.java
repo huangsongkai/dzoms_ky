@@ -1,11 +1,9 @@
 package com.dz.module.charge.receipt;
 
-import com.dz.common.seqence.SeqAction;
 import com.dz.common.seqence.SeqService;
 import com.dz.module.charge.receipt.util.CountPass;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -15,12 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author doggy
@@ -58,6 +55,8 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
     private ReceiptService service;
     private int startNum;
     private int endNum;
+    private int numberSize;
+    private String prefix;
     @Autowired
     private SeqService seqService;
     private String proveNum;
@@ -124,6 +123,7 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
         jspPage = "in_show.jsp";
         return SUCCESS;
     }
+
     public String deleteRecord(){
         service.deleteRecord(rr.getId(),rr.getStartNum(),rr.getEndNum());
         List<ReceiptRecord> rrs = service.searchRecordsByProveNum(rr.getProveNum());
@@ -176,7 +176,7 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
                     map.put(rr.getId(),new ArrayList<CountPass>());
                 }
                 List<CountPass> cps = map.get(rr.getId());
-                CountPass cp = new CountPass(rr.getStartNum(),rr.getEndNum());
+                CountPass cp = new CountPass(rr.getStartNum(),rr.getEndNum(),rr.getPrefix());
                 cps.add(cp);
             }
         }
@@ -214,8 +214,8 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
                 			cp.setEnd(rr.getStartNum()-1);
                 			break;
                 		}else{
-                			CountPass left = new CountPass(cp.getStart(), rr.getStartNum()-1);
-                			CountPass right = new CountPass(rr.getEndNum()+1,cp.getEnd());
+                			CountPass left = new CountPass(cp.getStart(), rr.getStartNum()-1,rr.getPrefix());
+                			CountPass right = new CountPass(rr.getEndNum()+1,cp.getEnd(),rr.getPrefix());
                 			it.remove();
                 			cps.add(left);
                 			cps.add(right);
@@ -296,7 +296,7 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
         return SUCCESS;
     }
     public String validateIn(){
-        if(service.validateIn(startNum,endNum)){
+        if(service.validateIn(startNum,endNum,prefix)){
             ajax_message = "success";
         }else{
             ajax_message = "fail";
@@ -306,7 +306,7 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
     public String validateOut(){
     	if(year==0)
     		year=new Date().getYear()+1900;
-        if(service.validateSoled(startNum, endNum,year)){
+        if(service.validateSoled(startNum, endNum,year,prefix)){
             ajax_message = "success";
         }else{
             ajax_message = "fail";
@@ -414,4 +414,20 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
 	public void setYear(int year) {
 		this.year = year;
 	}
+
+    public int getNumberSize() {
+        return numberSize;
+    }
+
+    public void setNumberSize(int numberSize) {
+        this.numberSize = numberSize;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 }

@@ -18,6 +18,12 @@ public class ReceiptRecord implements Comparable<ReceiptRecord>{
     private int startNum;
     //结束编号
     private int endNum;
+
+    private int numberSize;
+    private String prefix;
+
+    private String startFullNum,endFullNum;
+
     //类型（进货还是出货）
     private String style;
     //车牌号
@@ -220,4 +226,36 @@ public class ReceiptRecord implements Comparable<ReceiptRecord>{
 	public void setYear(int year) {
 		this.year = year;
 	}
+
+    public int getNumberSize() {
+        return numberSize;
+    }
+
+    public void setNumberSize(int numberSize) {
+        this.numberSize = numberSize;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getStartFullNum() {
+        return startFullNum;
+    }
+
+    public void setStartFullNum(String startFullNum) {
+        this.startFullNum = startFullNum;
+    }
+
+    public String getEndFullNum() {
+        return endFullNum;
+    }
+
+    public void setEndFullNum(String endFullNum) {
+        this.endFullNum = endFullNum;
+    }
 }

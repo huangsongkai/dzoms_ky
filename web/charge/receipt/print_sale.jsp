@@ -52,7 +52,7 @@
 		<tr>
 			<td><s:property value="%{#v.carId}"/></td>
 			<td><s:property value="%{#v.renter}"/></td>
-			<td><s:property value="%{#v.startNum}"/> - <s:property value="%{#v.endNum}"/></td>
+			<td><s:property value="%{#v.startFullNum}"/> - <s:property value="%{#v.endFullNum}"/></td>
 			<td><s:property value="%{#v.taker}"/></td>
 			<td><s:date name="%{#v.recordTime}" format="yyyy-MM-dd HH:mm:ss"/></td>
 			<td><s:property value="%{#v.comment}"/></td>

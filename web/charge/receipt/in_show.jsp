@@ -56,8 +56,8 @@
           <%all+=(end-start+1);%>
           <td><%=(end-start+1)/100%>卷</td>
           <td><%=(end-start+1)/10000%>箱</td>
-          <td><%=start%></td>
-          <td><%=end%></td>
+          <td><%=rr.getStartFullNum()%></td>
+          <td><%=rr.getEndFullNum()%></td>
           <td><%=rr.getHappenTime()!=null?sdf.format(rr.getHappenTime()):"-"%></td>
           <td><a href="/DZOMS/charge/receipt/deleteRecord?rr.id=<%=rr.getId()%>&rr.startNum=<%=rr.getStartNum()%>&rr.endNum=<%=rr.getEndNum()%>&rr.proveNum=<%=rr.getProveNum()%>">删除</a></td>
         </tr>
@@ -74,13 +74,13 @@
   </div>
 </div>
 </body>
-<script src="/DZOMS/res/js/apps.js"></script>
+<%--<script src="/DZOMS/res/js/apps.js"></script>--%>
 <script>
-  $(document).ready(function() {
-    App.init();
-    // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
-    // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
-
-  });
+  // $(document).ready(function() {
+  //   App.init();
+  //   // $(".xdsoft_datetimepicker.xdsoft_noselect").show();
+  //   // $("#ri-li").append($(".xdsoft_datetimepicker.xdsoft_noselect"));
+  //
+  // });
 </script>
 </html>

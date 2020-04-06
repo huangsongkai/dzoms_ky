@@ -22,6 +22,8 @@ public class SeqAction extends ActionSupport{
             session = HibernateSessionFactory.getSession();
             Seq seq = (Seq)session.get(Seq.class,kind);
             ajax_message = seq.getNum()+"";
+            seq.setNum(seq.getNum()+1);
+            session.saveOrUpdate(seq);
         }catch (Exception e){
             e.printStackTrace();
         }finally {

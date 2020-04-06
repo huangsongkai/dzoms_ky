@@ -1,13 +1,12 @@
 package com.dz.module.charge.receipt;
 
-import java.util.Date;
-
 import com.dz.common.factory.HibernateSessionFactory;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
 
 /**
  * @author doggy
@@ -43,7 +42,7 @@ public class RollDaoImp implements RollDao {
     }
     
     @Override
-    public void addFromSeg(int startNum, int endNum,int year,Session session) {
+    public void addFromSeg(int startNum, int endNum,int numberSize,String prefix,int year,Session session) {
             int start = startNum;
             int end = start + 99;
             while(end <= endNum){
@@ -51,6 +50,10 @@ public class RollDaoImp implements RollDao {
                 roll.setSolded(0);
                 roll.setStartNum(start);
                 roll.setEndNum(end);
+                roll.setPrefix(prefix);
+                roll.setNumberSize(numberSize);
+                roll.setStartFullNum(prefix+startNum);
+                roll.setEndFullNum(prefix+endNum);
                 roll.setYear(year);
                 start += 100;
                 end += 100;
@@ -60,15 +63,16 @@ public class RollDaoImp implements RollDao {
 
 
     @Override
-    public boolean markAsUnUsed(int startNum, int endNum) {
+    public boolean markAsUnUsed(int startNum, int endNum,String prefix) {
         Session session = HibernateSessionFactory.getSession();
         Transaction trans = session.beginTransaction();
         try{
             int start = startNum;
             int end = start + 99;
             while(end <= endNum){
-                Query query = session.createQuery("from Roll where startNum = :start");
+                Query query = session.createQuery("from Roll where startNum = :start and prefix=:prefix ");
                 query.setInteger("start",start);
+                query.setString("prefix",prefix);
                 Roll roll = (Roll)query.uniqueResult();
                 roll.setSolded(0);
                 session.update(roll);
@@ -86,45 +90,49 @@ public class RollDaoImp implements RollDao {
         }
     }
 
-    @Override
-    public boolean markAsUsed(int startNum, int endNum) {
-        Session session = HibernateSessionFactory.getSession();
-        Transaction trans = session.beginTransaction();
-        try{
-            int start = startNum;
-            int end = start + 99;
-            while(end <= endNum){
-                Query query = session.createQuery("from Roll where startNum = :start");
-                query.setInteger("start",start);
-                Roll roll = (Roll)query.uniqueResult();
-                if(roll==null){
-                	System.err.println("Start:"+start);
-                	start += 100;
-                    end += 100;
-                	continue;
-                }
-                roll.setSolded(1);
-                session.update(roll);
-                start += 100;
-                end += 100;
-            }
-            trans.commit();
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            trans.rollback();
-            return false;
-        }finally {
-            HibernateSessionFactory.closeSession();
-        }
-    }
+//    @Override
+//    public boolean markAsUsed(int startNum, int endNum) {
+//        Session session = HibernateSessionFactory.getSession();
+//        Transaction trans = session.beginTransaction();
+//        try{
+//            int start = startNum;
+//            int end = start + 99;
+//            while(end <= endNum){
+//                Query query = session.createQuery("from Roll where startNum = :start");
+//                query.setInteger("start",start);
+//                Roll roll = (Roll)query.uniqueResult();
+//                if(roll==null){
+//                	System.err.println("Start:"+start);
+//                	start += 100;
+//                    end += 100;
+//                	continue;
+//                }
+//                roll.setSolded(1);
+//                session.update(roll);
+//                start += 100;
+//                end += 100;
+//            }
+//            trans.commit();
+//            return true;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            trans.rollback();
+//            return false;
+//        }finally {
+//            HibernateSessionFactory.closeSession();
+//        }
+//    }
     
     @Override
-    public void markAsUsed(int startNum, int endNum,Session session) {
+    public void markAsUsed(int startNum, int endNum, int numberSize, String prefix, Session session){
             int start = startNum;
             int end = start + 99;
             while(end <= endNum){
-                Query query = session.createQuery("from Roll where startNum = :start");
+                Query query = session.createQuery(
+                        "from Roll where prefix=:prefix " +
+                                "and startNum = :start ");
+//                query.setInteger("numberSize",numberSize);
+                query.setString("prefix",prefix);
                 query.setInteger("start",start);
                 Roll roll = (Roll)query.uniqueResult();
                 if(roll==null){
@@ -141,13 +149,18 @@ public class RollDaoImp implements RollDao {
     }
 
     @Override
-    public boolean isValidForIn(int startNum, int endNum) {
+    public boolean isValidForIn(int startNum, int endNum,String prefix) {
         Session session = HibernateSessionFactory.getSession();
         Transaction trans = session.beginTransaction();
         try{
-            Query query = session.createQuery("select count(*) from Roll where year=:year and ( startNum between :start and :end) or (endNum between :start and :end)");
+            Query query = session.createQuery("select count(*) from Roll" +
+                    " where year=:year " +
+                    " and ( startNum between :start and :end) " +
+                    "    or (endNum between :start and :end) " +
+                    " and prefix=:prefix ");
             query.setLong("start",startNum);
             query.setLong("end",endNum);
+            query.setString("prefix",prefix);
             query.setInteger("year", new Date().getYear()+1900);
             long x = (Long)query.uniqueResult();
 //            System.out.println(x);
@@ -166,13 +179,14 @@ public class RollDaoImp implements RollDao {
     }
 
     @Override
-    public boolean deleteRoll(int startNum, int endNum) {
+    public boolean deleteRoll(int startNum, int endNum,String prefix) {
         Session session = HibernateSessionFactory.getSession();
         Transaction trans = session.beginTransaction();
         try{
-            Query query = session.createQuery("delete from Roll where startNum between :start and :end");
+            Query query = session.createQuery("delete from Roll where (startNum between :start and :end) and prefix=:prefix ");
             query.setLong("start", startNum);
             query.setLong("end", endNum);
+            query.setString("prefix",prefix);
             query.executeUpdate();
             trans.commit();
             return true;
@@ -186,14 +200,21 @@ public class RollDaoImp implements RollDao {
     }
 
     @Override
-    public boolean isValidForSold(int startNum, int endNum,int year) {
+    public boolean isValidForSold(int startNum, int endNum,int year,String prefix) {
         Session session = HibernateSessionFactory.getSession();
         Transaction trans = session.beginTransaction();
         try{
-            Query query = session.createQuery("select count(*) from Roll where year=:year and (startNum between :start and :end) and (endNum between :start and :end) and solded = 0");
+            Query query = session.createQuery(
+                    "select count(*) from Roll " +
+                            "where year=:year " +
+                            "and (startNum between :start and :end) " +
+                            "and (endNum between :start and :end) " +
+                            "and solded = 0 " +
+                            "and prefix=:prefix ");
             query.setLong("start",startNum);
             query.setLong("end", endNum);
             query.setInteger("year", year);
+            query.setString("prefix",prefix);
             long x = (Long)query.uniqueResult();
             if(x == (endNum-startNum+1)/100){
                 return true;

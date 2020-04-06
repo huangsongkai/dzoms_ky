@@ -80,7 +80,7 @@ public class ReceiptDaoImp implements ReceiptDao {
         Session session = HibernateSessionFactory.getSession();
         Transaction trans = session.beginTransaction();
         try{
-            Query query = session.createQuery("select min(roll.startNum) from ReceiptRecord rr,Roll roll where rr.proveNum=:proveNum and rr.startNum <= roll.startNum and rr.endNum >= roll.endNum and roll.solded=0");
+            Query query = session.createQuery("select min(roll.startFullNum) from ReceiptRecord rr,Roll roll where rr.proveNum=:proveNum and rr.startFullNum <= roll.startFullNum and rr.endFullNum >= roll.endFullNum and roll.solded=0");
             query.setString("proveNum",proveNum);
             Object o = query.uniqueResult();
             if(o != null){
