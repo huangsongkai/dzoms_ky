@@ -1,6 +1,7 @@
 package com.dz.module.charge.receipt;
 
 import com.dz.common.seqence.SeqService;
+import com.dz.common.test.LogExecuteTime;
 import com.dz.module.charge.receipt.util.CountPass;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -60,6 +61,8 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
     @Autowired
     private SeqService seqService;
     private String proveNum;
+
+    @LogExecuteTime
     public String addRecord(){
     	if(rr!=null){
     		rr.setRecordTime(new Date());
@@ -86,7 +89,8 @@ public class ReceiptAction extends ActionSupport  implements ServletRequestAware
         }
         
     }
-    
+
+    @LogExecuteTime
     public void addRecordByLocal() throws IOException{
     	request = ServletActionContext.getRequest();
 		session = request.getSession();

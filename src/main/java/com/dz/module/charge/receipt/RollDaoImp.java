@@ -1,6 +1,7 @@
 package com.dz.module.charge.receipt;
 
 import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.test.LogExecuteTime;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -42,6 +43,7 @@ public class RollDaoImp implements RollDao {
     }
     
     @Override
+    @LogExecuteTime
     public void addFromSeg(int startNum, int endNum,int numberSize,String prefix,int year,Session session) {
             int start = startNum;
             int end = start + 99;
@@ -52,8 +54,8 @@ public class RollDaoImp implements RollDao {
                 roll.setEndNum(end);
                 roll.setPrefix(prefix);
                 roll.setNumberSize(numberSize);
-                roll.setStartFullNum(prefix+startNum);
-                roll.setEndFullNum(prefix+endNum);
+                roll.setStartFullNum(prefix+start);
+                roll.setEndFullNum(prefix+end);
                 roll.setYear(year);
                 start += 100;
                 end += 100;
@@ -63,6 +65,7 @@ public class RollDaoImp implements RollDao {
 
 
     @Override
+    @LogExecuteTime
     public boolean markAsUnUsed(int startNum, int endNum,String prefix) {
         Session session = HibernateSessionFactory.getSession();
         Transaction trans = session.beginTransaction();
@@ -124,6 +127,7 @@ public class RollDaoImp implements RollDao {
 //    }
     
     @Override
+    @LogExecuteTime
     public void markAsUsed(int startNum, int endNum, int numberSize, String prefix, Session session){
             int start = startNum;
             int end = start + 99;

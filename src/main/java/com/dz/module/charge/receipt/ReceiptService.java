@@ -1,6 +1,7 @@
 package com.dz.module.charge.receipt;
 
 import com.dz.common.factory.HibernateSessionFactory;
+import com.dz.common.test.LogExecuteTime;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -42,6 +43,8 @@ public class ReceiptService {
     public List<RemoveRecord> searchRemoves(Date startTime,Date endTime){
         return removeRecordDao.searchRecord(startTime,endTime);
     }
+
+    @LogExecuteTime
     public boolean addRecord(ReceiptRecord receiptRecord){
     	 Session session = HibernateSessionFactory.getSession();
          Transaction tx = null;

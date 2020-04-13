@@ -4,7 +4,6 @@ import com.dz.common.other.Timer;
 import com.dz.module.driver.DriverService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -72,7 +71,11 @@ public class DataTrackFilter implements Filter{
 
 //		ctx = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
 
+//		long currentTimestamp = System.currentTimeMillis();
+//		System.out.println(request.getRequestURL().append(new Date(currentTimestamp)).toString());
 		nextFilter.doFilter(request, response);
+//		System.out.println(request.getRequestURL().append('\t')
+//				.append(System.currentTimeMillis()-currentTimestamp).append("ms").toString());
 	}
 
 	public void destroy() {

@@ -14,7 +14,7 @@
 	   default-lazy-init="true">
 
 	<!--default-autowire="byName"-->
-
+	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
 	<context:annotation-config />
 	<!--,com.dz.kaiying.controller.activiti,com.dz.kaiying.taskListener-->
