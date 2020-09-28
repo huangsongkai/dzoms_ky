@@ -192,11 +192,9 @@ public class ContractAction extends BaseAction {
 				chargePlan.setFee(BigDecimal.valueOf(Double.parseDouble(jarray.get(0).toString())));
 
 				chargePlan.setTime(calendar.getTime());
-
 				calendar.add(Calendar.MONTH, 1);
-
-//				chargeService.addChargePlan(chargePlan,hsession);
-				hsession.save(chargePlan);
+				chargeService.addChargePlan(chargePlan,hsession);
+//				hsession.save(chargePlan);
 			}
 
 			for(int i=1 ;i<jarray.size();i++){
@@ -211,8 +209,8 @@ public class ContractAction extends BaseAction {
 
 				calendar.add(Calendar.MONTH, 1);
 
-//				chargeService.addChargePlan(chargePlan,hsession);
-				hsession.save(chargePlan);
+				chargeService.addChargePlan(chargePlan,hsession);
+//				hsession.save(chargePlan);
 			}
 
 			Query q_move = hsession.createQuery("update ChargePlan set contractId=:nid where contractId=:oid and isClear=false and month(time)>=:tmonth ");
@@ -347,7 +345,8 @@ public class ContractAction extends BaseAction {
 					calendar.set(y, m, 1);
 					chargePlan.setTime(calendar.getTime());
 					m++;
-					hsession.saveOrUpdate(chargePlan);
+					chargeService.addChargePlan(chargePlan,hsession);
+//					hsession.saveOrUpdate(chargePlan);
 					System.out.printf("%d,%f,%tF\n",i,chargePlan.getFee().doubleValue(),chargePlan.getTime());
 				}
 
@@ -780,7 +779,8 @@ public class ContractAction extends BaseAction {
 					cp.setTime(cd.getTime());
 					cp.setComment(comment);
 
-					s.saveOrUpdate(cp);
+					chargeService.addChargePlan(cp,s);
+//					s.saveOrUpdate(cp);
 				}
 				narr.add(jobj);
 			}else{
@@ -803,7 +803,8 @@ public class ContractAction extends BaseAction {
 					cp.setTime(cd.getTime());
 					cp.setComment(comment);
 
-					s.saveOrUpdate(cp);
+					chargeService.addChargePlan(cp,s);
+//					s.saveOrUpdate(cp);
 				}
 				jobj.put("end", sdf.format(end.getTime()));
 				narr.add(jobj);
@@ -836,7 +837,8 @@ public class ContractAction extends BaseAction {
 					cp.setInTime(new Date());
 					cp.setComment(bp.getComment());
 
-					s.saveOrUpdate(cp);
+					chargeService.addChargePlan(cp,s);
+//					s.saveOrUpdate(cp);
 				}
 
 			}else{
@@ -894,7 +896,8 @@ public class ContractAction extends BaseAction {
 						cp.setTime(cd.getTime());
 						cp.setComment(bp.getComment());
 
-						s.saveOrUpdate(cp);
+						chargeService.addChargePlan(cp,s);
+//						s.saveOrUpdate(cp);
 					}
 				}else{
 					//最后一个月有约定 且超过结束日期 ------>以合同结束日期为准
@@ -917,7 +920,8 @@ public class ContractAction extends BaseAction {
 						cp.setTime(cd.getTime());
 						cp.setComment(bp.getComment());
 
-						s.saveOrUpdate(cp);
+						chargeService.addChargePlan(cp,s);
+//						s.saveOrUpdate(cp);
 					}
 					bp.setEndTime(end.getTime());
 					s.saveOrUpdate(bp);
@@ -981,7 +985,8 @@ public class ContractAction extends BaseAction {
 				cp.setTime(cd.getTime());
 				cp.setComment(comment);
 
-				s.saveOrUpdate(cp);
+				chargeService.addChargePlan(cp,s);
+//				s.saveOrUpdate(cp);
 			}
 
 			if(local_months==1){
@@ -1016,7 +1021,8 @@ public class ContractAction extends BaseAction {
 				cp.setTime(cd.getTime());
 				cp.setComment(comment);
 
-				s.saveOrUpdate(cp);
+				chargeService.addChargePlan(cp,s);
+//				s.saveOrUpdate(cp);
 			}else{
 				//这一段时间分属不同的月
 				//第一个月
@@ -1045,7 +1051,8 @@ public class ContractAction extends BaseAction {
 					cp.setTime(cd.getTime());
 					cp.setComment(comment);
 
-					s.saveOrUpdate(cp);
+					chargeService.addChargePlan(cp,s);
+//					s.saveOrUpdate(cp);
 				}
 
 				//最后一个月
@@ -1074,7 +1081,8 @@ public class ContractAction extends BaseAction {
 					cp.setTime(cd.getTime());
 					cp.setComment(comment);
 
-					s.saveOrUpdate(cp);
+					chargeService.addChargePlan(cp,s);
+//					s.saveOrUpdate(cp);
 				}
 			}
 

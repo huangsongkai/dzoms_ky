@@ -5,6 +5,7 @@ import com.dz.common.global.DateUtil;
 import com.dz.common.global.Page;
 import com.dz.common.global.TimePass;
 import com.dz.common.other.ObjectAccess;
+import com.dz.common.test.SpringContextListener;
 import com.dz.module.charge.bank.BankItem;
 import com.dz.module.charge.bank.HttpRequest;
 import com.dz.module.charge.bank.XmlPacket;
@@ -21,13 +22,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -509,7 +509,8 @@ public class ChargeService {
                                                 cp.setRegister(item.getRegister());
                                                 cp.setComment(""+item.getId()+",超出计划的扣款");
 //                                                return returnCode;
-                                                session.saveOrUpdate(cp);
+                                                addChargePlan(cp,session);
+//                                                session.saveOrUpdate(cp);
                                             }
                                         }
                                     }else {
@@ -568,7 +569,8 @@ public class ChargeService {
                 cp.setInTime(item.getRealTime());
                 cp.setRegister(item.getRegister());
                 cp.setComment(""+item.getId());
-                session.saveOrUpdate(cp);
+                addChargePlan(cp,session);
+//                session.saveOrUpdate(cp);
 //                                                    }
         }else {
             item.setState(2);
@@ -671,6 +673,7 @@ public class ChargeService {
                     + "and c.state in (0,-1,1,4) "
                     + "and c.branchFirm like :dept "
                     + "and c.idNum=d.idNum "
+                    + "and p.isDisabled != true "
                     + "and p.isClear != true "
                     + "and ( "
                     + "    (c.abandonedFinalTime is null) "
@@ -697,6 +700,74 @@ public class ChargeService {
         }
 
         return records;
+    }
+
+    public List<BankRecord> exportBankFile2(Date time,String dept){
+        List<BankRecord> records = new ArrayList<>();
+
+        Session session = null;
+        try{
+            session = HibernateSessionFactory.getSession();
+            String hql = "select new com.dz.module.charge.BankRecord(\n" +
+                    "    d.idNum as idNum,\n" +
+                    "    d.name as driverName,\n" +
+                    "    mp.carframeNum as carframeNum,\n" +
+                    "    v.licenseNum as licenseNum,\n" +
+                    "    -mp.planAll as derserve,\n" +
+                    "    (mp.planAll - mp.arrear) as left ,\n" +
+                    "    max(c.id) as contractId ) \n" +
+                    "from MonthPlan mp,Vehicle v,Contract c,Driver d\n" +
+                    "where mp.carframeNum=v.carframeNum \n" +
+                    "and mp.carframeNum=c.carframeNum and c.state in (0,-1,1,4)\n" +
+                    "and d.idNum = c.idNum \n" +
+                    "and year(mp.time)=year(:date) and month(mp.time)=month(:date)\n" +
+                    "and c.branchFirm like :dept\n" +
+                    "and ((c.abandonedFinalTime is null)   \n" +
+                    "    or (YEAR(c.abandonedFinalTime )*12+MONTH(c.abandonedFinalTime )+(case when DAY(c.abandonedFinalTime )>26 then 1 else 0 end) >= (YEAR(:date)*12+MONTH(:date)))) \n" +
+                    "group by mp.carframeNum \n" +
+                    "order by c.branchFirm,c.carNum";
+
+            Query query = session.createQuery(hql);
+
+            if(dept.equals("全部")){
+                query.setString("dept", "%");
+            }else{
+                query.setString("dept", "%"+dept+"%");
+            }
+
+            query.setDate("date", time);
+
+            records = query.list();
+        }catch(HibernateException ex){
+            ex.printStackTrace();
+        }finally{
+            HibernateSessionFactory.closeSession();
+        }
+
+        return records;
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+//        HibernateSessionFactory sessionFactory = (HibernateSessionFactory) app.getBean(HibernateSessionFactory.class);
+        SpringContextListener.setSpringContext(app);
+        ChargeService chargeService = app.getBean(ChargeService.class);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH,6);
+        calendar.set(Calendar.DATE,1);
+//        chargeService.makeMonthPlan(calendar.getTime());
+        System.out.println("----------------------------------");
+        List<BankRecord> list1 = chargeService.exportBankFile(calendar.getTime(),"一部");
+        System.out.println(list1.size());
+        list1.forEach(System.out::println);
+        System.out.println();
+        System.out.println("----------------------------------");
+        List<BankRecord> list2 = chargeService.exportBankFile2(calendar.getTime(),"一部");
+        System.out.println(list2.size());
+        list2.forEach(System.out::println);
+        System.out.println();
+        System.out.println("----------------------------------");
+        System.exit(0);
     }
 
     /***********************************************************************************************************/
@@ -949,7 +1020,7 @@ public class ChargeService {
             Query stateQuery = session.createQuery(
                     "update ChargePlan cp " +
                             "set cp.isClear=true " +
-                            "where cp.contractId IN (SELECT c.id FROM Contract c WHERE cp.contractId=c.id AND c.branchFirm=:dept) " +
+                            "where cp.isDisabled!=true and cp.contractId IN (SELECT c.id FROM Contract c WHERE cp.contractId=c.id AND c.branchFirm=:dept) " +
                             "and (YEAR(cp.time)*12+MONTH(cp.time)+(case when DAY(cp.time)>26 then 1 else 0 end) " +
                             "< (YEAR(:currentClearTime)*12+MONTH(:currentClearTime))+1)");
             stateQuery.setDate("currentClearTime",deptTime);
@@ -1212,10 +1283,16 @@ public class ChargeService {
 
             ChargePlan cp = new ChargePlan();
             cp.setContractId(c.getId());
-            cp.setFeeType("add_bank");
+            if (bc.getCardClass().contains("哈尔滨银行")){
+                cp.setFeeType("add_bank");
+            }else {
+                cp.setFeeType("add_bank2");
+            }
             cp.setFee(brt.getMoney());
+            cp.setBalance(brt.getMoney());
             cp.setTime(brt.getInTime());
             cp.setIsClear(false);
+            cp.setIsDisabled(false);
             cp.setInTime(brt.getRecodeTime());
             cp.setRegister(brt.getRecorder());
             cp.setComment(""+brt.getId());
@@ -1228,8 +1305,11 @@ public class ChargeService {
         try {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
-            for(ChargePlan cp:cps)
-                session.save(cp);
+            for(ChargePlan cp:cps){
+                addChargePlan(cp,session);
+ //                session.save(cp);
+            }
+
             for(BankRecordTmp brt:badRecords){
                 brt.setStatus(2);
                 session.update(brt);
@@ -1417,6 +1497,7 @@ public class ChargeService {
      * @param clearTime none
      * @return none
      */
+    @Deprecated
     private boolean clear(int contractId,Date clearTime) throws HibernateException{
         Session session = HibernateSessionFactory.getSession();
         Contract c = (Contract) session.get(Contract.class,contractId);
@@ -1583,32 +1664,15 @@ public class ChargeService {
      * @return
      */
     public boolean addChargePlan(ChargePlan plan){
-        if(plan == null) throw new NullPointerException("the plan shouldn't be null");
-        plan.setIsClear(false);
-        int contractId = plan.getContractId();
-        Contract contract = contractDao.selectById(contractId);
-        if(contract == null) return false;
-        //对合同由于有旧数据所以不做限制.
-        if(!plan.getFeeType().equals("plan_base_contract")){
-            if((plan.getFeeType().startsWith("add") || plan.getFeeType().startsWith("sub"))){
-                if(!DateUtil.isYearAndMonth(plan.getTime(),clearTimeDao.getCurrent(contract.getBranchFirm())))
-                    return false;
-            }else{
-                plan.setTime(clearTimeDao.getCurrent(contract.getBranchFirm()));
-            }
+        Session session = HibernateSessionFactory.getSession();
+        try {
+            addChargePlan(plan,session);
+        }catch (Exception ex){
+            return false;
+        }finally {
+            HibernateSessionFactory.closeSession();
         }
-
-        {
-            Calendar tm = Calendar.getInstance();
-            tm.setTime(plan.getTime());
-            if(tm.get(Calendar.DATE)>26){
-                tm.add(Calendar.MONTH, 1);
-            }
-            tm.set(Calendar.DATE, 1);
-        }
-        if(plan.getFee() == null) return false;
-        boolean flag = chargeDao.addChargePlan(plan);
-        return flag;
+        return true;
     }
 
     /**
@@ -1619,17 +1683,34 @@ public class ChargeService {
     public void addChargePlan(ChargePlan plan,Session session) throws HibernateException{
         if(plan == null) throw new HibernateException("the plan shouldn't be null");
         plan.setIsClear(false);
+        plan.setIsDisabled(false);
+
         int contractId = plan.getContractId();
         Contract contract = (Contract) session.get(Contract.class,contractId);
         if(contract == null) return ;
         //对合同由于有旧数据所以不做限制.
-        if(!plan.getFeeType().equals("plan_base_contract"))
-            if((plan.getFeeType().startsWith("add") || plan.getFeeType().startsWith("sub"))){
-                if(!DateUtil.isYearAndMonth(plan.getTime(),clearTimeDao.getCurrent(contract.getBranchFirm(),session)))
-                    return;
-            }else{
-                plan.setTime(clearTimeDao.getCurrent(contract.getBranchFirm(),session));
-            }
+//        if(!plan.getFeeType().equals("plan_base_contract")){
+//            if((plan.getFeeType().startsWith("add") || plan.getFeeType().startsWith("sub"))){
+//                if(!DateUtil.isYearAndMonth(plan.getTime(),clearTimeDao.getCurrent(contract.getBranchFirm(),session)))
+//                    return;
+//            }else{
+//                plan.setTime(clearTimeDao.getCurrent(contract.getBranchFirm(),session));
+//            }
+//        }
+        if(plan.getFee() == null) return;
+        if(plan.getFeeType().startsWith("add")){
+            plan.setBalance(plan.getFee());
+        }
+        else if (plan.getFeeType().startsWith("sub")){
+            plan.setBalance(plan.getFee().negate());
+        }else {
+            plan.setBalance(null);
+        }
+
+        if (plan.getTime()==null){
+            return;
+        }
+        if (plan.getTime().getDate()!=1)
         {
             Calendar tm = Calendar.getInstance();
             tm.setTime(plan.getTime());
@@ -1637,8 +1718,9 @@ public class ChargeService {
                 tm.add(Calendar.MONTH, 1);
             }
             tm.set(Calendar.DATE, 1);
+            plan.setTime(tm.getTime());
         }
-        if(plan.getFee() == null) return;
+
         session.saveOrUpdate(plan);
     }
 
@@ -1981,7 +2063,7 @@ public class ChargeService {
                     //+ "where contractId in (" + hql+ " ) "
                     + "p ,Contract c,Driver d,ClearTime cl "
                     + "where p.contractId=c.id and d.idNum=c.idNum and cl.department=c.branchFirm "
-                    + "and p.isClear != true "
+                    + "and p.isDisabled != true and p.isClear != true "
                     + hql
 
                     + "and p.time is not null and year(p.time)=year(:currentClearTime) and month(p.time)=month(:currentClearTime) "
@@ -2052,6 +2134,7 @@ public class ChargeService {
                     "c.planList as planList)   \n" +
                     "from ChargePlan p ,Contract c,ClearTime cl  \n" +
                     "   where p.contractId=c.id and cl.department=c.branchFirm  \n" +
+                    "   and p.isDisabled != true  \n" +
                     "   and p.isClear != true  \n" +
                     "   and p.time is not null and year(p.time)=year(:currentClearTime) and month(p.time)=month(:currentClearTime)  \n" +
                     "   group by c.id\n" +
@@ -2195,4 +2278,71 @@ public class ChargeService {
     }
 
 
+    boolean makeMonthPlan(Date month) {
+        Session s = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        try {
+            tx = s.beginTransaction();
+//            Query query = s.createQuery("insert into MonthPlan(carframeNum,planAll,time,arrear) " +
+//                    "select c.carframeNum,sum(cp.fee),cp.time,sum(cp.fee) " +
+//                    "from ChargePlan cp,Contract c " +
+//                    "where cp.isDisabled=false and cp.feeType like 'plan_%' " +
+//                    "and cp.contractId=c.id " +
+//                    "and not exists (select 1 from MonthPlan mp where mp.carframeNum=c.carframeNum and year(mp.time)=year(:month) and month(mp.time)=month(:month)) " +
+//                    "and year(cp.time)=year(:month) " +
+//                    "and month(cp.time)=month(:month)" +
+//                    "group by c.carframeNum ");
+//            query.setDate("month",month);
+//            query.executeUpdate();
+
+            Query query1 = s.createQuery(
+                    "select c.carframeNum,sum(case when cp.feeType like 'plan_sub%' then -cp.fee else cp.fee end ) " +
+                            "from ChargePlan cp,Contract c " +
+                            "where cp.isDisabled=false and cp.feeType like 'plan_%' " +
+                            "and cp.contractId=c.id " +
+                            "and year(cp.time)=year(:month) " +
+                            "and month(cp.time)=month(:month)" +
+                            "group by c.carframeNum ");
+            query1.setDate("month",month);
+
+            Query query0 = s.createQuery("from MonthPlan where carframeNum=:carNum and  year(time)=year(:month) and month(time)=month(:month) ");
+            Query query11 = s.createQuery("select sum(amount) from IncomeDivide where type=0 and monthPlanId=:id");
+//            Query query2 = s.createQuery("update MonthPlan set planAll=:planAll, arrear=:arrear where carframeNum=:carNum and  year(time)=year(:month) and month(time)=month(:month) ");
+            query0.setDate("month",month);
+            query0.setMaxResults(1);
+//            query2.setDate("month",month);
+
+            query1.list().forEach(o -> {
+                Object[] os = (Object[]) o;
+                String carNum = (String) os[0];
+                BigDecimal planAll = (BigDecimal) os[1];
+                query0.setString("carNum" ,carNum);
+                MonthPlan already = (MonthPlan) query0.uniqueResult();
+                if (already!=null){
+                    query11.setInteger("id",already.getId());
+                    BigDecimal arrear = (BigDecimal) query11.uniqueResult();
+                    already.setPlanAll(planAll);
+                    already.setArrear(arrear==null?BigDecimal.ZERO:arrear);
+                    s.saveOrUpdate(already);
+                }else {
+                    MonthPlan monthPlan = new MonthPlan();
+                    monthPlan.setCarframeNum(carNum);
+                    monthPlan.setTime(month);
+                    monthPlan.setPlanAll(planAll);
+                    monthPlan.setArrear(planAll);
+                    s.saveOrUpdate(monthPlan);
+                }
+            });
+            tx.commit();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            if (tx!=null){
+                tx.rollback();
+            }
+            return false;
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+        return true;
+    }
 }

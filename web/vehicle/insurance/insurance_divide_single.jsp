@@ -71,8 +71,9 @@
         make_table:
     if(licenseNum!=null && licenseNum.length()==7 && startTime!=null && endTime!=null){
         Session hsession = HibernateSessionFactory.getSession();
-        Query query = hsession.createQuery("from Vehicle where licenseNum=:carNum");
+        Query query = hsession.createQuery("from Vehicle where licenseNum=:carNum order by inDate desc ");
         query.setString("carNum",licenseNum);
+        query.setMaxResults(1);
         Vehicle v = (Vehicle) query.uniqueResult();
         if(v==null){
             err_mag = "车辆不存在！";

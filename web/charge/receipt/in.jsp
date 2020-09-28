@@ -87,6 +87,7 @@
 
 			$("input[name='rr.numberSize']").val(startNumLeft.length);
 			$("input[name='rr.prefix']").val(startNumLeft);
+			$("#prefix"+ii).val(startNumLeft);
 			$("input[name='rr.startNum']").val(startNumRight);
 
 			var endNum = parseInt(startNumRight)+9999;
@@ -122,11 +123,11 @@
     	var box=0,bag=0,roll=0;
     	var boxtemp=0,bagtemp=0,rolltemp=0;
     	for(var ii=0;ii<index;ii++){
-			// var startNum = $("#startNum"+ii).val();
-			var startNum = $("input[name='rr.startNum']").val();
-			// var endNum = $("#endNum"+ii).val();
+			var prefix = $("#prefix"+ii).val();
+			var startNumString = $("#startNum"+ii).val();
+			var startNum = startNumString.substr(prefix.length);
 			var endNumString = $("#endNum"+ii).val();
-			var endNum = endNumString.substr($("input[name='rr.numberSize']").val());
+			var endNum = endNumString.substr(prefix.length);
 			var num = eval(endNum)-eval(startNum)+1;
     		boxtemp = Math.floor(num/10000);
     		bagtemp = Math.floor((num-boxtemp*10000)/1000);
@@ -149,64 +150,72 @@
     }
     
     var i=0;
-    
+
+    function validate_x(ii) {
+    	return new Promise(function (resolve, reject) {
+			var prefix = $("#prefix"+ii).val();
+			var startNumString = $("#startNum"+ii).val();
+			var endNumString = $("#endNum"+ii).val();
+
+			var startNum = parseInt(startNumString.substr(prefix.length));
+			var endNum =  parseInt(endNumString.substr(prefix.length));
+
+			if(startNum == undefined || startNum==""||endNum==undefined||endNum==""){
+				reject("第"+(ii+1)+"行，发票开始编号与结束编号必填！！！");
+			}else if((endNum-startNum+1)%100 != 0){
+				reject("第"+(ii+1)+"行，发票开始编号与结束编号错误！！！");
+			}else {
+				$.post("/DZOMS/charge/receipt/validateIn",
+						{
+							"prefix":prefix,
+							"numberSize":prefix.length,
+							"startNum":startNum,
+							"endNum":endNum
+						},
+						function(data){
+							if(data.substring(0,7)=="success"){
+								resolve({
+									prefix:prefix,
+									numberSize:prefix.length,
+									startNum:startNum,
+									endNum:endNum
+								})
+							}else{
+								reject("发票段"+prefix+startNum+"-"+prefix+endNum+"已经存在于数据库中！！！");
+							}
+						});
+			}
+		});
+	}
+
+	function submitObject(formObject) {
+    	return new Promise(function (resolve,reject) {
+			$('input[name="rr.startNum"]').val(formObject.startNum);
+			$('input[name="rr.endNum"]').val(formObject.endNum);
+			$('input[name="rr.prefix"]').val(formObject.prefix);
+			$('input[name="rr.numberSize"]').val(formObject.prefix.length);
+			ajaxSubmit($("#form")[0],function () {
+				resolve()
+			});
+		});
+	}
+
     function validate(){
-		var time = $("#time").val();
-		if(time == undefined || time ==""){
-			//alert("时间必填！");
-			//return false;
+    	var promiseArray = [];
+		for (var i = 0; i < index; i++) {
+			promiseArray.push(validate_x(i));
 		}
-		var nullflag = true;
-		//for(var i=0;i<index;i++){
-	    //   var startNum = $("#startNum"+i).val();
-	    //   var endNum = $("#endNum"+i).val();
-		var startNum = $("input[name='rr.startNum']").val();
-		var endNumString = $("#endNum"+i).val();
-		var endNum = endNumString.substr($("input[name='rr.numberSize']").val());
-	      //alert(i);
-	     // alert(startNum);
-	     // alert(endNum);
-	      
-	      if(startNum == undefined || startNum==""||endNum==undefined||endNum==""){
-	        //alert("发票开始编号与结束编号必填！！！");
-	        //return false;
-	      }else{
-	      	nullflag = false;
-	        if((eval(endNum)-eval(startNum)+1)%100 != 0){
-	          alert("发票开始编号与结束编号错误！！！");
-	          return false;
-	        }else{
-	        	var prefix = $("input[name='rr.prefix']").val();
-	          $.post("/DZOMS/charge/receipt/validateIn",{
-	          	"prefix":prefix,
-				  "numberSize":$("input[name='rr.numberSize']").val(),
-				  "startNum":startNum,
-				  "endNum":endNum
-			  },function(data){
-	           // alert(data.substring(0,7));
-	           // alert(data.substring(0,7).length);
-	            if(data.substring(0,7)=="success"){
-	              //alert(1);
-	              $('input[name="rr.startNum"]').val(startNum);
-	              $('input[name="rr.endNum"]').val(endNum);
-	              $("#form")[0].submit();
-	              i++;
-	            }else{
-	              alert("发票段"+prefix+startNum+"-"+prefix+endNum+"已经存在于数据库中！！！");
-	              return;
-	            }
-	          });
-	        }
-	      //}
-	    }
-	    
-	    //$("#form2").submit();
-	    
-	    
-	    if(nullflag){
-	    	alert("发票开始编号与结束编号必填！！！");
-	    	return false;
-	    }
+		Promise.all(promiseArray)
+				.then(function (formArray) {
+					Promise.all(formArray.map(function (formObj) {
+						return submitObject(formObj)
+					})).then(function (value) {
+						alert("添加成功！！！")
+					}).catch(function (reason) {
+						alert("添加失败，"+reason)
+					})
+				})
+				.catch(function (reason) { alert(reason) });
     }
     
     function moveNext(){
@@ -226,6 +235,7 @@
     
     var index=1;
     function add(){
+		$("#start").append("<input type=\"hidden\" id=\"prefix"+index+"\">");
     	$("#start").append("<input type=\"text\" id=\"startNum"+index+"\" onblur=\"fillEnd("+index+")\" class=\"input input-auto\" size=\"20\"><br>");
     	$("#end").append("<input type=\"text\" id=\"endNum"+index+"\" onchange=\"calNum("+index+")\" class=\"input input-auto\" size=\"20\"><br>");
     	index++;
@@ -373,7 +383,8 @@ function getFormJson(frm) {
           		       	   <input type="hidden" name="rr.endNum">
           		       	   <input type="hidden" name="rr.numberSize">
           		       	   <input type="hidden" name="rr.prefix">
-          		       	   	<input type="text" id="startNum0" onblur="fillEnd(0)" class="input input-auto" size="20">
+							   <input type="hidden" id="prefix0">
+							   <input type="text" id="startNum0" onblur="fillEnd(0)" class="input input-auto" size="20">
           		       	   </div>
           		       </div>
           		        <div class="form-group">

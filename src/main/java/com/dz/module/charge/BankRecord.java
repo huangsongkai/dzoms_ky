@@ -70,6 +70,19 @@ public class BankRecord {
 		init();
 	}
 
+	public BankRecord(String idNum,String driverName,String carframeNum,String licenseNum,BigDecimal derserve,BigDecimal left,int contractId) {
+		this.idNum = idNum;
+		this.driverName = driverName;
+		this.carframeNum = carframeNum;
+		this.licenseNum = licenseNum;
+		this.derserve = derserve==null?0:derserve.doubleValue();
+		this.left = left==null?0:left.doubleValue();
+		this.contractId = contractId;
+//		System.out.println(derserve+"|"+left);
+
+		init();
+	}
+
 	public void init(){
 //    	if(bankCardDao==null){
 //    		initStatic();
@@ -124,9 +137,16 @@ public class BankRecord {
 	public String toString() {
 		return "BankRecord{" +
 				"licenseNum='" + licenseNum + '\'' +
+				", carframeNum='" + carframeNum + '\'' +
 				", driverName='" + driverName + '\'' +
+				", idNum='" + idNum + '\'' +
 				", bankCards=" + bankCards +
 				", money=" + money +
+				", derserve=" + derserve +
+				", left=" + left +
+				", inTime=" + inTime +
+				", contractId=" + contractId +
+				", id=" + id +
 				'}';
 	}
 

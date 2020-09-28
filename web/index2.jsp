@@ -118,7 +118,14 @@ function setTheIframeH(size){
 				<img src="/DZOMS/res/mainPage/img/icons/packs/crystal/48x48/mimetypes/vcard.png">
 									财务管理
 			</a>
-		</li><% } %>
+		</li>
+		<li>
+			<a href="demoleft.jsp?menu=finance2" onclick="setTheIframeH(800)"  target="body">
+				<img src="/DZOMS/res/mainPage/img/icons/packs/crystal/48x48/apps/mydocuments.png">
+				财务新功能
+			</a>
+		</li>
+		<% } %>
 		<% if(menuItems.containsKey("审批管理")){ %><li>
 			<a href="demoleft.jsp?menu=apply_manage" onclick="setTheIframeH(800)" target="body">
 				<img src="/DZOMS/res/mainPage/img/icons/packs/crystal/48x48/mimetypes/kexi_kexi.png">
@@ -127,12 +134,6 @@ function setTheIframeH(size){
 		</li><% } %>
 
 		<%-- <% if(menuItems.containsKey("档案")){ %> --%>
-		<li>
-			<a href="javascript:void(0);">
-				<img src="/DZOMS/res/mainPage/img/icons/packs/crystal/48x48/apps/mydocuments.png">
-									计划管理
-			</a>
-		</li>
 		<%-- <% } %> --%>
 		<% if(menuItems.containsKey("统计分析")){ %>
 		<li>

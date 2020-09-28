@@ -1,7 +1,6 @@
 package com.dz.module.charge;
 
 import com.dz.common.other.ObjectAccess;
-import com.dz.module.contract.BankCard;
 import com.dz.module.contract.Contract;
 import org.joda.time.DateTime;
 
@@ -56,6 +55,12 @@ public class ChargePlan {
     @Temporal(TemporalType.TIMESTAMP)
     private Date inTime = new Date();
     private String register;
+
+    @Column(name = "is_disabled")
+    private Boolean isDisabled;
+
+    @Column(name="balance")
+    private BigDecimal balance;
 
     public int getId() {
         return id;
@@ -136,6 +141,22 @@ public class ChargePlan {
     public void setIsClear(boolean isClear) {
 
         this.isClear = isClear;
+    }
+
+    public Boolean getIsDisabled() {
+        return isDisabled;
+    }
+
+    public void setIsDisabled(Boolean disabled) {
+        isDisabled = disabled;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public boolean isClear(){

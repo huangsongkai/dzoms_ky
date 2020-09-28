@@ -237,8 +237,7 @@
                                          name="insurance.carframeNum"
                                          value="%{bean[0].carframeNum}"
                                          data-validate="required:请选择,length#>=1:必填"></s:textfield>
-                            <input class="input" style="width: 50%"
-                                   id="insurance_base" readonly>
+                            <s:textfield cssClass="input" cssStyle="width: 50%" id="insurance_base" theme="simple" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',bean[0].carframeNum).insuranceBase}" readonly="true"></s:textfield>
                             <span class="addon button"><button
                                     onclick="updateInsuranceBase()"><span
                                     class="icon-edit text-blue"></span>修改基础保费</button></span>

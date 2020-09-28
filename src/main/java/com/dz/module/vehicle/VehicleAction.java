@@ -8,6 +8,7 @@ import com.dz.common.other.FileUploadUtil;
 import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.PageUtil;
 import com.dz.module.charge.ChargePlan;
+import com.dz.module.charge.ChargeService;
 import com.dz.module.contract.Contract;
 import com.dz.module.contract.ContractService;
 import com.dz.module.user.RelationUr;
@@ -1168,6 +1169,9 @@ public class VehicleAction extends BaseAction{
 		return SUCCESS;
 	}
 
+	@Autowired
+	private ChargeService chargeService;
+
 	public String relookServiceRight(){
 		Session s = null;
 		Transaction tx = null;
@@ -1292,7 +1296,8 @@ public class VehicleAction extends BaseAction{
 								cp.setTime(cd.getTime());
 								cp.setComment(comment);
 
-								s.saveOrUpdate(cp);
+//								s.saveOrUpdate(cp);
+								chargeService.addChargePlan(cp,s);
 							}
 
 							if(local_months==1){
@@ -1327,7 +1332,8 @@ public class VehicleAction extends BaseAction{
 								cp.setTime(cd.getTime());
 								cp.setComment(comment);
 
-								s.saveOrUpdate(cp);
+								chargeService.addChargePlan(cp,s);
+//								s.saveOrUpdate(cp);
 							}else{
 								//这一段时间分属不同的月
 								//第一个月
@@ -1356,7 +1362,8 @@ public class VehicleAction extends BaseAction{
 									cp.setTime(cd.getTime());
 									cp.setComment(comment);
 
-									s.saveOrUpdate(cp);
+									chargeService.addChargePlan(cp,s);
+//									s.saveOrUpdate(cp);
 								}
 
 								//最后一个月
@@ -1385,7 +1392,8 @@ public class VehicleAction extends BaseAction{
 									cp.setTime(cd.getTime());
 									cp.setComment(comment);
 
-									s.saveOrUpdate(cp);
+									chargeService.addChargePlan(cp,s);
+//									s.saveOrUpdate(cp);
 								}
 							}
 						}// end of for each of the chargeplan
@@ -2025,5 +2033,9 @@ public class VehicleAction extends BaseAction{
 
 	public void setOrderby(String orderby) {
 		this.orderby = orderby;
+	}
+
+	public void setChargeService(ChargeService chargeService) {
+		this.chargeService = chargeService;
 	}
 }

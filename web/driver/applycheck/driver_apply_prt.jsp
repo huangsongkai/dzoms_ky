@@ -11,8 +11,16 @@
 $(document).ready(function(){
 	alert("添加成功！");
 	window.print();
-    window.location.href = "/DZOMS/driver/applycheck/driver_apply.jsp";
+    // window.location.href = "/DZOMS/driver/applycheck/driver_apply.jsp";
 });
+
+function printPage(){
+    window.print();
+}
+
+function exitPage() {
+    window.location.href = "/DZOMS/driver/applycheck/driver_apply.jsp";
+}
 </script>
 </head>
 <style>
@@ -20,9 +28,15 @@ $(document).ready(function(){
 .table-d table td{border:1px solid ;}
   p{margin:0px}
   td{height:45px;}
-  
+
+@media print{
+    .none-print{
+        display:none
+    }
+}
 </style>
 <body style="font-size:18px;">
+<p class="none-print"><button onclick="printPage()">打印</button><button onclick="exitPage()">退出</button></p>
 <%! int year = new java.util.Date().getYear()+1900;%>
 <%! int month = new java.util.Date().getMonth()+1;%>
 <%! int day = new java.util.Date().getDate();%>

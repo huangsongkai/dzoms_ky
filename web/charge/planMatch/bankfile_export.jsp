@@ -29,37 +29,42 @@
         //            });
         //        });
         function getResult(){
-            $("#form").attr("action","/DZOMS/charge/exportBankFile");
+            $("#form").attr("action","/DZOMS/charge/exportBankFile2");
         }
-        function exportFile(){
+
+        function check() {
             var time = $("#time").val();
             if(time == undefined || time == ""){
-                alert("请输入时间！");
+                alert("请指定扣款月份！");
                 return false;
             }
-            $("#form").attr("action","/DZOMS/charge/exportTxt");
+            var limit = $('#upperLimit').val();
+            if (limit=='' || parseInt(limit)==0){
+                alert("请指定扣款档位！");
+                return false;
+            }
+            return confirm('您选择的是对'+time+"，"+(limit<0?'无档位':('档位'+limit))+"进行扣款，请确认？");
+        }
+
+        function exportFile(){
+            if (!check()) return false;
+            $("#input_cardClass").val('哈尔滨银行');
+            $("#form").attr("action","/DZOMS/charge/exportTxtNew");
         }
 
         function exportFile2(){
-            var time = $("#time").val();
-            if(time == undefined || time == ""){
-                alert("请输入时间！");
-                return false;
-            }
+            if (!check()) return false;
+            $("#input_cardClass").val('招商银行');
             if (confirm('注意，这是导出招商银行计划为txt,确认并继续？')){
-                $("#form").attr("action","/DZOMS/charge/exportTxt2");
+                $("#form").attr("action","/DZOMS/charge/exportTxtNew");
             }else {
                 return false;
             }
         }
 
         function doDiscount() {
-            var time = $("#time").val();
-            if(time == undefined || time == ""){
-                alert("请输入时间！");
-                return false;
-            }
-            $("#form").attr("action","/DZOMS/charge/requireDiscount");
+            if (!check()) return false;
+            $("#form").attr("action","/DZOMS/charge/requireDiscount2");
             $("#form").submit();
         }
     </script>
@@ -97,6 +102,31 @@
             });
             $('[name="cardClass"]').change();
 
+            $('input[type=radio][name="upperType"]').change(function () {
+               var  upperType = $('input[type=radio][name="upperType"]:checked').val();
+                switch (upperType) {
+                    case 'unlimited':
+                        $('#upperLimit').val(-1);
+                        $('#upperLimit').prop('readonly',true);
+                        break;
+                    case 'limit_500':
+                        $('#upperLimit').val(500);
+                        $('#upperLimit').prop('readonly',true);
+                        break;
+                    case 'limit_1000':
+                        $('#upperLimit').val(1000);
+                        $('#upperLimit').prop('readonly',true);
+                        break;
+                    case 'limit_2000':
+                        $('#upperLimit').val(2000);
+                        $('#upperLimit').prop('readonly',true);
+                        break;
+                    case 'limit_auto':
+                        $('#upperLimit').prop('readonly',false);
+                        break;
+                }
+            });
+            $('[name="upperType"]').change();
         });
     </script>
 </head>
@@ -115,7 +145,8 @@
     <div class="alert xm4"><strong>清账时间：</strong><span id="currentMonth3"></span></div>
 </div>
 <div class="line">
-    <form method="post" id="form" action="/DZOMS/charge/exportBankFile" class="form-inline form-tips" style="width: 100%;">
+    <form method="post" id="form" action="/DZOMS/charge/exportBankFile2" class="form-inline form-tips" style="width: 100%;">
+      <%--<input id="input_cardClass" type="hidden" name="cardClass" value="招商银行">--%>
         <div class="panel  margin-small" >
             <div class="panel-head">
                 查询条件
@@ -138,24 +169,49 @@
                         </label>
                     </div>
                     <div class="field">
-                        <s:select name="cardClass" list="#{'':'全部','哈尔滨银行':'哈尔滨银行','招商银行':'招商银行'}" value="%{#parameters.cardClass}"></s:select>
+                        <s:select id="input_cardClass" name="cardClass" list="#{'':'全部','哈尔滨银行':'哈尔滨银行','招商银行':'招商银行'}" value="%{#parameters.cardClass}"></s:select>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="label padding">
                         <label>
-                            请输入年月：
+                            请输入计划年月：
                         </label>
                     </div>
                     <div class="field">
                         <s:textfield cssClass="input datetimepicker" name="time" placeholder="年月即可" id="time" value="%{time}"/>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="label padding">
+                        <label>扣款档位</label>
+                    </div>
+                    <div class="field">
+                        <div class="button-group radio">
+                            <label class="button active">
+                                <input name="upperType" value="unlimited" checked="checked" type="radio"><span class="icon icon-male"></span> 无上限
+                            </label>
+                            <label class="button">
+                                <input name="upperType" value="limit_500" type="radio"><span class="icon icon-female"></span> 500
+                            </label>
+                            <label class="button">
+                                <input name="upperType" value="limit_1000" type="radio"><span class="icon icon-child"></span> 1000
+                            </label>
+                            <label class="button">
+                                <input name="upperType" value="limit_2000" type="radio"><span class="icon icon-child"></span> 2000
+                            </label>
+                            <label class="button">
+                                <input name="upperType" value="limit_auto" type="radio"><span class="icon icon-child"></span> 自定义
+                            </label>
+                        </div>
+                        <s:textfield cssClass="input" name="upperLimit"  placeholder="扣款档位" id="upperLimit" value="%{upperLimit}"/>
+                    </div>
+                </div>
 
                 <input type="submit" value="查询" class="button bg-green" onclick="getResult()"/>
                 <input type="submit" value="导出" class="button bg-green card_hrb" onclick="exportFile();"/>
-                <input type="submit" value="导出招行" class="button bg-green card_hrb" onclick="exportFile2();"/>
-                <input type="button" value="扣款" style="display: none" class="button bg-green card_zs" onclick="doDiscount();"/>
+                <input type="submit" value="导出招行" class="button bg-green card_zs" onclick="exportFile2();"/>
+                <input type="button" value="自动扣款" style="display: none" class="button bg-green card_zs" onclick="doDiscount();"/>
             </div>
         </div>
     </form>
@@ -176,15 +232,21 @@
                 <th>车牌号</th>
                 <th>司机</th>
                 <th>银行帐号</th>
-                <th>应收款</th>
+                <th>当月计划总额</th>
+                <th>已缴纳金额</th>
+                <th>剩余应收款</th>
             </tr>
             <%BigDecimal bd = new BigDecimal(0.00);%>
+            <%BigDecimal bd1 = new BigDecimal(0.00);%>
+            <%BigDecimal bd2 = new BigDecimal(0.00);%>
             <%int index=1;%>
             <%for(BankRecord record:records){
                 if(record.getMoney().intValue() == 0)
                     continue;
             %>
-            <%bd = bd.add(record.getMoney());%>
+            <%bd = bd.add(BigDecimal.valueOf(record.getDerserve()));%>
+            <%bd1 = bd1.add(BigDecimal.valueOf(record.getLeft()));%>
+            <%bd2 = bd2.add(record.getMoney());%>
             <tr>
                 <td><%=index++%></td>
                 <td><%=record.getLicenseNum()%></td>
@@ -204,6 +266,8 @@
                         }%>
                     </select>
                 </td>
+                <td><%=record.getDerserve()%></td>
+                <td><%=record.getLeft()%></td>
                 <td><%=record.getMoney()%></td>
             </tr>
             <%}%>
@@ -213,6 +277,8 @@
                 <th> - </th>
                 <th> - </th>
                 <th><%=bd%></th>
+                <th><%=bd1%></th>
+                <th><%=bd2%></th>
             </tr>
         </table>
 

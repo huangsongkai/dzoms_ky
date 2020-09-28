@@ -80,7 +80,7 @@ public class InsuranceAction extends BaseAction{
 
 			List<Insurance> list = qx.list();
 			for (Insurance insurance1 : list) {
-				if (insurance1.getInsuranceClass().equals("商业保险单") && insurance1.getState()==3){
+				if ("商业保险单".equals(insurance1.getInsuranceClass()) && insurance1.getState()==3){
 					vehicle = (Vehicle) s.get(Vehicle.class, insurance1.getCarframeNum());
 					if(vehicle.getInsuranceBase()!=null && vehicle.getInsuranceBase().compareTo(BigDecimal.ZERO)>0){
 						InsuranceService.makeDivide(s, insurance1, vehicle.getInsuranceBase());
@@ -103,6 +103,21 @@ public class InsuranceAction extends BaseAction{
 		}
 		request.setAttribute("msgStr", "操作成功。");
 		return SUCCESS;
+	}
+
+	public void remakeDivide() throws IOException{
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
+
+		Session session = HibernateSessionFactory.getSession();
+		//TODO 重新生成摊销
+
+		JSONObject json = new JSONObject();
+		json.put("result",true);
+		out.print(json.toString());
+		out.flush();
+		out.close();
 	}
 
 	public String revokeInsurance(){

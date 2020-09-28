@@ -28,46 +28,7 @@ public class ChargeDaoImp implements ChargeDao {
         try {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
-            Query query = session.createQuery("from ChargePlan where contractId = :cid and isClear = false");
-            query.setInteger("cid",cid);
-            List<ChargePlan> plans = query.list();
-            BigDecimal account = new BigDecimal(0);
-            for(ChargePlan cp:plans){
-                if(DateUtil.isInOneMonth26(cp.getTime(),time)){
-                    String feeType = cp.getFeeType();
-                    if(feeType.startsWith("add") || feeType.startsWith("plan_sub")){
-                        account = account.add(cp.getFee());
-                    }else if(feeType.startsWith("sub") || feeType.startsWith("plan_add")||feeType.startsWith("plan_base")){
-                        account = account.subtract(cp.getFee());
-                    }
-                    session.delete(cp);
-                }
-            }
-            int leftDay = 0;
-            if(time.getDate() >= 27){
-                leftDay = time.getDate()-27;
-            }else{
-                leftDay = 3 + time.getDate();
-            }
-            account = account.multiply(new BigDecimal(-leftDay)).divide(new BigDecimal(30),4,BigDecimal.ROUND_HALF_EVEN);
-            ChargePlan cpp = new ChargePlan();
-//            cpp.setTime(time);
-            Calendar dt = Calendar.getInstance();
-            dt.setTime(time);
-            if(time.getDate() >= 27){
-            	dt.add(Calendar.MONTH, 1);
-            	dt.set(Calendar.DATE, 1);
-            }else{
-            	dt.set(Calendar.DATE, 1);
-            }
-        	cpp.setTime(dt.getTime());
-
-            cpp.setContractId(cid);
-            cpp.setIsClear(false);
-            cpp.setFeeType("plan_base_contract");
-            cpp.setFee(account.setScale(0, BigDecimal.ROUND_HALF_EVEN));
-            cpp.setComment("转包自动计算所得");
-            session.save(cpp);
+            addAndDiv(cid, time,session);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) {
@@ -81,7 +42,7 @@ public class ChargeDaoImp implements ChargeDao {
 
     @Override
     public void addAndDiv(int cid, Date time,Session session) throws HibernateException {
-            Query query = session.createQuery("from ChargePlan where contractId = :cid and isClear = false");
+            Query query = session.createQuery("from ChargePlan where contractId = :cid and isClear = false and isDisabled=false  ");
             query.setInteger("cid",cid);
             List<ChargePlan> plans = query.list();
             BigDecimal account = new BigDecimal(0);
@@ -96,7 +57,9 @@ public class ChargeDaoImp implements ChargeDao {
                         }else if(feeType.startsWith("sub") || feeType.startsWith("plan_add")||feeType.startsWith("plan_base")){
                             account = account.subtract(cp.getFee());
                         }
-                    	session.delete(cp);
+                    	cp.setIsDisabled(true);
+                    	session.update(cp);
+//                    	session.delete(cp);
                     }
 //                    else{
 //                    	if(feeType.startsWith("add") || feeType.startsWith("plan_sub")){
@@ -132,6 +95,7 @@ public class ChargeDaoImp implements ChargeDao {
 
             cpp.setContractId(cid);
             cpp.setIsClear(false);
+            cpp.setIsDisabled(false);
             cpp.setFeeType("plan_base_contract");
             cpp.setFee(account.setScale(2, BigDecimal.ROUND_HALF_EVEN));
             cpp.setComment("转包收费计划自动计算所得");
@@ -149,21 +113,14 @@ public class ChargeDaoImp implements ChargeDao {
     
     @Override
     public boolean setCleared(int srcId, Date beginDate) {
-        Date start = DateUtil.getNextMonth26(beginDate);
+//        Date start = DateUtil.getNextMonth26(beginDate);
         Session session = null;
         Transaction tx = null;
         boolean flag = false;
         try {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
-            Query query = session.createQuery("from ChargePlan where contractId = :cid");
-            query.setInteger("cid",srcId);
-            List<ChargePlan> plans = query.list();
-            for(ChargePlan cp : plans){
-                if(DateUtil.isYM1BGYM2WithMonth26(cp.getTime(),start)){
-                    cp.setIsClear(true);
-                }
-            }
+            setCleared(srcId, beginDate,session);
             tx.commit();
             flag = true;
         } catch (HibernateException e) {
@@ -187,6 +144,7 @@ public class ChargeDaoImp implements ChargeDao {
         for(ChargePlan cp : plans){
         	if(DateUtil.isYM1BGYM2(cp.getTime(),start)){
         		cp.setIsClear(true);
+        		cp.setIsDisabled(true);
         		session.saveOrUpdate(cp);
         	}
         }
@@ -324,7 +282,7 @@ public class ChargeDaoImp implements ChargeDao {
         try {
             session = HibernateSessionFactory.getSession();
             tx = session.beginTransaction();
-            Query query = session.createQuery("from ChargePlan where contractId = :contractId");
+            Query query = session.createQuery("from ChargePlan where contractId = :contractId and isDisabled!=true ");
             query.setInteger("contractId", contractId);
             @SuppressWarnings("unchecked")
 			List<ChargePlan> temps = query.list();
@@ -353,7 +311,7 @@ public class ChargeDaoImp implements ChargeDao {
         Session session = null;
         try {
             session = HibernateSessionFactory.getSession();
-            Query query = session.createQuery("from ChargePlan where feeType = :feeType");
+            Query query = session.createQuery("from ChargePlan where feeType = :feeType and isDisabled!=true ");
             query.setString("feeType",feeType);
             @SuppressWarnings("unchecked")
 			List<ChargePlan> temps = query.list();

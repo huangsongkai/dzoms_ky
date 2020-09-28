@@ -1,7 +1,6 @@
 package com.dz.common.test;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContextEvent;
@@ -12,7 +11,7 @@ import javax.servlet.ServletContextListener;
  */
 public class SpringContextListener implements ServletContextListener{
 
-    private static WebApplicationContext springContext = null;
+    private static ApplicationContext springContext = null;
     // Public constructor is required by servlet spec
     public SpringContextListener() {
     }
@@ -33,5 +32,13 @@ public class SpringContextListener implements ServletContextListener{
 
     public static ApplicationContext getApplicationContext() {
         return springContext;
+    }
+
+    /**
+     * 该方法只用于测试
+     * @param springContext
+     */
+    public static void setSpringContext(ApplicationContext springContext) {
+        SpringContextListener.springContext = springContext;
     }
 }

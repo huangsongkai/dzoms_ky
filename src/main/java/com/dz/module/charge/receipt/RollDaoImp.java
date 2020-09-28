@@ -129,27 +129,30 @@ public class RollDaoImp implements RollDao {
     @Override
     @LogExecuteTime
     public void markAsUsed(int startNum, int endNum, int numberSize, String prefix, Session session){
-            int start = startNum;
-            int end = start + 99;
-            while(end <= endNum){
+//            int start = startNum;
+//            int end = start + 99;
+//            while(end <= endNum){
                 Query query = session.createQuery(
-                        "from Roll where prefix=:prefix " +
-                                "and startNum = :start ");
+                        "update Roll set solded=1 where prefix=:prefix " +
+                                "and startNum >= :start and endNum <=:end ");
 //                query.setInteger("numberSize",numberSize);
                 query.setString("prefix",prefix);
-                query.setInteger("start",start);
-                Roll roll = (Roll)query.uniqueResult();
-                if(roll==null){
-                	System.err.println("Start:"+start);
-                	start += 100;
-                    end += 100;
-                	continue;
-                }
-                roll.setSolded(1);
-                session.update(roll);
-                start += 100;
-                end += 100;
-            }
+                query.setInteger("start",startNum);
+               query.setInteger("end",endNum);
+               query.executeUpdate();
+//                Roll roll = (Roll)query.uniqueResult();
+//                if(roll==null){
+//                	System.err.println("Start:"+start);
+//                	start += 100;
+//                    end += 100;
+//                	continue;
+//                }
+//                roll.setSolded(1);
+//                session.update(roll);
+//                start += 100;
+//                end += 100;
+//            }
+
     }
 
     @Override

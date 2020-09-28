@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -156,6 +157,62 @@ public class ChargeAction extends BaseAction {
 
     public String requireDiscount(){
         List<BankRecord> records = service.exportBankFile(time,department);
+        Map<String,String> resultMap = service.doDiscount(records,time);
+        ActionContext context = ActionContext.getContext();
+        @SuppressWarnings("unchecked")
+        Map<String,Object> request = (Map<String,Object>)context.get("request");
+        request.put("resultMap",resultMap);
+        String returnCode = resultMap.get("returnCode");
+        if (returnCode == null) {
+            returnCode = "9";
+        }
+
+        switch (returnCode){
+            case "0":
+                request.put("msgStr","成功");
+                break;
+            case "1":
+                request.put("msgStr","提交主机失败");
+                break;
+            case "2":
+                request.put("msgStr","执行失败");
+                break;
+            case "3":
+                request.put("msgStr","数据格式错误");
+                break;
+            case "4":
+                request.put("msgStr","尚未登录系统");
+                break;
+            case "5":
+                request.put("msgStr","请求太频繁");
+                break;
+            case "6":
+                request.put("msgStr","不是证书卡用户");
+                break;
+            case "7":
+                request.put("msgStr","用户取消操作");
+                break;
+            case "9":
+                request.put("msgStr","其它错误");
+                break;
+        }
+
+        jspPage = "zhaoShangStatesContext.jsp";
+        return SUCCESS;
+    }
+
+    private double upperLimit=0;
+    public String requireDiscount2(){
+//        service.makeMonthPlan(time);
+        List<BankRecord> records = service.exportBankFile2(time,department);
+        if (upperLimit>0){
+            BigDecimal limit = BigDecimal.valueOf(upperLimit);
+            records.forEach(bankRecord -> {
+                if (bankRecord.getMoney().compareTo(limit)>0){
+                    bankRecord.setMoney(limit);
+                }
+            });
+        }
         Map<String,String> resultMap = service.doDiscount(records,time);
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
@@ -460,7 +517,7 @@ public class ChargeAction extends BaseAction {
         return "excel_stream";
     }
 
-    //导出银行文件为txt
+    //导出银行文件为txt 哈尔滨银行
     public String exportTxt() throws Exception{
         List<BankRecord> records = service.exportBankFile(time,department);
         File f = new File("bankFile.txt");
@@ -486,6 +543,88 @@ public class ChargeAction extends BaseAction {
             s += br.getDriverName().trim()+"|";
             s += (bc == null?" ":bc.getCardNumber())+"|";
             s += br.getMoney().setScale(3).doubleValue();
+            pw.println(s);
+        }
+        pw.close();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月-"+department+"-银行计划");
+        fileName = sdf.format(time)+".txt";
+        fileName = new String(fileName.getBytes(),"ISO8859-1");
+        txtFile = new FileInputStream(f);
+
+        return "stream";
+    }
+
+    //导出银行文件为txt 招商银行
+    public String exportTxt2() throws Exception{
+        List<BankRecord> records = service.exportBankFile(time,department);
+        File f = new File("bankFile.txt");
+        PrintWriter pw = new PrintWriter(f);
+
+        for(BankRecord br:records){
+            if(br.getMoney().intValue() == 0)
+                continue;
+
+            List<BankCardOfVehicle> bvList = br.getBankCards();
+            BankCard bc = null;
+            int cardId=0;
+            for (BankCardOfVehicle bv : bvList){
+                if (bv.getBankCard().getCardClass().equals("招商银行") && bv.getBankCard().getId()>cardId){
+                    bc = bv.getBankCard();
+                    cardId = bc.getId();
+                }
+            }
+            if(bc == null){
+                continue;
+            }
+            String s = br.getLicenseNum()+"|";
+            s += br.getDriverName().trim()+"|";
+            s += (bc == null?" ":bc.getCardNumber())+"|";
+            s += br.getMoney().setScale(3).doubleValue();
+            pw.println(s);
+        }
+        pw.close();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月-"+department+"-银行计划");
+        fileName = sdf.format(time)+".txt";
+        fileName = new String(fileName.getBytes(),"ISO8859-1");
+        txtFile = new FileInputStream(f);
+
+        return "stream";
+    }
+
+    private String cardClass;
+    //导出银行文件为txt 新
+    public String exportTxtNew() throws Exception{
+        List<BankRecord> records = service.exportBankFile2(time,department);
+        File f = new File("bankFile.txt");
+        PrintWriter pw = new PrintWriter(f);
+
+        if (cardClass==null){
+            cardClass="招商银行";
+        }
+        for(BankRecord br:records){
+            if(br.getMoney().intValue() == 0)
+                continue;
+
+            List<BankCardOfVehicle> bvList = br.getBankCards();
+            BankCard bc = null;
+            int cardId=0;
+            for (BankCardOfVehicle bv : bvList){
+                if (bv.getBankCard().getCardClass().contains(cardClass) && bv.getBankCard().getId()>cardId){
+                    bc = bv.getBankCard();
+                    cardId = bc.getId();
+                }
+            }
+            if(bc == null){
+                continue;
+            }
+            String s = br.getLicenseNum()+"|";
+            s += br.getDriverName().trim()+"|";
+            s += (bc == null?" ":bc.getCardNumber())+"|";
+            if (upperLimit>0 && br.getMoney().compareTo(BigDecimal.valueOf(upperLimit))>0){
+                s += upperLimit;
+            }else {
+                s += br.getMoney().setScale(3).doubleValue();
+            }
             pw.println(s);
         }
         pw.close();
@@ -786,7 +925,7 @@ public class ChargeAction extends BaseAction {
         if(end == null || start ==null);
         else{
             while(isYM1BGYM2(end, start)){
-                List<ChargePlan> plans = service.getAMonthRecords(licenseNum, start);
+                List<ChargePlan> plans;
 
                 if (start.getDate()>26) {
                     Calendar dt = Calendar.getInstance();
@@ -942,7 +1081,7 @@ public class ChargeAction extends BaseAction {
 //        String md5Str = md5.GetMD5Code(brs.toString());
 //        boolean isFileExisted = service.isFileExisted(md5Str);
         boolean isFileExisted = service.isFileExisted(filename);
-        if(isFileExisted == true){
+        if(isFileExisted){
             message = "导入文件失败，该文件已导入！";
         }else{
             JSONArray json = JSONArray.fromObject(jsonStr);
@@ -1090,15 +1229,16 @@ public class ChargeAction extends BaseAction {
         return SUCCESS;
     }
 
-    public String addChargePlan(){
-        boolean success = service.addChargePlan(chargePlan);
-        if(success){
-            jspPage = "success.jsp";
-        }else{
-            jspPage = "error.jsp";
-        }
-        return SUCCESS;
-    }
+//    public String addChargePlan(){
+//        boolean success = service.addChargePlan(chargePlan);
+//        if(success){
+//            jspPage = "success.jsp";
+//        }else{
+//            jspPage = "error.jsp";
+//        }
+//        return SUCCESS;
+//    }
+
     public String addChargePlanByLicenseNum(){
         boolean success = service.addChargePlanByLicenseNum(chargePlan,licenseNum);
         ActionContext context = ActionContext.getContext();
@@ -1388,7 +1528,21 @@ public class ChargeAction extends BaseAction {
         this.id = id;
     }
 
+    public Date getTargetMonth() {
+        return targetMonth;
+    }
 
+    public void setTargetMonth(Date targetMonth) {
+        this.targetMonth = targetMonth;
+    }
+
+    public Date getIncomeMonth() {
+        return incomeMonth;
+    }
+
+    public void setIncomeMonth(Date incomeMonth) {
+        this.incomeMonth = incomeMonth;
+    }
 
     public BankRecordTmp getTmp() {
         return tmp;
@@ -1418,6 +1572,22 @@ public class ChargeAction extends BaseAction {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public double getUpperLimit() {
+        return upperLimit;
+    }
+
+    public void setUpperLimit(double upperLimit) {
+        this.upperLimit = upperLimit;
+    }
+
+    public String getCardClass() {
+        return cardClass;
+    }
+
+    public void setCardClass(String cardClass) {
+        this.cardClass = cardClass;
     }
 
     @Autowired
@@ -1521,6 +1691,280 @@ public class ChargeAction extends BaseAction {
                 .collect(Collectors.toList());
         insuranceBackService.refuseInsuranceBack(backs);
         ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    //新功能
+    /**
+     * 建立月计划
+     */
+    public String makeMonthPlan() {
+        Date month;
+        if (time!=null && time.getYear()>110){
+            month = time;
+        }else {
+            month = this.service.getCurrentTime("全部");
+        }
+        service.makeMonthPlan(month);
+        ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    //导出银行文件 file:bankfile_export.jsp
+    public String exportBankFile2(){
+        List<BankRecord> records = service.exportBankFile2(time,department);
+        ActionContext context = ActionContext.getContext();
+        @SuppressWarnings("unchecked")
+        Map<String,Object> request = (Map<String,Object>)context.get("request");
+        request.put("bankRecords",records);
+        jspPage = "planMatch/bankfile_export.jsp";
+        return SUCCESS;
+    }
+
+    private Date incomeMonth,targetMonth;
+    //分配导入的收入 到 各月的计划;---->   提款优先，上月余额分配
+
+    public String singleAssign(){
+        Session session = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            MonthPlan monthPlan = (MonthPlan) session.get(MonthPlan.class,id);
+            Query query=session.createQuery("select cp from ChargePlan cp,Contract c " +
+                    "where cp.contractId=c.id " +
+                    "and year(cp.time)=year(:time) and month(cp.time)=month(:time) " +
+                    "and c.carframeNum=:carId and cp.balance>0 ");
+            query.setString("carId",carframeNum);
+            query.setDate("time",time);
+            List<ChargePlan> plans = query.list();
+            for (ChargePlan cp:plans) {
+                assignFromIncomeToPlan(session, monthPlan, cp);
+            }
+            tx.commit();
+        }catch (Exception ex){
+            if (tx!=null){
+                tx.rollback();
+            }
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+        ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    private void assignFromIncomeToPlan(Session session, MonthPlan monthPlan, ChargePlan cp) {
+        BigDecimal amount = cp.getBalance().compareTo(monthPlan.getArrear())>0 ? monthPlan.getArrear():cp.getBalance();
+        if (amount.compareTo(BigDecimal.ZERO)<=0){
+            return;
+        }
+        cp.setBalance(cp.getBalance().subtract(amount));
+        monthPlan.setArrear(monthPlan.getArrear().subtract(amount));
+        IncomeDivide divide = new IncomeDivide();
+        divide.setIncomeId(cp.getId());
+        divide.setMonthPlanId(monthPlan.getId());
+        divide.setAmount(amount);
+        divide.setType(0);
+        session.saveOrUpdate(cp);
+        session.saveOrUpdate(monthPlan);
+        session.saveOrUpdate(divide);
+    }
+
+    public String defaultAssign(){
+        Session session = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        String car_choosed = request.getParameter("car_choosed");
+        JSONArray cars = JSONArray.fromObject(car_choosed);
+        try {
+            tx = session.beginTransaction();
+            Query query=session.createQuery("select cp from ChargePlan cp,Contract c " +
+                    "where cp.contractId=c.id " +
+                    "and year(cp.time)=year(:time) and month(cp.time)=month(:time) " +
+                    "and c.carframeNum=:carId " +
+                    "and cp.balance>0 ");
+            query.setDate("time",time);
+            Query query1 = session.createQuery("from MonthPlan where carframeNum=:carId and arrear>0 order by time");
+            assignByQuery(session, tx, cars, query, query1);
+            tx.commit();
+        }catch (Exception ex){
+            if (tx!=null){
+                tx.rollback();
+            }
+            ajax_message = ex.getMessage();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+        ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    private void assignByQuery(Session session, Transaction tx, JSONArray cars, Query query, Query query1) {
+        for (int i = 0; i < cars.size(); i++) {
+            String carId = cars.getString(i);
+            query.setString("carId", carId);
+            query1.setString("carId", carId);
+            List<ChargePlan> plans = query.list();
+            List<MonthPlan> monthPlanList = query1.list();
+            for (ChargePlan cp : plans) {
+                for (MonthPlan monthPlan : monthPlanList) {
+                    assignFromIncomeToPlan(session, monthPlan, cp);
+                }
+            }
+        }
+//        tx.commit();
+    }
+
+    public String assignToMonth(){
+        Session session = HibernateSessionFactory.getSession();
+        String car_choosed = request.getParameter("car_choosed");
+        JSONArray cars = JSONArray.fromObject(car_choosed);
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Query query=session.createQuery("select cp from ChargePlan cp,Contract c " +
+                    "where cp.contractId=c.id " +
+                    "and year(cp.time)=year(:time) and month(cp.time)=month(:time) " +
+                    "and c.carframeNum=:carId " +
+                    "and cp.balance>0 ");
+            query.setDate("time",time);
+            Query query1 = session.createQuery("from MonthPlan " +
+                    "where carframeNum=:carId " +
+                    "and arrear>0 " +
+                    "and year(time)=year(:time) and month(time)=month(:time) ");
+            query1.setDate("time",targetMonth);
+            assignByQuery(session, tx, cars, query, query1);
+            tx.commit();
+            ajax_message = "success";
+        }catch (Exception ex){
+            if (tx!=null){
+                tx.rollback();
+            }
+            ajax_message = ex.getMessage();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+
+        return STRING_RESULT;
+    }
+
+    public String assignIncomeToMonth(){
+        Session session = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            ChargePlan chargePlan = (ChargePlan) session.get(ChargePlan.class,id);
+            Contract contract = (Contract) session.get(Contract.class,chargePlan.getContractId());
+            Query query = session.createQuery("from MonthPlan where carframeNum=:carId and year(time)=year(:time) and month(time)=month(:time)");
+            query.setMaxResults(1);
+            String carframeNum = contract.getCarframeNum();
+            query.setString("carId", carframeNum);
+            query.setDate("time",time);
+            MonthPlan monthPlan = (MonthPlan) query.uniqueResult();
+
+            assignChargePlan2MonthPlan(session, chargePlan, carframeNum, monthPlan);
+            tx.commit();
+            ajax_message = "success";
+        }catch (Exception ex){
+            if (tx!=null){
+                tx.rollback();
+            }
+            ajax_message = ex.getMessage();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+        return STRING_RESULT;
+    }
+
+    private void assignChargePlan2MonthPlan(Session session, ChargePlan chargePlan, String carframeNum, MonthPlan monthPlan) {
+        Query query1 = session.createQuery("select sum(case when cp.feeType like 'plan_sub%' then -cp.fee else cp.fee end ) " +
+                "from ChargePlan cp,Contract c where cp.contractId=c.id and c.carframeNum=:carId " +
+                "and cp.feeType like 'plan_%' and cp.isDisabled=false and year(cp.time)=year(:time) and month(cp.time)=month(:time) ");
+        query1.setString("carId", carframeNum);
+        query1.setDate("time",time);
+        if (monthPlan == null) {
+            monthPlan = new MonthPlan();
+            monthPlan.setCarframeNum(carframeNum);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(time);
+            calendar.set(Calendar.DATE,1);
+            monthPlan.setTime(calendar.getTime());
+            BigDecimal amount = (BigDecimal) query1.uniqueResult();
+            monthPlan.setPlanAll(amount);
+            monthPlan.setArrear(amount);
+        }
+        assignFromIncomeToPlan(session,monthPlan,chargePlan);
+    }
+
+    public String defaultIncomeAssign(){
+        Session session = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        String income_choosed = request.getParameter("income_choosed");
+        JSONArray incomes = JSONArray.fromObject(income_choosed);
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery(
+                    "from MonthPlan " +
+                    "where carframeNum=:carId " +
+                    "and arrear>0 " +
+                    "and year(time)=year(:time) and month(time)=month(:time) ");
+            query.setDate("time",time);
+            List<ChargePlan> incomeList = IntStream.range(0,incomes.size())
+                    .map(incomes::getInt)
+                    .sequential()
+                    .mapToObj(id->(ChargePlan)session.get(ChargePlan.class,id))
+                    .sorted(Comparator.comparing(ChargePlan::getTime))
+                    .collect(Collectors.toList());
+            for (ChargePlan chargePlan:incomeList) {
+                Contract contract = (Contract) session.get(Contract.class,chargePlan.getContractId());
+                query.setString("carId",contract.getCarframeNum());
+                MonthPlan monthPlan = (MonthPlan) query.uniqueResult();
+                assignChargePlan2MonthPlan(session, chargePlan, contract.getCarframeNum(), monthPlan);
+            }
+            tx.commit();
+            ajax_message = "success";
+        }catch (Exception ex){
+            if (tx!=null){
+                tx.rollback();
+            }
+            ajax_message = ex.getMessage();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+        return STRING_RESULT;
+    }
+
+    public String assignIncomeByMonth(){
+        Session session = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        String income_choosed = request.getParameter("income_choosed");
+        JSONArray incomes = JSONArray.fromObject(income_choosed);
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery(
+                    "from MonthPlan " +
+                            "where carframeNum=:carId " +
+                            "and arrear>0 " +
+                            "and year(time)=year(:time) and month(time)=month(:time) ");
+            query.setDate("time",time);
+            for (int i = 0; i < incomes.size(); i++) {
+                int incomeId = incomes.getInt(i);
+                ChargePlan chargePlan = (ChargePlan) session.get(ChargePlan.class,incomeId);
+                if (chargePlan!=null && chargePlan.getTime().getYear()==targetMonth.getYear() && chargePlan.getTime().getMonth()==targetMonth.getMonth()){
+                    Contract contract = (Contract) session.get(Contract.class,chargePlan.getContractId());
+                    query.setString("carId",contract.getCarframeNum());
+                    MonthPlan monthPlan = (MonthPlan) query.uniqueResult();
+                    assignChargePlan2MonthPlan(session, chargePlan, contract.getCarframeNum(), monthPlan);
+                }
+            }
+            tx.commit();
+            ajax_message = "success";
+        }catch (Exception ex){
+            if (tx!=null){
+                tx.rollback();
+            }
+            ajax_message = ex.getMessage();
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
         return STRING_RESULT;
     }
 }

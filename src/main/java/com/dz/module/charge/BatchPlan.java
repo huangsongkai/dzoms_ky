@@ -110,11 +110,20 @@ public class BatchPlan {
                     tmp.set(Calendar.MONTH,currentMonth);
                     tmp.set(Calendar.DAY_OF_MONTH,26);
                     cp.setIsClear(false);
+                    cp.setIsDisabled(false);
+
                     cp.setTime(tmp.getTime());
                     cp.setComment(this.comment);
                     cp.setContractId(i);
                     cp.setBatchPlan(this);
                     cp.setFeeType(this.feeType);
+                    if (this.feeType.startsWith("plan")){
+                        cp.setBalance(null);
+                    }else if (this.feeType.startsWith("sub")){
+                        cp.setBalance(cp.getFee().negate());
+                    }else {
+                        cp.setBalance(cp.getFee());
+                    }
                     cp.setRegister(this.register);
                     cp.setInTime(this.inTime);
                     chargePlanList.add(cp);
