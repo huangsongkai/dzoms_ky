@@ -176,7 +176,7 @@ function GetQueryString(name){
 
 				$('form').submit(function(){
 					if(!$('input[name="vehicleApproval.cartype"]:eq(0)').prop('checked')){
-						if($("#oldLicenseNum").val().length!=7){
+						if(!checkLicenseNum($("#oldLicenseNum").val())){
 							alert("请输入正确的原车牌号！");
 							return false;
 						}

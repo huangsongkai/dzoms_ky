@@ -78,7 +78,7 @@ $(document).ready(function(){
 });
 
 var beforeSubmit = function(){
-	if($('#vehicleNum').val().length!=7){
+	if(!checkLicenseNum($('#vehicleNum').val())){
 		alert("请输入正确的车牌号！");
 		return false;
 	}

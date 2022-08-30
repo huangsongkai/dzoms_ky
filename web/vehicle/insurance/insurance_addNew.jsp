@@ -128,11 +128,11 @@
                 if ($("#insuranceClass option:eq(0)").is(":selected")) {
                     $("#insuranceNum").val('<%=sx%>');
                     itemsDefault("#insuranceMoney","insuranceMoneySx");
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PDAA[A-Z0-9]{18}$)|(^[0-9]{8}BDDG[0-9]{10}$)):格式不正确");
+                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PDAA[A-Z0-9]{18}$)|(^[0-9]{8}BDDG[0-9]{10}$)|(^[0-9]{5}0507[0-9]{10}$)):格式不正确");
 //  			/data-validate="required:请选择,regexp#(^P(D|Z)AA[A-Z0-9]{11}$):格式不正确(15位，交强险以PDZA开头，商险以PDAA开头)"
                 } else if ($("#insuranceClass option:eq(1)").is(":selected")){
                     $("#insuranceNum").val('<%=jqx%>');
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PDZA[A-Z0-9]{18}$)|(^[0-9]{8}BDDA[0-9]{10}$)):格式不正确");
+                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PDZA[A-Z0-9]{18}$)|(^[0-9]{8}BDDA[0-9]{10}$)|(^[0-9]{5}0528[0-9]{10}$)):格式不正确");
                     itemsDefault("#insuranceMoney","insuranceMoneyJq");
                 }else{
                     $("#insuranceNum").val('<%=cyrx%>');
@@ -170,19 +170,20 @@
                     "insurance.beginDate":$('[name="insurance.beginDate"]').val()
                 },function (data) {
                     if (data.result){
-                        $('[name="insurance.state"]').val(3);
-                        $('#add-form').submit();
+                        $('input[name="insurance.state"]').val(3);
+						//console.info("beforeSubmit,"+$('input[name="insurance.state"]').val);
+                        $('#submit-btn').click();
                     } else {
                         if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
-                            $('[name="insurance.state"]').val(3);
+                            $('input[name="insurance.state"]').val(3);
                         } else {
-                            $('[name="insurance.state"]').val(0);
+                            $('input[name="insurance.state"]').val(0);
                         }
-                        $('#add-form').submit();
+						$('#submit-btn').click();
                     }
                 })
             }else {
-                $('#add-form').submit();
+				$('#submit-btn').click();
             }
         }
     </script>
@@ -273,11 +274,11 @@
                     <div class="field">
                         <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
                             <s:textfield id="insuranceNum" cssClass="input" placeholder=""
-                                         name="insurance.insuranceNum" value="%{bean[0].insuranceNum}" data-validate="required:请选择,regexp#((^PD(AA|ZA|ZS)[A-Z0-9]{18}$)|(^[0-9]{8}BDDA|G[0-9]{10}$)):格式不正确"/>
+                                         name="insurance.insuranceNum" value="%{bean[0].insuranceNum}" data-validate="required:请选择,regexp#((^PD(AA|ZA|ZS)[A-Z0-9]{18}$)|(^[0-9]{8}BDDA|G[0-9]{10}$)|(^[0-9]{20,21}$)):格式不正确"/>
                         </s:if>
                         <s:else>
                             <s:textfield id="insuranceNum" cssClass="input" placeholder=""
-                                         name="insurance.insuranceNum" data-validate="required:请选择,regexp#((^(PDAA|PDZA|PZDS)[A-Z0-9]{18}$)|(^[0-9]{8}BDDA|G[0-9]{10}$)|(^[0-9]{20}$)):格式不正确"/>
+                                         name="insurance.insuranceNum" data-validate="required:请选择,regexp#(^(PD(AA|ZA|ZS)[A-Z0-9]{18})|([0-9]{8}BDDA|G[0-9]{10})|([0-9]{20,21})$):格式不正确"/>
                         </s:else>
                     </div>
                 </div>
@@ -442,6 +443,7 @@
                 </div>
                 <div class="xm6-move">
                     <input type="button" class="button bg-green" value="提交" onclick="beforeSubmit()">
+					<input type="submit" style="display:none;" id="submit-btn">
                 </div>
             </form>
         </div>

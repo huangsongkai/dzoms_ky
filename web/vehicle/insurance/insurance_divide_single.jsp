@@ -69,7 +69,7 @@
         List result = null;
 
         make_table:
-    if(licenseNum!=null && licenseNum.length()==7 && startTime!=null && endTime!=null){
+    if(licenseNum!=null && (licenseNum.length()==7 || licenseNum.length()==8) && startTime!=null && endTime!=null){
         Session hsession = HibernateSessionFactory.getSession();
         Query query = hsession.createQuery("from Vehicle where licenseNum=:carNum order by inDate desc ");
         query.setString("carNum",licenseNum);

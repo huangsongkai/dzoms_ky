@@ -21,12 +21,12 @@ $(document).ready(function(){
 </script>
 		<style>
 			.A4Size {
-				width: 167mm;
+				width: 148mm;
 				/*width: 756px;*/
 				/*height: 1150mm;*/
 				/*width: 210mm;*/
 				/*height: 297mm;*/
-				height:147mm;
+				height:148mm;
 				border: solid hidden;
 				font-size:0.9em;
 			}
@@ -98,13 +98,13 @@ $(document).ready(function(){
 		<s:iterator value="%{#request.list}" var="v">
 		<div class="A4Size">
 			<table border="0">
-			<tr style="height:8mm">
+			<tr style="height:3mm">
 				<td>&nbsp;</td>
 				<td><strong><%=year%></strong></td>
 				<td colspan="2"><strong>大众</strong></td>
 				<td colspan="4">&nbsp;</td>
 			</tr>
-			<tr style="height:5mm">
+			<tr style="height:8mm">
 				<td><span class="no-print">审验日期：</span></td>
 				<td colspan="2" style="font-size: 0.8em;text-align:left;"><strong><%=year%>年<%=month<10?"0":""%><%=month%>月<%=day%>日</strong></td>
 				<td colspan="5"><strong>&nbsp;</strong></td>
@@ -112,15 +112,15 @@ $(document).ready(function(){
 			<tr style="height:8mm">
 				<s:set name="p_carMode" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.VehicleMode',#v.carMode)}"></s:set>
 				<td width="18%"><span class="no-print">车辆管理（委托）单位</span></td>
-				<td width="15%"><strong>大众<s:property value="%{@org.apache.commons.lang3.StringUtils@left(#v.dept,1)}"/>公司</strong></td>
+				<td width="19%"><strong>大众公司</strong></td>
 				<td width="15%"><span class="no-print">车牌号</span></td>
-				<td width="12%"><strong>&nbsp;<s:property value="%{#v.licenseNum}"/></strong></td>
-				<td width="9%"><span class="no-print">燃油种类</span></td>
-				<td width="12%"><strong><nobr><s:property value="%{#p_carMode.fuel}"/></nobr></strong></td>
-				<td width="7%"><span class="no-print">车型</span></td>
-				<td width="12%"><strong>捷达</strong></td>
-			</tr>
-			<tr style="height:8mm">
+				<td width="16%"><strong>&nbsp;<s:property value="%{#v.licenseNum}"/></strong></td>
+				<td width="12.5%"><span class="no-print">燃油种类</span></td>
+				<td width="12.5%"><strong><nobr><s:property value="%{#p_carMode.fuel}"/></nobr></strong></td>
+				<td width="6%"><span class="no-print">车型</span></td>
+				<td width="9.5%"><strong>捷达</strong></td>
+			
+			<tr style="height:6mm">
 				<td ><span class="no-print">发动机号</span></td>
 				<td><strong><s:property value="%{#v.engineNum}"/></strong></td>
 				<td ><span class="no-print">车架号</span></td>
@@ -128,7 +128,20 @@ $(document).ready(function(){
 				<td><span class="no-print">营运证牌号</span></td>
 				<td colspan="2"><strong><s:property value="%{#v.operateCard}"/></strong></td>
 			</tr>
-		</table>
+			<tr style="height:2mm">
+			`<td width="0.5%"><span class="no-print"></span></td>
+			</tr>
+			<tr style="height:22mm">
+			`<td width="0.5%"><span class="no-print"></span></td>
+			</tr>
+			<tr style="height:2mm">
+				<td width="0.5%"><font size="4" color="black"><span class="text-align:center"><strong><s:property value="%{@org.apache.commons.lang3.StringUtils@left(#v.dept,1)}"/></strong></span></td>
+				<td colspan="7" rowspan="3"> <span class="no-print"></span> </td>
+			</tr>
+				<tr style="height:2mm">
+				<td width="0.5%"><font size="4" color="black"><span class="text-align:center"><strong><s:property value="%{@org.apache.commons.lang3.StringUtils@right(#v.licenseNum,5)}"/></strong></span></td>
+			</tr>
+					</table>
 		</div>
 		</s:iterator>
 	</body>
