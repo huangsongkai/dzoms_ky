@@ -50,10 +50,6 @@ function beforeSubmit(){
 		condition += " and dept='"+dept+"' ";
 	}
 	
-//	var carNum = $("[name='carNum']").val();
-//	if(carNum.trim().length==7){
-//		condition += " and carNum='"+carNum+"' ";
-//	}
 	
 	var idNum = $("[name='idNum']").val();
 	if(idNum.trim().length==18){

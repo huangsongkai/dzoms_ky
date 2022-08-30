@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
 	<script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
 	<script type="text/javascript" src="/DZOMS/res/js/window.js"></script>
-	
+	<script src="/DZOMS/res/js/admin.js"></script>
     <jsp:include page="/common/msg_info.jsp"></jsp:include>
     <script>
         var sumbittable = true;
@@ -25,7 +25,7 @@
             var licenseNum = $("#licenseNum").val();
             
             //alert(licenseNum.length);
-            if((!licenseNum === "")&&licenseNum.length!=7){
+            if(!checkLicenseNum(licenseNum)){
             	sumbittable = false;
             	return ;
             }
@@ -103,7 +103,7 @@
         		return false;
         	}
         	
-        	if(licenseNum.length!=7){
+        	if(!checkLicenseNum(licenseNum)){
             	if((applyType === "新包车" ||applyType === "转租" )&& (licenseNum=="黑A" || licenseNum.length==0)) {
             		return true;
             	}

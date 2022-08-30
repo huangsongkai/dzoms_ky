@@ -84,7 +84,7 @@ $("[name='vehicle.licenseNum']").bigAutocomplete({
 	condition:" carframeNum not in (select carframeNum from Driverincar where finished=false and operation='证照注销') ",
 	callback:function(){
         var licenseNum = $('[name="vehicle.licenseNum"]').val();
-        if(licenseNum.length==7)
+        if(checkLicenseNum(licenseNum))
 		    refresh();
 	}
 });
