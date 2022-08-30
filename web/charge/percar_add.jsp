@@ -23,6 +23,7 @@
     <script src="/DZOMS/res/js/jquery.js"></script>
     <script src="/DZOMS/res/js/pintuer.js"></script>
     <script src="/DZOMS/res/js/respond.js"></script>
+	<script src="/DZOMS/res/js/admin.js"></script>
     <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
     <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
@@ -31,7 +32,7 @@
             var licenseNum = $("#licenseNum").val();
             var startTime = $("#startTime").val();
             var endTime = $("#endTime").val();
-            if(licenseNum != undefined && licenseNum !="" && licenseNum.length==7 && startTime != undefined && startTime != "" && endTime!=undefined ){
+            if(checkLicenseNum(licenseNum) && startTime != undefined && startTime != "" && endTime!=undefined ){
                 $(".licenseNum").val(licenseNum);
                 $(".startTime").val(startTime);
                 $(".endTime").val(endTime);

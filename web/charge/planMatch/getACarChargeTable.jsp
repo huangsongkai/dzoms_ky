@@ -107,7 +107,7 @@
     Query query1 = s.createQuery("select div,cp from IncomeDivide div,ChargePlan cp where div.incomeId=cp.id and div.monthPlanId=:mid ");
 //    Query query1 = s.createQuery("select div,cp from IncomeDivide div,ChargePlan cp where div.incomeId=cp.id " +
 //    "and year(cp.time)=year(:date) and month(cp.time)=month(:date)  ");
-    if (startMonth!=null && endMonth!=null && licenseNum!=null && licenseNum.length()==7){
+    if (startMonth!=null && endMonth!=null && licenseNum!=null && (licenseNum.length()==7 || licenseNum.length()==8)){
         query.setString("carNum",licenseNum);
         query.setDate("startTime",startMonth);
         query.setDate("endTime",endMonth);
@@ -131,13 +131,14 @@
   <script src="/DZOMS/res/js/jquery.js"></script>
   <script src="/DZOMS/res/js/pintuer.js"></script>
   <script src="/DZOMS/res/js/respond.js"></script>
+  <script src="/DZOMS/res/js/admin.js"></script>
   <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
     <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
   <script>
     function setDept(){
       var licenseNum = $("#licenseNum").val();
-      if(licenseNum != undefined && licenseNum.trim().length==7){
+      if(checkLicenseNum(licenseNum)){
         $.post("/DZOMS/vehicle/vehicleSelectByLicenseNum",{'vehicle.licenseNum':licenseNum},function (data){
           data = $.parseJSON(data);
           data = data["ItemTool"]["carframeNum"];

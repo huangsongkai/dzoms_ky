@@ -12,6 +12,7 @@
        <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
     <script src="/DZOMS/res/js/jquery.js"></script>
     <script src="/DZOMS/res/js/pintuer.js"></script>
+	<script src="/DZOMS/res/js/admin.js"></script>
     <script>
         // function refreshState(id) {
         //     $.post("/DZOMS/charge/refreshDiscountState.action",{id:id},function(data){
@@ -94,7 +95,8 @@
                         var carNum;
                         do{
                             carNum = prompt("请指定车牌号：","黑A");
-                        }while (carNum!=null && carNum.length!=7);
+							if(carNum == null) return;
+                        }while (!checkLicenseNum(carNum));
 
                         if (carNum==null){
                             return;

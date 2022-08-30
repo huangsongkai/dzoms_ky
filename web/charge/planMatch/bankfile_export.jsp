@@ -67,6 +67,19 @@
             }
         }
 
+        function exportFile3(){
+            var time = $("#time").val();
+            if(time == undefined || time == ""){
+                alert("请输入时间！");
+                return false;
+            }
+            if (confirm('注意，这是导出全部的银行计划为txt,确认并继续？')){
+                $("#form").attr("action","/DZOMS/charge/exportTxt3");
+            }else {
+                return false;
+            }
+        }
+
         function doDiscount() {
             if (!check()) return false;
             $("#form").attr("action","/DZOMS/charge/requireDiscount2");
@@ -286,6 +299,7 @@
                 <input type="submit" value="查询" class="button bg-green" onclick="getResult()"/>
                 <input type="submit" value="导出" class="button bg-green card_hrb" onclick="exportFile();"/>
                 <input type="submit" value="导出招行" class="button bg-green card_zs" onclick="exportFile2();"/>
+                <input type="submit" value="导出全部" class="button bg-green card_hrb" onclick="exportFile3();"/>
                 <input type="button" value="自动扣款" style="display: none" class="button bg-green card_zs" onclick="doDiscount();"/>
             </div>
         </div>

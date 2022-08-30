@@ -219,6 +219,7 @@
                         <p><h2><%=cal.get(Calendar.YEAR)+"年"+(cal.get(Calendar.MONTH)+1)+"月"%></h2></p>
                         <table class="table table-bordered table-responsive">
                             <tr>
+								<th>内部ID</th>
                                 <th>车牌号</th>
                                 <th>司机</th>
                                 <th>身份证</th>
@@ -293,6 +294,7 @@
                                     continue;
                             %>
                             <tr class="<%=isPlan?"plan":"pay"%>" >
+								<td><%=plan.getId()%></td>
                                 <td><%=record.getCarNumber()%></td>
                                 <td><%=record.getDriverName()%></td>
                                 <td><%=record.getDriverId()%></td>

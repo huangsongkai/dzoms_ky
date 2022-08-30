@@ -37,6 +37,7 @@ import org.xml.sax.SAXException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -552,7 +553,7 @@ public class ChargeAction extends BaseAction {
         pw.close();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月-"+department+"-银行计划");
         fileName = sdf.format(time)+".txt";
-        fileName = new String(fileName.getBytes(),"ISO8859-1");
+        fileName = new String(fileName.getBytes(),StandardCharsets.ISO_8859_1);
         txtFile = new FileInputStream(f);
 
         return "stream";
@@ -589,7 +590,45 @@ public class ChargeAction extends BaseAction {
         pw.close();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月-"+department+"-银行计划");
         fileName = sdf.format(time)+".txt";
-        fileName = new String(fileName.getBytes(),"ISO8859-1");
+        fileName = new String(fileName.getBytes(),StandardCharsets.ISO_8859_1);
+        txtFile = new FileInputStream(f);
+
+        return "stream";
+    }
+
+    public String exportTxt3() throws Exception{
+        List<BankRecord> records = service.exportBankFile(time,department);
+        File f = File.createTempFile("exportTxt3",".txt");
+        f.deleteOnExit();
+        try(PrintWriter pw = new PrintWriter(f);){
+            for(BankRecord br:records){
+                if(br.getMoney().intValue() == 0)
+                    continue;
+
+                List<BankCardOfVehicle> bvList = br.getBankCards();
+                BankCard bc = null; // 招商银行
+                BankCard bch = null; // 哈尔滨银行
+                for (BankCardOfVehicle bv : bvList){
+                    if (bv.getBankCard().getCardClass().equals("招商银行")){
+                        bc = bv.getBankCard();
+                    } else if (bv.getBankCard().getCardClass().equals("哈尔滨银行")) {
+                        bch = bv.getBankCard();
+                    }
+                }
+
+                String s = br.getLicenseNum()+"|";
+                s += br.getDriverName().trim()+"|";
+                s += (bc == null?"-":bc.getCardNumber())+"|";
+                s += (bch == null?"-":bch.getCardNumber())+"|";
+                s += br.getMoney().setScale(3).doubleValue();
+                pw.println(s);
+            }
+            pw.flush();
+
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月-"+department+"-银行计划");
+        fileName = sdf.format(time)+".txt";
+        fileName = new String(fileName.getBytes(), StandardCharsets.ISO_8859_1);
         txtFile = new FileInputStream(f);
 
         return "stream";

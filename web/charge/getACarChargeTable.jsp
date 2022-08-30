@@ -14,13 +14,14 @@
   <script src="/DZOMS/res/js/jquery.js"></script>
   <script src="/DZOMS/res/js/pintuer.js"></script>
   <script src="/DZOMS/res/js/respond.js"></script>
+  <script src="/DZOMS/res/js/admin.js"></script>
   <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
     <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
   <script>
     function setDept(){
       var licenseNum = $("#licenseNum").val();
-      if(licenseNum != undefined && licenseNum.trim().length==7){
+      if(checkLicenseNum(licenseNum)){
         $.post("/DZOMS/vehicle/vehicleSelectByLicenseNum",{'vehicle.licenseNum':licenseNum},function (data){
           data = $.parseJSON(data);
           data = data["ItemTool"]["carframeNum"];

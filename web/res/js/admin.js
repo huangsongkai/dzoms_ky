@@ -94,3 +94,11 @@ function MyRequest(url,target) {
 
 	return this;
 }
+
+function checkLicenseNum(licenseNum){
+	if(licenseNum == undefined) return false;
+	licenseNum = licenseNum.trim();
+	if(licenseNum[0] != '黑') return false;
+	if(licenseNum.length!=7 && licenseNum.length!=8) return false;
+	return true;
+}
