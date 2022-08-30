@@ -64,7 +64,7 @@
         }
 
         function refreshVehicle() {
-            if($("#license_num").val().trim().length==7)
+            if(checkLicenseNum($("#license_num").val()))
                 $.post("/DZOMS/common/doit",{"condition":"from Vehicle where licenseNum='"+$("#license_num").val()+"'  order by inDate desc "},function(data){
                     if (data["affect"]!=undefined && data["affect"] != null) {
                         var vehicle=data["affect"] ;

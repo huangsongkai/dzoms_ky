@@ -20,12 +20,13 @@
   <script src="/DZOMS/res/js/jquery.js"></script>
   <script src="/DZOMS/res/js/pintuer.js"></script>
   <script src="/DZOMS/res/js/respond.js"></script>
+  <script src="/DZOMS/res/js/admin.js"></script>
   <link rel="stylesheet" href="/DZOMS/res/css/admin.css">
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
     <script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
   <script>
       function carFocus(){
-          if ($("input[name='licenseNum']").val().length!=7) {
+          if (!checkLicenseNum($("input[name='licenseNum']").val())) {
               $("input[name='licenseNum']").val("黑A");
           }
       }
@@ -90,7 +91,7 @@
         String err_mag = "";
         List result = null;
         make_table:
-    if(licenseNum!=null && licenseNum.length()==7 && startTime!=null && endTime!=null){
+    if(licenseNum!=null && (licenseNum.length()==7 || licenseNum.length()==8) && startTime!=null && endTime!=null){
         Session hsession = HibernateSessionFactory.getSession();
         Query query = hsession.createQuery("from Vehicle where licenseNum=:carNum");
         query.setString("carNum",licenseNum);

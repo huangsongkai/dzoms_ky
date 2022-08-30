@@ -51,7 +51,7 @@ function beforeSubmit(){
 	}
 	
 	var carNum = $("[name='carNum']").val();
-	if(carNum.trim().length==7){
+	if(checkLicenseNum(carNum)){
 		condition += " and carNum='"+carNum+"' ";
 	}
 	
