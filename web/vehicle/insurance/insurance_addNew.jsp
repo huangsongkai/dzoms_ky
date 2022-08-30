@@ -128,15 +128,15 @@
                 if ($("#insuranceClass option:eq(0)").is(":selected")) {
                     $("#insuranceNum").val('<%=sx%>');
                     itemsDefault("#insuranceMoney","insuranceMoneySx");
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#(^PDAA[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PDAA[A-Z0-9]{18}$)|(^[0-9]{8}BDDG[0-9]{10}$)):格式不正确");
 //  			/data-validate="required:请选择,regexp#(^P(D|Z)AA[A-Z0-9]{11}$):格式不正确(15位，交强险以PDZA开头，商险以PDAA开头)"
                 } else if ($("#insuranceClass option:eq(1)").is(":selected")){
                     $("#insuranceNum").val('<%=jqx%>');
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#(^PDZA[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PDZA[A-Z0-9]{18}$)|(^[0-9]{8}BDDA[0-9]{10}$)):格式不正确");
                     itemsDefault("#insuranceMoney","insuranceMoneyJq");
                 }else{
                     $("#insuranceNum").val('<%=cyrx%>');
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#(^PZDS[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#((^PZDS[A-Z0-9]{18}$)|(^[0-9]{20}$)):格式不正确");
                     itemsDefault("#insuranceMoney","insuranceMoneyCy");
                 }
             });
@@ -273,11 +273,11 @@
                     <div class="field">
                         <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
                             <s:textfield id="insuranceNum" cssClass="input" placeholder=""
-                                         name="insurance.insuranceNum" value="%{bean[0].insuranceNum}" data-validate="required:请选择,regexp#(^PD(AA|ZA|ZS)[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PDZS开头)"/>
+                                         name="insurance.insuranceNum" value="%{bean[0].insuranceNum}" data-validate="required:请选择,regexp#((^PD(AA|ZA|ZS)[A-Z0-9]{18}$)|(^[0-9]{8}BDDA|G[0-9]{10}$)):格式不正确"/>
                         </s:if>
                         <s:else>
                             <s:textfield id="insuranceNum" cssClass="input" placeholder=""
-                                         name="insurance.insuranceNum" data-validate="required:请选择,regexp#(^(PDAA|PDZA|PZDS)[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)"/>
+                                         name="insurance.insuranceNum" data-validate="required:请选择,regexp#((^(PDAA|PDZA|PZDS)[A-Z0-9]{18}$)|(^[0-9]{8}BDDA|G[0-9]{10}$)|(^[0-9]{20}$)):格式不正确"/>
                         </s:else>
                     </div>
                 </div>

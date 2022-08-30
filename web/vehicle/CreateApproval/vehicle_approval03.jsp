@@ -199,7 +199,7 @@ $(document).ready(function(){
                         </div>
                         <div class="field">
                             <s:radio name="vehicleApproval.fueltype"  
-                            	list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气'}" value="%{vehicleApproval.fueltype}"/>
+                            	list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气','纯电动':'纯电动'}" value="%{vehicleApproval.fueltype}"/>
                         </div>
                     </div>
                 </td>
@@ -286,8 +286,8 @@ $(document).ready(function(){
                     <div class="panel-body">
                         <table class="table table-bordered">
                             <tr>
-                                <td>提车日</td>
-                                <td>行车执照登记日期</td>
+                                <td>购入日期</td>
+                                <td>行驶证注册日期</td>
                                 <td>天数</td>
                             </tr>
                             <tr>
@@ -319,21 +319,21 @@ $(document).ready(function(){
                     <div class="panel-body">
                         <table class="table table-bordered">
                             <tr>
-                                <td>申报日</td>
+                                <td>行驶证注册日期</td>
                                 <td>营运证核发日期</td>
                                 <td>天数</td>
                             </tr>
-                            <tr>
+<tr>
 
                                 <td class="tableleft">
-                                    <s:textfield id="operateApplyDate" name="vehicleApproval.operateApplyDate" cssClass="input input-auto " size="10" />
+                                    <s:textfield id="operateApplyDate" name="vehicleApproval.licenseRegisterDate" cssClass="input input-auto " size="10"  readonly="true" disabled="true"/>
                                 </td>
                                 <td>
                                     <s:textfield id="operateCardDate"  name="vehicleApproval.operateCardDate" cssClass="input input-auto " size="10"  readonly="true"/>
                                 </td>
                                 <td>
-                                    <s:if test="%{vehicleApproval.operateApplyDate!=null&&vehicleApproval.operateCardDate!=null}">
-                                		<s:textfield id="operateDays" name="vehicleApproval.operateDays" cssClass="input input-auto " value="%{@com.dz.common.other.TimeComm@subDateToDays(vehicleApproval.operateApplyDate,vehicleApproval.operateCardDate)}" readonly="true" size="2" />
+                                	<s:if test="%{vehicleApproval.licenseRegisterDate!=null&&vehicleApproval.operateCardDate!=null}">
+                                		<s:textfield id="operateDays" name="vehicleApproval.operateDays" cssClass="input input-auto " value="%{@com.dz.common.other.TimeComm@subDateToDays(vehicleApproval.licenseRegisterDate,vehicleApproval.operateCardDate)}" readonly="true" size="2" />
                                 	</s:if>
                                 	<s:else>
                                 		<s:textfield id="operateDays" name="vehicleApproval.operateDays" cssClass="input input-auto " readonly="true" size="2" />

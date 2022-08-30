@@ -25,6 +25,7 @@ DEFAULT CHARACTER SET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --- 2020年之前的计划设为失效内容
 UPDATE charge_plan SET is_disabled=1 WHERE time < '2020-01-01';
+UPDATE charge_plan SET is_disabled=0 WHERE time >= '2020-01-01' and is_disabled is null;
 
 --- 已废止合同 超过废止月的约定设为失效内容
 UPDATE
@@ -92,91 +93,91 @@ fee<0
 AND time>='2020-01';
 
 DROP TABLE charge_plan_deleted;
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=809;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=809;
 	DELETE FROM batchplan WHERE id=809;
 	
 	UPDATE batchplan SET fee=193 WHERE id=839;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=839;
-END;
+-- END;
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=807;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=807;
 	DELETE FROM batchplan WHERE id=807;
 	UPDATE batchplan SET fee=193 WHERE id=808;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=808;
-END;
+-- END;
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=823;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=823;
 	DELETE FROM batchplan WHERE id=823;
 	UPDATE batchplan SET fee=193 WHERE id=841;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=841;
-END;
+-- END;
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=824;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=824;
 	DELETE FROM batchplan WHERE id=824;
 	UPDATE batchplan SET fee=193 WHERE id=842;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=842;
-END;
+-- END;
 
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=826;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=826;
 	DELETE FROM batchplan WHERE id=826;
 	UPDATE batchplan SET fee=193 WHERE id=843;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=843;
-END;
+-- END;
 
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=827;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=827;
 	DELETE FROM batchplan WHERE id=827;
 	UPDATE batchplan SET fee=193 WHERE id=844;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=844;
-END;
+-- END;
 
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=828;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=828;
 	DELETE FROM batchplan WHERE id=828;
 	UPDATE batchplan SET fee=193 WHERE id=845;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=845;
-END;
+-- END;
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=831;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=831;
 	DELETE FROM batchplan WHERE id=831;
 	UPDATE batchplan SET fee=193 WHERE id=846;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=846;
-END;
+-- END;
 
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=836;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=836;
 	DELETE FROM batchplan WHERE id=836;
 	UPDATE batchplan SET fee=193 WHERE id=847;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=847;
-END;
+-- END;
 
 
-BEGIN
+-- BEGIN
 	DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=837;
 	DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=837;
 	DELETE FROM batchplan WHERE id=837;
 	UPDATE batchplan SET fee=193 WHERE id=838;
 	UPDATE charge_plan SET fee=fee/2.0 WHERE batchPlan_id=838;
-END;
+-- END;
 
 
 --- id=427 合同 有一条 简单删除
@@ -192,6 +193,20 @@ DELETE FROM batchplan_contractidlist WHERE BatchPlan_id=2255;
 DELETE FROM charge_plan WHERE charge_plan.batchPlan_id=2255;
 DELETE FROM batchplan WHERE id=2255;
 delete from charge_plan where id=264588;
+delete from charge_plan where id=237920;
+UPDATE charge_plan SET fee=193 WHERE id=237921;
+
+delete from charge_plan where id=267888;
+delete from charge_plan where id=267938;
+delete from charge_plan where id=267939;
+delete from charge_plan where id=268005;
+
+delete from charge_plan where id=268002;
+delete from charge_plan where id=268003;
+
+delete from charge_plan where id=268006;
+delete from charge_plan where id=268007;
+
 
 UPDATE charge_plan
 SET fee_type=CONCAT('sub',SUBSTR(fee_type FROM 4)),fee=-fee
@@ -281,4 +296,8 @@ BEGIN
 END
 
 --- 2.使用前几个月余额提款
+
+
+
+
 

@@ -143,6 +143,8 @@
                     <div class="button-group">
                         <button onclick="_comfirmAccount()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
                             进账</button>
+                        <button onclick="_rejectAccount()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
+                            清除</button>
                         <button onclick="_selectAll()" type="button" class="button icon-search text-blue" style="line-height: 6px;">
                             全选</button>
                         <button onclick="_selectReverse()" type="button" class="button icon-search text-blue" style="line-height: 6px;">

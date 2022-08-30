@@ -142,7 +142,7 @@ public class ChargeDaoImp implements ChargeDao {
         query.setInteger("cid",srcId);
         List<ChargePlan> plans = query.list();
         for(ChargePlan cp : plans){
-        	if(DateUtil.isYM1BGYM2(cp.getTime(),start)){
+        	if(cp.getFeeType().contains("plan") && DateUtil.isYM1BGYM2(cp.getTime(),start)){
         		cp.setIsClear(true);
         		cp.setIsDisabled(true);
         		session.saveOrUpdate(cp);
@@ -158,17 +158,8 @@ public class ChargeDaoImp implements ChargeDao {
         //try {
             session = HibernateSessionFactory.getSession();
         //    tx = (Transaction) session.beginTransaction();
-            Query query = session.createQuery("from ChargePlan where contractId = :srcId and isClear = false");
-            query.setInteger("srcId",srcId);
-            List<ChargePlan> plans = query.list();
-            for(ChargePlan cp:plans){
-                if(DateUtil.isYM1BGYM2(cp.getTime(),srcTime)){
-                    cp.setContractId(destId);
-                    cp.setTime(destTime);
-                    session.update(cp);
-                }
-            }
-       //     tx.commit();
+        planTransfer(srcId, srcTime, destId, destTime, session);
+        //     tx.commit();
             flag = true;
 //        } catch (HibernateException e) {
 //            if (tx != null) {
@@ -179,6 +170,20 @@ public class ChargeDaoImp implements ChargeDao {
 //            HibernateSessionFactory.closeSession();
 //        }
         return flag;
+    }
+
+    @Override
+    public void planTransfer(int srcId, Date srcTime, int destId, Date destTime, Session session) {
+        Query query = session.createQuery("from ChargePlan where contractId = :srcId and isClear = false");
+        query.setInteger("srcId",srcId);
+        List<ChargePlan> plans = query.list();
+        for(ChargePlan cp:plans){
+            if(DateUtil.isYM1BGYM2(cp.getTime(),srcTime)){
+                cp.setContractId(destId);
+                cp.setTime(destTime);
+                session.update(cp);
+            }
+        }
     }
 
     @Override
@@ -287,6 +292,40 @@ public class ChargeDaoImp implements ChargeDao {
             @SuppressWarnings("unchecked")
 			List<ChargePlan> temps = query.list();
             
+            //相当于 and time is not null and year(time)=year(:date) and month(time)=month(:date)
+            for(ChargePlan plan:temps){
+                if(isYearAndMonth(date,plan.getTime())){
+                    list.add(plan);
+                }
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            HibernateSessionFactory.closeSession();
+        }
+        return list;
+    }
+
+    //获得该车当月的所有记录
+    @Override
+    public List<ChargePlan> getAllRecords2(int contractId, Date date) {
+        //该函数相当于from ChargePlan where contractId = :contractId  and time is not null and year(time)=year(:date) and month(time)=month(:date)
+
+        List<ChargePlan> list = new ArrayList<ChargePlan>();
+        Session session = null;
+        Transaction tx = null;
+        try {
+            session = HibernateSessionFactory.getSession();
+            tx = session.beginTransaction();
+            Query query = session.createQuery("from ChargePlan where contractId = :contractId ");
+            query.setInteger("contractId", contractId);
+            @SuppressWarnings("unchecked")
+            List<ChargePlan> temps = query.list();
+
             //相当于 and time is not null and year(time)=year(:date) and month(time)=month(:date)
             for(ChargePlan plan:temps){
                 if(isYearAndMonth(date,plan.getTime())){

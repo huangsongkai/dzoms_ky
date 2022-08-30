@@ -1,6 +1,10 @@
-<%@ page import="java.util.List" %>
+<%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
 <%@ page import="com.dz.module.charge.CheckChargeTable" %>
+<%@ page import="com.dz.module.charge.MonthPlan" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="org.hibernate.Session" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -144,6 +148,10 @@
                         <th>上月存款</th>
                         <th>本月存款</th>
                         <th>本月累计存款</th>
+                        <th>本月计划已分配</th>
+                        <th>本月计划未分配</th>
+                        <th>本月收入已分配</th>
+                        <th>本月收入未分配</th>
                     </tr>
                 </table>
             </div>
@@ -161,10 +169,34 @@
                 <%BigDecimal bd10 = new BigDecimal(0.00);%>
                 <%BigDecimal bd_hrb = new BigDecimal(0.00);%>
                 <%BigDecimal bd_zs = new BigDecimal(0.00);%>
+                <%BigDecimal bd11 = new BigDecimal(0.00);%>
+                <%BigDecimal bd12 = new BigDecimal(0.00);%>
+                <%BigDecimal bd13 = new BigDecimal(0.00);%>
+                <%BigDecimal bd14 = new BigDecimal(0.00);%>
                 <%int index=1;%>
                 <table  id="rawTh" class="table table-bordered table-hover table-striped">
                     <%List<CheckChargeTable> tables = (List<CheckChargeTable>)request.getAttribute("tables");%>
-                    <%for(CheckChargeTable record:tables){%>
+                    <%
+                        Session s = HibernateSessionFactory.getSession();
+                        Query query = s.createQuery("select mp from MonthPlan mp,Vehicle v where mp.carframeNum=v.carframeNum " +
+                                "and v.licenseNum=:carId and year(mp.time)=year(:time) and month(mp.time)=month(:time)");
+                        Query query1 = s.createQuery("select sum(cp.fee)-sum(cp.balance),sum(cp.balance) from ChargePlan cp,Contract c " +
+                                "where cp.contractId=c.id and cp.isDisabled=false and cp.feeType like 'add%' " +
+                                "and c.carNum=:carId and year(cp.time)=year(:time) and month(cp.time)=month(:time) ");
+                        query.setMaxResults(1);
+                        query1.setMaxResults(1);
+                        for(CheckChargeTable record:tables){
+                            query.setString("carId",record.getCarNumber());
+                            query.setDate("time",record.getTime());
+                            query1.setString("carId",record.getCarNumber());
+                            query1.setDate("time",record.getTime());
+                            MonthPlan monthPlan = (MonthPlan) query.uniqueResult();
+                            Object[] planSum = (Object[]) query1.uniqueResult();
+                            Number p1 = (Number) planSum[0];
+                            Number p2 = (Number) planSum[1];
+                            BigDecimal pv1 = p1==null? BigDecimal.ZERO:BigDecimal.valueOf(p1.doubleValue());
+                            BigDecimal pv2 = p2==null? BigDecimal.ZERO:BigDecimal.valueOf(p2.doubleValue());
+                    %>
                     <tr>
                         <td><%=index++%></td>
                         <td><%=record.getCarNumber()%></td>
@@ -196,6 +228,21 @@
                         <%bd9 = bd9.add(record.getThisMonthLeft());%>
                         <td><%=record.getThisMonthTotalOwe()%></td>
                         <%bd10 = bd10.add(record.getThisMonthTotalOwe());%>
+                        <% if(monthPlan==null){%>
+                        <td> - </td>
+                        <td> - </td>
+                        <%}else {%>
+                        <td><%=monthPlan.getPlanAll().subtract(monthPlan.getArrear())%></td>
+                        <%bd11 = bd11.add(monthPlan.getPlanAll().subtract(monthPlan.getArrear()));%>
+                        <td><%=(monthPlan.getArrear())%></td>
+                        <%bd12 = bd12.add(monthPlan.getArrear());%>
+                        <%}%>
+                        <td><%=pv1%></td>
+                        <td><%=pv2%></td>
+                        <%
+                            bd13 = bd13.add(pv1);
+                            bd14 = bd14.add(pv2);
+                        %>
                     </tr>
                     <%}%>
                     <tr>
@@ -216,6 +263,10 @@
                         <th><%=bd8%></th>
                         <th><%=bd9%></th>
                         <th><%=bd10%></th>
+                        <th><%=bd11%></th>
+                        <th><%=bd12%></th>
+                        <th><%=bd13%></th>
+                        <th><%=bd14%></th>
                     </tr>
                 </table>
             </div>

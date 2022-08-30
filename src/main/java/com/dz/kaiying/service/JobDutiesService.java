@@ -269,6 +269,8 @@ public class JobDutiesService extends BaseService{
             valsMap.put("userName2","李志强");//动态办理人
         }else if("运营管理部".equals(department)){
             valsMap.put("userName2","夏滨");//动态办理人
+        } else if ("综合业务部".equals(department)) {
+            valsMap.put("userName2","夏滨");//动态办理人
         }
         //userName
         activitiService.complete(taskId+"", valsMap, saveEvaluateDTO.getEvaluateName());

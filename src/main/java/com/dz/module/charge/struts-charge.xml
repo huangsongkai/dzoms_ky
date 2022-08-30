@@ -38,5 +38,8 @@
                         <result name="success">/charge/deposit/search_result.jsp</result>
                 </action>
                 <action name="deposit_remove" class="depositAction" method="remove"></action>
+                <action name="approvalBatchPlan" class="chargeAction" method="approvalBatchPlan">
+                        <result name="success">/charge/${jspPage}</result>
+                </action>
         </package>
 </struts>

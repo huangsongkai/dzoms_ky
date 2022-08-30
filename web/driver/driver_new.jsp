@@ -237,7 +237,7 @@
         <br/>
         <div class="container">
         	<a class="button input-file input-file1">
-                                    装入<input class="dz-file" id="readyimg1" name="photo" data-target=".input-file1" sessuss-function="loadThePicture('#readyimg1','#imghead');">
+                装入<input class="dz-file" id="readyimg1" name="photo" data-target=".input-file1" sessuss-function="loadThePicture('#readyimg1','#imghead');">
             </a>
             <!--<a class="button input-file bg-green input-file1">
                 装入<input type="text" class="dz-file" name="photo" onchange="loadpicture(this,'#headimg')" id="oldimg">

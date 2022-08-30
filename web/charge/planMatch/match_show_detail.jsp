@@ -92,6 +92,19 @@
                 });
             });
         });
+		
+		//match_show_income_detail.jsp
+		function showIncomeDetails(planId) {
+            window.open("match_show_income_detail.jsp?incomeId="+planId,"_blank")
+        }
+		
+		function showOutcomeDetails(planId) {
+            window.open("match_show_outcome_detail.jsp?outcomeId="+planId,"_blank")
+        }
+		
+		function showMonthPlanDetails(planId) {
+            window.open("match_show_monthplan_detail.jsp?monthPlanId="+planId,"_blank")
+        }
     </script>
 </head>
 <body>
@@ -173,7 +186,7 @@
                         <td><%=DateTypeConverter.dateFormat1.format(record.getTime())%></td>
                         <td><%=record.getPlanAll()%></td>
                         <td><%=record.getArrear()%></td>
-                        <td><button>查看详情</button></td>
+                        <td><button onclick="showMonthPlanDetails(<%=record.getId()%>)">查看详情</button></td>
                         <%bd1 = bd1.add(record.getPlanAll());%>
                         <%bd2 = bd2.add(record.getArrear());%>
                     </tr>
@@ -224,7 +237,7 @@
                         <td><%=record.getRegister()%></td>
                         <td><%=DateTypeConverter.dateFormat3.format(record.getInTime())%></td>
                         <td><%=record.getComment()%></td>
-                        <td><button>查看详情</button></td>
+                        <td><button onclick="showIncomeDetails(<%=record.getId()%>)">查看详情</button></td>
                         <%bd1 = bd1.add(record.getFee());%>
                         <%bd2 = bd2.add(record.getBalance()==null?BigDecimal.ZERO:record.getBalance());%>
                     </tr>
@@ -279,7 +292,7 @@
                         <td><%=record.getRegister()%></td>
                         <td><%=DateTypeConverter.dateFormat3.format(record.getInTime())%></td>
                         <td><%=record.getComment()%></td>
-                        <td><button>查看详情</button></td>
+                        <td><button onclick="showOutcomeDetails(<%=record.getId()%>)">查看详情</button></td>
                         <%bd1 = bd1.add(record.getFee());%>
                         <%bd2 = bd2.add(record.getBalance());%>
                     </tr>
