@@ -688,6 +688,54 @@ public class ChargeAction extends BaseAction {
         return "stream";
     }
 
+    public String exportTxtNewAll() throws Exception{
+        List<BankRecord> records = service.exportBankFile2(time,department);
+        if (StringUtils.isNotBlank(limitMap)){
+            JSONObject limits = JSONObject.fromObject(limitMap);
+            for (BankRecord record : records) {
+                if (limits.containsKey(""+record.getContractId())){
+                    record.setMoney(BigDecimal.valueOf(limits.optDouble(""+record.getContractId())));
+                }
+            }
+        }
+        File f = new File("bankFile.txt");
+        PrintWriter pw = new PrintWriter(f);
+
+        for(BankRecord br:records){
+            if(br.getMoney().intValue() == 0)
+                continue;
+
+            List<BankCardOfVehicle> bvList = br.getBankCards();
+            BankCard bc = null; // 招商银行
+            BankCard bch = null; // 哈尔滨银行
+            for (BankCardOfVehicle bv : bvList){
+                if (bv.getBankCard().getCardClass().equals("招商银行")){
+                    bc = bv.getBankCard();
+                } else if (bv.getBankCard().getCardClass().equals("哈尔滨银行")) {
+                    bch = bv.getBankCard();
+                }
+            }
+            String s = br.getLicenseNum()+"|";
+            s += br.getDriverName().trim()+"|";
+            s += (bc == null?"-":bc.getCardNumber())+"|";
+            s += (bch == null?"-":bch.getCardNumber())+"|";
+            s += br.getMoney().setScale(3).doubleValue();
+//            if (upperLimit>0 && br.getMoney().compareTo(BigDecimal.valueOf(upperLimit))>0){
+//                s += upperLimit;
+//            }else {
+//                s += br.getMoney().setScale(3).doubleValue();
+//            }
+            pw.println(s);
+        }
+        pw.close();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月-"+department+"-银行计划");
+        fileName = sdf.format(time)+".txt";
+        fileName = new String(fileName.getBytes(),"ISO8859-1");
+        txtFile = new FileInputStream(f);
+
+        return "stream";
+    }
+
     //清空脏数据
     public String clearDirtyTmp(){
         service.clearBadBankRecords();

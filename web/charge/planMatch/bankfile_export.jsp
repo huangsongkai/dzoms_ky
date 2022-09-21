@@ -74,7 +74,7 @@
                 return false;
             }
             if (confirm('注意，这是导出全部的银行计划为txt,确认并继续？')){
-                $("#form").attr("action","/DZOMS/charge/exportTxt3");
+                $("#form").attr("action","/DZOMS/charge/exportTxtNewAll");
             }else {
                 return false;
             }
