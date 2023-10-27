@@ -31,24 +31,24 @@
 	<script type="text/javascript" src="/DZOMS/res/js/window.js" ></script>
 
 	<script>
-        $(document).ready(function(){
-            $.post("/DZOMS/manage/getAuthoritiesByUser",{"user.uid":<%=uid%>},function(data){
-                console.log(data);
-                var json = $.parseJSON(data);
-                var json = json["list"][0]["com.dz.module.user.RelationUr"];
+		$(document).ready(function(){
+			$.post("/DZOMS/manage/getAuthoritiesByUser",{"user.uid":<%=uid%>},function(data){
+				console.log(data);
+				var json = $.parseJSON(data);
+				var json = json["list"][0]["com.dz.module.user.RelationUr"];
 
-                for (var i = 0; i < json.length; i++) {
+				for (var i = 0; i < json.length; i++) {
 
-                    var robj = json[i];
+					var robj = json[i];
 
-                    $(".role"+robj["rid"]+"").prop("checked",true);
+					$(".role"+robj["rid"]+"").prop("checked",true);
 
 
 
-                }
+				}
 
-            });
-        });
+			});
+		});
 	</script>
 </head>
 <body>

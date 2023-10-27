@@ -2,6 +2,7 @@ package com.dz.module.charge;
 
 import com.dz.common.other.ObjectAccess;
 import com.dz.module.contract.Contract;
+import org.hibernate.annotations.ColumnDefault;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.Date;
 @Table(name="charge_plan",catalog = "ky_dzomsdb")
 public class ChargePlan {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
     private BatchPlan batchPlan;
@@ -57,6 +58,7 @@ public class ChargePlan {
     private String register;
 
     @Column(name = "is_disabled")
+    @ColumnDefault("0")
     private Boolean isDisabled;
 
     @Column(name="balance")

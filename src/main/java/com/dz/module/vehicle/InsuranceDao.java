@@ -11,7 +11,9 @@ import com.dz.common.global.Page;
 import com.dz.module.driver.Driver;
 
 public interface InsuranceDao {
-	public void addInsurance(Insurance insurance) throws HibernateException;//���ӳ�������
+    void addInsurance(Insurance insurance, boolean override) throws HibernateException;
+
+    public void addInsurance(Insurance insurance) throws HibernateException;//���ӳ�������
 	public void updateInsurance(Insurance insurance) throws HibernateException;//�޸ĳ�������
 	public void deleteInsurance(Insurance insurance) throws HibernateException;
 	List<Insurance> selectAll();

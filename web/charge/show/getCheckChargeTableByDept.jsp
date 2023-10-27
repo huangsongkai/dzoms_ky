@@ -9,6 +9,12 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" import="java.math.*" %>
+<%@ page import="com.dz.common.other.ObjectAccess" %>
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="java.time.Month" %>
+<%@ page import="com.dz.module.charge.MonthPlan" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -52,6 +58,8 @@ $(document).ready(function(){
       <th>上月累欠</th>
       <th>本月存款</th>
       <th>本月累欠</th>
+      <th>本月已支付</th>
+      <th>本月未支付</th>
     </tr>
     </table>
 </div>
@@ -67,10 +75,21 @@ $(document).ready(function(){
     <%BigDecimal bd8 = new BigDecimal(0.00);%>
     <%BigDecimal bd9 = new BigDecimal(0.00);%>
     <%BigDecimal bd10 = new BigDecimal(0.00);%>
+    <%BigDecimal bd11 = new BigDecimal(0.00);%>
+    <%BigDecimal bd12 = new BigDecimal(0.00);%>
     <%int index=1;%>
     <table  id="rawTh" class="table table-bordered table-hover table-striped">
       <%List<CheckChargeTable> tables = (List<CheckChargeTable>)request.getAttribute("tables");%>
-      <%for(CheckChargeTable record:tables){%>
+      <%
+          Session s = HibernateSessionFactory.getSession();
+          Query query = s.createQuery("select mp from MonthPlan mp,Vehicle v where mp.carframeNum=v.carframeNum " +
+                  "and v.licenseNum=:carId and year(mp.time)=year(:time) and month(mp.time)=month(:time)");
+          query.setMaxResults(1);
+          for(CheckChargeTable record:tables){
+            query.setString("carId",record.getCarNumber());
+            query.setDate("time",record.getTime());
+              MonthPlan monthPlan = (MonthPlan) query.uniqueResult();
+      %>
       <tr>
       	<td><%=index++%></td>
         <td><%=record.getCarNumber()%></td>
@@ -98,6 +117,15 @@ $(document).ready(function(){
       <%bd9 = bd9.add(record.getThisMonthLeft());%>
       <td><%=record.getThisMonthTotalOwe()%></td>
       <%bd10 = bd10.add(record.getThisMonthTotalOwe());%>
+          <% if(monthPlan==null){%>
+          <td> - </td>
+          <td> - </td>
+          <%}else {%>
+          <td><%=monthPlan.getPlanAll().subtract(monthPlan.getArrear())%></td>
+          <%bd11 = bd11.add(monthPlan.getPlanAll().subtract(monthPlan.getArrear()));%>
+          <td><%=(monthPlan.getArrear())%></td>
+          <%bd12 = bd12.add(monthPlan.getArrear());%>
+          <%}%>
       </tr>
       <%}%>
 <tr>
@@ -116,6 +144,8 @@ $(document).ready(function(){
       <th><%=bd8%></th>
       <th><%=bd9%></th>
       <th><%=bd10%></th>
+      <th><%=bd11%></th>
+      <th><%=bd12%></th>
     </tr>
     </table>
 </div>

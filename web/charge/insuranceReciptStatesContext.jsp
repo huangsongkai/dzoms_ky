@@ -15,10 +15,21 @@
     <link rel="stylesheet" type="text/css" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
     <script src="/DZOMS/res/js/jquery.js"></script>
     <script src="/DZOMS/res/js/pintuer.js"></script>
+    <script type="text/javascript" src="/DZOMS/res/js/fileUpload.js" ></script>
     <script>
         function fetchData() {
             $.post('/DZOMS/charge/requestInsuranceReceipt',{
                 time:$("#time").val()
+            },function (msg) {
+                alert(msg);
+                document.vehicleSele.submit();
+            });
+        }
+
+        function uploadFinish() {
+            var fileId = $("#file_id").val();
+            $.post('/DZOMS/charge/uploadInsuranceExcel',{
+                fileId: fileId
             },function (msg) {
                 alert(msg);
                 document.vehicleSele.submit();
@@ -57,6 +68,9 @@
                     <div class="field">
                         <input class="input input-auto datetimepicker" size="20"  name="time" placeholder="年月即可" id="time">
                         <input type="button" value="从招行获取数据" onclick="fetchData()">
+                        <a class="button input-file input-file1">
+                            上传Excel文件<input type="text" class="dz-file" id="file_id" data-target=".input-file1"  sessuss-function="uploadFinish()" style="display: none">
+                        </a>
                     </div>
                 </div>
             </form>

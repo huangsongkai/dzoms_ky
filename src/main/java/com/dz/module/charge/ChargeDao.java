@@ -1,16 +1,18 @@
 package com.dz.module.charge;
 
-import java.util.Date;
-import java.util.List;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author doggy
  *         Created on 15-11-12.
  */
 public interface ChargeDao {
+    void planTransfer(int srcId, Date srcTime, int destId, Date destTime, Session session);
+
     boolean addBatchPlan(BatchPlan batchPlan);
     boolean deleteBatchPlan(BatchPlan batchPlan);
     boolean addChargePlan(ChargePlan chargePlan);
@@ -22,6 +24,7 @@ public interface ChargeDao {
      * @return
      */
     List<ChargePlan> getAllRecords(int contractId, Date date);
+    List<ChargePlan> getAllRecords2(int contractId, Date date);
     List<ChargePlan> getUnclears(int contractId, Date date);
     List<ChargePlan> getACarRecords(int contractId);
     List<ChargePlan> getAll(Date time, String feeType);

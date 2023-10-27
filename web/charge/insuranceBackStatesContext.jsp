@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="/DZOMS/res/css/pintuer.css"/>
     <script src="/DZOMS/res/js/jquery.js"></script>
     <script src="/DZOMS/res/js/pintuer.js"></script>
+    <script type="text/javascript" src="/DZOMS/res/js/fileUpload.js" ></script>
+
     <script>
         function beforeSubmit() {
             var hql = "";
@@ -24,6 +26,16 @@
 
             $('[name="condition"]').val(hql);
             return true;
+        }
+
+        function uploadFinish() {
+            var fileId = $("#file_id").val();
+            $.post('/DZOMS/charge/uploadInsuranceExcel',{
+                fileId: fileId
+            },function (msg) {
+                alert(msg);
+                document.vehicleSele.submit();
+            });
         }
     </script>
 </head>
@@ -63,9 +75,14 @@
                             <option value=" " selected="selected">全部</option>
                         </select>
                         <input type="submit" value="查询">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="button input-file input-file1">
+                            上传Excel文件<input type="text" class="dz-file" id="file_id" data-target=".input-file1"  sessuss-function="uploadFinish()" style="display: none">
+                        </a>
                     </div>
                 </div>
             </form>
+
         </div>
         <div class="panel-body">
             <iframe name="result_form" width="100%" height="800px" id="result_form" scrolling="no">

@@ -51,7 +51,7 @@
 
     String deptCondition = " ";
     if (department!=null && !department.equalsIgnoreCase("全部")){
-        deptCondition = " and c.branch_firm=:dept ";
+        deptCondition = " and c.branchFirm=:dept ";
     }
 
     Session hsession = HibernateSessionFactory.getSession();
@@ -115,6 +115,15 @@
                     $('#form').submit();
                 });
         }
+		
+		function withoutAssign() {
+			if (confirm('确认生成月计划？(并不会影响收入分配，可以在之后分配)')){
+                $.get('/DZOMS/charge/makeMonthPlan?time=<%=timeString%>',function (result) {
+                    $('#timestamp').val(new Date().getTime());
+                    $('#form').submit();
+                });
+			}
+		}
 
         function defaultAssign() {
             var car_choosed = [];
@@ -253,6 +262,7 @@
                     <%--</div>--%>
                 <%--</div>--%>
                 <input type="submit" value="查询" class="button bg-green"/>
+				<input type="button" value="只生成" class="button bg-green" onclick="withoutAssign()"/>
                 <input type="button" value="自动分配" class="button bg-green" onclick="defaultAssign()"/>
                 <input type="button" value="指定月份分配" class="button bg-green" onclick="assignToMonth()"/>
             </div>

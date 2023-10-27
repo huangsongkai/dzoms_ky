@@ -36,6 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author doggy
@@ -738,6 +740,12 @@ public class ChargeService {
             query.setDate("date", time);
 
             records = query.list();
+            for (BankRecord record : records) {
+                Contract contract = (Contract) session.get(Contract.class,record.getContractId());
+                Driver driver = (Driver) session.get(Driver.class,contract.getIdNum());
+                record.setIdNum(driver.getIdNum());
+                record.setDriverName(driver.getName());
+            }
         }catch(HibernateException ex){
             ex.printStackTrace();
         }finally{
@@ -923,6 +931,11 @@ public class ChargeService {
         int startMonth = timePass.getStartTime().getMonth();
         int endYear = timePass.getEndTime().getYear();
         int endMonth = timePass.getEndTime().getMonth();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR,2020);
+        calendar.set(Calendar.MONTH,1);
+        calendar.set(Calendar.DATE,1);
         while(startYear <= endYear){
             if(startYear == endYear && startMonth > endMonth)break;
             Date d = new Date();
@@ -930,8 +943,23 @@ public class ChargeService {
             d.setMonth(startMonth);
             d.setDate(1);
             Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),d);
+            Date nextMonth = DateUtil.getNextMonth(d);
+            Contract nextContract = contractDao.selectByCarId(vehicle.getCarframeNum(),nextMonth);
             if(contract == null) return table;
-            List<ChargePlan> plans = chargeDao.getAllRecords(contract.getId(),d);
+            List<ChargePlan> plans;
+            if ((int)contract.getId()==nextContract.getId()){
+                plans = chargeDao.getAllRecords2(contract.getId(),d)
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .filter(plan->!plan.getIsDisabled() || plan.getTime().before(calendar.getTime()))
+                        .collect(Collectors.toList());
+            }else {
+                plans = Stream.concat(chargeDao.getAllRecords2(contract.getId(),d).stream(),
+                        chargeDao.getAllRecords2(nextContract.getId(),d).stream())
+                        .filter(Objects::nonNull)
+                        .filter(plan->!plan.getIsDisabled() || plan.getTime().before(calendar.getTime()))
+                        .collect(Collectors.toList());
+            }
             //set base header
             CheckTablePerCar cpc  = new CheckTablePerCar();
             cpc.setTime(d);
@@ -956,7 +984,7 @@ public class ChargeService {
 
             cpc.setRealAll(calculateItemIn(plans, "other").add(calculateItemIn(plans, "insurance")).add(calculateItemIn(plans, "cash")).add(calculateItemIn(plans,"bank")).add(calculateItemIn(plans,"oil")));
 
-            String hql = "from CheckChargeTable where contractId="+contract.getId()+" and year(time)="+(startYear+1900)+" and month(time)="+(startMonth+1);
+            String hql = "from CheckChargeTable where carNumber='"+contract.getCarNum()+"' and year(time)="+(startYear+1900)+" and month(time)="+(startMonth+1);
 
             CheckChargeTable cct = ObjectAccess.execute(hql);
 
@@ -1752,12 +1780,36 @@ public class ChargeService {
      * @return true if db success else false.
      */
     public boolean deleteChargePlan(ChargePlan plan){
-        if(plan == null) throw new NullPointerException("the plan shouldn't be null");
-        plan = chargeDao.getChargePlanById(plan.getId());
-        if(plan != null || plan.getIsClear() != true){
-            return chargeDao.deleteChargePlan(plan);
+        if(plan == null) return false;
+        Session session = HibernateSessionFactory.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            ChargePlan chargePlan = (ChargePlan) session.get(ChargePlan.class,plan.getId());
+            Query query = session.createQuery("from IncomeDivide where incomeId=:incomeId ");
+            query.setInteger("incomeId",chargePlan.getId());
+            List<IncomeDivide> divs = query.list();
+            for (IncomeDivide div : divs) {
+                if (div.getType()==0){
+                    MonthPlan monthPlan = (MonthPlan) session.get(MonthPlan.class,div.getMonthPlanId());
+                    monthPlan.setArrear(monthPlan.getArrear().add(div.getAmount()));
+                    session.saveOrUpdate(monthPlan);
+                }else {
+                    ChargePlan outcome = (ChargePlan) session.get(ChargePlan.class,chargePlan.getId());
+                    outcome.setBalance(outcome.getBalance().subtract(div.getAmount()));
+                    session.saveOrUpdate(outcome);
+                }
+                session.delete(div);
+            }
+            session.delete(chargePlan);
+            tx.commit();
+        }catch (HibernateException ex){
+            ex.printStackTrace();
+           return false;
+        }finally {
+            HibernateSessionFactory.closeSession();
         }
-        return false;
+        return true;
     }
 
     /**
@@ -2320,7 +2372,8 @@ public class ChargeService {
                 MonthPlan already = (MonthPlan) query0.uniqueResult();
                 if (already!=null){
                     query11.setInteger("id",already.getId());
-                    BigDecimal arrear = (BigDecimal) query11.uniqueResult();
+                    BigDecimal income = (BigDecimal) query11.uniqueResult();
+                    BigDecimal arrear = already.getPlanAll().subtract(income==null?BigDecimal.ZERO:income);
                     already.setPlanAll(planAll);
                     already.setArrear(arrear==null?BigDecimal.ZERO:arrear);
                     s.saveOrUpdate(already);

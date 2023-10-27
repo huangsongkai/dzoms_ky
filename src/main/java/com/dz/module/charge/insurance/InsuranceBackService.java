@@ -1,8 +1,5 @@
 package com.dz.module.charge.insurance;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.dz.common.convertor.XmlUtil;
 import com.dz.common.el.ELUtil;
 import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.module.charge.ChargePlan;
@@ -10,7 +7,6 @@ import com.dz.module.charge.ChargeService;
 import com.dz.module.charge.ClearTime;
 import com.dz.module.charge.ClearTimeDao;
 import com.dz.module.contract.Contract;
-import com.dz.module.contract.ContractDao;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
 import com.opensymphony.xwork2.ActionContext;
@@ -221,13 +217,12 @@ public class InsuranceBackService {
             tx.commit();
         }catch (HibernateException e){
             e.printStackTrace();
-        }finally {
             try {
                 if (tx!=null){
                     tx.rollback();
                 }
             }catch (TransactionException ex){ }
-
+        }finally {
             HibernateSessionFactory.closeSession();
         }
 
@@ -298,12 +293,12 @@ public class InsuranceBackService {
             tx.commit();
         }catch (HibernateException e){
             e.printStackTrace();
-        }finally {
             try {
                 if (tx!=null){
                     tx.rollback();
                 }
             }catch (TransactionException ex){ }
+        }finally {
             HibernateSessionFactory.closeSession();
         }
     }
@@ -328,12 +323,12 @@ public class InsuranceBackService {
             tx.commit();
         }catch (HibernateException e){
             e.printStackTrace();
-        }finally {
             try {
                 if (tx!=null){
                     tx.rollback();
                 }
             }catch (TransactionException ex){ }
+        }finally {
             HibernateSessionFactory.closeSession();
         }
     }
@@ -377,12 +372,12 @@ public class InsuranceBackService {
             tx.commit();
         }catch (HibernateException e){
             e.printStackTrace();
-        }finally {
             try {
                 if (tx!=null){
                     tx.rollback();
                 }
             }catch (TransactionException ex){ }
+        }finally {
             HibernateSessionFactory.closeSession();
         }
     }
@@ -406,12 +401,12 @@ public class InsuranceBackService {
             tx.commit();
         }catch (HibernateException e){
             e.printStackTrace();
-        }finally {
             try {
                 if (tx!=null){
                     tx.rollback();
                 }
             }catch (TransactionException ex){ }
+        }finally {
             HibernateSessionFactory.closeSession();
         }
     }

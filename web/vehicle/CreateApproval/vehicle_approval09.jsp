@@ -207,7 +207,7 @@ $(document).ready(function(){
                         </div>
                         <div class="field">
                             <s:radio name="bean[0].fueltype"  
-                            	list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气'}" value="%{bean[0].fueltype}"/>
+                            	list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气','纯电动':'纯电动'}" value="%{bean[0].fueltype}"/>
                         </div>
                     </div>
                 </td>
@@ -324,8 +324,8 @@ $(document).ready(function(){
                     <div class="panel-body">
                         <table class="table table-bordered">
                             <tr>
-                                <td>提车日</td>
-                                <td>行车执照登记日期</td>
+                                <td>购入日期</td>
+                                <td>行驶证注册日期</td>
                                 <td>天数</td>
                             </tr>
                             <tr>
@@ -357,21 +357,21 @@ $(document).ready(function(){
                     <div class="panel-body">
                         <table class="table table-bordered">
                             <tr>
-                                <td>申报日</td>
+                                <td>行驶证注册日期</td>
                                 <td>营运证核发日期</td>
                                 <td>天数</td>
                             </tr>
                             <tr>
 
                                 <td class="tableleft">
-                                    <s:textfield id="operateApplyDate" name="bean[0].operateApplyDate" cssClass="input input-auto " size="10" />
+                                    <s:textfield id="operateApplyDate" name="bean[0].licenseRegisterDate" cssClass="input input-auto " size="10"  readonly="true" disabled="true"/>
                                 </td>
                                 <td>
                                     <s:textfield id="operateCardDate"  name="bean[0].operateCardDate" cssClass="input input-auto " size="10"  readonly="true"/>
                                 </td>
                                 <td>
-                                    <s:if test="%{bean[0].operateApplyDate!=null&&bean[0].operateCardDate!=null}">
-                                		<s:textfield id="operateDays" name="bean[0].operateDays" cssClass="input input-auto " value="%{@com.dz.common.other.TimeComm@subDateToDays(bean[0].operateApplyDate,bean[0].operateCardDate)}" readonly="true" size="2" />
+                                	<s:if test="%{bean[0].licenseRegisterDate!=null&&bean[0].operateCardDate!=null}">
+                                		<s:textfield id="operateDays" name="bean[0].operateDays" cssClass="input input-auto " value="%{@com.dz.common.other.TimeComm@subDateToDays(bean[0].licenseRegisterDate,bean[0].operateCardDate)}" readonly="true" size="2" />
                                 	</s:if>
                                 	<s:else>
                                 		<s:textfield id="operateDays" name="bean[0].operateDays" cssClass="input input-auto " readonly="true" size="2" />

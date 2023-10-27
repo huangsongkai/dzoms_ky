@@ -78,7 +78,7 @@
                 <input type="text" class="input" id="carframeNum" name="carframeNum" value="<%=carframeNum%>" size="30" placeholder="车架号" readonly/>
             </div>
         </div>
-        <% if (vehicle.getLicenseNum()!=null && vehicle.getLicenseNum().length()==7){%>
+        <% if (vehicle.getLicenseNum()!=null && (vehicle.getLicenseNum().length()==7 || vehicle.getLicenseNum().length()==8) ){%>
         <div class="form-group">
             <div class="label"><label for="carNum">车牌号</label></div>
             <div class="field field-icon-right">

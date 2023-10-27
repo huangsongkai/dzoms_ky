@@ -556,7 +556,7 @@
         %>
         <s:set name="approval"
                value="%{@com.dz.common.other.ObjectAccess@execute('from VehicleApproval where contractId='+#request.quate+contract.id+#request.quate)}"></s:set>
-        <s:hidden id="operate_card_date" value="%{#approval.operateCardDate}"></s:hidden>
+        <%--<s:hidden id="operate_card_date" value="%{#approval.operateCardDate}"></s:hidden>--%>
         <s:if test="%{#approval.operateCardDate==null}">
             <s:hidden name="contract.planMaked" value="false"></s:hidden>
         </s:if>
@@ -668,7 +668,16 @@
                                              name="contract.contractEndDate"/>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <div class="label padding">
+                                <label>
+                                    营运证日期
+                                </label>
+                            </div>
+                            <div class="field">
+                                <s:textfield cssClass="input" id="operate_card_date" value="%{#approval.operateCardDate}" readonly="true"></s:textfield>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div class="label padding">
                                 <label>

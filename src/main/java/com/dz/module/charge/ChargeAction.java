@@ -4,11 +4,13 @@ import com.dz.common.factory.HibernateSessionFactory;
 import com.dz.common.global.BaseAction;
 import com.dz.common.global.DateUtil;
 import com.dz.common.global.TimePass;
+import com.dz.common.other.FileUploadUtil;
 import com.dz.common.other.ObjectAccess;
 import com.dz.module.charge.bank.BankItem;
 import com.dz.module.charge.bank.ZhaoShangDiscount;
 import com.dz.module.charge.insurance.InsuranceBack;
 import com.dz.module.charge.insurance.InsuranceBackService;
+import com.dz.module.charge.insurance.InsuranceBackVO;
 import com.dz.module.charge.insurance.InsuranceReceipt;
 import com.dz.module.contract.*;
 import com.dz.module.user.User;
@@ -21,14 +23,16 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.struts2.ServletActionContext;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
+import org.jxls.reader.ReaderBuilder;
+import org.jxls.reader.XLSReadStatus;
+import org.jxls.reader.XLSReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -196,7 +200,6 @@ public class ChargeAction extends BaseAction {
                 request.put("msgStr","其它错误");
                 break;
         }
-
         jspPage = "zhaoShangStatesContext.jsp";
         return SUCCESS;
     }
@@ -205,15 +208,16 @@ public class ChargeAction extends BaseAction {
     public String requireDiscount2(){
 //        service.makeMonthPlan(time);
         List<BankRecord> records = service.exportBankFile2(time,department);
-        if (upperLimit>0){
-            BigDecimal limit = BigDecimal.valueOf(upperLimit);
-            records.forEach(bankRecord -> {
-                if (bankRecord.getMoney().compareTo(limit)>0){
-                    bankRecord.setMoney(limit);
+        if (StringUtils.isNotBlank(limitMap)){
+            JSONObject limits = JSONObject.fromObject(limitMap);
+            for (BankRecord record : records) {
+                if (limits.containsKey(""+record.getContractId())){
+                    record.setMoney(BigDecimal.valueOf(limits.optDouble(""+record.getContractId())));
                 }
-            });
+            }
         }
-        Map<String,String> resultMap = service.doDiscount(records,time);
+        Date clearTime = service.getCurrentTime(department);
+        Map<String,String> resultMap = service.doDiscount(records,clearTime);
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
         Map<String,Object> request = (Map<String,Object>)context.get("request");
@@ -595,6 +599,14 @@ public class ChargeAction extends BaseAction {
     //导出银行文件为txt 新
     public String exportTxtNew() throws Exception{
         List<BankRecord> records = service.exportBankFile2(time,department);
+        if (StringUtils.isNotBlank(limitMap)){
+            JSONObject limits = JSONObject.fromObject(limitMap);
+            for (BankRecord record : records) {
+                if (limits.containsKey(""+record.getContractId())){
+                    record.setMoney(BigDecimal.valueOf(limits.optDouble(""+record.getContractId())));
+                }
+            }
+        }
         File f = new File("bankFile.txt");
         PrintWriter pw = new PrintWriter(f);
 
@@ -620,11 +632,12 @@ public class ChargeAction extends BaseAction {
             String s = br.getLicenseNum()+"|";
             s += br.getDriverName().trim()+"|";
             s += (bc == null?" ":bc.getCardNumber())+"|";
-            if (upperLimit>0 && br.getMoney().compareTo(BigDecimal.valueOf(upperLimit))>0){
-                s += upperLimit;
-            }else {
-                s += br.getMoney().setScale(3).doubleValue();
-            }
+            s += br.getMoney().setScale(3).doubleValue();
+//            if (upperLimit>0 && br.getMoney().compareTo(BigDecimal.valueOf(upperLimit))>0){
+//                s += upperLimit;
+//            }else {
+//                s += br.getMoney().setScale(3).doubleValue();
+//            }
             pw.println(s);
         }
         pw.close();
@@ -1077,9 +1090,6 @@ public class ChargeAction extends BaseAction {
             return SUCCESS;
         }
 
-//        MD5 md5 = MD5.getInstance();
-//        String md5Str = md5.GetMD5Code(brs.toString());
-//        boolean isFileExisted = service.isFileExisted(md5Str);
         boolean isFileExisted = service.isFileExisted(filename);
         if(isFileExisted){
             message = "导入文件失败，该文件已导入！";
@@ -1117,9 +1127,6 @@ public class ChargeAction extends BaseAction {
 
             service.importFile(brs,recorder,fid);
             message = " 数据导入成功\n";
-//            service.writeMd5(md5Str);
-
-
         }
         request.put("message",message);
         return SUCCESS;
@@ -1194,6 +1201,8 @@ public class ChargeAction extends BaseAction {
         jspPage = "bps_show.jsp";
         return SUCCESS;
     }
+
+
 
     /**
      * 获得单车单月的欠款.
@@ -1297,6 +1306,91 @@ public class ChargeAction extends BaseAction {
         request.put("message",message);
         return SUCCESS;
     }
+
+    public String approvalBatchPlan() throws Exception {
+        ActionContext context = ActionContext.getContext();
+        @SuppressWarnings("unchecked")
+        Map<String,Object> request = (Map<String,Object>)context.get("request");
+        jspPage = "batchfile_import.jsp";
+
+        time = batchPlan.getStartTime();
+        if(!isYM1BGYM2(time,service.getCurrentTime("total"))){
+            message = "只能修改清帐年月及之后的计划\n";
+            request.put("message",message);
+            return SUCCESS;
+        }
+
+        boolean isFileExisted = service.isFileExisted(filename);
+        if(isFileExisted){
+            message = "导入文件失败，该文件已导入！";
+        }else{
+            JSONArray json = JSONArray.fromObject(jsonStr);
+            List<ChargePlan> planList = new ArrayList<>();
+            Calendar month = Calendar.getInstance();
+            month.setTime(time);
+            if (month.get(Calendar.DATE)>=27){
+                month.add(Calendar.MONTH,1);
+            }
+            month.set(Calendar.DATE,1);
+            for (int i = 0; i < json.size(); i++) {
+                JSONObject jso = (JSONObject) json.getJSONObject(i);
+
+                ChargePlan cp = new ChargePlan();
+                cp.setIsDisabled(false);
+                cp.setBalance(null);
+                cp.setTime(month.getTime());
+                cp.setRegister(batchPlan.getRegister());
+                cp.setInTime(new Date());
+                cp.setComment(jso.getString("comment"));
+
+                String licenseNum = jso.getString("licenseNum");
+                Vehicle vehicle = new Vehicle();
+                vehicle.setLicenseNum(licenseNum);
+                vehicle = vehicleDao.selectByLicense(vehicle);
+                Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),month.getTime());
+                if (contract==null){
+                    continue;
+                }
+                cp.setContractId(contract.getId());
+                cp.setFee(BigDecimal.valueOf(Double.parseDouble(jso.getString("Money"))));
+                cp.setFeeType(batchPlan.getFeeType());
+                cp.setIsClear(false);
+                cp.setBatchPlan(batchPlan);
+                planList.add(cp);
+            }
+
+            Calendar nm = Calendar.getInstance();
+            nm.setTime(time);
+            if(nm.get(Calendar.DATE)>26){
+                nm.add(Calendar.MONTH, 1);
+            }
+            nm.set(Calendar.DATE, 1);
+            int fid = service.writeMd5(filename,nm.getTime());
+
+            batchPlan.setChargePlanList(planList);
+            chargeDao.addBatchPlan(batchPlan);
+
+            message = " 数据导入成功\n";
+        }
+        request.put("message",message);
+        request.put("batchPlan",batchPlan);
+        return SUCCESS;
+    }
+    public String addFileBatchPlan() throws Exception{
+        return approvalBatchPlan();
+    }
+
+    public String doApprovalBatchPlan() throws Exception{
+        return approvalBatchPlan();
+    }
+
+    @Autowired
+    ChargeDao chargeDao;
+
+    public void setChargeDao(ChargeDao chargeDao) {
+        this.chargeDao = chargeDao;
+    }
+
     public String addBatchPlanPerCar(){
         boolean success = false;
         if("on".equals(isToEnd)){
@@ -1590,6 +1684,14 @@ public class ChargeAction extends BaseAction {
         this.cardClass = cardClass;
     }
 
+    public String getLimitMap() {
+        return limitMap;
+    }
+
+    public void setLimitMap(String limitMap) {
+        this.limitMap = limitMap;
+    }
+
     @Autowired
     private InsuranceBackService insuranceBackService;
 
@@ -1608,6 +1710,134 @@ public class ChargeAction extends BaseAction {
         }
         return STRING_RESULT;
     }
+
+    public String uploadInsuranceExcel() {
+        ajax_message = "操作成功";
+        String fileId = request.getParameter("fileId");
+        InputStream inputXLS = null;
+        try {
+            inputXLS = FileUploadUtil.getFileStream(fileId);
+        } catch (IOException e) {
+            e.printStackTrace();
+            ajax_message = "Excel文件读取失败！"+e.getMessage();
+            return STRING_RESULT;
+        }
+        XLSReader mainReader = null;
+        try {
+            mainReader = ReaderBuilder.buildFromXML( new ByteArrayInputStream(InsuranceReceiptMapping.getBytes()) );
+        } catch (IOException | SAXException e) {
+            e.printStackTrace();
+            ajax_message = "Excel文件定义解析失败！"+e.getMessage();
+            return STRING_RESULT;
+        }
+
+        List<InsuranceBackVO> sidata = new ArrayList<InsuranceBackVO>();
+        Map<String, Object> beans = new HashMap<String, Object>();
+        beans.put("serviceData", sidata);
+        XLSReadStatus readStatus = null;
+        try {
+            readStatus = mainReader.read( inputXLS, beans);
+        } catch (IOException | InvalidFormatException e) {
+            e.printStackTrace();
+            ajax_message = "Excel文件解析失败！"+e.getMessage();
+            return STRING_RESULT;
+        }
+
+        if(readStatus.isStatusOK()){
+            sidata = (List<InsuranceBackVO>) beans.get("serviceData");
+        }
+
+//        List<InsuranceReceipt> receipts = sidata.stream()
+//                .map(vo -> {
+//                    InsuranceReceipt receipt = new InsuranceReceipt();
+//                    receipt.setReceiptId(vo.getReceiptId());
+//                    receipt.setState(0);
+//                    Calendar calendar = Calendar.getInstance();
+//                    calendar.set(Calendar.YEAR,Integer.parseInt(vo.getTimestamp().substring(0,4)));
+//                    calendar.set(Calendar.MONTH,Integer.parseInt(vo.getTimestamp().substring(4,6)) - 1);
+//                    calendar.set(Calendar.DATE,Integer.parseInt(vo.getTimestamp().substring(6)));
+//                    receipt.setTimestamp(calendar.getTime());
+//                    receipt.setAmount(BigDecimal.valueOf(Double.parseDouble(vo.getAmount())));
+//                    receipt.setAttachment(vo.getAttachment());
+//                    return receipt;
+//                }).collect(Collectors.toList());
+
+        Session session;
+        Transaction tx = null;
+
+        try {
+            session = HibernateSessionFactory.getSession();
+            final Query matchLicenseNum = session.createQuery("from Vehicle where licenseNum=:num ");
+            matchLicenseNum.setMaxResults(1);
+            tx = session.beginTransaction();
+            for (InsuranceBackVO vo : sidata) {
+                    InsuranceReceipt receipt = new InsuranceReceipt();
+                    receipt.setReceiptId(vo.getReceiptId());
+                    receipt.setState(0);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR,Integer.parseInt(vo.getTimestamp().substring(0,4)));
+                    calendar.set(Calendar.MONTH,Integer.parseInt(vo.getTimestamp().substring(4,6)) - 1);
+                    calendar.set(Calendar.DATE,Integer.parseInt(vo.getTimestamp().substring(6)));
+                    receipt.setTimestamp(calendar.getTime());
+                    receipt.setAmount(BigDecimal.valueOf(Double.parseDouble(vo.getAmount())));
+                    receipt.setAttachment(vo.getAttachment());
+                    session.saveOrUpdate(receipt);
+                    InsuranceBack back = new InsuranceBack();
+                    back.setCarNum(vo.getCarNum());
+                    back.setReceiptId(receipt.getReceiptId());
+                    back.setAmount(receipt.getAmount());
+                    back.setAttachment(receipt.getAttachment());
+                    back.setTimestamp(receipt.getTimestamp());
+                    back.setReceiptId(receipt.getReceiptId());
+                matchLicenseNum.setString("num",vo.getCarNum());
+                Vehicle vehicle = (Vehicle) matchLicenseNum.uniqueResult();
+                back.setCarframeNum(vehicle.getCarframeNum());
+                back.setCarNum(vehicle.getLicenseNum());
+                session.saveOrUpdate(back);
+                receipt.setState(back.getId());
+                session.saveOrUpdate(receipt);
+            }
+            tx.commit();
+        }catch (HibernateException e){
+            e.printStackTrace();
+            try {
+                if (tx!=null){
+                    tx.rollback();
+                }
+            }catch (TransactionException ex){
+                ex.printStackTrace();
+                ajax_message = "数据库操作失败！"+ex.getMessage();
+                return STRING_RESULT;
+            }
+        }finally {
+            HibernateSessionFactory.closeSession();
+        }
+
+        return STRING_RESULT;
+    }
+
+    static final String InsuranceReceiptMapping = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            "<workbook>\n" +
+            "    <worksheet idx=\"0\">\n" +
+            "\t\t<section startRow=\"0\" endRow=\"1\">  \n" +
+            "\t\t\t\n" +
+            "\t\t</section>  \n" +
+            "        <loop startRow=\"2\" endRow=\"2\" items=\"serviceData\" var=\"serviceDatum\" varType=\"com.dz.module.charge.insurance.InsuranceBackVO\">\n" +
+            "            <section startRow=\"2\" endRow=\"2\">\n" +
+            "\t\t\t\t<mapping row=\"2\" col=\"0\">serviceDatum.receiptId</mapping>\n" +
+            "                <mapping row=\"2\" col=\"1\">serviceDatum.timestamp</mapping>\n" +
+            "                <mapping row=\"2\" col=\"2\">serviceDatum.amount</mapping>\n" +
+            "\t\t\t\t<mapping row=\"2\" col=\"3\">serviceDatum.attachment</mapping>\n" +
+            "\t\t\t\t<mapping row=\"2\" col=\"4\">serviceDatum.carNum</mapping>\n" +
+            "            </section>\n" +
+            "            <loopbreakcondition>\n" +
+            "                <rowcheck offset=\"0\">\n" +
+            "                    <cellcheck offset=\"0\"></cellcheck>\n" +
+            "                </rowcheck>\n" +
+            "            </loopbreakcondition>\n" +
+            "        </loop>\n" +
+            "    </worksheet>\n" +
+            "</workbook>";
 
     public String tryAttachVehicle(){
         insuranceBackService.tryAttachVehicle();
@@ -1711,8 +1941,17 @@ public class ChargeAction extends BaseAction {
     }
 
     //导出银行文件 file:bankfile_export.jsp
+    private String limitMap;
     public String exportBankFile2(){
         List<BankRecord> records = service.exportBankFile2(time,department);
+        if (StringUtils.isNotBlank(limitMap)){
+            JSONObject limits = JSONObject.fromObject(limitMap);
+            for (BankRecord record : records) {
+                if (limits.containsKey(""+record.getId())){
+                    record.setMoney(BigDecimal.valueOf(limits.optDouble(""+record.getId())));
+                }
+            }
+        }
         ActionContext context = ActionContext.getContext();
         @SuppressWarnings("unchecked")
         Map<String,Object> request = (Map<String,Object>)context.get("request");
@@ -1890,6 +2129,7 @@ public class ChargeAction extends BaseAction {
             BigDecimal amount = (BigDecimal) query1.uniqueResult();
             monthPlan.setPlanAll(amount);
             monthPlan.setArrear(amount);
+            session.saveOrUpdate(monthPlan);
         }
         assignFromIncomeToPlan(session,monthPlan,chargePlan);
     }

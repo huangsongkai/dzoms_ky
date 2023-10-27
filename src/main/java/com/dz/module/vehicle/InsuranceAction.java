@@ -21,15 +21,23 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 @Controller
 @Scope("prototype")
 public class InsuranceAction extends BaseAction{
 	@Autowired
 	private InsuranceService insuranceService;
+	@Autowired
+	private MailReceiver mailReceiver;
+
 	private Insurance insurance;
 	private Vehicle vehicle;
 	private Driver driver;
+
+    private Object jsonObject;
+    private String ajax_message;
 	
 	public String addInsurance() {
 		try{
@@ -228,6 +236,73 @@ public class InsuranceAction extends BaseAction{
 		return insuranceService.selectByDriver(driver);
 	}
 
+	public String loadConfig(){
+		mailReceiver.loadConfig();
+        jsonObject = mailReceiver.config;
+		return "jsonresult";
+	}
+
+	Boolean enabled;
+	String protocol = "pop3";
+	int port;
+	String host;
+	String email;
+	String password;
+	String sender;
+	Boolean readAll;
+	Boolean updateState;
+	Boolean override;
+
+	private static <T> void checkEqualOrUpdate(Query query, String key, T value, T rawValue, Function<T,String> toString)
+			throws HibernateException{
+		if (value != null && !value.equals(rawValue)){
+			query.setString("key", key);
+			query.setString("value", toString.apply(value));
+			query.executeUpdate();
+		}
+	}
+
+	public String updateConfig() {
+		mailReceiver.loadConfig();
+		MailReceiver.MailReceiverConfig config = mailReceiver.config;
+		Session s = null;
+		Transaction tx = null;
+		ajax_message = "修改成功！";
+		try {
+			s = HibernateSessionFactory.getSession();
+			tx = s.beginTransaction();
+			Query query = s.createSQLQuery("UPDATE `sys_config` SET `value` = :value WHERE `key` = :key");
+			checkEqualOrUpdate(query,"mail.enabled",enabled,config.enabled, Object::toString);
+			checkEqualOrUpdate(query,"mail.store.protocol",protocol,config.protocol, Function.identity());
+			checkEqualOrUpdate(query,"mail.pop3.port",port,config.port, Objects::toString);
+			checkEqualOrUpdate(query,"mail.pop3.host",host,config.host,Function.identity());
+			checkEqualOrUpdate(query,"mail.email",email,config.email,Function.identity());
+			checkEqualOrUpdate(query,"mail.password",password,config.password,Function.identity());
+			checkEqualOrUpdate(query,"mail.sender",sender,config.sender,Function.identity());
+			checkEqualOrUpdate(query,"strategy.readAll",readAll,config.readAll,Objects::toString);
+			checkEqualOrUpdate(query,"strategy.updateState",updateState,config.updateState,Objects::toString);
+			checkEqualOrUpdate(query,"strategy.override",override,config.override,Objects::toString);
+
+			tx.commit();
+		}catch(HibernateException e){
+			e.printStackTrace();
+			if(tx!=null){
+				tx.rollback();
+			}
+            ajax_message = "修改失败，原因是：" + e.getMessage();
+		}finally{
+			HibernateSessionFactory.closeSession();
+		}
+		return "stringresult";
+	}
+
+	public String manualDoReceive() {
+		mailReceiver.doReceive(true);
+        ajax_message = "任务已开始！";
+        return "stringresult";
+	}
+
+
 
 	public Insurance getInsurance() {
 		return insurance;
@@ -294,4 +369,112 @@ public class InsuranceAction extends BaseAction{
 	public void setStartEnd(Date startEnd) {
 		this.startEnd = startEnd;
 	}
+
+	public void setMailReceiver(MailReceiver mailReceiver) {
+		this.mailReceiver = mailReceiver;
+	}
+
+    public InsuranceService getInsuranceService() {
+        return insuranceService;
+    }
+
+    public MailReceiver getMailReceiver() {
+        return mailReceiver;
+    }
+
+    public Object getJsonObject() {
+        return jsonObject;
+    }
+
+    public void setJsonObject(Object jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
+    public String getAjax_message() {
+        return ajax_message;
+    }
+
+    public void setAjax_message(String ajax_message) {
+        this.ajax_message = ajax_message;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public Boolean getReadAll() {
+        return readAll;
+    }
+
+    public void setReadAll(Boolean readAll) {
+        this.readAll = readAll;
+    }
+
+    public Boolean getUpdateState() {
+        return updateState;
+    }
+
+    public void setUpdateState(Boolean updateState) {
+        this.updateState = updateState;
+    }
+
+    public Boolean getOverride() {
+        return override;
+    }
+
+    public void setOverride(Boolean override) {
+        this.override = override;
+    }
 }

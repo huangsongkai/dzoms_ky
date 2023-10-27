@@ -414,10 +414,10 @@ function GetQueryString(name){
                         </div>
                         <div class="field">
                         	<s:if test="%{#request.contractFrom!=null}">
-                        		<s:radio name="vehicleApproval.fueltype" list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气'}" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.VehicleMode',#tcar.carMode).fuel}"/>
+                        		<s:radio name="vehicleApproval.fueltype" list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气','纯电动':'纯电动'}" value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.VehicleMode',#tcar.carMode).fuel}"/>
                         	</s:if>
                         	<s:else>
-                        		<s:radio name="vehicleApproval.fueltype" list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气'}" value="%{'汽油/天燃气'}"/>
+                        		<s:radio name="vehicleApproval.fueltype" list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气','纯电动':'纯电动'}" value="%{'汽油/天燃气'}"/>
                         	</s:else>
                            
                         </div>
@@ -501,8 +501,8 @@ function GetQueryString(name){
                     <div class="panel-body">
                         <table class="table table-bordered">
                             <tr>
-                                <td>提车日</td>
-                                <td>行车执照登记日期</td>
+                                <td>购入日期</td>
+                                <td>行驶证注册日期</td>
                                 <td>天数</td>
                             </tr>
                             <tr>
@@ -528,7 +528,7 @@ function GetQueryString(name){
                     <div class="panel-body">
                         <table class="table table-bordered">
                             <tr>
-                                <td>申报日</td>
+                                <td>行驶证注册日期</td>
                                 <td>营运证核发日期</td>
                                 <td>天数</td>
                             </tr>

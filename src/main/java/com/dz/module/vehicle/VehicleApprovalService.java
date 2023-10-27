@@ -675,6 +675,16 @@ public class VehicleApprovalService {
         }
 
         if (vehicleApproval.getCheckType() == 0) {
+            Vehicle vehicle = ObjectAccess.getObject(Vehicle.class,contract.getCarframeNum());
+            if (vehicle.getOperateCardTime() != null) {
+                vehicleApproval.setOperateCardDate(vehicle.getOperateCardTime());
+            }
+
+            if (vehicle.getLicenseRegistTime() != null) {
+                vehicleApproval.setOperateApplyDate(vehicle.getLicenseRegistTime());
+            }
+
+
             if (state == 6)//综合办公室审批
             {
                 vehicleApproval.setApprovalOfficeDate(new Date());
@@ -1067,9 +1077,10 @@ public class VehicleApprovalService {
                         tplan.setComment("提前废业时的306,25");
                         tplan.setTime(sp.getTime());
                         tplan.setIsClear(false);
+                        tplan.setIsDisabled(false);
                         session.save(tplan);
 
-
+//                        chargeDao.planTransfer(contract.getId(), DateUtil.getNextMonth(contract.getAbandonedTime()), contract.getId(), contract.getAbandonedTime(),session);
                         chargeDao.planTransfer(contract.getId(), DateUtil.getNextMonth(contract.getAbandonedTime()), contract.getId(), contract.getAbandonedTime());
                         List<String> dl = Arrays.<String>asList(vehicle.getFirstDriver(), vehicle.getSecondDriver(), vehicle.getThirdDriver(), vehicle.getTempDriver());
 

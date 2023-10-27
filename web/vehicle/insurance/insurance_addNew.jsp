@@ -21,6 +21,7 @@
     <script src="/DZOMS/res/js/pintuer.js"></script>
     <script src="/DZOMS/res/js/respond.js"></script>
     <script src="/DZOMS/res/js/admin.js"></script>
+    <script type="text/javascript" src="/DZOMS/res/js/fileUpload.js" ></script>
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.datetimepicker.css" />
     <script type="text/javascript" src="/DZOMS/res/js/itemtool.js" ></script>
     <script src="/DZOMS/res/js/jquery.datetimepicker.js"></script>
@@ -105,7 +106,23 @@
                 }
             });
 
+            $("#thirdPartyLimit").bigAutocomplete({
+                url: "/DZOMS/select/itemsOfinsurance_thirdPartyLimit",
+                doubleClick: true,
+                doubleClickDefault: ''
+            });
 
+            $("#thirdPartyAmount").bigAutocomplete({
+                url: "/DZOMS/select/itemsOfinsurance_thirdPartyAmount",
+                doubleClick: true,
+                doubleClickDefault: ''
+            });
+
+            $("#tax").bigAutocomplete({
+                url: "/DZOMS/select/itemsOfinsurance_tax",
+                doubleClick: true,
+                doubleClickDefault: ''
+            });
         });
 
         <%
@@ -126,17 +143,29 @@
         $(document).ready(function(){
             $("#insuranceClass").change(function(){
                 if ($("#insuranceClass option:eq(0)").is(":selected")) {
+                    $("#add-form").addClass("insurance-mode-sx");
+                    $("#add-form").removeClass("insurance-mode-jqx");
+                    $("#add-form").removeClass("insurance-mode-cyr");
+
                     $("#insuranceNum").val('<%=sx%>');
                     itemsDefault("#insuranceMoney","insuranceMoneySx");
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#(^PDAA[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate","required:必填");
 //  			/data-validate="required:请选择,regexp#(^P(D|Z)AA[A-Z0-9]{11}$):格式不正确(15位，交强险以PDZA开头，商险以PDAA开头)"
                 } else if ($("#insuranceClass option:eq(1)").is(":selected")){
+                    $("#add-form").removeClass("insurance-mode-sx");
+                    $("#add-form").addClass("insurance-mode-jqx");
+                    $("#add-form").removeClass("insurance-mode-cyr");
+
                     $("#insuranceNum").val('<%=jqx%>');
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#(^PDZA[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate","required:必填");
                     itemsDefault("#insuranceMoney","insuranceMoneyJq");
                 }else{
+                    $("#add-form").removeClass("insurance-mode-sx");
+                    $("#add-form").removeClass("insurance-mode-jqx");
+                    $("#add-form").addClass("insurance-mode-cyr");
+
                     $("#insuranceNum").val('<%=cyrx%>');
-                    $("#insuranceNum").attr("data-validate","required:请选择,regexp#(^PZDS[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate","required:必填");
                     itemsDefault("#insuranceMoney","insuranceMoneyCy");
                 }
             });
@@ -170,25 +199,59 @@
                     "insurance.beginDate":$('[name="insurance.beginDate"]').val()
                 },function (data) {
                     if (data.result){
-                        $('[name="insurance.state"]').val(3);
-                        $('#add-form').submit();
+                        $('input[name="insurance.state"]').val(3);
+						//console.info("beforeSubmit,"+$('input[name="insurance.state"]').val);
+                        $('#submit-btn').click();
                     } else {
                         if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
-                            $('[name="insurance.state"]').val(3);
+                            $('input[name="insurance.state"]').val(3);
                         } else {
-                            $('[name="insurance.state"]').val(0);
+                            $('input[name="insurance.state"]').val(0);
                         }
-                        $('#add-form').submit();
+						$('#submit-btn').click();
                     }
                 })
             }else {
-                $('#add-form').submit();
+				$('#submit-btn').click();
             }
+        }
+
+        function uploadFinish() {
+            var fileId = $("#file_id").val();
+            window.location.href = "/DZOMS/vehicle/insurance/insurance_import_pdf.jsp?fileId="+fileId+"&url="
+                +encodeURI("/vehicle/insurance/insurance_add.jsp");
+        }
+
+        function uploadFinish2() {
+            var fileId = $("#file_id2").val();
+            window.location.href = "/DZOMS/vehicle/insurance/insurance_import_zip.jsp?fileId="+fileId+"&url="
+                +encodeURI("/vehicle/insurance/insurance_add.jsp");
         }
     </script>
     <style>
         .label{
             white-space:pre-line;
+        }
+        /* 默认情况下隐藏所有子组件 */
+        .show-when-sx,
+        .show-when-jqx,
+        .show-when-cyr {
+            display: none;
+        }
+
+        /* 在 insurance-mode-sx 模式下显示 show-when-sx 子组件 */
+        .insurance-mode-sx .show-when-sx {
+            display: block;
+        }
+
+        /* 在 insurance-mode-jqx 模式下显示 show-when-jqx 子组件 */
+        .insurance-mode-jqx .show-when-jqx {
+            display: block;
+        }
+
+        /* 在 insurance-mode-cyr 模式下显示 show-when-cyr 子组件 */
+        .insurance-mode-cyr .show-when-cyr {
+            display: block;
         }
     </style>
     <jsp:include page="/common/msg_info.jsp"></jsp:include>
@@ -207,7 +270,15 @@
 <div class="xm7 xm2-move">
     <div class="panel">
 
-        <div class="panel-head">新增保险信息</div>
+        <div class="panel-head">
+            新增保险信息
+            <a class="button input-file input-file1">
+                上传pdf文件并导入<input type="text" class="dz-file" id="file_id" data-target=".input-file1"  sessuss-function="uploadFinish()" style="display: none">
+            </a>
+            <a class="button input-file input-file2">
+                上传zip文件并导入<input type="text" class="dz-file" id="file_id2" data-target=".input-file2"  sessuss-function="uploadFinish2()" style="display: none">
+            </a>
+        </div>
         <div class="panel-body">
             <form id="add-form" class="form-x" action="/DZOMS/vehicle/insurance_add" method="post">
                 <s:hidden name="url" value="/vehicle/insurance/insurance_addNew.jsp"/>
@@ -273,11 +344,11 @@
                     <div class="field">
                         <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
                             <s:textfield id="insuranceNum" cssClass="input" placeholder=""
-                                         name="insurance.insuranceNum" value="%{bean[0].insuranceNum}" data-validate="required:请选择,regexp#(^PD(AA|ZA|ZS)[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PDZS开头)"/>
+                                         name="insurance.insuranceNum" value="%{bean[0].insuranceNum}" data-validate="required:必填"/>
                         </s:if>
                         <s:else>
                             <s:textfield id="insuranceNum" cssClass="input" placeholder=""
-                                         name="insurance.insuranceNum" data-validate="required:请选择,regexp#(^(PDAA|PDZA|PZDS)[A-Z0-9]{18}$):格式不正确(22位，交强险以PDZA开头，商险以PDAA开头，承运人责任险以PZDS开头)"/>
+                                         name="insurance.insuranceNum" data-validate="required:必填"/>
                         </s:else>
                     </div>
                 </div>
@@ -300,8 +371,14 @@
                 </div>
                 <div class="form-group" >
                     <div class="label">
-                        <label>
+                        <label class="show-when-jqx">
                             保险金额
+                        </label>
+                        <label class="show-when-cyr">
+                            保险金额
+                        </label>
+                        <label class="show-when-sx">
+                            车损险
                         </label>
                     </div>
                     <div class="field form-inline">
@@ -314,6 +391,61 @@
                         <a class="icon icon-wrench" href="javascript:openTheItem()"></a>
                     </div>
                 </div>
+
+                <div class="form-group show-when-sx">
+                    <div class="label">
+                        <label>
+                            第三者责任保险限额
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
+                            <s:textfield  cssClass="input" name="insurance.thirdPartyLimit" id="thirdPartyLimit" value="%{bean[0].thirdPartyLimit}"  data-validate="required:请选择"/>
+                        </s:if>
+                        <s:else>
+                            <s:textfield  cssClass="input" name="insurance.thirdPartyLimit" id="thirdPartyLimit" data-validate="required:请选择"/>
+                        </s:else>
+                        <a class="icon icon-wrench"
+                           href="javascript:openItem('insurance_thirdPartyLimit', '第三者责任保险限额')"></a>
+                    </div>
+                </div>
+
+                <div class="form-group show-when-sx">
+                    <div class="label">
+                        <label>
+                            第三者责任保险金额
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
+                            <s:textfield  cssClass="input" name="insurance.thirdPartyAmount" id="thirdPartyAmount" value="%{bean[0].thirdPartyAmount}"  data-validate="required:请选择"/>
+                        </s:if>
+                        <s:else>
+                            <s:textfield  cssClass="input" name="insurance.thirdPartyAmount" id="thirdPartyAmount" data-validate="required:请选择"/>
+                        </s:else>
+                        <a class="icon icon-wrench"
+                           href="javascript:openItem('insurance_thirdPartyAmount', '第三者责任保险金额')"></a>
+                    </div>
+                </div>
+
+                <div class="form-group show-when-jqx">
+                    <div class="label">
+                        <label>
+                            车船税
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:if test="%{bean!=null&&bean[0]!=null&&keyword!='xubao'}">
+                            <s:textfield  cssClass="input" name="insurance.tax" id="tax" value="%{bean[0].tax}"  data-validate="required:请选择"/>
+                        </s:if>
+                        <s:else>
+                            <s:textfield  cssClass="input" name="insurance.tax" id="tax" data-validate="required:请选择"/>
+                        </s:else>
+                        <a class="icon icon-wrench"
+                           href="javascript:openItem('insurance_tax', '车船税')"></a>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <div class="label">
                         <label>
@@ -442,6 +574,7 @@
                 </div>
                 <div class="xm6-move">
                     <input type="button" class="button bg-green" value="提交" onclick="beforeSubmit()">
+					<input type="submit" style="display:none;" id="submit-btn">
                 </div>
             </form>
         </div>

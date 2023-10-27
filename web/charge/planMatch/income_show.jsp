@@ -70,34 +70,34 @@
 
     Query query = hsession.createSQLQuery(
             "SELECT \n" +
-            "car_num,\n" +
-            "carframe_num,\n" +
-            "total_fee,\n" +
-            "total_balance,\n" +
-            "time\n" +
-            "FROM\n" +
-            "(SELECT\n" +
-            "c.car_num as car_num,\n" +
-            "c.carframe_num as carframe_num,\n" +
-            "sum(cp.fee) as total_fee,\n" +
-            "sum(cp.balance) as total_balance,\n" +
-            "cp.time as time\n" +
-            "FROM\n" +
-            "charge_plan AS cp JOIN contract c\n" +
-            "WHERE\n" +
-            "cp.contract_id = c.id \n" +
-            "AND cp.is_disabled=0 \n" +
-            "AND cp.fee_type LIKE 'add_%'\n" +
-            "AND cp.balance>0\n" +
-            deptCondition+
-            "AND YEAR(cp.time)=year(:time) AND MONTH(cp.time)=month(:time)\n" +
-            "GROUP BY c.car_num) as temp1\n" +
+                    "car_num,\n" +
+                    "carframe_num,\n" +
+                    "total_fee,\n" +
+                    "total_balance,\n" +
+                    "time\n" +
+                    "FROM\n" +
+                    "(SELECT\n" +
+                    "c.car_num as car_num,\n" +
+                    "c.carframe_num as carframe_num,\n" +
+                    "sum(cp.fee) as total_fee,\n" +
+                    "sum(cp.balance) as total_balance,\n" +
+                    "cp.time as time\n" +
+                    "FROM\n" +
+                    "charge_plan AS cp JOIN contract c\n" +
+                    "WHERE\n" +
+                    "cp.contract_id = c.id \n" +
+                    "AND cp.is_disabled=0 \n" +
+                    "AND cp.fee_type LIKE 'add_%'\n" +
+                    "AND cp.balance>0\n" +
+                    deptCondition+
+                    "AND YEAR(cp.time)=year(:time) AND MONTH(cp.time)=month(:time)\n" +
+                    "GROUP BY c.car_num) as temp1\n" +
                     (showEverything2?
-            "WHERE EXISTS \n" +
-            "(SELECT 1 \n" +
-            "FROM month_plan mp,contract cc \n" +
-            "WHERE mp.contract_id = cc.id AND cc.carframe_num=temp1.carframe_num\n" +
-            "AND mp.arrear>0 ) ":"")
+                            "WHERE EXISTS \n" +
+                                    "(SELECT 1 \n" +
+                                    "FROM month_plan mp,contract cc \n" +
+                                    "WHERE mp.contract_id = cc.id AND cc.carframe_num=temp1.carframe_num\n" +
+                                    "AND mp.arrear>0 ) ":"")
     );
 
     if (department!=null && !department.equalsIgnoreCase("全部")){
@@ -151,16 +151,16 @@
 
         function singleAssign(carframeNum,monthPlanId,money) {
             if (confirm('确认将对该车收入单独分配？'))
-            $.get('/DZOMS/charge/singleAssign?carframeNum='+carframeNum+'&id='+monthPlanId+'&time=<%=timeString%>',function (result) {
-                $('#timestamp').val(new Date().getTime());
-                $('#form').submit();
-            });
+                $.get('/DZOMS/charge/singleAssign?carframeNum='+carframeNum+'&id='+monthPlanId+'&time=<%=timeString%>',function (result) {
+                    $('#timestamp').val(new Date().getTime());
+                    $('#form').submit();
+                });
         }
 
         function defaultAssign() {
             var car_choosed = [];
             $('input[name="car_choose"]:checked').each(function () {
-               car_choosed.push(this.value);
+                car_choosed.push(this.value);
             });
             if (car_choosed.length<=0){
                 alert('请选择至少一项数据！');
@@ -201,9 +201,9 @@
                         targetMonth:monthString,
                         car_choosed: JSON.stringify(car_choosed)
                     },function (result) {
-                    $('#timestamp').val(new Date().getTime());
-                    $('#form').submit();
-                });
+                        $('#timestamp').val(new Date().getTime());
+                        $('#form').submit();
+                    });
             }
         }
 
@@ -217,7 +217,7 @@
 
         function reverseChoose() {
             $('input[name="car_choose"]').each(function () {
-               $(this).prop('checked',!$(this).prop('checked'));
+                $(this).prop('checked',!$(this).prop('checked'));
             });
         }
     </script>
@@ -237,14 +237,14 @@
         <div class="panel  margin-small" >
             <div class="panel-body">
                 <%--<div class="form-group">--%>
-                    <%--<div class="label padding">--%>
-                        <%--<label>--%>
-                            <%--车牌号--%>
-                        <%--</label>--%>
-                    <%--</div>--%>
-                    <%--<div class="field">--%>
-                        <%--<input class="input input-auto" size="9" id="licenseNum" name="licenseNum" value="黑A"  onfocus="carFocus()"/>--%>
-                    <%--</div>--%>
+                <%--<div class="label padding">--%>
+                <%--<label>--%>
+                <%--车牌号--%>
+                <%--</label>--%>
+                <%--</div>--%>
+                <%--<div class="field">--%>
+                <%--<input class="input input-auto" size="9" id="licenseNum" name="licenseNum" value="黑A"  onfocus="carFocus()"/>--%>
+                <%--</div>--%>
                 <%--</div>--%>
                 <div class="form-group">
                     <div class="label padding">
@@ -282,21 +282,21 @@
                         <input type="radio" name="showAll" value="no" <%=showEverything?"":"checked"%> >否
                     </div>
                 </div>
-                    <div class="form-group">
-                        <div class="label padding">
-                            <label>
-                                不显示计划均已满足的收入项?
-                            </label>
-                        </div>
-                        <div class="field">
-                            <input type="radio" name="showAll2" value="yes" <%=showEverything2?"checked":""%> >是
-                            <input type="radio" name="showAll2" value="no" <%=showEverything2?"":"checked"%> >否
-                        </div>
+                <div class="form-group">
+                    <div class="label padding">
+                        <label>
+                            不显示计划均已满足的收入项?
+                        </label>
                     </div>
-                    <input type="submit" value="查询" class="button bg-green"/>
-                    <input type="button" value="只生成不分配" class="button bg-green" onclick="makeMonthPlan()"/>
-                    <input type="button" value="自动分配" class="button bg-green" onclick="defaultAssign()"/>
-                    <input type="button" value="指定月份分配" class="button bg-green" onclick="assignToMonth()"/>
+                    <div class="field">
+                        <input type="radio" name="showAll2" value="yes" <%=showEverything2?"checked":""%> >是
+                        <input type="radio" name="showAll2" value="no" <%=showEverything2?"":"checked"%> >否
+                    </div>
+                </div>
+                <input type="submit" value="查询" class="button bg-green"/>
+                <input type="button" value="只生成不分配" class="button bg-green" onclick="makeMonthPlan()"/>
+                <input type="button" value="自动分配" class="button bg-green" onclick="defaultAssign()"/>
+                <input type="button" value="指定月份分配" class="button bg-green" onclick="assignToMonth()"/>
             </div>
         </div>
     </form>
@@ -355,53 +355,53 @@
                             int rowSpan = planSpan*incomeSpan/gcd(planSpan,incomeSpan);
                             for (int i = 0; i < rowSpan; i++) {
                     %>
-                        <tr>
-                            <%if (i==0){%>
-                            <td rowspan="<%=rowSpan%>"><input type="checkbox" name="car_choose" value="<%=carframe_num%>"></td>
-                            <td rowspan="<%=rowSpan%>"><%=index++%></td>
-                            <td rowspan="<%=rowSpan%>"><%=the_time%></td>
-                            <td rowspan="<%=rowSpan%>"><%=vehicle.getDept()%></td>
-                            <td rowspan="<%=rowSpan%>"><%=car_num%></td>
-                            <%}%>
-                            <%if (i==0 && chargePlans.size()==0){%>
-                            <td rowspan="<%=rowSpan%>">-</td>
-                            <td rowspan="<%=rowSpan%>">-</td>
-                            <td rowspan="<%=rowSpan%>">-</td>
-                            <%}else if ((i*incomeSpan)%rowSpan==0){
-                                ChargePlan chargePlan = chargePlans.get(i*incomeSpan/rowSpan);
-                            %>
-                            <td rowspan="<%=rowSpan/incomeSpan%>"><%=chargePlan.getFeeType()%></td>
-                            <td rowspan="<%=rowSpan/incomeSpan%>"><%=chargePlan.getFee()%></td>
-                            <td rowspan="<%=rowSpan/incomeSpan%>"><%=chargePlan.getBalance()%></td>
-                            <%}%>
-                            <%if (i==0){%>
-                            <td rowspan="<%=rowSpan%>"><%=total_fee%></td>
-                            <td rowspan="<%=rowSpan%>"><%=total_balance%></td>
-                            <%}%>
-                            <%if (i==0 && plans.size()==0){%>
-                            <td rowspan="<%=rowSpan%>"> - </td>
-                            <td rowspan="<%=rowSpan%>"> - </td>
-                            <td rowspan="<%=rowSpan%>"> - </td>
-                            <td rowspan="<%=rowSpan%>"> - </td>
-                            <%}else if ((i*planSpan)%rowSpan==0){
-                                MonthPlan plan = plans.get(i*planSpan/rowSpan);
-                            %>
-                            <td rowspan="<%=rowSpan/planSpan%>"> <%=sdf.format(plan.getTime())%>的月计划<%=plan.getPlanAll()%></td>
-                            <td rowspan="<%=rowSpan/planSpan%>"> <%=plan.getArrear()%></td>
-                            <td rowspan="<%=rowSpan/planSpan%>"> <%=Math.min(total_balance,plan.getArrear().doubleValue())%></td>
-                            <td rowspan="<%=rowSpan/planSpan%>"> <button onclick="singleAssign('<%=carframe_num%>',<%=plan.getId()%>,<%=Math.min(total_balance,plan.getArrear().doubleValue())%>)">单独分配</button></td>
-                            <%}%>
-                        </tr>
+                    <tr>
+                        <%if (i==0){%>
+                        <td rowspan="<%=rowSpan%>"><input type="checkbox" name="car_choose" value="<%=carframe_num%>"></td>
+                        <td rowspan="<%=rowSpan%>"><%=index++%></td>
+                        <td rowspan="<%=rowSpan%>"><%=the_time%></td>
+                        <td rowspan="<%=rowSpan%>"><%=vehicle.getDept()%></td>
+                        <td rowspan="<%=rowSpan%>"><%=car_num%></td>
+                        <%}%>
+                        <%if (i==0 && chargePlans.size()==0){%>
+                        <td rowspan="<%=rowSpan%>">-</td>
+                        <td rowspan="<%=rowSpan%>">-</td>
+                        <td rowspan="<%=rowSpan%>">-</td>
+                        <%}else if ((i*incomeSpan)%rowSpan==0){
+                            ChargePlan chargePlan = chargePlans.get(i*incomeSpan/rowSpan);
+                        %>
+                        <td rowspan="<%=rowSpan/incomeSpan%>"><%=chargePlan.getFeeType()%></td>
+                        <td rowspan="<%=rowSpan/incomeSpan%>"><%=chargePlan.getFee()%></td>
+                        <td rowspan="<%=rowSpan/incomeSpan%>"><%=chargePlan.getBalance()%></td>
+                        <%}%>
+                        <%if (i==0){%>
+                        <td rowspan="<%=rowSpan%>"><%=total_fee%></td>
+                        <td rowspan="<%=rowSpan%>"><%=total_balance%></td>
+                        <%}%>
+                        <%if (i==0 && plans.size()==0){%>
+                        <td rowspan="<%=rowSpan%>"> - </td>
+                        <td rowspan="<%=rowSpan%>"> - </td>
+                        <td rowspan="<%=rowSpan%>"> - </td>
+                        <td rowspan="<%=rowSpan%>"> - </td>
+                        <%}else if ((i*planSpan)%rowSpan==0){
+                            MonthPlan plan = plans.get(i*planSpan/rowSpan);
+                        %>
+                        <td rowspan="<%=rowSpan/planSpan%>"> <%=sdf.format(plan.getTime())%>的月计划<%=plan.getPlanAll()%></td>
+                        <td rowspan="<%=rowSpan/planSpan%>"> <%=plan.getArrear()%></td>
+                        <td rowspan="<%=rowSpan/planSpan%>"> <%=Math.min(total_balance,plan.getArrear().doubleValue())%></td>
+                        <td rowspan="<%=rowSpan/planSpan%>"> <button onclick="singleAssign('<%=carframe_num%>',<%=plan.getId()%>,<%=Math.min(total_balance,plan.getArrear().doubleValue())%>)">单独分配</button></td>
+                        <%}%>
+                    </tr>
                     <%}%>
                     <%}%>
                     <%--<tr>--%>
-                        <%--<th>合计</th>--%>
-                        <%--<th>-</th>--%>
-                        <%--<th>-</th>--%>
-                        <%--<th><%=bd1%></th>--%>
-                        <%--<th><%=bd2%></th>--%>
-                        <%--<th><%=bd3%></th>--%>
-                        <%--<th>-</th>--%>
+                    <%--<th>合计</th>--%>
+                    <%--<th>-</th>--%>
+                    <%--<th>-</th>--%>
+                    <%--<th><%=bd1%></th>--%>
+                    <%--<th><%=bd2%></th>--%>
+                    <%--<th><%=bd3%></th>--%>
+                    <%--<th>-</th>--%>
                     <%--</tr>--%>
                 </table>
             </div>
