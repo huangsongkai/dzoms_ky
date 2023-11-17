@@ -170,12 +170,11 @@
                 }
             });
 
-//  	alert(keyword);
-
             if(!actionName.contains("ObjectAccess")||keyword=='xubao'){
-                $("#insuranceClass").change();
                 itemsDefault("#insuranceCompany","insuranceCompany");
             }
+
+            $("#insuranceClass").change();
         });
 
         function openTheItem(){

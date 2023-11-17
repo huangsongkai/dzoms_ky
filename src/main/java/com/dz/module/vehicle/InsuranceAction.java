@@ -5,6 +5,7 @@ import com.dz.common.global.BaseAction;
 import com.dz.common.global.Page;
 import com.dz.common.other.ObjectAccess;
 import com.dz.common.other.PageUtil;
+import com.dz.common.test.SpringContextListener;
 import com.dz.module.driver.Driver;
 import net.sf.json.JSONObject;
 import org.hibernate.HibernateException;
@@ -297,7 +298,7 @@ public class InsuranceAction extends BaseAction{
 	}
 
 	public String manualDoReceive() {
-		mailReceiver.doReceive(true);
+		SpringContextListener.startTaskManual();
         ajax_message = "任务已开始！";
         return "stringresult";
 	}

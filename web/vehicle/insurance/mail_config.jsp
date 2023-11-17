@@ -81,16 +81,16 @@
     <input type="email" id="sender" name="sender" required><br>
 
     <label for="readAll">读取策略：</label>
-    <input type="radio" id="readAll" name="readPolicy" value="true"> 读取全部邮件
-    <input type="radio" id="readUnread" name="readPolicy" value="false"> 只读取未读邮件<br>
+    <input type="radio" id="readAll" name="readAll" value="true"> 读取全部邮件
+    <input type="radio" id="readUnread" name="readAll" value="false"> 只读取未读邮件<br>
 
     <label for="updateState">执行策略：</label>
-    <input type="radio" id="updateState" name="updatePolicy" value="true"> 读取后修改状态为已读
-    <input type="radio" id="noUpdateState" name="updatePolicy" value="false"> 保持原有状态不变<br>
+    <input type="radio" id="updateState" name="updateState" value="true"> 读取后修改状态为已读
+    <input type="radio" id="noUpdateState" name="updateState" value="false"> 保持原有状态不变<br>
 
     <label for="override">写入策略：</label>
-    <input type="radio" id="override" name="writePolicy" value="true"> 覆盖数据
-    <input type="radio" id="noOverride" name="writePolicy" value="false"> 不覆盖数据<br>
+    <input type="radio" id="override" name="override" value="true"> 覆盖数据
+    <input type="radio" id="noOverride" name="override" value="false"> 不覆盖数据<br>
 
     <button type="button" onclick="submitConfig()">保存配置</button>
 </form>

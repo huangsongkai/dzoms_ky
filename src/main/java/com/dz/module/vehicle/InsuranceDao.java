@@ -2,16 +2,15 @@ package com.dz.module.vehicle;
 
 //import java.util.ArrayList;
 
+import com.dz.common.global.Page;
+import com.dz.module.driver.Driver;
+import org.hibernate.HibernateException;
+
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-
-import com.dz.common.global.Page;
-import com.dz.module.driver.Driver;
-
 public interface InsuranceDao {
-    void addInsurance(Insurance insurance, boolean override) throws HibernateException;
+    boolean addInsurance(Insurance insurance, boolean override) throws HibernateException;
 
     public void addInsurance(Insurance insurance) throws HibernateException;//���ӳ�������
 	public void updateInsurance(Insurance insurance) throws HibernateException;//�޸ĳ�������

@@ -62,7 +62,7 @@
 
 <!-- 上部：查询条件 -->
 <div class="x12 form-group">
-    <form action="#" method="GET">
+    <form action="/DZOMS/vehicle/insurance/mail_log.jsp" method="GET">
         <input type="hidden" name="page" id="pageinput" value="<%=tpage%>">
         <label for="automic">类型:</label>
         <input type="radio" id="automic" name="automic" value="true" <%="true".equals(paramAutomic)?"checked='checked'":""%> > 自动
@@ -70,7 +70,7 @@
         <input type="radio" id="automicAll" name="automic" value="all" <%= !("true".equals(paramAutomic)||"false".equals(paramAutomic)) ?"checked='checked'":""%>> 全部
         <label for="opTimeAfter">起始日期:</label>
         <input type="text" id="opTimeAfter" name="opTimeAfter" value="<%=opTimeAfter==null?"":opTimeAfter%>">
-        <button class="button">查询</button>
+        <input class="button" type="submit" value="查询"/>
     </form>
     <button class="button" onclick="startTask()">手动发起任务</button>
 </div>

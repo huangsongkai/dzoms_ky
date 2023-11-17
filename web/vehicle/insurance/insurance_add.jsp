@@ -149,10 +149,10 @@
             });
 
             if (!actionName.contains("ObjectAccess")) {
-                $("#insuranceClass").change();
                 itemsDefault("#insuranceCompany", "insuranceCompany");
             }
 
+            $("#insuranceClass").change();
         });
 
         function openTheItem() {

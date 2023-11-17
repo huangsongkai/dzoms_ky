@@ -38,12 +38,14 @@ public class InsurancePdfReader {
                 extractVehicleTax(text, insurance);
                 extractChassisNumber(text, insurance);
                 extractTotalPremium(text, insurance);
+                insurance.setInsuranceClass("交强险");
             }
             else if("机动车商业保险保险单".equals(insurance.getInsuranceClass())) {
                 extractVIN(text, insurance);
                 extractLossInsuranceFee(text, insurance);
                 extractThirdPartyInsuranceAmount(text, insurance);
                 extractThirdPartyInsuranceFee(text, insurance);
+                insurance.setInsuranceClass("商业保险单");
             } else {
               return null;
             }

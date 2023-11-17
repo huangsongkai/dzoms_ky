@@ -18,4 +18,4 @@
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("worklog", worklog);
 %>
-<%=worklog.toString()%>
+<%=jsonObject.toString()%>

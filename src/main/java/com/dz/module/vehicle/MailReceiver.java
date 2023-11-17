@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,7 @@ public class MailReceiver {
         query.setString("worklog",worklog.toString());
         query.executeUpdate();
         query = session.createSQLQuery("select max(id) from `insurance_import_log`");
-        logId = (Long) query.uniqueResult();
+        logId = ((Number) query.uniqueResult()).longValue();
         HibernateSessionFactory.closeSession();
 
         String basePath = System.getProperty("com.dz.root") +"data/insurance/";
@@ -134,6 +135,9 @@ public class MailReceiver {
             updateLog(worklog, logId);
         } catch (MessagingException e) {
             e.printStackTrace();
+            worklog.append(simpleDateFormat.format(new Date()));
+            worklog.append(": 发生错误:"+e.getMessage()+"\n");
+            updateLog(worklog, logId);
         } finally {
             try {
                 if (folder != null) {
@@ -152,10 +156,13 @@ public class MailReceiver {
         Session session;
         Query query;
         session = HibernateSessionFactory.getSession();
+        Transaction tx = session.beginTransaction();
         query = session.createSQLQuery("update `insurance_import_log` set worklog=:worklog where id=:id");
         query.setString("worklog",worklog.toString());
         query.setLong("id",logId);
         query.executeUpdate();
+        tx.commit();
+        HibernateSessionFactory.closeSession();
     }
 
     private static byte[] readInputStream(InputStream inputStream) {

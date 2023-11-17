@@ -16,11 +16,13 @@ import java.util.concurrent.TimeUnit;
 public class SpringContextListener implements ServletContextListener{
 
     private static ApplicationContext springContext = null;
+    private static SpringContextListener instance = null;
     private ScheduledExecutorService executor;
 
     // Public constructor is required by servlet spec
     public SpringContextListener() {
         executor = Executors.newScheduledThreadPool(1);
+        instance = this;
     }
 
     // -------------------------------------------------------
@@ -87,6 +89,16 @@ public class SpringContextListener implements ServletContextListener{
         System.out.println("开始执行定时任务");
         MailReceiver receiver = springContext.getBean(MailReceiver.class);
         receiver.doReceive(false);
+    }
+
+    public static void startTaskManual(){
+        instance.executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                MailReceiver receiver = springContext.getBean(MailReceiver.class);
+                receiver.doReceive(true);
+            }
+        });
     }
 
     private void stopScheduledTask() {

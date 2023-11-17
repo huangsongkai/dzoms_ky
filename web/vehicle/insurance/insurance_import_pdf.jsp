@@ -37,9 +37,13 @@
                 fileName = insurance.getInsuranceNum() + ".pdf";
             }
             insurance.setFilename(fileName);
-            insuranceDao.addInsurance(insurance, mailReceiver.config.isOverride());
+            boolean notOverride = insuranceDao.addInsurance(insurance, mailReceiver.config.isOverride());
             FileUploadUtil.store(fileId,new File(basePath,fileName));
-            message = "上传成功！";
+            if (!notOverride){
+                message = "该保险信息"+insurance.getInsuranceNum()+"已存在！";
+            }else {
+                message = "上传成功！";
+            }
         }else {
             message = "文件识别失败！";
         }
