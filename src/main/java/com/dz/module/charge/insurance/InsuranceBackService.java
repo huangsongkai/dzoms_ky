@@ -411,7 +411,7 @@ public class InsuranceBackService {
         }
     }
 
-    private static Contract selectByCarId(String carId,Session session){
+    public static Contract selectByCarId(String carId,Session session){
         Contract c;
         Query query = session.createQuery("from Contract where carframeNum = :id and state=0");
         query.setMaxResults(1);
@@ -426,7 +426,7 @@ public class InsuranceBackService {
         return selectByCarId(carId,d,session);
     }
 
-    private static Contract selectByCarId(String id, Date d,Session session) {
+    public static Contract selectByCarId(String id, Date d,Session session) {
         Contract c = null;
         Query query = session.createQuery("from Contract where id=( select max(id) from Contract where carframeNum = :id and state!=3 and state!=2 and state>=0 ) ");
         query.setString("id",id);

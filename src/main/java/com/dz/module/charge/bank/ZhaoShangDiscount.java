@@ -30,7 +30,7 @@ public class ZhaoShangDiscount {
     private int realCount;
 
     @Column
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date chargeTime;
 
     @OneToMany(targetEntity = BankItem.class,mappedBy = "zhaoShangDiscount",fetch = FetchType.EAGER)

@@ -12,6 +12,8 @@ import com.dz.module.charge.insurance.InsuranceBack;
 import com.dz.module.charge.insurance.InsuranceBackService;
 import com.dz.module.charge.insurance.InsuranceBackVO;
 import com.dz.module.charge.insurance.InsuranceReceipt;
+import com.dz.module.charge.jiaotong.JiaoTongBankRecord;
+import com.dz.module.charge.jiaotong.JiaotongService;
 import com.dz.module.contract.*;
 import com.dz.module.user.User;
 import com.dz.module.vehicle.Vehicle;
@@ -63,6 +65,9 @@ public class ChargeAction extends BaseAction {
     private ChargeService service;
     @Autowired
     private ContractService contractService;
+    @Autowired
+    private JiaotongService jiaotongService;
+
     private String jspPage;
     private String nextAction;
     private String ajax_message;
@@ -1834,27 +1839,12 @@ public class ChargeAction extends BaseAction {
             sidata = (List<InsuranceBackVO>) beans.get("serviceData");
         }
 
-//        List<InsuranceReceipt> receipts = sidata.stream()
-//                .map(vo -> {
-//                    InsuranceReceipt receipt = new InsuranceReceipt();
-//                    receipt.setReceiptId(vo.getReceiptId());
-//                    receipt.setState(0);
-//                    Calendar calendar = Calendar.getInstance();
-//                    calendar.set(Calendar.YEAR,Integer.parseInt(vo.getTimestamp().substring(0,4)));
-//                    calendar.set(Calendar.MONTH,Integer.parseInt(vo.getTimestamp().substring(4,6)) - 1);
-//                    calendar.set(Calendar.DATE,Integer.parseInt(vo.getTimestamp().substring(6)));
-//                    receipt.setTimestamp(calendar.getTime());
-//                    receipt.setAmount(BigDecimal.valueOf(Double.parseDouble(vo.getAmount())));
-//                    receipt.setAttachment(vo.getAttachment());
-//                    return receipt;
-//                }).collect(Collectors.toList());
-
         Session session;
         Transaction tx = null;
 
         try {
             session = HibernateSessionFactory.getSession();
-            final Query matchLicenseNum = session.createQuery("from Vehicle where licenseNum=:num ");
+            final Query matchLicenseNum = session.createQuery("from Vehicle where licenseNum=:num order by inDate desc");
             matchLicenseNum.setMaxResults(1);
             tx = session.beginTransaction();
             for (InsuranceBackVO vo : sidata) {
@@ -2007,6 +1997,38 @@ public class ChargeAction extends BaseAction {
                 .mapToObj(i-> ObjectAccess.getObject(InsuranceBack.class, i))
                 .collect(Collectors.toList());
         insuranceBackService.refuseInsuranceBack(backs);
+        ajax_message = "success";
+        return STRING_RESULT;
+    }
+
+    //交通银行收款导入
+    public String uploadJiaotongExcel() {
+        String fileId = request.getParameter("fileId");
+        InputStream inputXLS = null;
+        try {
+            inputXLS = FileUploadUtil.getFileStream(fileId);
+        } catch (IOException e) {
+            e.printStackTrace();
+            ajax_message = "Excel文件读取失败！"+e.getMessage();
+            return STRING_RESULT;
+        }
+        ajax_message = jiaotongService.uploadExcel(inputXLS);
+        return STRING_RESULT;
+    }
+
+    public String updateJiaotongComment() {
+        String orderNo = request.getParameter("orderNo");
+        String comment = request.getParameter("comment");
+        return jiaotongService.updateComment(orderNo,comment);
+    }
+
+    public String confirmJiaotongChecked(){
+        String ids = request.getParameter("ids");
+        List<JiaoTongBankRecord> backs = Arrays.stream(ids.split(","))
+                .map(i-> ObjectAccess.getObject(JiaoTongBankRecord.class, i))
+                .collect(Collectors.toList());
+        User user = (User) session.getAttribute("user");
+        jiaotongService.confirmChecked(backs,user);
         ajax_message = "success";
         return STRING_RESULT;
     }
@@ -2293,5 +2315,10 @@ public class ChargeAction extends BaseAction {
             HibernateSessionFactory.closeSession();
         }
         return STRING_RESULT;
+    }
+
+
+    public void setJiaotongService(JiaotongService jiaotongService) {
+        this.jiaotongService = jiaotongService;
     }
 }

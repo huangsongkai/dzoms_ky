@@ -911,17 +911,18 @@ public class ChargeService {
 
     /**
      * 单车多月的财务对账表
-     * @param CarId 车牌号
+     * @param carId 车牌号
      * @param timePass 时间段
      * @return 单车多月对账表
      */
     @SuppressWarnings("deprecation")
-    public List<CheckTablePerCar> getACarChargeTable(String CarId,TimePass timePass){
+    public List<CheckTablePerCar> getACarChargeTable(String carId,TimePass timePass){
         List<CheckTablePerCar> table = new ArrayList<>();
-        Vehicle tmp = new Vehicle();
-        tmp.setLicenseNum(CarId);
-        Vehicle vehicle = vehicleDao.selectByLicense(tmp);
-        if(vehicle == null) return table;
+//        Vehicle tmp = new Vehicle();
+//        tmp.setLicenseNum(carId);
+//        Vehicle vehicle = vehicleDao.selectByLicense(tmp);
+        List<Vehicle> vehicles = ObjectAccess.query(Vehicle.class," licenseNum='"+carId+"' order by inDate ");
+        if(vehicles == null || vehicles.isEmpty()) return table;
 
         if(timePass == null || timePass.getStartTime() == null || timePass.getEndTime()==null){
             return new ArrayList<>();
@@ -942,38 +943,62 @@ public class ChargeService {
             d.setYear(startYear);
             d.setMonth(startMonth);
             d.setDate(1);
-            Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),d);
-            Date nextMonth = DateUtil.getNextMonth(d);
-            Contract nextContract = contractDao.selectByCarId(vehicle.getCarframeNum(),nextMonth);
-            if(contract == null) return table;
-            List<ChargePlan> plans;
-            if ((int)contract.getId()==nextContract.getId()){
-                plans = chargeDao.getAllRecords2(contract.getId(),d)
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .filter(plan->!plan.getIsDisabled() || plan.getTime().before(calendar.getTime()))
-                        .collect(Collectors.toList());
-            }else {
-                plans = Stream.concat(chargeDao.getAllRecords2(contract.getId(),d).stream(),
-                        chargeDao.getAllRecords2(nextContract.getId(),d).stream())
-                        .filter(Objects::nonNull)
-                        .filter(plan->!plan.getIsDisabled() || plan.getTime().before(calendar.getTime()))
-                        .collect(Collectors.toList());
+
+            Stream<ChargePlan> planStream = Stream.empty();
+            String idNum = null;
+            int contractId = 0;
+
+            for (Vehicle vehicle: vehicles){
+                Contract contract = contractDao.selectByCarId(vehicle.getCarframeNum(),d);
+                Date nextMonth = DateUtil.getNextMonth(d);
+                Contract nextContract = contractDao.selectByCarId(vehicle.getCarframeNum(),nextMonth);
+                if(contract == null) {
+                    continue;
+                }
+
+                Calendar dt = Calendar.getInstance();
+                dt.setTime(contract.getContractBeginDate());
+                if(dt.get(Calendar.DATE)>26){
+                    dt.set(Calendar.DATE, 26);
+                }else{
+                    dt.add(Calendar.MONTH, -1);
+                    dt.set(Calendar.DATE, 26);
+                }
+
+                if (d.before(dt.getTime())){
+                    continue;
+                }
+
+                idNum = contract.getIdNum();
+                contractId = contract.getId();
+
+                if ((int)contract.getId()==nextContract.getId()){
+                    planStream = Stream.concat(planStream,chargeDao.getAllRecords2(contract.getId(),d).stream());
+                }else {
+                    planStream = Stream.concat(planStream, Stream.concat(chargeDao.getAllRecords2(contract.getId(),d).stream(),
+                            chargeDao.getAllRecords2(nextContract.getId(),d).stream()));
+                }
             }
+            List<ChargePlan> plans = planStream.filter(Objects::nonNull)
+                    .filter(plan->!plan.getIsDisabled() || plan.getTime().before(calendar.getTime()))
+                    .collect(Collectors.toList());
+
             //set base header
             CheckTablePerCar cpc  = new CheckTablePerCar();
             cpc.setTime(d);
             cpc.setPlans(plans);
-            Driver dx = new Driver();
-            dx.setIdNum(contract.getIdNum());
-            Driver driver = driverDao.selectById(dx.getIdNum());
-            if(driver != null){
-                cpc.setDriverName(driver.getName());
-                cpc.setDriverId(driver.getIdNum());
-                cpc.setDept(driver.getDept());
+
+            if (idNum!=null){
+                Driver driver = ObjectAccess.getObject(Driver.class, idNum);
+                if(driver != null){
+                    cpc.setDriverName(driver.getName());
+                    cpc.setDriverId(driver.getIdNum());
+                    cpc.setDept(driver.getDept());
+                }
             }
-            cpc.setCarNumber(vehicle.getLicenseNum());
-            cpc.setDept(vehicle.getDept());
+
+            cpc.setCarNumber(vehicles.get(0).getLicenseNum());
+            cpc.setDept(vehicles.get(0).getDept());
             //set data
             cpc.setOil(calculateItemIn(plans,"oil"));
             cpc.setInsurance(calculateItemIn(plans,"insurance"));
@@ -984,12 +1009,12 @@ public class ChargeService {
 
             cpc.setRealAll(calculateItemIn(plans, "other").add(calculateItemIn(plans, "insurance")).add(calculateItemIn(plans, "cash")).add(calculateItemIn(plans,"bank")).add(calculateItemIn(plans,"oil")));
 
-            String hql = "from CheckChargeTable where carNumber='"+contract.getCarNum()+"' and year(time)="+(startYear+1900)+" and month(time)="+(startMonth+1);
+            String hql = "from CheckChargeTable where carNumber='"+carId+"' and year(time)="+(startYear+1900)+" and month(time)="+(startMonth+1);
 
             CheckChargeTable cct = ObjectAccess.execute(hql);
 
             if(cct==null){
-                cpc.setLeft(getlastMontAccountLeft(contract.getId(), d));
+                cpc.setLeft(getlastMontAccountLeft(contractId, d));
             }else{
                 cpc.setLeft(cct.getLastMonthOwe());
             }

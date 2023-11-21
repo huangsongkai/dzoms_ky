@@ -27,6 +27,7 @@
 	<script src="/DZOMS/res/js/pintuer.js"></script>
 	<script src="/DZOMS/res/js/respond.js"></script>
 	<script src="/DZOMS/res/js/admin.js"></script>
+	<script type="text/javascript" src="/DZOMS/res/js/fileUpload.js" ></script>
 	<script type="text/javascript" src="/DZOMS/res/js/jquery.datetimepicker.js" ></script>
 
 	<link rel="stylesheet" href="/DZOMS/res/css/jquery.bigautocomplete.css" />
@@ -101,6 +102,11 @@
             $('input[name="condition"]').val(condition);
             return true;
         }
+
+		function uploadFinish() {
+			var fileId = $("#file_id").val();
+			window.location.href = "/DZOMS/vehicle/insurance/insurance_import.jsp?fileId="+fileId;
+		}
 	</script>
 </head>
 <body>
@@ -112,16 +118,14 @@
 	</ul>
 </div>
 
-<form name="vehicleSele" action="/DZOMS/vehicle/vehicleSele" method="post"
-	  class="definewidth m20" target="result_form" style="width: 100%;" onsubmit="return beforeSubmit()">
+
 	<%
 		Calendar ndt = Calendar.getInstance();
 		ndt.add(Calendar.MONTH, 1);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String cs = sdf.format(ndt.getTime());
 	%>
-	<input type="hidden" name="condition" value=" "/>
-	<input type="hidden" name="url" value="/vehicle/insurance/vehicle_search_result.jsp" />
+
 	<div class="line">
 		<div class="panel  margin-small" >
 			<div class="panel-head">
@@ -132,7 +136,12 @@
 					<div class="xm12 padding">
 
 						<blockquote class="panel-body">
+
 							<table class="table" style="border: 0px;">
+								<form name="vehicleSele" action="/DZOMS/vehicle/vehicleSele" method="post"
+									  class="definewidth m20" target="result_form" style="width: 100%;" onsubmit="return beforeSubmit()">
+									<input type="hidden" name="condition" value=" "/>
+									<input type="hidden" name="url" value="/vehicle/insurance/vehicle_search_result.jsp" />
 								<!--<tr>
                                     <td>车辆购入日期</td>
                                     <td><input type="text" id="vehicle.in_date" name="vehicle.inDate" class="input datepick" /></td>
@@ -181,6 +190,9 @@
 
 
 									<td style="border-top: 0px;"><input type="submit" value="查询"></td>
+									<a class="button input-file input-file1">
+										上传Excel文件<input type="text" class="dz-file" id="file_id" data-target=".input-file1"  sessuss-function="uploadFinish()" style="display: none">
+									</a>
 								</tr>
 								<!--<tr>
                                     <td>车辆型号</td>
@@ -194,6 +206,7 @@
                                     <td class="tableleft">车牌号</td>
                                     <td><input type="text" id="vehicle.license_num" name="vehicle.licenseNum" class="input" /></td>
                                 </tr>-->
+								</form>
 							</table>
 						</blockquote>
 					</div>
@@ -203,7 +216,7 @@
 	</div>
 
 
-</form>
+
 <div>
 	<iframe name="result_form" width="100%" height="800px" id="result_form" scrolling="no">
 
