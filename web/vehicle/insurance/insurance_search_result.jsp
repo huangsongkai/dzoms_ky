@@ -60,7 +60,19 @@ Page pg = (Page)request.getAttribute("page");
 		var url = "/DZOMS/vehicle/insurance_revoke?insurance.id="+selected_val+"&url=%2fvehicle%2finsurance%2finsurance_add.jsp";;
 		window.parent.location.href=url;
 	}
-	
+
+    function showDetail(file){
+        //alert(id);
+        layer.open({
+            type: 2,
+            title: '人员档案',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['893px', '600px'],
+            content: '/DZOMS/data/insurance/'+file
+        });
+    }
 	
 	function toBeforePage(){
 		var currentPage = parseInt($("input[name='currentPage']").val());
@@ -142,12 +154,22 @@ Page pg = (Page)request.getAttribute("page");
            <!-- <th class="driverPhone selected_able">被保险人联系电话</th>
             <th class="driverId selected_able">被保险人身份证号</th>-->
             <%--<th class="insuranceCompany selected_able">保险人公司名称</th>--%>
-                    <th class="insuranceMoney selected_able">保险费</th>
+                    <th class="insuranceMoney selected_able">三者险限额</th>
+                    <th class="insuranceMoney selected_able">车损险</th>
+                    <th class="insuranceMoney selected_able">三者险</th>
+
+                    <th class="insuranceMoney selected_able">交强险</th>
+                    <th class="insuranceMoney selected_able">车船税</th>
+
+                    <th class="insuranceMoney selected_able">承运人险</th>
+
                     <th class="baseMoney selected_able">基础保费</th>
                     <th class="dates selected_able">起始时间</th>
                     <th class="dates selected_able">结束时间</th>
                     <th class="register selected_able">录入时间</th>
                     <th class="register selected_able">录入人</th>
+
+                    <th class="archive selected_able">档案详情</th>
                 </tr>
                <s:if test="%{#request.insurance!=null&&#request.insurance.size()!=0}">  
         <s:iterator value="%{#request.insurance}" var="v">
@@ -162,12 +184,28 @@ Page pg = (Page)request.getAttribute("page");
 <td class="driverPhone selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.driver.Driver',#v.driverId).phoneNum1}"/></td>--%>
 <%--<td class="driverName selected_able"><s:property value="%{#v.driverId}"/></td>--%>
 <%--<td class="insuranceCompany selected_able"><s:property value="%{#v.insuranceCompany}"/></td>--%>
-                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceMoney}"/></td>
-                            <td class="baseMoney selected_able"><s:property value="%{#v.getBaseMoney2()}"/></td>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceClass == '商业保险单' ? #v.thirdPartyLimit : '-'}" />
+                            </td>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceClass == '商业保险单' ? #v.insuranceMoney : '-'}"/></td>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceClass == '商业保险单' ? #v.thirdPartyAmount : '-'}"/></td>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceClass == '交强险' ? #v.insuranceMoney : '-'}"/></td>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceClass == '交强险' ? #v.tax : '-'}"/></td>
+                            <td class="insuranceMoney selected_able"><s:property value="%{#v.insuranceClass == '承运人责任险' ? #v.insuranceMoney : '-'}"/></td>
+
+                            <td class="baseMoney selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',#v.carframeNum).insuranceBase}"/></td>
                             <td class="dates selected_able"><s:date name="%{#v.beginDate}" format="yyyy/MM/dd HH:mm"/></td>
                             <td class="dates selected_able"><s:date name="%{#v.endDate}" format="yyyy/MM/dd HH:mm"/></td>
                             <td class="register selected_able"><s:date name="%{#v.registTime}" format="yyyy/MM/dd"/></td>
                             <td class="register selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.user.User',#v.register).uname}" /> </td>
+
+                            <td class="archive selected_able">
+                                <s:if test="%{#v.filename!=null}">
+                                    <a href="javascript:showDetail('${v.filename}')">档案详情</a>
+                                </s:if>
+                                <s:else>
+                                    未上传
+                                </s:else>
+                            </td>
                         </tr>
                     </s:iterator>
 </s:if>

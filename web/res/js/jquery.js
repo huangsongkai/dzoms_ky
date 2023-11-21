@@ -340,3 +340,17 @@ if(window.manmalShowModalDialog){
 	dialogArguments = JSON.parse(dialogArguments);
 	window.dialogArguments = dialogArguments;
 }
+
+// 兼容性，旧版IE不支持Object.fromEntries
+if (!Object.fromEntries) {
+  Object.fromEntries = function(entries) {
+    if (!entries || !entries.length) {
+      return {};
+    }
+    return entries.reduce(function(obj, entry) {
+      obj[entry[0]] = entry[1];
+      return obj;
+    }, {});
+  };
+}
+

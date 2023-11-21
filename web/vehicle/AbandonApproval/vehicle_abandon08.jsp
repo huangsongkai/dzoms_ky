@@ -61,7 +61,7 @@
 				<tr>
 					<td class="tableleft">车型</td>
 					<td colspan=1>
-						<s:radio name="vehicleApproval.fueltype" list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气','纯电动':'纯电动'}" value="%{vehicleApproval.fueltype}"/>		
+						<s:radio name="vehicleApproval.fueltype" list="#{'柴油':'柴油','汽油':'汽油','汽油/天燃气':'汽油/天燃气','纯电动':'纯电动'}" value="%{vehicleApproval.fueltype}"/>
 					</td>
 
 					<td class="tableleft">车架号</td>

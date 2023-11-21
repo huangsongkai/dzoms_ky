@@ -26,6 +26,10 @@ public class Insurance implements java.io.Serializable {
 	private String insuranceNum;
 	private String insuranceCompany;
 	private Double insuranceMoney;
+	private Double thirdPartyLimit;
+	private Double thirdPartyAmount;
+	private Double tax;
+
 	private Date beginDate;
 	private Date endDate;
 	private Date signDate;
@@ -37,6 +41,8 @@ public class Insurance implements java.io.Serializable {
 	private String address;
 	@Column(length = 11)
 	private int state;
+
+	private String filename;
 
 	// Constructors
 
@@ -129,13 +135,40 @@ public class Insurance implements java.io.Serializable {
 		this.insuranceCompany = insuranceCompany;
 	}
 
-	@Column(name = "insurance_money", precision = 10, scale = 0)
+	@Column(name = "insurance_money", precision = 10, scale = 2)
 	public Double getInsuranceMoney() {
 		return this.insuranceMoney;
 	}
 
 	public void setInsuranceMoney(Double insuranceMoney) {
 		this.insuranceMoney = insuranceMoney;
+	}
+
+	@Column(name = "third_party_limit", precision = 10, scale = 2)
+	public Double getThirdPartyLimit() {
+		return thirdPartyLimit;
+	}
+
+	public void setThirdPartyLimit(Double thirdPartyLimit) {
+		this.thirdPartyLimit = thirdPartyLimit;
+	}
+
+	@Column(name = "third_party_amount", precision = 10, scale = 2)
+	public Double getThirdPartyAmount() {
+		return thirdPartyAmount;
+	}
+
+	public void setThirdPartyAmount(Double thirdPartyAmount) {
+		this.thirdPartyAmount = thirdPartyAmount;
+	}
+
+	@Column(name = "tax", precision = 10, scale = 2)
+	public Double getTax() {
+		return tax;
+	}
+
+	public void setTax(Double tax) {
+		this.tax = tax;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -231,6 +264,14 @@ public class Insurance implements java.io.Serializable {
 		this.state = state;
 	}
 
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
 	@Override
 	public String toString() {
 		return "Insurance{" +
@@ -238,10 +279,22 @@ public class Insurance implements java.io.Serializable {
 				", insuranceClass='" + insuranceClass + '\'' +
 				", carframeNum='" + carframeNum + '\'' +
 				", insuranceNum='" + insuranceNum + '\'' +
+				", insuranceCompany='" + insuranceCompany + '\'' +
 				", insuranceMoney=" + insuranceMoney +
+				", thirdPartyLimit=" + thirdPartyLimit +
+				", thirdPartyAmount=" + thirdPartyAmount +
+				", tax=" + tax +
 				", beginDate=" + beginDate +
 				", endDate=" + endDate +
+				", signDate=" + signDate +
+				", driverId='" + driverId + '\'' +
+				", register=" + register +
+				", registTime=" + registTime +
+				", phone='" + phone + '\'' +
+				", enterpriseID='" + enterpriseID + '\'' +
+				", address='" + address + '\'' +
 				", state=" + state +
+				", filename='" + filename + '\'' +
 				'}';
 	}
 }

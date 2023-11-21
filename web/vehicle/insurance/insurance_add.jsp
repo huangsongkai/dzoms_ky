@@ -19,6 +19,7 @@
     <script src="/DZOMS/res/js/pintuer.js"></script>
     <script src="/DZOMS/res/js/respond.js"></script>
     <script src="/DZOMS/res/js/admin.js"></script>
+    <script type="text/javascript" src="/DZOMS/res/js/fileUpload.js" ></script>
     <link rel="stylesheet" href="/DZOMS/res/css/jquery.datetimepicker.css"/>
     <script type="text/javascript" src="/DZOMS/res/js/itemtool.js"></script>
     <script src="/DZOMS/res/js/jquery.datetimepicker.js"></script>
@@ -80,6 +81,24 @@
                     }
                 }
             });
+
+            $("#thirdPartyLimit").bigAutocomplete({
+                url: "/DZOMS/select/itemsOfinsurance_thirdPartyLimit",
+                doubleClick: true,
+                doubleClickDefault: ''
+            });
+
+            $("#thirdPartyAmount").bigAutocomplete({
+                url: "/DZOMS/select/itemsOfinsurance_thirdPartyAmount",
+                doubleClick: true,
+                doubleClickDefault: ''
+            });
+
+            $("#tax").bigAutocomplete({
+                url: "/DZOMS/select/itemsOfinsurance_tax",
+                doubleClick: true,
+                doubleClickDefault: ''
+            });
         });
 
         <%
@@ -102,26 +121,38 @@
 
             $("#insuranceClass").change(function () {
                 if ($("#insuranceClass option:eq(0)").is(":selected")) {
+
+                    $("#add-form").addClass("insurance-mode-sx");
+                    $("#add-form").removeClass("insurance-mode-jqx");
+                    $("#add-form").removeClass("insurance-mode-cyr");
+
                     $("#insuranceNum").val('<%=sx%>');
                     itemsDefault("#insuranceMoney", "insuranceMoneySx");
-                    $("#insuranceNum").attr("data-validate", "required:请选择,regexp#((^PDAA[A-Z0-9]{18}$)|(^[0-9]{8}BDDG[0-9]{10}$)|(^[0-9]{5}0528[0-9]{10}$)):格式不正确");
+                    $("#insuranceNum").attr("data-validate", "required:必填");
                 } else if ($("#insuranceClass option:eq(1)").is(":selected")) {
+                    $("#add-form").removeClass("insurance-mode-sx");
+                    $("#add-form").addClass("insurance-mode-jqx");
+                    $("#add-form").removeClass("insurance-mode-cyr");
+
                     $("#insuranceNum").val('<%=jqx%>');
-                    $("#insuranceNum").attr("data-validate", "required:请选择,regexp#((^PDZA[A-Z0-9]{18}$)|(^[0-9]{8}BDDA[0-9]{10}$)|(^[0-9]{5}0507[0-9]{10}$)):格式不正确");
+                    $("#insuranceNum").attr("data-validate", "required:必填");
                     itemsDefault("#insuranceMoney", "insuranceMoneyJq");
                 } else {
+                    $("#add-form").removeClass("insurance-mode-sx");
+                    $("#add-form").removeClass("insurance-mode-jqx");
+                    $("#add-form").addClass("insurance-mode-cyr");
+
                     $("#insuranceNum").val('<%=cyrx%>');
-                    $("#insuranceNum").attr("data-validate", "required:请选择,regexp#((^PZDS[A-Z0-9]{18}$)|(^[0-9]{20}$)):格式不正确(22位，承运人责任险以PZDS开头)");
+                    $("#insuranceNum").attr("data-validate", "required:必填");
                     itemsDefault("#insuranceMoney", "insuranceMoneyCy");
                 }
             });
 
             if (!actionName.contains("ObjectAccess")) {
-                $("#insuranceClass").change();
                 itemsDefault("#insuranceCompany", "insuranceCompany");
-
             }
 
+            $("#insuranceClass").change();
         });
 
         function openTheItem() {
@@ -161,11 +192,45 @@
 				$('#submit-btn').click();
             }
         }
+
+        function uploadFinish() {
+            var fileId = $("#file_id").val();
+            window.location.href = "/DZOMS/vehicle/insurance/insurance_import_pdf.jsp?fileId="+fileId+"&url="
+                +encodeURI("/vehicle/insurance/insurance_add.jsp");
+        }
+
+        function uploadFinish2() {
+            var fileId = $("#file_id2").val();
+            window.location.href = "/DZOMS/vehicle/insurance/insurance_import_zip.jsp?fileId="+fileId+"&url="
+                +encodeURI("/vehicle/insurance/insurance_add.jsp");
+        }
     </script>
     <jsp:include page="/common/msg_info.jsp"></jsp:include>
     <style>
         .label {
             white-space: pre-line;
+        }
+
+        /* 默认情况下隐藏所有子组件 */
+        .show-when-sx,
+        .show-when-jqx,
+        .show-when-cyr {
+            display: none;
+        }
+
+        /* 在 insurance-mode-sx 模式下显示 show-when-sx 子组件 */
+        .insurance-mode-sx .show-when-sx {
+            display: block;
+        }
+
+        /* 在 insurance-mode-jqx 模式下显示 show-when-jqx 子组件 */
+        .insurance-mode-jqx .show-when-jqx {
+            display: block;
+        }
+
+        /* 在 insurance-mode-cyr 模式下显示 show-when-cyr 子组件 */
+        .insurance-mode-cyr .show-when-cyr {
+            display: block;
         }
     </style>
 </head>
@@ -182,7 +247,15 @@
             class="close rotate-hover"></span><strong>注意：</strong>录入保险信息前需要录入购置税信息。
     </div>
     <div class="panel">
-        <div class="panel-head">新增保险信息</div>
+        <div class="panel-head">
+            新增保险信息
+            <a class="button input-file input-file1">
+                上传pdf文件并导入<input type="text" class="dz-file" id="file_id" data-target=".input-file1"  sessuss-function="uploadFinish()" style="display: none">
+            </a>
+            <a class="button input-file input-file2">
+                上传zip文件并导入<input type="text" class="dz-file" id="file_id2" data-target=".input-file2"  sessuss-function="uploadFinish2()" style="display: none">
+            </a>
+        </div>
         <div class="panel-body">
             <form id="add-form" class="form-x" action="/DZOMS/vehicle/insurance_add" method="post">
                 <s:hidden name="url" value="/vehicle/insurance/insurance_add.jsp"/>
@@ -223,7 +296,6 @@
                                  listKey="key" listValue="value"
                                  value="%{withoutPage==null?true:false}"/>
                     </div>
-
                 </div>
                 <div class="form-group">
                     <div class="label">
@@ -247,7 +319,7 @@
                 </div>
                 <div class="form-group">
                     <div class="label">
-                        <label>
+                        <label class="insurance-show-when-jqx">
                             保单号
                         </label>
                     </div>
@@ -256,7 +328,7 @@
                                      placeholder=""
                                      name="insurance.insuranceNum"
                                      value="%{bean[0].insuranceNum}"
-                                     data-validate="required:请选择,regexp#(^(PD(AA|ZA|ZS)[A-Z0-9]{18})|([0-9]{8}BDDA|G[0-9]{10})|([0-9]{20,21})$):格式不正确"/>
+                                     data-validate="required:必填"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -274,12 +346,19 @@
                         <a class="icon icon-wrench"
                            href="javascript:openItem('insuranceCompany','保险公司')"></a>
                     </div>
-
                 </div>
+
+
                 <div class="form-group">
                     <div class="label">
-                        <label>
+                        <label class="show-when-jqx">
                             保险金额
+                        </label>
+                        <label class="show-when-cyr">
+                            保险金额
+                        </label>
+                        <label class="show-when-sx">
+                            车损险
                         </label>
                     </div>
                     <div class="field form-inline">
@@ -292,6 +371,58 @@
                            href="javascript:openTheItem()"></a>
                     </div>
                 </div>
+
+                <div class="form-group show-when-sx">
+                    <div class="label">
+                        <label>
+                            第三者责任保险限额
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:textfield cssClass="input"
+                                     name="insurance.thirdPartyLimit"
+                                     id="thirdPartyLimit"
+                                     value="%{bean[0].thirdPartyLimit}"
+                                     data-validate="required:请选择"/>
+                        <a class="icon icon-wrench"
+                           href="javascript:openItem('insurance_thirdPartyLimit', '第三者责任保险限额')"></a>
+                    </div>
+                </div>
+
+                <div class="form-group show-when-sx">
+                    <div class="label">
+                        <label>
+                            第三者责任保险金额
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:textfield cssClass="input"
+                                     name="insurance.thirdPartyAmount"
+                                     id="thirdPartyAmount"
+                                     value="%{bean[0].thirdPartyAmount}"
+                                     data-validate="required:请选择"/>
+                        <a class="icon icon-wrench"
+                           href="javascript:openItem('insurance_thirdPartyAmount', '第三者责任保险金额')"></a>
+                    </div>
+                </div>
+
+                <div class="form-group show-when-jqx">
+                    <div class="label">
+                        <label>
+                            车船税
+                        </label>
+                    </div>
+                    <div class="field form-inline">
+                        <s:textfield cssClass="input"
+                                     name="insurance.tax"
+                                     id="tax"
+                                     value="%{bean[0].tax}"
+                                     data-validate="required:请选择"/>
+                        <a class="icon icon-wrench"
+                           href="javascript:openItem('insurance_tax', '车船税')"></a>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <div class="label">
                         <label>

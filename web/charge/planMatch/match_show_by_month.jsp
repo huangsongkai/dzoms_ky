@@ -1,16 +1,14 @@
-<%@ page import="com.dz.common.convertor.DateTypeConverter" %>
 <%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
-<%@ page import="com.dz.module.charge.ChargePlan" %>
-<%@ page import="com.dz.module.contract.Contract" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.apache.commons.lang3.math.NumberUtils" %>
 <%@ page import="org.hibernate.Query" %>
 <%@ page import="org.hibernate.Session" %>
 <%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Calendar" %>
-<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.stream.Collectors" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -30,6 +28,8 @@
     static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 %>
 <%
+    String doExport = request.getParameter("doExport");
+    boolean isDoExport = doExport != null && StringUtils.equals("yes", doExport);
     String department = request.getParameter("department");
     String yearString = request.getParameter("year");
     int year = toInt(yearString);
@@ -92,6 +92,29 @@
     query.setInteger("year",year);
 
     List<Object[]> plans = query.list();
+
+    if (isDoExport) {
+        List<String> datasrc = Arrays.asList("list");
+        List datalist = new ArrayList();
+        if (!showEverything){
+            List<Object[]> list = new ArrayList<>();
+            for (Object[] record : plans) {
+                if (((Number) record[6]).doubleValue() != 0) {
+                    list.add(record);
+                }
+            }
+            datalist.add(list);
+        }else {
+            datalist.add(plans);
+        }
+        String templatePath = "charge/planMatch/match_show_by_month.xls";
+        String outputName = ""+year+"年欠费统计查询";
+        request.setAttribute("datasrc", datasrc);
+        request.setAttribute("datalist", datalist);
+        request.setAttribute("templatePath", templatePath);
+        request.setAttribute("outputName", outputName);
+        request.getRequestDispatcher("/common/outputExcel.action").forward(request, response);
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -118,6 +141,12 @@
             });
         });
 
+        function _toExcel() {
+            $('form input[name="doExport"]').val("yes");
+            $('form').submit();
+            $('form input[name="doExport"]').val("no");
+        }
+
         function showDetails(contractId) {
             window.open("match_show_detail.jsp?carNum="+contractId,"_blank")
         }
@@ -134,6 +163,7 @@
 </div>
 <div class="line">
     <form id="form" action="#" class="form-inline form-tips" style="width: 100%;">
+        <input type="hidden" name="doExport" value="no">
         <div class="panel  margin-small" >
             <div class="panel-body">
                 <%--<div class="form-group">--%>
@@ -176,6 +206,11 @@
                     </div>
                 </div>
                 <input type="submit" value="查询" class="button bg-green"/>
+                    <button onclick="_toExcel()" type="button"
+                            class="button icon-file-excel-o text-blue"
+                            style="line-height: 6px;">
+                        导出为Excel
+                    </button>
             </div>
         </div>
     </form>

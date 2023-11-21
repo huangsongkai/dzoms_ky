@@ -7,6 +7,10 @@
 			<result-type name="stringresult" class="com.dz.common.result.StringResult"/>
 			<result-type name="jsonresult" class="com.dz.common.result.JSONResult"/>
 		</result-types>
+		<global-results>
+			<result name="stringresult" type="stringresult"/>
+			<result name="jsonresult" type="jsonresult"/>
+		</global-results>
 		<action name="vehicleAbandon*" class="vehicleApprovalAction" method="vehicleAbandon{1}">
 			<result>${url}</result>
 		</action>
@@ -89,6 +93,15 @@
 		</action>
 		<action name="insurancePre*" class="insuranceAction" method="insuranceSelectById">
 			<result name="success">/vehicle/insurance/insurance_{1}.jsp</result>
+		</action>
+		<action name="loadConfig" class="insuranceAction" method="loadConfig">
+			<result name="jsonresult" type="jsonresult"/>
+		</action>
+		<action name="updateConfig" class="insuranceAction" method="updateConfig">
+			<result name="stringresult" type="stringresult"/>
+		</action>
+		<action name="manualDoReceive" class="insuranceAction" method="manualDoReceive">
+			<result name="stringresult" type="stringresult"/>
 		</action>
 
 		<action name="licence_*" class="vehicleAction" method="{1}Licence">

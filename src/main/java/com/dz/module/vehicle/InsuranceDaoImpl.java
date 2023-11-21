@@ -9,6 +9,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
@@ -18,13 +19,27 @@ import java.util.List;
 public class InsuranceDaoImpl implements InsuranceDao {
 
 	@Override
-	public void addInsurance(Insurance insurance) throws HibernateException {
+	public boolean addInsurance(Insurance insurance, boolean override) throws HibernateException {
 		Session session = null;
 		Transaction tx = null;
-		try {	
+		try {
 			session = HibernateSessionFactory.getSession();
 			tx = (Transaction) session.beginTransaction();
 			insurance.setInsuranceNum(StringUtils.upperCase(insurance.getInsuranceNum()));
+
+			Query query = session.createQuery("from Insurance where insuranceNum=:num ");
+			query.setString("num", insurance.getInsuranceNum());
+			Insurance old = (Insurance) query.uniqueResult();
+			if (old != null){
+				if (override) {
+					insurance.setId(old.getId());
+					BeanUtils.copyProperties(insurance, old);
+					insurance = old;
+				} else {
+					return false;
+				}
+			}
+
 			session.saveOrUpdate(insurance);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -32,9 +47,15 @@ public class InsuranceDaoImpl implements InsuranceDao {
 				tx.rollback();
 			}
 			throw e;
-		} finally {			
+		} finally {
 			HibernateSessionFactory.closeSession();
 		}
+		return true;
+	}
+
+	@Override
+	public void addInsurance(Insurance insurance) throws HibernateException {
+		addInsurance(insurance, true);
 	}
 
 	@Override
