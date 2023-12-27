@@ -36,9 +36,10 @@
             }else {
                 fileName = insurance.getInsuranceNum() + ".pdf";
             }
-            insurance.setFilename(fileName);
+//            insurance.setFilename(fileName);
+            insurance.setFilename(insurance.getInsuranceNum()+".pdf");
             boolean notOverride = insuranceDao.addInsurance(insurance, mailReceiver.config.isOverride());
-            FileUploadUtil.store(fileId,new File(basePath,fileName));
+            FileUploadUtil.store(fileId,new File(basePath,insurance.getInsuranceNum()+".pdf"));
             if (!notOverride){
                 message = "该保险信息"+insurance.getInsuranceNum()+"已存在！";
             }else {

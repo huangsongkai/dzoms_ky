@@ -55,7 +55,11 @@
                             id: $("#carframe_num").val(),
                             isString: true
                         }, function (vehicle) {
-                            $("#insurance_base").val(vehicle["insuranceBase"]);
+                            if(vehicle==null){
+                                $("#insurance_base").val("车辆未录入！");
+                            }else {
+                                $("#insurance_base").val(vehicle["insuranceBase"]);
+                            }
                         });
                 }
             });
@@ -178,18 +182,18 @@
                     if (data.result){
                         $('input[name="insurance.state"]').val(3);
 						//console.info("beforeSubmit,"+$('input[name="insurance.state"]').val);
-                        $('#submit-btn').click();
+                        $('#add-form')[0].submit();
                     } else {
                         if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
                             $('input[name="insurance.state"]').val(3);
                         } else {
                             $('input[name="insurance.state"]').val(0);
                         }
-						$('#submit-btn').click();
+                        $('#add-form')[0].submit();
                     }
                 })
             }else {
-				$('#submit-btn').click();
+                $('#add-form')[0].submit();
             }
         }
 

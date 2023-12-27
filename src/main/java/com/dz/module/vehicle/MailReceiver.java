@@ -1,6 +1,7 @@
 package com.dz.module.vehicle;
 
 import com.dz.common.factory.HibernateSessionFactory;
+import com.sun.mail.imap.IMAPStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -18,11 +19,12 @@ import javax.mail.search.FlagTerm;
 import javax.mail.search.FromTerm;
 import javax.mail.search.SearchTerm;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -65,13 +67,25 @@ public class MailReceiver {
         mailConfig.setProperty("mail.store.protocol",config.protocol);
         mailConfig.setProperty("mail.pop3.port",""+config.port);
         mailConfig.setProperty("mail.pop3.host",config.host);
+
+        mailConfig.setProperty("mail.imap.host", config.host);
+        mailConfig.setProperty("mail.imap.port", ""+config.port);
+
         javax.mail.Session mailSession = javax.mail.Session.getInstance(mailConfig);
 
         Store store = null;
         Folder folder = null;
         try{
-            store = mailSession.getStore("pop3");
+            store = mailSession.getStore(config.protocol);
             store.connect(config.email, config.password);
+
+            if (StringUtils.equalsIgnoreCase(config.protocol,"imap")){
+                IMAPStore imapStore = (IMAPStore) store;
+                HashMap<String,String> imap = new HashMap<>();
+                imap.put("name", "dz-email");
+                imap.put("version", "1.0.0");
+                imapStore.id(imap);
+            }
 
             folder = store.getFolder("INBOX");
             /* Folder.READ_ONLY：只读权限
@@ -89,17 +103,22 @@ public class MailReceiver {
                 searchTerm = new AndTerm(searchTerm, unseenFlagTerm);
             }
 
-            Message[] messages = folder.search(searchTerm, latestMessages);
+            List<Message> messages = Arrays.stream(latestMessages)
+                    .filter(searchTerm::match)
+                    .collect(Collectors.toList());
+//            Message[] messages = folder.search(searchTerm, latestMessages);
 
             worklog.append(simpleDateFormat.format(new Date()));
-            worklog.append(": 共计"+messages.length+"邮件需处理\n");
+            worklog.append(": 共计"+messages.size()+"邮件需处理\n");
             updateLog(worklog, logId);
 
-            for (int i = messages.length - 1; i >= 0; i--) {
-                MimeMessage msg = (MimeMessage) messages[i];
+            for (int i = messages.size() - 1; i >= 0; i--) {
+//                MimeMessage msg = (MimeMessage) messages[i];
+                MimeMessage msg = (MimeMessage) messages.get(i);
                 visitAttachment(msg, (inputStream, filename) -> {
                     if (filename.endsWith(".zip")){
-                        try(ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+
+                        try(ZipInputStream zipInputStream = new ZipInputStream(inputStream, Charset.forName("GBK"))) {
                             ZipEntry entry;
 
                             while ((entry = zipInputStream.getNextEntry()) != null) {

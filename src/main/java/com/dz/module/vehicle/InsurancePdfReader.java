@@ -17,7 +17,9 @@ import java.util.regex.Pattern;
 public class InsurancePdfReader {
     public static void main(String[] args) throws IOException {
 //        File file = new File("D:\\Yu-hsin Wang\\Documents\\WeChat Files\\wxid_ttnhadmdmgn721\\FileStorage\\File\\2023-09\\45N0T交.pdf");
-        File file = new File("D:\\Yu-hsin Wang\\Documents\\WeChat Files\\wxid_ttnhadmdmgn721\\FileStorage\\File\\2023-09\\45N0T商.pdf");
+//        File file = new File("D:\\Yu-hsin Wang\\Documents\\WeChat Files\\wxid_ttnhadmdmgn721\\FileStorage\\File\\2023-09\\45N0T商.pdf");
+//        File file = new File("C:\\Users\\Wang\\Documents\\WeChat Files\\wxid_ttnhadmdmgn721\\FileStorage\\File\\2023-12\\PDAA202323010000398697.pdf");
+        File file = new File("C:\\Users\\Wang\\Documents\\WeChat Files\\wxid_ttnhadmdmgn721\\FileStorage\\File\\2023-12\\2468商业险.pdf");
         Insurance insurance = loadPdf(new FileInputStream(file));
         System.out.println("insurance = " + insurance);
     }
@@ -41,6 +43,13 @@ public class InsurancePdfReader {
                 insurance.setInsuranceClass("交强险");
             }
             else if("机动车商业保险保险单".equals(insurance.getInsuranceClass())) {
+                extractVIN(text, insurance);
+                extractLossInsuranceFee(text, insurance);
+                extractThirdPartyInsuranceAmount(text, insurance);
+                extractThirdPartyInsuranceFee(text, insurance);
+                insurance.setInsuranceClass("商业保险单");
+            }
+            else if("新能源汽车商业保险保险单".equals(insurance.getInsuranceClass())) {
                 extractVIN(text, insurance);
                 extractLossInsuranceFee(text, insurance);
                 extractThirdPartyInsuranceAmount(text, insurance);
@@ -86,7 +95,7 @@ public class InsurancePdfReader {
     }
 
     private static void extractVIN(String text, Insurance insurance) {
-        Pattern pattern = Pattern.compile("(\\w{17})/\\w{17}");
+        Pattern pattern = Pattern.compile("(L\\w{16})(/\\w{17})?");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
             insurance.setCarframeNum(matcher.group(1));
@@ -94,11 +103,16 @@ public class InsurancePdfReader {
     }
 
     private static void extractPolicyType(String text, Insurance insurance) {
-        Pattern pattern = Pattern.compile("机动车(.*?)保险单");
+        Pattern pattern = Pattern.compile("(机动车|新能源)(.*?)保险单");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            insurance.setInsuranceClass("机动车" + matcher.group(1) + "保险单");
+            insurance.setInsuranceClass(matcher.group(1) + matcher.group(2) + "保险单");
         }
+//        Pattern pattern = Pattern.compile("机动车(.*?)保险单");
+//        Matcher matcher = pattern.matcher(text);
+//        if (matcher.find()) {
+//            insurance.setInsuranceClass("机动车" + matcher.group(1) + "保险单");
+//        }
     }
 
     private static void extractTotalPremium(String text, Insurance insurance) {
@@ -162,28 +176,28 @@ public class InsurancePdfReader {
     }
 
     private static void extractLossInsuranceFee(String text, Insurance insurance) {
-        Pattern pattern = Pattern.compile("机动车损失保险\\s*/\\s*\\d+\\.\\d+\\s*(\\d+\\.\\d+)");
+        Pattern pattern = Pattern.compile("(机动车损失保险|新能源汽车损失保险|车损险)\\s*/\\s*\\d+\\.\\d+\\s*(\\d+\\.\\d+)");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            Double insuranceMoney = Double.valueOf(matcher.group(1));
+            Double insuranceMoney = Double.valueOf(matcher.group(2));
             insurance.setInsuranceMoney(insuranceMoney);
         }
     }
 
     private static void extractThirdPartyInsuranceAmount(String text, Insurance insurance) {
-        Pattern pattern = Pattern.compile("机动车第三者责任保险\\s*/\\s*(\\d+\\.\\d+)\\s*\\d+\\.\\d+");
+        Pattern pattern = Pattern.compile("(机动车|新能源汽车)?第三者责任保险\\s*/\\s*(\\d+\\.\\d+)\\s*\\d+\\.\\d+");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            Double thirdPartyLimit = Double.valueOf(matcher.group(1));
+            Double thirdPartyLimit = Double.valueOf(matcher.group(2));
             insurance.setThirdPartyLimit(thirdPartyLimit);
         }
     }
 
     private static void extractThirdPartyInsuranceFee(String text, Insurance insurance) {
-        Pattern pattern = Pattern.compile("机动车第三者责任保险\\s*/\\s*\\d+\\.\\d+\\s*(\\d+\\.\\d+)");
+        Pattern pattern = Pattern.compile("(机动车|新能源汽车)?第三者责任保险\\s*/\\s*\\d+\\.\\d+\\s*(\\d+\\.\\d+)");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            Double thirdPartyAmount = Double.valueOf(matcher.group(1));
+            Double thirdPartyAmount = Double.valueOf(matcher.group(2));
             insurance.setThirdPartyAmount(thirdPartyAmount);
         }
     }

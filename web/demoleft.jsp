@@ -268,7 +268,7 @@ $(document).ready(function(){
 		-->
 		<!-- Begin of #main-content -->
 		<div id="main-content">
-			  <iframe  id="body-right" src="/DZOMS/<%=menu%>/" width="100%" scrolling="no" height="12000px" name="body-right"  style="border: 0px;"></iframe>
+			  <iframe  id="body-right" src="/DZOMS/<%=menu%>/" width="100%" scrolling="auto" height="12000px" name="body-right"  style="border: 0px;"></iframe>
 		</div> <!--! end of #main-content -->
   </div> <!--! end of #main -->
   </div> <!--! end of #container -->

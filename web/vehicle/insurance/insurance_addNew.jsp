@@ -54,12 +54,26 @@
                 doubleClick:true,
                 doubleClickDefault:'LFV',
                 callback:function(){
-                    $.post("/DZOMS/common/doit",{"condition":"from Vehicle where carframeNum='"+$("#carframe_num").val()+"' "},function(data){
-                        if (data!=undefined &&data["affect"]!=undefined ) {
-                            var vehicle = data["affect"];
-                            $("#licenseNum").val(vehicle["licenseNum"]);
-                        }
-                    });
+                    if ($("#carframe_num").val().length >= 17)
+                        $.post("/DZOMS/common/getObject", {
+                            className: "com.dz.module.vehicle.Vehicle",
+                            id: $("#carframe_num").val(),
+                            isString: true
+                        }, function (vehicle) {
+                            if(vehicle==null){
+                                $("#licenseNum").val("车辆未录入！");
+                                $("#insurance_base").val("车辆未录入！");
+                            }else {
+                                $("#licenseNum").val(vehicle["licenseNum"]);
+                                $("#insurance_base").val(vehicle["insuranceBase"]);
+                            }
+                        });
+                    // $.post("/DZOMS/common/doit",{"condition":"from Vehicle where carframeNum='"+$("#carframe_num").val()+"' "},function(data){
+                    //     if (data!=undefined &&data["affect"]!=undefined ) {
+                    //         var vehicle = data["affect"];
+                    //         $("#licenseNum").val(vehicle["licenseNum"]);
+                    //     }
+                    // });
                 }
             });
 
@@ -200,18 +214,18 @@
                     if (data.result){
                         $('input[name="insurance.state"]').val(3);
 						//console.info("beforeSubmit,"+$('input[name="insurance.state"]').val);
-                        $('#submit-btn').click();
+                        $('#add-form')[0].submit();
                     } else {
                         if (confirm("新录保险时间范围内已有保险记录，是否仍然生成摊销？")){
                             $('input[name="insurance.state"]').val(3);
                         } else {
                             $('input[name="insurance.state"]').val(0);
                         }
-						$('#submit-btn').click();
+                        $('#add-form')[0].submit();
                     }
                 })
             }else {
-				$('#submit-btn').click();
+                $('#add-form')[0].submit();
             }
         }
 

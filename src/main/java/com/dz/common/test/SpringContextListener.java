@@ -6,6 +6,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +63,7 @@ public class SpringContextListener implements ServletContextListener{
         SpringContextListener.springContext = springContext;
     }
 
-    private long getNextExecutionDelay(long currentTime) {
+    private static long getNextExecutionDelay(long currentTime) {
         long oneAmMillis = getTimeMillis(1, 0, 0);
         long onePmMillis = getTimeMillis(13, 0, 0);
 
@@ -78,7 +81,7 @@ public class SpringContextListener implements ServletContextListener{
         return oneAmMillis - currentTime;
     }
 
-    private long getTimeMillis(int hours, int minutes, int seconds) {
+    private static long getTimeMillis(int hours, int minutes, int seconds) {
         return TimeUnit.HOURS.toMillis(hours) +
                 TimeUnit.MINUTES.toMillis(minutes) +
                 TimeUnit.SECONDS.toMillis(seconds);

@@ -29,6 +29,10 @@
                     // 将返回的配置数据填充到表单中
                     document.getElementById("enabled").checked = configData.enabled;
                     document.getElementById("notEnabled").checked = !configData.enabled;
+
+                    document.getElementById("protocol").checked = configData.protocol == 'pop3';
+                    document.getElementById("protocolImap").checked = configData.protocol != 'pop3';
+
                     document.getElementById("host").value = configData.host;
                     document.getElementById("port").value = configData.port;
                     document.getElementById("email").value = configData.email;
@@ -65,16 +69,20 @@
     <input type="radio" id="enabled" name="enabled" value="true"> 启用
     <input type="radio" id="notEnabled" name="enabled" value="false"> 不启用<br>
 
-    <label for="host">邮件服务器：</label>
+    <label for="protocol">邮件协议：</label>
+    <input type="radio" id="protocol" name="protocol" value="pop3"> POP3（简易连接协议，不支持邮件状态查询, 性能略好）
+    <input type="radio" id="protocolImap" name="protocol" value="imap"> IMAP (完整访问协议，支持邮件状态获取，性能略低) <br>
+
+    <label for="host">邮件服务器（网易的POP3和IMAP分别是pop.163.com和imap.163.com）：</label>
     <input type="text" id="host" name="host" required><br>
 
-    <label for="port">（邮件服务器）端口：</label>
+    <label for="port">（邮件服务器）端口（网易的POP3和IMAP分别是110和143）：</label>
     <input type="number" id="port" name="port" min="1" max="65535" required><br>
 
     <label for="email">邮箱地址：</label>
     <input type="email" id="email" name="email" required><br>
 
-    <label for="password">pop3 token：</label>
+    <label for="password">pop3/imap token：</label>
     <input type="password" id="password" name="password" required><br>
 
     <label for="sender">发件方地址：</label>

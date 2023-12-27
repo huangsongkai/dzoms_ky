@@ -28,12 +28,23 @@
             return true;
         }
 
+        function removeLeadingTrailingEmptyLines(inputString) {
+            // 移除开头的空行
+            let stringWithoutLeadingEmptyLines = inputString.replace(/^\s*[\r\n]/, '');
+
+            // 移除结尾的空行
+            let stringWithoutTrailingEmptyLines = stringWithoutLeadingEmptyLines.replace(/[\r\n]\s*$/, '');
+
+            return stringWithoutTrailingEmptyLines;
+        }
+
         function uploadFinish() {
             var fileId = $("#file_id").val();
-            $.post('/DZOMS/charge/uploadJiaotongExcel',{
+            // $.post('/DZOMS/charge/uploadJiaotongExcel',{
+            $.post('/DZOMS/charge/jiaotong/jiaotong_import_xls.jsp',{
                 fileId: fileId
             },function (msg) {
-                alert(msg);
+                alert(removeLeadingTrailingEmptyLines(msg));
                 document.vehicleSele.submit();
             });
         }
@@ -47,7 +58,7 @@
             <form action="/DZOMS/common/selectToList" class="form-inline" method="post" name="vehicleSele" onsubmit="return beforeSubmit();" target="result_form">
                 <input type="hidden" name="url" value="/charge/jiaotong/jiaotongStates.jsp" />
                 <input type="hidden" name="className" value="com.dz.module.charge.jiaotong.JiaoTongBankRecord"/>
-                <input type="hidden" name="orderby" value="timestamp,orderNo desc">
+                <input type="hidden" name="orderby" value="orderNo desc">
                 <input type="hidden" name="column" value="sum(amount)">
                 <input type="hidden" name="condition" value="">
                 <div class="form-group">
@@ -79,7 +90,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <a class="button input-file input-file1">
                             上传Excel文件<input type="text" class="dz-file" id="file_id" data-target=".input-file1"  sessuss-function="uploadFinish()" style="display: none">
-                        </a>
+                        </a><span>注意：备注列格式需要符合“车号:(黑A)?(由数字和字母组成的5-6位车牌号)(任意文本)?月份:(不含空格的连续文本)(任意文本)?”的形式，?代表可选</span>
                     </div>
                 </div>
             </form>

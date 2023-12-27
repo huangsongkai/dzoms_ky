@@ -1508,6 +1508,9 @@ public class ChargeService {
      * @return 金额
      */
     public BigDecimal getlastMontAccountLeft(int contractId,Date date){
+        if (contractId == 0) {
+            return BigDecimal.ZERO;
+        }
         //该函数相当于：
         //select
         //(case when year(cl.current)<year(:date) then c.account

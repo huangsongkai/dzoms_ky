@@ -9,7 +9,6 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.math.RoundingMode" %>
-<%@ page import="java.util.Date" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%!
@@ -47,29 +46,31 @@
         Session hsession = HibernateSessionFactory.getSession();
 
         String hql = "select \n" +
-                "`month`,\n" +
-                "dept,\n" +
-                "insurance_num," +
-                "license_num, \n" +
-                "insurance_base,\n" +
-                "rank,\n" +
-                "12-rank,\n" +
-                "insurance_base/12.0,\n" +
-                "insurance_base/12.0 * (rank),\n" +
-                "insurance_base/12.0 * (12-rank),\n" +
-                "begin_date \n" +
-                "from v_insurance_divide \n" +
-                "where insurance_base is not null and  \n" +
-                "str_to_date(concat(`month`,'-1'),'%Y-%m-%d')=:s_month \n" +
-                (StringUtils.isBlank(dept)?"":"and dept = :dept\n") +
-                "order by (case when dept='一部' then 1 when dept='二部' then 2 else 3 end),license_num";
+                "div.id.monthRank,\n" +
+                "v.dept,\n" +
+                "ins.id," +
+                "v.licenseNum, \n" +
+                "sum(div.money),\n" +
+                "sum (case when div.id.monthRank<=:rank then 1 else 0 end ),\n" +
+                "sum (case when div.id.monthRank>:rank then 1 else 0 end ),\n" +
+                "sum (case when div.id.monthRank=:rank then div.money else 0 end ),\n" +
+                "sum (case when div.id.monthRank<=:rank then div.money else 0 end ),\n" +
+                "sum (case when div.id.monthRank>:rank then div.money else 0 end ),\n" +
+                "ins.beginDate\n" +
+                "from InsuranceDivide2 div,Insurance ins,Vehicle v \n" +
+                "where div.id.insuranceId = ins.id and ins.carframeNum = v.carframeNum \n" +
+                "and div.id.monthRank>:rank-12 and div.id.monthRank<=:rank+12\n" +
+                (StringUtils.isBlank(dept)?"":"and v.dept = :dept\n") +
+                "group by div.id.insuranceId\n " +
+                "having sum(case when div.id.monthRank=:rank then div.money else 0 end )>0\n" +
+                "order by (case when v.dept='一部' then 1 when v.dept='二部' then 2 else 3 end),v.licenseNum";
 
-        Query query = hsession.createSQLQuery(hql);
+        Query query = hsession.createQuery(hql);
         if(!StringUtils.isBlank(dept)){
             query.setString("dept",dept);
         }
 
-        query.setDate("s_month",new Date(startYear-1900,startMonth-1,1));
+        query.setInteger("rank",startYear*12+startMonth);
 
         result = query.list();
 
@@ -211,8 +212,8 @@
         <input type="submit" value="提交" class="button bg-main">
         <input type="hidden" name="doExport" value="no">
         <input id="doExport" type="button" value="导出Excel" class="button bg-main">
-<%--        <input id="updateAmount" type="button" value="修改未摊销总额" class="button bg-main">--%>
-<%--        <input id="updateFinishMonth" type="button" value="修改摊销结束月份" class="button bg-main">--%>
+        <input id="updateAmount" type="button" value="修改未摊销总额" class="button bg-main">
+        <input id="updateFinishMonth" type="button" value="修改摊销结束月份" class="button bg-main">
 
         <input type="button" class="button bg-main" value="隐藏/显示摊销内容" onclick="toggleTableBody()">
    </form>
@@ -223,7 +224,7 @@
         <table id="divide-table" class="table table-bordered table-responsive">
             <thead>
             <tr>
-<%--                <th>选择</th>--%>
+                <th>选择</th>
                 <th>序号</th>
                 <th>月份</th>
                 <th>部门</th>
@@ -255,9 +256,10 @@
                 for(int i = 0; i < result.size(); i++) {
                 Object[] ins = (Object[]) result.get(i);
 
+                int monthRank = (Integer) ins[0];
             %>
             <tr>
-<%--                <td><input type="radio" name="cbx" value="<%=ins[2]%>"></td>--%>
+                <td><input type="radio" name="cbx" value="<%=ins[2]%>"></td>
                 <td><%=i+1%></td>
                 <td><%=startYear%>-<%=startMonth%></td>
                 <td><%=ins[1]%></td>

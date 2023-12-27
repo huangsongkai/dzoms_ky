@@ -350,7 +350,8 @@ public class ContractAction extends BaseAction {
 					System.out.printf("%d,%f,%tF\n",i,chargePlan.getFee().doubleValue(),chargePlan.getTime());
 				}
 
-				contract.setPlanMaked(true);
+//				contract.setPlanMaked(true);
+				c.setPlanMaked(true);
 //				hsession.update(contract);
 			}
 			//TODO copy properties from contract to c

@@ -28,11 +28,75 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="/DZOMS/res/js/jquery.bigautocomplete.js" ></script>
 	<script>
 	function refreshSearch(){
+		var dept = $("#dept").val();
+		var carframe_num = $("#carframe_num").val();
+		var licenseNum = $("#licenseNum").val();
+		var insuranceNum = $("#insuranceNum").val();
+		var insuranceClass = $("#insuranceClass").val();
+		var inputFrom =  $("input[name=\"inputFrom\"]").val();
+		var inputEnd =  $("input[name=\"inputEnd\"]").val();
+		var startFrom =  $("input[name=\"startFrom\"]").val();
+		var startEnd =  $("input[name=\"startEnd\"]").val();
+
+		var vCondition = " ";
+		if (dept != '全部') {
+			vCondition += " and v.dept='"+dept+"' ";
+		}
+
+		if(carframe_num.trim().length>0){
+			vCondition += " and v.carframeNum like '%"+carframe_num.trim()+"%' ";
+		}
+
+		if(licenseNum.trim().length>0){
+			vCondition += " and v.licenseNum like '%"+licenseNum.trim()+"%' ";
+		}
+
+		var condition = " from Insurance ins where (EXISTS (select 1 FROM Vehicle v WHERE ins.carframeNum = v.carframeNum "+ vCondition+" ) " +
+				" or NOT EXISTS (select 1 FROM Vehicle v WHERE ins.carframeNum = v.carframeNum)) ";
+		// var condition = "from Insurance ins,(SELECT v FROM Vehicle v WHERE ins.carframeNum = v.carframeNum) " +
+		// 		"where ins.carframeNum=v.carframeNum "
+
+		if(insuranceNum.trim().length>0){
+			condition += " and ins.insuranceNum like '%"+insuranceNum.trim()+"%' ";
+		}
+
+		if(insuranceClass.trim().length>0){
+			condition += " and ins.insuranceClass like '%"+insuranceClass.trim()+"%' ";
+		}
+
+		if(inputFrom.trim().length>0){
+			condition += " and ins.registTime >= STR_TO_DATE('"+inputFrom.trim()+"', '%Y/%m/%d') ";
+		}
+
+		if(inputEnd.trim().length>0){
+			condition += " and ins.registTime < STR_TO_DATE('"+inputEnd.trim()+"', '%Y/%m/%d') ";
+		}
+
+		if(startFrom.trim().length>0){
+			condition += " and DATE(ins.beginDate) >= STR_TO_DATE('"+startFrom.trim()+"', '%Y/%m/%d') ";
+		}
+
+		if(startEnd.trim().length>0){
+			condition += " and DATE(ins.beginDate) < STR_TO_DATE('"+startEnd.trim()+"', '%Y/%m/%d') ";
+		}
+
+		condition += " order by ins.id desc ";
+		$('[name="condition"]').val(condition);
+
 		$("[name='vehicleSele']").submit();
 	}
 
 	function reset(){
-		$("[name='vehicleSele']")[0].reset()
+		$("#dept").reset();
+		$("#carframe_num").reset();
+		$("#licenseNum").reset();
+		$("#insuranceNum").reset();
+		$("#insuranceClass").reset();
+		$("input[name=\"inputFrom\"]").reset();
+		$("input[name=\"inputEnd\"]").reset();
+		$("input[name=\"startFrom\"]").reset();
+		$("input[name=\"startEnd\"]").reset();
+		// $("[name='vehicleSele']")[0].reset()
 	}
 	
 		$(document).ready(function(){
@@ -78,9 +142,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <li>查询保险信息</li>
         </ul>
 </div>
-<form name="vehicleSele" action="/DZOMS/vehicle/insuranceSele" method="post"
+<form name="vehicleSele" action="/DZOMS/common/selectToList2" method="post"
+<%--<form name="vehicleSele" action="/DZOMS/vehicle/insuranceSele" method="post"--%>
       class="definewidth m20" target="result_form" style="width: 100%;">
-    <div class="line">
+	<input type="hidden" name="url" value="/vehicle/insurance/insurance_search_result.jsp" />
+	<input type="hidden" name="condition" />
+	<input type="hidden" name="column" value="ins"/>
+	<div class="line">
    	    <div class="panel  margin-small" >
           	<div class="panel-head">
           		查询条件
@@ -92,7 +160,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         					<tr>
 								<td>部门</td>
 								<td>
-									<select name="vehicle.dept">
+									<select id="dept" name="vehicle.dept">
 										<option>全部</option>
 										<option>一部</option>
 										<option>二部</option>
@@ -102,12 +170,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         						<td>车架号</td>
         						<td><input type="text" id="carframe_num" name="insurance.carframeNum" class="input" /></td>
         						<td>车牌号</td>
-        						<td><input type="text" name="vehicle.licenseNum" class="input"  value="黑A" /></td>
+        						<td><input type="text" id="licenseNum" name="vehicle.licenseNum" class="input"  value="黑A" /></td>
         						<td>保单号</td>
-        						<td><input type="text" name="insurance.insuranceNum" class="input"  /></td>
+        						<td><input type="text" id="insuranceNum" name="insurance.insuranceNum" class="input"  /></td>
         						<td>保险类别</td>
         						<td>
-        							<select name="insurance.insuranceClass" class="input">
+        							<select id="insuranceClass" name="insurance.insuranceClass" class="input">
         								<option value="">全部</option>
         								<option value="强">强险单</option>
         								<option value="商">商业保险单</option>
@@ -137,7 +205,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
 </form>
 <div>
-    <iframe name="result_form" width="100%" height="800px" id="result_form" scrolling="no">
+    <iframe name="result_form" width="100%" height="100%" id="result_form" scrolling="auto">
 
     </iframe>
 

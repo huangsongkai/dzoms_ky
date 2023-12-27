@@ -11,6 +11,7 @@
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.io.*" %>
+<%@ page import="java.nio.charset.Charset" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%!
     private static byte[] readInputStream(InputStream inputStream) {
@@ -43,7 +44,7 @@
     InputStream inputStream = null;
     try {
         inputStream = FileUploadUtil.getFileStream(fileId);
-        try(ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+        try(ZipInputStream zipInputStream = new ZipInputStream(inputStream, Charset.forName("GBK"))) {
             ZipEntry entry;
 
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -55,11 +56,13 @@
 
                         Insurance insurance = InsurancePdfReader.loadPdf(byteArrayInputStream);
                         if (insurance == null) continue;
-                        insurance.setFilename(fileName);
+//                        insurance.setFilename(fileName);
+                        insurance.setFilename(insurance.getInsuranceNum()+".pdf");
+
                         insuranceDao.addInsurance(insurance, mailReceiver.config.isOverride());
 
                         byteArrayInputStream.reset();
-                        FileUtils.copyInputStreamToFile(byteArrayInputStream, new File(basePath,fileName));
+                        FileUtils.copyInputStreamToFile(byteArrayInputStream, new File(basePath,insurance.getInsuranceNum()+".pdf"));
                     }
                 }
                 zipInputStream.closeEntry();

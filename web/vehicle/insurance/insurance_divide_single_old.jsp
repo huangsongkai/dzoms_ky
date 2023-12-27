@@ -1,4 +1,5 @@
 <%@ page import="com.dz.common.factory.HibernateSessionFactory" %>
+<%@ page import="com.dz.module.vehicle.InsuranceDivide2" %>
 <%@ page import="com.dz.module.vehicle.Vehicle" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.hibernate.Query" %>
@@ -6,8 +7,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.math.BigDecimal" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="java.math.RoundingMode" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <html>
@@ -102,15 +101,13 @@
             endMonth = Integer.parseInt(StringUtils.split(endTime.replace("/","-"),"-",2)[1]);
         }
 
-        Query query2 = hsession.createSQLQuery("select " +
-                        " `month`,dept,carframe_num,license_num,insurance_base,rank,begin_date,end_date,insurance_num,insurance_money,third_party_amount " +
-                        " from v_insurance_divide \n" +
-"where carframe_num=:carno \n" +
-"and `month`>=:s_month and `month` <:e_month order by `month`"
+        Query query2 = hsession.createQuery("from InsuranceDivide2 divide\n" +
+"where exists (select 1 from Insurance ins where ins.carframeNum=:carno and ins.id=divide.id.insuranceId) \n" +
+"and divide.id.monthRank>=:s_month and divide.id.monthRank <:e_month order by divide.id.monthRank"
         );
         query2.setString("carno",v.getCarframeNum());
-        query2.setDate("s_month",new Date(startYear-1900,startMonth-1,1));
-        query2.setDate("e_month",new Date(endYear-1900,endMonth-1,1));
+        query2.setInteger("s_month",startYear*12+startMonth);
+        query2.setInteger("e_month",endYear*12+endMonth);
         result = query2.list();
 
         HibernateSessionFactory.closeSession();
@@ -122,72 +119,46 @@
         <table class="table table-bordered table-responsive">
             <thead>
             <tr>
-                <th>月份</th>
-                <th>部门</th>
                 <th>车牌号</th>
+                <th>月份</th>
                 <th>保单号</th>
-                <th>投保金额</th>
-                <th>基础保费</th>
-                <th>当前期数</th>
-                <th>本期摊销金额</th>
+                <th>金额</th>
             </tr>
             </thead>
             <tbody>
             <%
                 BigDecimal sum = BigDecimal.ZERO;
-                BigDecimal sum2 = BigDecimal.ZERO;
-                Object[] before = (Object[]) result.get(0);
+                InsuranceDivide2 before = (InsuranceDivide2) result.get(0);
                 int before_index = 0;
                 for(int i = 1; i < result.size(); i++) {
-                    Object[] ins = (Object[]) result.get(i);
-                    if (ins[0] == before[0] && i!=result.size()-1){
-                        continue;
-                    }else if(ins[0] == before[0]) {
-                        i++;
-                    }
+                InsuranceDivide2 ins = (InsuranceDivide2) result.get(i);
+                if (ins.getId().getMonthRank() == before.getId().getMonthRank() && i!=result.size()-1){
+                    continue;
+                }else if(ins.getId().getMonthRank() == before.getId().getMonthRank()) {
+                    i++;
+                }
                     {
                     int rowspan = i - before_index;
                     for (int j=0;j<rowspan;j++){
-                        Object[] divide2 = (Object[]) result.get(before_index+j);
+                        InsuranceDivide2 divide2 = (InsuranceDivide2) result.get(before_index+j);
             %>
             <tr>
                 <% if(j==0){ %>
-                <td rowspan="<%=rowspan%>"><%=divide2[0]%></td>
-                <td rowspan="<%=rowspan%>"><%=divide2[1]%></td>
-                <td rowspan="<%=rowspan%>"><%=divide2[3]%></td>
+                <td rowspan="<%=rowspan%>"><%=licenseNum%></td>
+                <td rowspan="<%=rowspan%>"><%=(divide2.getId().getMonthRank()-1)/12%>-<%=(divide2.getId().getMonthRank()-1)%12+1%></td>
                 <%}%>
-                <td><%=divide2[8]%></td>
-                <td><%
-                    double val=((Number)divide2[9]).doubleValue() + ((Number)divide2[10]).doubleValue();
-                    sum = sum.add(BigDecimal.valueOf(val));
-                %><%=val%></td>
-                <td><%
-                    double val2=((Number)divide2[4]).doubleValue();
-                    sum2 = sum2.add(BigDecimal.valueOf(val2));
-                %><%=val2%></td>
-                <td><%=divide2[5]%></td>
-                <td><%=Math.round(val2 / 12.0 * 100.0) / 100.0 %></td>
+                <td><%=divide2.getId().getInsuranceId()%></td>
+                <td><% double val=Math.round(divide2.getMoney()*100)/100.0;sum = sum.add(BigDecimal.valueOf(val));%><%=val%></td>
             </tr>
             <%
                     }
-                    if (ins[0] != before[0] && i==result.size()-1){
+                    if (ins.getId().getMonthRank() != before.getId().getMonthRank() && i==result.size()-1){
             %>
             <tr>
-                <td><%=ins[0]%></td>
-                <td><%=ins[1]%></td>
-                <td><%=ins[3]%></td>
-
-                <td><%=ins[8]%></td>
-                <td><%
-                    double val=((Number)ins[9]).doubleValue() + ((Number)ins[10]).doubleValue();
-                    sum = sum.add(BigDecimal.valueOf(val));
-                %><%=val%></td>
-                <td><%
-                    double val2=((Number)ins[4]).doubleValue();
-                    sum2 = sum2.add(BigDecimal.valueOf(val2));
-                %><%=val2%></td>
-                <td><%=ins[5]%></td>
-                <td><%=Math.round(val2 / 12.0 * 100.0) / 100.0 %></td>
+                <td><%=licenseNum%></td>
+                <td><%=(ins.getId().getMonthRank()-1)/12%>-<%=(ins.getId().getMonthRank()-1)%12+1%></td>
+                <td><%=ins.getId().getInsuranceId()%></td>
+                <td><% double val=Math.round(ins.getMoney()*100)/100.0;sum = sum.add(BigDecimal.valueOf(val));%><%=val%></td>
             </tr>
             <%
                     }
@@ -202,11 +173,7 @@
                 <td>合计</td>
                 <td>-</td>
                 <td>-</td>
-                <td>-</td>
                 <td><%=sum%></td>
-                <td><%=sum2%></td>
-                <td>-</td>
-                <td><%=sum2.divide(BigDecimal.valueOf(12),2, RoundingMode.CEILING) %></td>
             </tr>
             </tfoot>
         </table>

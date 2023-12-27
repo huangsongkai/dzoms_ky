@@ -61,11 +61,22 @@ Page pg = (Page)request.getAttribute("page");
 		window.parent.location.href=url;
 	}
 
+    function _toExcel(){
+        var path = $("[name='vehicleSele']").attr("action");
+        var target = $("[name='vehicleSele']").attr("target");
+
+        var url = "/DZOMS/common/selectToExcel2";
+        $("[name='vehicleSele']").attr("action",url).attr("target","_blank").submit();
+
+        $("[name='vehicleSele']").attr("action",path);
+        $("[name='vehicleSele']").attr("target",target);
+    }
+
     function showDetail(file){
         //alert(id);
         layer.open({
             type: 2,
-            title: '人员档案',
+            title: '保险档案',
             shadeClose: true,
             shade: false,
             maxmin: true, //开启最大化最小化按钮
@@ -131,9 +142,9 @@ Page pg = (Page)request.getAttribute("page");
 	                                    	<button onclick="_update()" type="button" class="button icon-pencil text-green" style="line-height: 6px;">
 			                                                            修改</button>
 			                                </s:if>
-		                                    <!--<button onclick="_toExcel()" type="button" class="button icon-file-excel-o text-blue" style="line-height: 6px;">
+		                                    <button onclick="_toExcel()" type="button" class="button icon-file-excel-o text-blue" style="line-height: 6px;">
 			                                                            导出</button>
-			                                  <button  onclick="_toPrint()" type="button" class="button icon-print text-green" style="line-height: 6px;">
+			                                <!--  <button  onclick="_toPrint()" type="button" class="button icon-print text-green" style="line-height: 6px;">
 			                                                            打印</button>-->
                                      </div>
                                 </div>
@@ -155,13 +166,13 @@ Page pg = (Page)request.getAttribute("page");
             <th class="driverId selected_able">被保险人身份证号</th>-->
             <%--<th class="insuranceCompany selected_able">保险人公司名称</th>--%>
                     <th class="insuranceMoney selected_able">三者险限额</th>
-                    <th class="insuranceMoney selected_able">车损险</th>
-                    <th class="insuranceMoney selected_able">三者险</th>
+                    <th class="insuranceMoney selected_able">车损险保费</th>
+                    <th class="insuranceMoney selected_able">三者险保费</th>
 
-                    <th class="insuranceMoney selected_able">交强险</th>
+                    <th class="insuranceMoney selected_able">交强险保费</th>
                     <th class="insuranceMoney selected_able">车船税</th>
 
-                    <th class="insuranceMoney selected_able">承运人险</th>
+                    <th class="insuranceMoney selected_able">承运人险保费</th>
 
                     <th class="baseMoney selected_able">基础保费</th>
                     <th class="dates selected_able">起始时间</th>
@@ -171,8 +182,8 @@ Page pg = (Page)request.getAttribute("page");
 
                     <th class="archive selected_able">档案详情</th>
                 </tr>
-               <s:if test="%{#request.insurance!=null&&#request.insurance.size()!=0}">  
-        <s:iterator value="%{#request.insurance}" var="v">
+               <s:if test="%{#request.list!=null&&#request.list.size()!=0}">
+        <s:iterator value="%{#request.list}" var="v">
                         <tr>
                             <td><input type="radio" name="cbx" value="<s:property value='%{#v.id}'/>" ></td>
                             <td class="dept selected_able"><s:property value="%{@com.dz.common.other.ObjectAccess@getObject('com.dz.module.vehicle.Vehicle',#v.carframeNum).dept}"/></td>
@@ -210,7 +221,7 @@ Page pg = (Page)request.getAttribute("page");
                     </s:iterator>
 </s:if>
             </table>
-         <s:if test="%{#request.insurance!=null&&#request.insurance.size()!=0}">
+         <s:if test="%{#request.list!=null&&#request.list.size()!=0}">
             <div class="line padding">
             	<div class="xm5-move">
             		<div>
@@ -314,17 +325,14 @@ Page pg = (Page)request.getAttribute("page");
 
 
 
-<form action="insuranceSele" method="post" name="vehicleSele">
-    <s:hidden name="insurance.carframeNum" />
-    <s:hidden name="insurance.insuranceNum" />
-    <s:hidden name="vehicle.licenseNum" />
-    <s:hidden name="vehicle.dept" />
-    <s:hidden name="insurance.insuranceClass" />
-    <s:hidden name="inputFrom" />
-    <s:hidden name="inputEnd" />
-    <s:hidden name="startFrom" />
-    <s:hidden name="startEnd" />
-    <s:hidden name="currentPage" value="%{#request.page.currentPage}" id="currentPage"></s:hidden>
+<%--<form action="insuranceSele" method="post" name="vehicleSele">--%>
+<form action="/DZOMS/common/selectToList2" method="post" name="vehicleSele">
+    <s:hidden name="condition" />
+    <s:hidden name="column" />
+    <input type="hidden" name="templatePath" value="vehicle/insurance/insurance_export.xls" />
+    <input type="hidden" name="url" value="/vehicle/insurance/insurance_search_result.jsp" />
+    <input type="hidden" name="outputName" value="保险历史记录" />
+    <s:hidden name="currentPage" value="%{#request.page.currentPage}" id="currentPage" />
 </form>
 
 
