@@ -10,7 +10,7 @@
 
     <properties>
         <activiti.version>5.22.0</activiti.version>
-        <spring.version>4.3.8.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <struts2.version>2.3.8</struts2.version>
         <poi.version>3.14</poi.version>
